@@ -3,6 +3,8 @@ import { IAlerta } from "./alerta.model";
 import { IRegistro } from "./registro.model";
 
 export interface ICorrectora {
+  _id: string;
+  //
   firmware: string;
   numeroSerie: number;
   deveui: string;
