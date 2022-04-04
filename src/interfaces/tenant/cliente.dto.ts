@@ -7,12 +7,12 @@ export interface IImagenesCliente {
 export interface ICreateCliente {
   nombre: string;
   admin?: boolean;
-  imagenes: IImagenesCliente;
+  imagenes?: IImagenesCliente;
 }
 
 export interface IUpdateCliente {
   activo?: boolean;
   nombre?: string;
   admin?: boolean;
-  imagenes: IImagenesCliente;
+  imagenes?: IImagenesCliente;
 }

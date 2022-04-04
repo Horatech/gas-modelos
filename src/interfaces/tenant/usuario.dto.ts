@@ -41,5 +41,5 @@ export interface IUpdateUsuario {
   hash?: string;
   activo?: boolean;
   datosPersonales?: IDatosPersonales;
-  permisos: IPermiso;
+  permisos?: IPermiso;
 }
