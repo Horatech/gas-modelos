@@ -1,6 +1,7 @@
 export interface IAlerta {
   _id: string;
   deveui: string;
+  deviceName?: string;
   firmwareNuc: string;
   apiVersion: string;
   numeroAlerta?: number;

@@ -1,5 +1,6 @@
 export interface ICreateAlerta {
   deveui: string;
+  deviceName?: string;
   firmwareNuc: string;
   apiVersion: string;
   numeroAlerta?: number;
