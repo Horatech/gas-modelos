@@ -8,6 +8,7 @@ export interface ICorrectora {
   firmware: string;
   numeroSerie: number;
   deveui: string;
+  deviceName?: string;
   modelo: string;
   fechaCreacion: string;
   //

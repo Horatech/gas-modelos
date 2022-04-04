@@ -6,6 +6,7 @@ export interface ICreateCorrectora {
   firmware?: string;
   numeroSerie: number;
   deveui: string;
+  deviceName?: string;
   modelo?: string;
   //
   ultimoRegistro?: IRegistro;
@@ -27,6 +28,7 @@ export interface IUpdateCorrectora {
   firmware?: string;
   numeroSerie?: number;
   deveui?: string;
+  deviceName?: string;
   modelo?: string;
   //
   ultimoRegistro?: IRegistro;
