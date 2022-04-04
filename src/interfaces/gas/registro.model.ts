@@ -9,6 +9,7 @@ export interface IRegistro {
   //
   numeroSerieCorrectora: number;
   deveui: string;
+  deviceName?: string;
   //
   idCliente: string;
   //

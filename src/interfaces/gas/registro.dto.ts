@@ -8,6 +8,7 @@ export interface ICreateRegistro {
   //
   numeroSerieCorrectora: number;
   deveui: string;
+  deviceName?: string;
   //
   idCliente: string;
 }
