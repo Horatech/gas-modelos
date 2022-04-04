@@ -5,7 +5,7 @@ export interface IAlerta {
   firmwareNuc: string;
   apiVersion: string;
   numeroAlerta?: number;
-  timestamp?: number;
+  timestamp?: string;
   //
   numeroSerieCorrectora?: number;
   //

@@ -1,6 +1,6 @@
 export interface IRegistro {
   _id: string;
-  timestamp: number;
+  timestamp: string;
   corrected: number;
   uncorrected: number;
   presion: number;
