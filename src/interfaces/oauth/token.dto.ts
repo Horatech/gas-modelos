@@ -1,4 +1,4 @@
-import { IUsuario } from "../usuario.model";
+import { IUsuario } from "../tenant";
 import { ICreateClient } from "./client.dto";
 
 export interface ICreateToken {

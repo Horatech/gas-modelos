@@ -1,5 +1,5 @@
+import { IUsuario } from "../tenant";
 import { IClient } from "./client.model";
-import { IUsuario } from "../usuario.model";
 
 export interface IToken {
   accessToken: string;
