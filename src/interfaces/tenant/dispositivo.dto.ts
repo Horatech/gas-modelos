@@ -3,7 +3,7 @@ export type TipoDispositivo = "NUC 4G" | "SML";
 export interface ICreateDispositivo {
   idCliente: string;
   deveui: string;
-  tipoDispotivivo: TipoDispositivo;
+  tipoDispositivo: TipoDispositivo;
   deviceName?: string;
   appkey?: string;
 }
@@ -11,7 +11,7 @@ export interface ICreateDispositivo {
 export interface IUpdateDispositivo {
   idCliente?: string;
   deveui?: string;
-  tipoDispotivivo?: TipoDispositivo;
+  tipoDispositivo?: TipoDispositivo;
   deviceName?: string;
   appkey?: string;
 }

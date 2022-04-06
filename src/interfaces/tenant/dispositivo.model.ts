@@ -4,7 +4,7 @@ export interface IDispositivo {
   _id: string;
   idCliente: string;
   deveui: string;
-  tipoDispotivivo: TipoDispositivo;
+  tipoDispositivo: TipoDispositivo;
   deviceName?: string;
   appkey?: string;
   fechaCreacion: string;
