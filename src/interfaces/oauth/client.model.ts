@@ -1,4 +1,5 @@
 export interface IClient {
+  id: string;
   clientId: string;
   clientSecret: string;
   grants: string[];
