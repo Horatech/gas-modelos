@@ -1,7 +1,7 @@
 export interface IImagenesCliente {
   icono?: string;
   logo?: string;
-  [key: string]: string;
+  [key: string]: string | undefined;
 }
 
 export interface ICreateCliente {
