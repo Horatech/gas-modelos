@@ -4,8 +4,8 @@ export type TipoConectividad = "4G" | "LORA";
 export interface ICreateDispositivo {
   idCliente: string;
   deveui: string;
-  deviceName?: string;
-  appkey?: string;
+  deviceName: string;
+  appkey: string;
   tipoDispositivo: TipoDispositivo;
   conectividad: TipoConectividad;
 }
@@ -16,5 +16,5 @@ export interface IUpdateDispositivo {
   deviceName?: string;
   appkey?: string;
   tipoDispositivo?: TipoDispositivo;
-  conectividad: TipoConectividad;
+  conectividad?: TipoConectividad;
 }
