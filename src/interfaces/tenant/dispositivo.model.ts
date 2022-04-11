@@ -1,3 +1,4 @@
+import { ICliente } from "./cliente.model";
 import { TipoConectividad, TipoDispositivo } from "./dispositivo.dto";
 
 export interface IDispositivo {
@@ -5,8 +6,10 @@ export interface IDispositivo {
   fechaCreacion: string;
   idCliente: string;
   deveui: string;
-  deviceName?: string;
-  appkey?: string;
+  deviceName: string;
+  appkey: string;
   tipoDispositivo: TipoDispositivo;
   conectividad: TipoConectividad;
+  // Virtuals
+  cliente?: ICliente;
 }
