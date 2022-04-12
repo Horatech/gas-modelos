@@ -5,7 +5,8 @@ export interface ICreateDispositivo {
   idCliente: string;
   deveui: string;
   deviceName: string;
-  appkey: string;
+  appkey?: string;
+  idLote?: string;
   tipoDispositivo: TipoDispositivo;
   conectividad: TipoConectividad;
 }
@@ -15,6 +16,7 @@ export interface IUpdateDispositivo {
   deveui?: string;
   deviceName?: string;
   appkey?: string;
+  idLote?: string;
   tipoDispositivo?: TipoDispositivo;
   conectividad?: TipoConectividad;
 }
