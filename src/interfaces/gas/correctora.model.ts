@@ -1,6 +1,8 @@
 import { ICoordenadas } from "../auxiliares";
 import { IAlerta } from "./alerta.model";
+import { ICuenca } from "./cuenca.model";
 import { IRegistro } from "./registro.model";
+import { IUnidadNegocio } from "./unidadNegocio.model";
 
 export interface ICorrectora {
   _id: string;
@@ -26,7 +28,7 @@ export interface ICorrectora {
   idCuenca?: string;
   idsGrupos?: string[];
   // Populate
-  unidadNegocio?: any;
-  cuenca?: any;
+  unidadNegocio?: IUnidadNegocio;
+  cuenca?: ICuenca;
   grupos?: any[];
 }
