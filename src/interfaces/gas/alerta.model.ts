@@ -8,6 +8,7 @@ export interface IAlerta {
   timestamp?: string;
   //
   numeroSerieCorrectora?: number;
+  idUnidadNegocio?: string;
   //
   idCliente: string;
   //

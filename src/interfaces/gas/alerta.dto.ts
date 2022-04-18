@@ -7,6 +7,7 @@ export interface ICreateAlerta {
   timestamp?: number;
   //
   numeroSerieCorrectora?: number;
+  idUnidadNegocio?: string;
   //
   idCliente: string;
 }
