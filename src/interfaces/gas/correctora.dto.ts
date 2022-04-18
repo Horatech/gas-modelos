@@ -1,5 +1,6 @@
 import { ICoordenadas } from "../auxiliares";
 import { IAlerta } from "./alerta.model";
+import { ICromatografia } from "./cromatografia.model";
 import { IRegistro } from "./registro.model";
 
 export interface ICreateCorrectora {
@@ -11,7 +12,7 @@ export interface ICreateCorrectora {
   //
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
-  idCromatorgrafiaAplicada?: string;
+  ultimaCromatografia?: ICromatografia;
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;
@@ -33,7 +34,7 @@ export interface IUpdateCorrectora {
   //
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
-  idCromatorgrafiaAplicada?: string;
+  ultimaCromatografia?: ICromatografia;
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;

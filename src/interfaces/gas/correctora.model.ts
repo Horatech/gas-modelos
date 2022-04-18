@@ -1,5 +1,6 @@
 import { ICoordenadas } from "../auxiliares";
 import { IAlerta } from "./alerta.model";
+import { ICromatografia } from "./cromatografia.model";
 import { ICuenca } from "./cuenca.model";
 import { IRegistro } from "./registro.model";
 import { IUnidadNegocio } from "./unidadNegocio.model";
@@ -16,7 +17,7 @@ export interface ICorrectora {
   //
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
-  idCromatorgrafiaAplicada?: string;
+  ultimaCromatografia?: ICromatografia;
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;
