@@ -7,7 +7,7 @@ export interface IAplicacionCromatografia {
   _id: string;
   aplicada: boolean;
   idCromatografia: string;
-  numeroSerieCorrectora: string;
+  numeroSerieCorrectora: number;
   fechaCreacion: string;
   //
   idCliente?: string;

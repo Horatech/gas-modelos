@@ -1,7 +1,7 @@
 export interface ICreateAplicacionCromatografia {
   aplicada: boolean;
   idCromatografia: string;
-  numeroSerieCorrectora: string;
+  numeroSerieCorrectora: number;
   //
   idCliente?: string;
   idUnidadNegocio?: string;
