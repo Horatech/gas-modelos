@@ -18,6 +18,7 @@ export interface ICorrectora {
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
   ultimaCromatografia?: ICromatografia;
+  fechaUltimaCromatografia?: string;
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;

@@ -13,6 +13,7 @@ export interface ICreateCorrectora {
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
   ultimaCromatografia?: ICromatografia;
+  fechaUltimaCromatografia?: string;
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;
@@ -35,6 +36,7 @@ export interface IUpdateCorrectora {
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
   ultimaCromatografia?: ICromatografia;
+  fechaUltimaCromatografia?: string;
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;
