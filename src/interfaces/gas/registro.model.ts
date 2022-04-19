@@ -12,6 +12,7 @@ export interface IRegistro {
   deviceName?: string;
   //
   idCliente: string;
+  idUnidadNegocio?: string;
   //
   fechaCreacion: string;
 }

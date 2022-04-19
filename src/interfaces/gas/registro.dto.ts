@@ -11,4 +11,5 @@ export interface ICreateRegistro {
   deviceName?: string;
   //
   idCliente: string;
+  idUnidadNegocio?: string;
 }
