@@ -12,6 +12,7 @@ export interface IReporteSml {
   triggerSource: number;
   checksum: number;
   //
+  fecha: string;
   idCliente: string;
   deveui: string;
   deviceName?: string;
