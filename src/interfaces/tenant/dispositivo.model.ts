@@ -1,3 +1,4 @@
+import { ICuenca, IUnidadNegocio } from "../gas";
 import { ICliente } from "./cliente.model";
 import { TipoConectividad, TipoDispositivo } from "./dispositivo.dto";
 import { ILoteDispositivo } from "./loteDispositivo.model";
@@ -12,7 +13,12 @@ export interface IDispositivo {
   idLote: string;
   tipoDispositivo: TipoDispositivo;
   conectividad: TipoConectividad;
+  // Datos que carga el cliente
+  idUnidadNegocio?: string;
+  idCuenca?: string;
   // Virtuals
   cliente?: ICliente;
   lote?: ILoteDispositivo;
+  unidadNegocio?: IUnidadNegocio;
+  cuenca?: ICuenca;
 }

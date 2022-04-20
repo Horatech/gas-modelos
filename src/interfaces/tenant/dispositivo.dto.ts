@@ -19,4 +19,7 @@ export interface IUpdateDispositivo {
   idLote?: string;
   tipoDispositivo?: TipoDispositivo;
   conectividad?: TipoConectividad;
+  //
+  idUnidadNegocio?: string;
+  idCuenca?: string;
 }
