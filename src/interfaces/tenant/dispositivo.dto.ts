@@ -9,6 +9,11 @@ export interface ICreateDispositivo {
   idLote?: string;
   tipoDispositivo: TipoDispositivo;
   conectividad: TipoConectividad;
+  //
+  /**
+   * deviceProfileID del appServer ChirpStack
+   */
+  deviceProfileID?: string;
 }
 
 export interface IUpdateDispositivo {
