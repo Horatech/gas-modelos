@@ -1,4 +1,4 @@
-export interface IDeviceKeysChirpstack {
+export interface ICreateDeviceKeysChirpstack {
   deviceKeys: {
     appKey: string;
     devEUI: string;
