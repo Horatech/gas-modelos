@@ -1,6 +1,7 @@
 import { ICuenca, IUnidadNegocio } from "../gas";
 import { ICliente } from "./cliente.model";
 import { TipoConectividad } from "./dispositivo.dto";
+import { ILoraServer } from "./lora-server.model";
 import { ILoteDispositivo } from "./loteDispositivo.model";
 import { TipoDispositivo } from "./tipo-dispositivo.model";
 
@@ -24,4 +25,5 @@ export interface IDispositivo {
   lote?: ILoteDispositivo;
   unidadNegocio?: IUnidadNegocio;
   cuenca?: ICuenca;
+  loraServer?: ILoraServer;
 }
