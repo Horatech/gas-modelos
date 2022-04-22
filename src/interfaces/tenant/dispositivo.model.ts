@@ -1,7 +1,8 @@
 import { ICuenca, IUnidadNegocio } from "../gas";
 import { ICliente } from "./cliente.model";
-import { TipoConectividad, TipoDispositivo } from "./dispositivo.dto";
+import { TipoConectividad } from "./dispositivo.dto";
 import { ILoteDispositivo } from "./loteDispositivo.model";
+import { TipoDispositivo } from "./tipo-dispositivo.model";
 
 export interface IDispositivo {
   _id: string;
@@ -13,6 +14,8 @@ export interface IDispositivo {
   idLote: string;
   tipoDispositivo: TipoDispositivo;
   conectividad: TipoConectividad;
+  // Solo con conectividad Lora
+  idLoraServer?: string;
   // Datos que carga el cliente
   idUnidadNegocio?: string;
   idCuenca?: string;

@@ -10,11 +10,8 @@ export interface ICreateDispositivo {
   idLote?: string;
   tipoDispositivo: TipoDispositivo;
   conectividad: TipoConectividad;
-  //
-  /**
-   * deviceProfileID del appServer ChirpStack
-   */
-  deviceProfileID?: string;
+  // Solo con conectividad Lora
+  idLoraServer?: string;
 }
 
 export interface IUpdateDispositivo {
@@ -25,6 +22,8 @@ export interface IUpdateDispositivo {
   idLote?: string;
   tipoDispositivo?: TipoDispositivo;
   conectividad?: TipoConectividad;
+  // Solo con conectividad Lora
+  idLoraServer?: string;
   //
   idUnidadNegocio?: string;
   idCuenca?: string;
