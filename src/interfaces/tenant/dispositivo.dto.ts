@@ -1,4 +1,5 @@
-export type TipoDispositivo = "NUC" | "SML";
+import { TipoDispositivo } from "./tipo-dispositivo.model";
+
 export type TipoConectividad = "4G" | "LORA";
 
 export interface ICreateDispositivo {
