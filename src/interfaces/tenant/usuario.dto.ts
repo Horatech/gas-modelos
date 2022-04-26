@@ -1,3 +1,5 @@
+import { IUnidadNegocio } from "../gas";
+
 export type Rol = "Administrador" | "Usuario";
 
 export interface IPermisosGlobal {
@@ -7,6 +9,8 @@ export interface IPermisosGlobal {
 export interface IPermisosUnidadNegocio {
   idUnidadNegocio: string;
   roles: Rol[];
+  // Virtual
+  unidadNegocio?: IUnidadNegocio;
 }
 
 export interface IPermisosGrupo {
