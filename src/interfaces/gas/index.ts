@@ -16,5 +16,6 @@ export * from "./registro.dto";
 export * from "./registro.model";
 export * from "./reporteSml.dto";
 export * from "./reporteSml.model";
+export * from "./resumen.dto";
 export * from "./unidadNegocio.dto";
 export * from "./unidadNegocio.model";
