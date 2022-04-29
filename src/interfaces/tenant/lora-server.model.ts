@@ -1,10 +1,11 @@
-export type TipoLoraServer = "ChirpStack";
+export type TipoLoraServer = "ChirpStack" | "Orbiwise" | "Actility" | "WMC";
 
 export interface ILoraServer {
   _id: string;
   nombre: string;
   url: string;
   tipo: TipoLoraServer;
+  // ChirpStack
   token?: string;
   organizationID?: string;
   serviceProfileID?: string;
