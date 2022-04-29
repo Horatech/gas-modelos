@@ -1,3 +1,5 @@
+import { IGatewayInfoOrbiwise } from "./gatewayInfo";
+
 export interface IUplinkOrbiwise {
   early: boolean; // false; // true: payloads_ul(early), false: payloads_ul(complete)
   deveui: string; // "hex"; // DevEUI of source device
@@ -12,7 +14,7 @@ export interface IUplinkOrbiwise {
   live: true; // indicate if the message is live, or resent from the temporary storage
   session_id: string; // "session-uuid"; // session ID under which the packet was received
   decrypted: boolean; // set true if the DASS decrypted the payload, false if the message is still encrypted.
-  gtw_info: []; // see note below.
+  gtw_info: IGatewayInfoOrbiwise[]; // see note below.
   latitude: number; // 34;
   longitude: number; // 30;
   altitude: number; // 0;
