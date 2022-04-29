@@ -8,7 +8,7 @@ export interface IUplink {
   deviceName?: string;
   puerto: number;
   payload: string;
-  metadatos: IMetadatos[];
+  metadatos?: IMetadatos[];
   adr?: boolean;
   dr?: number;
   fCnt: string;
