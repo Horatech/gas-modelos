@@ -3,7 +3,8 @@ import { IMetadatos } from "./metadatos";
 export interface IUplink {
   aplicacion: string;
   idCliente: string;
-  red: string;
+  red?: string;
+  idLoraServer?: string;
   deveui: string;
   deviceName?: string;
   puerto: number;
