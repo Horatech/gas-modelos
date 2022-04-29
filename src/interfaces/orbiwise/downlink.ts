@@ -5,6 +5,6 @@ export interface IDownlinkOrbiwise {
   fcnt: number; // 10; // the used downlink FCNT
   port: number; // 1; // the used port
   tag: string; // "optional-tag-string";
-  transmissionStatus: 0;
+  transmissionStatus: number; // 0;
   session_id: string; // "UUID"; // session ID when packet was created
 }
