@@ -1,6 +1,7 @@
 import { IUnidadNegocio } from "./unidadNegocio.model";
 import { ICuenca } from "./cuenca.model";
 import { ICorrectora } from "./correctora.model";
+import { ICliente } from "../tenant";
 
 // Resumen
 export interface IResumenUnidadNegocio {
@@ -11,4 +12,9 @@ export interface IResumenUnidadNegocio {
   }[];
   cantidadCuencas: number;
   cantidadCorrectoras: number;
+}
+
+export interface IResumenCliente {
+  cliente: ICliente;
+  cantidadDispositivos: number;
 }
