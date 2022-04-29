@@ -6,7 +6,7 @@ export interface IJoin {
   red?: string;
   deveui: string;
   deviceName?: string;
-  metadatos: IMetadatos[];
+  metadatos?: IMetadatos[];
   adr?: boolean;
   dr?: number;
   tags?: { [key: string]: string };
