@@ -10,4 +10,8 @@ export interface ILoraServer {
   organizationID?: string;
   serviceProfileID?: string;
   integrationUrl?: string;
+  // Orbiwise
+  user?: string;
+  pass?: string;
+  serviceProfileUUID?: string;
 }

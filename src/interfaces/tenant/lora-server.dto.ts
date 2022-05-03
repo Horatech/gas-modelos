@@ -9,6 +9,10 @@ export interface ICreateLoraServer {
   organizationID?: string;
   serviceProfileID?: string;
   integrationUrl?: string;
+  // Orbiwise
+  user?: string;
+  pass?: string;
+  serviceProfileUUID?: string;
 }
 
 export interface IUpdateLoraServer {
@@ -20,4 +24,8 @@ export interface IUpdateLoraServer {
   organizationID?: string;
   serviceProfileID?: string;
   integrationUrl?: string;
+  // Orbiwise
+  user?: string;
+  pass?: string;
+  serviceProfileUUID?: string;
 }
