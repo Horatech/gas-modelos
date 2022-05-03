@@ -1,3 +1,4 @@
+export * from "./device.dto";
 export * from "./deviceStatus";
 export * from "./downlink";
 export * from "./gatewayInfo";
