@@ -1,3 +1,5 @@
+export * from "./application.dto";
+export * from "./application.model";
 export * from "./device-profile.model";
 export * from "./device.dto";
 export * from "./deviceStatus";
