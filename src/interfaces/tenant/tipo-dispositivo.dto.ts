@@ -1,8 +1,11 @@
+import { ILoraServer } from "./lora-server.model";
 import { TipoDispositivo } from "./tipo-dispositivo.model";
 
 export interface ILoraServerConfigPorApp {
   idLoraServer: string;
   deviceProfileID?: string;
+  //
+  loraServer?: ILoraServer;
 }
 
 export interface ICreateTipoDispositivo {
