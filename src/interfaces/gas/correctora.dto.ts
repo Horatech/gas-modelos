@@ -20,7 +20,7 @@ export interface ICreateCorrectora {
   nombre?: string;
   descripcion?: string;
   //
-  idCliente?: string;
+  idCliente: string;
   idUnidadNegocio?: string;
   idCuenca?: string;
   idsGrupos?: string[];
