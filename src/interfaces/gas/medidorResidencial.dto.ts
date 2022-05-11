@@ -8,6 +8,7 @@ export interface ICreateMedidorResidencial {
   //
   ultimoReporte?: IReporteSml;
   //
+  consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
   nombre?: string;
@@ -26,6 +27,7 @@ export interface IUpdateMedidorResidencial {
   //
   ultimoReporte?: IReporteSml;
   //
+  consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
   nombre?: string;

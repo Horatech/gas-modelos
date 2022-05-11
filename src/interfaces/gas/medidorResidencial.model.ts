@@ -13,6 +13,7 @@ export interface IMedidorResidencial {
   //
   ultimoReporte?: IReporteSml;
   //
+  consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
   nombre?: string;
