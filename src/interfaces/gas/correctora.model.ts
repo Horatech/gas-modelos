@@ -24,6 +24,7 @@ export interface ICorrectora {
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;
+  localidad?: string;
   nombre?: string;
   descripcion?: string;
   //

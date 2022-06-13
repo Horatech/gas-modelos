@@ -17,6 +17,7 @@ export interface ICreateCorrectora {
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;
+  localidad?: string;
   nombre?: string;
   descripcion?: string;
   //
@@ -41,6 +42,7 @@ export interface IUpdateCorrectora {
   //
   ubicacionGps?: ICoordenadas;
   direccion?: string;
+  localidad?: string;
   nombre?: string;
   descripcion?: string;
   //

@@ -18,6 +18,7 @@ export interface IMedidorResidencial {
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
+  localidad?: string;
   nombre?: string;
   descripcion?: string;
   //

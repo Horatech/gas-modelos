@@ -11,6 +11,7 @@ export interface ICreateMedidorResidencial {
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
+  localidad?: string;
   nombre?: string;
   descripcion?: string;
   //
@@ -31,6 +32,7 @@ export interface IUpdateMedidorResidencial {
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
+  localidad?: string;
   nombre?: string;
   descripcion?: string;
   //
