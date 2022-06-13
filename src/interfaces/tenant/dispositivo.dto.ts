@@ -24,7 +24,7 @@ export interface IUpdateDispositivo {
   conectividad?: TipoConectividad;
   // Solo con conectividad Lora
   idLoraServer?: string;
-  //
+  // Datos que carga el cliente
   idUnidadNegocio?: string;
-  idCuenca?: string;
+  idCentroOperativo?: string;
 }

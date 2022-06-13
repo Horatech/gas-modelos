@@ -1,4 +1,4 @@
-import { ICuenca, IUnidadNegocio } from "../gas";
+import { ICentroOperativo, IUnidadNegocio } from "../gas";
 import { ICliente } from "./cliente.model";
 import { TipoConectividad } from "./dispositivo.dto";
 import { ILoraServer } from "./lora-server.model";
@@ -19,11 +19,11 @@ export interface IDispositivo {
   idLoraServer?: string;
   // Datos que carga el cliente
   idUnidadNegocio?: string;
-  idCuenca?: string;
+  idCentroOperativo?: string;
   // Virtuals
   cliente?: ICliente;
   lote?: ILoteDispositivo;
   unidadNegocio?: IUnidadNegocio;
-  cuenca?: ICuenca;
+  centroOperativo?: ICentroOperativo;
   loraServer?: ILoraServer;
 }

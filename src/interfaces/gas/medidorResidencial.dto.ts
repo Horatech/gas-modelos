@@ -16,6 +16,7 @@ export interface ICreateMedidorResidencial {
   //
   idCliente?: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
   idCuenca?: string;
   idsGrupos?: string[];
 }
@@ -35,6 +36,7 @@ export interface IUpdateMedidorResidencial {
   //
   idCliente?: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
   idCuenca?: string;
   idsGrupos?: string[];
 }

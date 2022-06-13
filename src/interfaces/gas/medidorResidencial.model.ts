@@ -1,5 +1,7 @@
 import { ICoordenadas } from "../auxiliares";
+import { ICentroOperativo } from "./centroOperativo.model";
 import { ICuenca } from "./cuenca.model";
+import { IGrupo } from "./grupo.model";
 import { IReporteSml } from "./reporteSml.model";
 import { IUnidadNegocio } from "./unidadNegocio.model";
 
@@ -21,10 +23,12 @@ export interface IMedidorResidencial {
   //
   idCliente: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
   idCuenca?: string;
   idsGrupos?: string[];
   // Populate
   unidadNegocio?: IUnidadNegocio;
+  centroOperativo?: ICentroOperativo;
   cuenca?: ICuenca;
-  grupos?: any[];
+  grupos?: IGrupo[];
 }

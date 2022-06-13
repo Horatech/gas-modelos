@@ -8,7 +8,7 @@ export interface IUsuario {
   idCliente: string;
   activo: boolean;
   fechaCreacion: string;
-  permisos: IPermiso;
+  permisos: IPermiso[];
   datosPersonales?: IDatosPersonales;
   // Virtuals
   cliente?: ICliente;

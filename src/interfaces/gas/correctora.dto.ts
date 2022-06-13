@@ -22,6 +22,7 @@ export interface ICreateCorrectora {
   //
   idCliente: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
   idCuenca?: string;
   idsGrupos?: string[];
 }
@@ -45,6 +46,7 @@ export interface IUpdateCorrectora {
   //
   idCliente?: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
   idCuenca?: string;
   idsGrupos?: string[];
 }

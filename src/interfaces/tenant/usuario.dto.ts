@@ -1,32 +1,21 @@
-import { IUnidadNegocio } from "../gas";
+import { ICentroOperativo, IUnidadNegocio } from "../gas";
 
 export type Rol = "Administrador" | "Usuario";
 
-export interface IPermisosGlobal {
-  roles: Rol[];
-}
-
-export interface IPermisosUnidadNegocio {
-  idUnidadNegocio: string;
-  roles: Rol[];
-  // Virtual
-  unidadNegocio?: IUnidadNegocio;
-}
-
-export interface IPermisosGrupo {
-  idGrupo: string;
-  roles: Rol[];
-}
-
 export interface IPermiso {
-  global?: IPermisosGlobal;
-  unidadNegocio?: IPermisosUnidadNegocio[];
-  grupo?: IPermisosGrupo[];
+  rol: Rol;
+  global?: boolean;
+  idsUnidadNegocios?: string[];
+  idsCentroOperativos?: string[];
+  // Populate
+  unidadNegocios?: IUnidadNegocio[];
+  centroOperativos?: ICentroOperativo[];
 }
 
 export interface IDatosPersonales {
   nombre?: string;
   email?: string;
+  [key: string]: any;
 }
 
 export interface ICreateUsuario {
@@ -35,7 +24,7 @@ export interface ICreateUsuario {
   clave?: string;
   hash?: string;
   datosPersonales?: IDatosPersonales;
-  permisos: IPermiso;
+  permisos: IPermiso[];
 }
 
 export interface IUpdateUsuario {
@@ -45,5 +34,5 @@ export interface IUpdateUsuario {
   hash?: string;
   activo?: boolean;
   datosPersonales?: IDatosPersonales;
-  permisos?: IPermiso;
+  permisos?: IPermiso[];
 }

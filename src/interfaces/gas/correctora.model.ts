@@ -1,7 +1,9 @@
 import { ICoordenadas } from "../auxiliares";
 import { IAlerta } from "./alerta.model";
+import { ICentroOperativo } from "./centroOperativo.model";
 import { ICromatografia } from "./cromatografia.model";
 import { ICuenca } from "./cuenca.model";
+import { IGrupo } from "./grupo.model";
 import { IRegistro } from "./registro.model";
 import { IUnidadNegocio } from "./unidadNegocio.model";
 
@@ -27,10 +29,12 @@ export interface ICorrectora {
   //
   idCliente: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
   idCuenca?: string;
   idsGrupos?: string[];
   // Populate
   unidadNegocio?: IUnidadNegocio;
+  centroOperativo?: ICentroOperativo;
   cuenca?: ICuenca;
-  grupos?: any[];
+  grupos?: IGrupo[];
 }
