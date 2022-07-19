@@ -23,3 +23,12 @@ export interface ICreateCromatografia {
   fechaVencimiento: string;
   elementos: IElementos;
 }
+
+export interface IUpdateCromatografia {
+  idCuenca?: string;
+  idCliente?: string;
+  idUnidadNegocio?: string;
+  fechaAplicacion?: string;
+  fechaVencimiento?: string;
+  elementos?: IElementos;
+}
