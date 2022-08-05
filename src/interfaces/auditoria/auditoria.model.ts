@@ -5,4 +5,5 @@ export interface IAuditoria {
     dato: Object;
     idUsuario: string;
     idCliente: string; 
+    fechaCreacion: string;
 }
