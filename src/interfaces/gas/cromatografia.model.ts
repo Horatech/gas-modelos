@@ -1,3 +1,4 @@
+import { IUsuario } from '../tenant';
 import { IElementos } from './cromatografia.dto';
 import { ICuenca } from './cuenca.model';
 import { IUnidadNegocio } from './unidadNegocio.model';
@@ -16,4 +17,5 @@ export interface ICromatografia {
   // Virtual
   cuenca?: ICuenca;
   unidadNegocio?: IUnidadNegocio;
+  usuario?: IUsuario;
 }
