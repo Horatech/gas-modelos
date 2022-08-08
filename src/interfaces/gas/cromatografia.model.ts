@@ -4,7 +4,7 @@ import { IUnidadNegocio } from './unidadNegocio.model';
 
 export interface ICromatografia {
   _id: string;
-  idUsuario: string;
+  idUsuario?: string;
   idCuenca: string;
   idCliente: string;
   idUnidadNegocio: string;
