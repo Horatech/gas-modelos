@@ -17,6 +17,7 @@ export interface IElementos {
 
 export interface ICreateCromatografia {
   idCuenca: string;
+  idUsuario: string;
   idCliente?: string;
   idUnidadNegocio?: string;
   fechaAplicacion: string;

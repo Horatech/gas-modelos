@@ -1,9 +1,10 @@
-import { IElementos } from "./cromatografia.dto";
-import { ICuenca } from "./cuenca.model";
-import { IUnidadNegocio } from "./unidadNegocio.model";
+import { IElementos } from './cromatografia.dto';
+import { ICuenca } from './cuenca.model';
+import { IUnidadNegocio } from './unidadNegocio.model';
 
 export interface ICromatografia {
   _id: string;
+  idUsuario: string;
   idCuenca: string;
   idCliente: string;
   idUnidadNegocio: string;
