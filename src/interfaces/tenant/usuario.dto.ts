@@ -1,15 +1,17 @@
-import { ICentroOperativo, IUnidadNegocio } from "../gas";
+import { ICentroOperativo, ICuenca, IUnidadNegocio } from '../gas';
 
-export type Rol = "Administrador" | "Usuario";
+export type Rol = 'Administrador' | 'Usuario' | 'Croma';
 
 export interface IPermiso {
   rol: Rol;
   global?: boolean;
   idsUnidadNegocios?: string[];
   idsCentroOperativos?: string[];
+  idsCuencas?: string[];
   // Populate
   unidadNegocios?: IUnidadNegocio[];
   centroOperativos?: ICentroOperativo[];
+  cuencas?: ICuenca[];
 }
 
 export interface IDatosPersonales {
