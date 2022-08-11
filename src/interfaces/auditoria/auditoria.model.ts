@@ -1,3 +1,5 @@
+import { ICliente } from '../tenant';
+import { IUsuario } from '../tenant/usuario.model';
 export interface IAuditoria {
     _id: string;
     entidad:string;
@@ -6,4 +8,7 @@ export interface IAuditoria {
     idUsuario: string;
     idCliente: string; 
     fechaCreacion: string;
+    // Populate
+    usuario?: IUsuario;
+    cliente?: ICliente;
 }
