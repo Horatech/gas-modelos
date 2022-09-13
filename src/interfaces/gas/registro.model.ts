@@ -1,3 +1,5 @@
+import { ICorrectora } from "./correctora.model";
+
 export interface IRegistro {
   _id: string;
   timestamp: string;
@@ -15,4 +17,6 @@ export interface IRegistro {
   idUnidadNegocio?: string;
   //
   fechaCreacion: string;
+  //
+  correctora?: ICorrectora;
 }
