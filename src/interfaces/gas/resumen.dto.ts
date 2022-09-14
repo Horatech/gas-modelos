@@ -16,7 +16,7 @@ export interface IResumenUnidadNegocio {
     centroOperativo: ICentroOperativo;
     correctoras: ICorrectora[];
     medidores: IMedidorResidencial[];
-  };
+  }[];
   cuencas: {
     cantReportesOkCorrectora: number;
     cantReportesOkMedidor: number;
