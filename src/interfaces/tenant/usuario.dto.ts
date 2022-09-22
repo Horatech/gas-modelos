@@ -6,7 +6,7 @@ export type Nivel = "Global" | "Unidad de Negocio" | "Centro Operativo";
 export interface IPermiso {
   nivel: Nivel;
   rol: Rol;
-  idsUnidadNegocios: string[];
+  idsUnidadNegocios?: string[];
   idsCentroOperativos?: string[];
   idsCuencas?: string[];
   // Populate
