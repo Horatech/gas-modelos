@@ -1,6 +1,6 @@
 import { ICentroOperativo, ICuenca, IUnidadNegocio } from "../gas";
 
-export type Rol = "Administrador" | "Usuario" | "Croma";
+export type Rol = "Administrador" | "Usuario" | "Croma" | "Visualizar";
 export type Nivel = "Global" | "Unidad de Negocio" | "Centro Operativo";
 
 export interface IPermiso {
