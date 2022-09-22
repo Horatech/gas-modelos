@@ -1,5 +1,5 @@
 export * from "./coordenadas";
 export * from "./listado";
-export * from "./query-filter";
+export * from "./queryParams";
 export * from "./socket-message";
 export * from "./exactly";
