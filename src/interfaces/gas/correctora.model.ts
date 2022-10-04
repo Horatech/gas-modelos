@@ -1,4 +1,5 @@
 import { ICoordenadas } from "../auxiliares";
+import { IDispositivo } from "../tenant";
 import { IAlerta } from "./alerta.model";
 import { ICentroOperativo } from "./centroOperativo.model";
 import { ICromatografia } from "./cromatografia.model";
@@ -38,4 +39,5 @@ export interface ICorrectora {
   centroOperativo?: ICentroOperativo;
   cuenca?: ICuenca;
   grupos?: IGrupo[];
+  dispositivo?: IDispositivo;
 }
