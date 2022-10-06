@@ -1,5 +1,5 @@
+import { IAlerta } from "./alerta";
 import { IRegistro } from "./registro.model";
-import { IAlerta } from "./alerta.model";
 
 export interface IDispositivoNuc4G {
   _id: string;

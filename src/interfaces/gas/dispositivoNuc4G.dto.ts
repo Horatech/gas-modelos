@@ -1,5 +1,5 @@
+import { IAlerta } from "./alerta";
 import { IRegistro } from "./registro.model";
-import { IAlerta } from "./alerta.model";
 
 export interface ICreateDispositivoNuc4G {
   idCliente: string;

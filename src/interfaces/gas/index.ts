@@ -1,5 +1,7 @@
-export * from "./alerta.dto";
-export * from "./alerta.model";
+export * from "./alerta";
+export * from "./auditoria";
+export * from "./notificacion";
+//
 export * from "./aplicacionCromatografia.dto";
 export * from "./aplicacionCromatografia.model";
 export * from "./centroOperativo.dto";

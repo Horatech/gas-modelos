@@ -1,5 +1,5 @@
 import { ICoordenadas } from "../auxiliares";
-import { IAlerta } from "./alerta.model";
+import { IAlerta } from "./alerta";
 import { ICromatografia } from "./cromatografia.model";
 import { IRegistro } from "./registro.model";
 

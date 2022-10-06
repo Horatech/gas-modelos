@@ -1,6 +1,6 @@
 import { ICoordenadas } from "../auxiliares";
 import { IDispositivo } from "../tenant";
-import { IAlerta } from "./alerta.model";
+import { IAlerta } from "./alerta";
 import { ICentroOperativo } from "./centroOperativo.model";
 import { ICromatografia } from "./cromatografia.model";
 import { ICuenca } from "./cuenca.model";
