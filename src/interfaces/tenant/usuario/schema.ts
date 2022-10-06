@@ -1,5 +1,7 @@
-import { ICliente } from "./cliente.model";
-import { IDatosPersonales, IPermiso } from "./usuario.dto";
+import { ICliente } from "../cliente.model";
+import { IDatosPersonales } from "./create";
+import { INotificaciones } from "./notificacion";
+import { IPermiso } from "./permiso";
 
 export interface IUsuario {
   _id: string;
@@ -10,6 +12,7 @@ export interface IUsuario {
   fechaCreacion: string;
   permisos: IPermiso[];
   datosPersonales?: IDatosPersonales;
+  notificaciones?: INotificaciones[];
   // Virtuals
   cliente?: ICliente;
 }

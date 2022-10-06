@@ -1,5 +1,4 @@
-import { ICliente } from "../../tenant";
-import { IUsuario } from "../../tenant/usuario.model";
+import { ICliente, IUsuario } from "../../tenant";
 export interface IAuditoria {
   _id: string;
   entidad: string;
