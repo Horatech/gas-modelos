@@ -1,4 +1,5 @@
 import { ICentroOperativo, IUnidadNegocio } from "../../gas";
+import { Nivel } from "./permiso";
 
 export enum ICodigoNotificacion {
   "Correctora sin Reportar" = 0,
@@ -7,6 +8,7 @@ export enum ICodigoNotificacion {
 }
 
 export interface INotificaciones {
+  nivel: Nivel;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   habilitados?: ICodigoNotificacion[];
