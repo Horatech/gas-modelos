@@ -12,7 +12,6 @@ export * from "./cromatografia.dto";
 export * from "./cromatografia.model";
 export * from "./cuenca.dto";
 export * from "./cuenca.model";
-export * from "./dispositivoNuc4G.dto";
 export * from "./dispositivoNuc4G.model";
 export * from "./grupo.dto";
 export * from "./grupo.model";
