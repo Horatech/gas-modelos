@@ -1,3 +1,5 @@
+import { TipoDispositivo } from './tipo-dispositivo.model';
+
 export interface IImagenesCliente {
   icono?: string;
   logo?: string;
@@ -8,6 +10,7 @@ export interface ICreateCliente {
   nombre: string;
   admin?: boolean;
   imagenes?: IImagenesCliente;
+  tiposDispositivo?: TipoDispositivo[];
 }
 
 export interface IUpdateCliente {
@@ -15,4 +18,5 @@ export interface IUpdateCliente {
   nombre?: string;
   admin?: boolean;
   imagenes?: IImagenesCliente;
+  tiposDispositivo?: TipoDispositivo[];
 }
