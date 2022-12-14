@@ -5,6 +5,7 @@ export interface ICreateRegistro {
   presion: number;
   temperatura: number;
   contador: number;
+  bateria: number;
   //
   numeroSerieCorrectora: number;
   deveui: string;

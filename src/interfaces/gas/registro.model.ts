@@ -1,4 +1,4 @@
-import { ICorrectora } from "./correctora.model";
+import { ICorrectora } from './correctora.model';
 
 export interface IRegistro {
   _id: string;
@@ -8,6 +8,7 @@ export interface IRegistro {
   presion: number;
   temperatura: number;
   contador: number;
+  bateria: number;
   //
   numeroSerieCorrectora: number;
   deveui: string;
