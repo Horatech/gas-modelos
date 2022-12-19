@@ -1,5 +1,6 @@
-import { ICoordenadas } from "../auxiliares";
-import { IReporteSml } from "./reporteSml.model";
+import { ICoordenadas } from '../auxiliares';
+import { ITipoDispositivo } from '../tenant';
+import { IReporteSml } from './reporteSml.model';
 
 export interface ICreateMedidorResidencial {
   deviceMeterNumber: number;
@@ -7,6 +8,7 @@ export interface ICreateMedidorResidencial {
   deviceName?: string;
   //
   ultimoReporte?: IReporteSml;
+  tipo?: ITipoDispositivo;
   //
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;

@@ -1,9 +1,10 @@
-import { ICoordenadas } from "../auxiliares";
-import { ICentroOperativo } from "./centroOperativo.model";
-import { ICuenca } from "./cuenca.model";
-import { IGrupo } from "./grupo.model";
-import { IReporteSml } from "./reporteSml.model";
-import { IUnidadNegocio } from "./unidadNegocio.model";
+import { ICoordenadas } from '../auxiliares';
+import { ITipoDispositivo } from '../tenant';
+import { ICentroOperativo } from './centroOperativo.model';
+import { ICuenca } from './cuenca.model';
+import { IGrupo } from './grupo.model';
+import { IReporteSml } from './reporteSml.model';
+import { IUnidadNegocio } from './unidadNegocio.model';
 
 export interface IMedidorResidencial {
   _id: string;
@@ -14,6 +15,7 @@ export interface IMedidorResidencial {
   fechaCreacion: string;
   //
   ultimoReporte?: IReporteSml;
+  tipo?: ITipoDispositivo;
   //
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
