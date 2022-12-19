@@ -15,7 +15,6 @@ export interface IMedidorResidencial {
   fechaCreacion: string;
   //
   ultimoReporte?: IReporteSml;
-  tipo?: ITipoDispositivo;
   //
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;

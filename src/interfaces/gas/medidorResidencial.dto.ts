@@ -8,7 +8,6 @@ export interface ICreateMedidorResidencial {
   deviceName?: string;
   //
   ultimoReporte?: IReporteSml;
-  tipo?: ITipoDispositivo;
   //
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
