@@ -7,6 +7,7 @@ export interface IReporteSml {
   meterType: number;
   meteringMode: number;
   consumo: number;
+  consumoNegativo: number;
   batteryVoltage: number;
   statusWord: number;
   triggerSource: number;
