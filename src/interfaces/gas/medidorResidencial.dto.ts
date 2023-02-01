@@ -1,5 +1,4 @@
 import { ICoordenadas } from '../auxiliares';
-import { ITipoDispositivo } from '../tenant';
 import { IReporteSml } from './reporteSml.model';
 
 export interface ICreateMedidorResidencial {
@@ -15,6 +14,7 @@ export interface ICreateMedidorResidencial {
   localidad?: string;
   nombre?: string;
   descripcion?: string;
+  corregido?: boolean;
   //
   idCliente?: string;
   idUnidadNegocio?: string;
