@@ -36,6 +36,7 @@ export interface IUpdateMedidorResidencial {
   localidad?: string;
   nombre?: string;
   descripcion?: string;
+  corregido?: boolean;
   //
   idCliente?: string;
   idUnidadNegocio?: string;
