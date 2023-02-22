@@ -1,5 +1,5 @@
 import { ICoordenadas } from '../auxiliares';
-import { ITipoDispositivo } from '../tenant';
+import { IDispositivo, ITipoDispositivo } from '../tenant';
 import { ICentroOperativo } from './centroOperativo.model';
 import { ICuenca } from './cuenca.model';
 import { IGrupo } from './grupo.model';
@@ -34,4 +34,5 @@ export interface IMedidorResidencialAgua {
   centroOperativo?: ICentroOperativo;
   cuenca?: ICuenca;
   grupos?: IGrupo[];
+  dispositivo?: IDispositivo;
 }
