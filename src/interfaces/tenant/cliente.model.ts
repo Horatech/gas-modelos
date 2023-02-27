@@ -1,5 +1,6 @@
-import { IImagenesCliente } from './cliente.dto';
-import { TipoDispositivo } from './tipo-dispositivo.model';
+import { IImagenesCliente } from "./cliente.dto";
+import { IIntegraciones } from "./integraciones";
+import { TipoDispositivo } from "./tipo-dispositivo.model";
 
 export interface ICliente {
   _id: string;
@@ -9,4 +10,5 @@ export interface ICliente {
   admin: boolean;
   imagenes: IImagenesCliente;
   tiposDispositivo: TipoDispositivo[];
+  integraciones?: IIntegraciones[];
 }
