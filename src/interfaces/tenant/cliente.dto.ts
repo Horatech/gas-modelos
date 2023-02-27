@@ -1,4 +1,5 @@
-import { TipoDispositivo } from './tipo-dispositivo.model';
+import { IIntegraciones } from "./integraciones";
+import { TipoDispositivo } from "./tipo-dispositivo.model";
 
 export interface IImagenesCliente {
   icono?: string;
@@ -11,6 +12,7 @@ export interface ICreateCliente {
   admin?: boolean;
   imagenes?: IImagenesCliente;
   tiposDispositivo?: TipoDispositivo[];
+  integraciones?: IIntegraciones[];
 }
 
 export interface IUpdateCliente {
@@ -19,4 +21,5 @@ export interface IUpdateCliente {
   admin?: boolean;
   imagenes?: IImagenesCliente;
   tiposDispositivo?: TipoDispositivo[];
+  integraciones?: IIntegraciones[];
 }
