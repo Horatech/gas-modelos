@@ -2,7 +2,7 @@ export interface IIntegracion {
   tipoDispositivo?: string;
   tipoIntegracion?: string; // INFLUX / SQL / MONGODB / API REST
   endpoint?: string; // POST https://miapi.com
-  creadenciales?: IIntegracionInfluxV1 | IIntegracionInfluxV2 | object; // {user: string; pass: string} || {apikey: string}
+  credenciales?: IIntegracionInfluxV1 | IIntegracionInfluxV2 | object; // {user: string; pass: string} || {apikey: string}
   ubicacionCredenciales?: "Query Params" | "Headers" | "Body";
 }
 
