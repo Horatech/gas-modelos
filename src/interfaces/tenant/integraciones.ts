@@ -1,8 +1,10 @@
 export interface IIntegracion {
   tipoDispositivo?: string;
-  tipoIntegracion?: "INFLUXV1" | "INFLUXV2"; // INFLUX / SQL / MONGODB / API REST
-  endpoint?: string; // POST https://miapi.com
-  credenciales?: IIntegracionInfluxV1 | IIntegracionInfluxV2 | object; // {user: string; pass: string} || {apikey: string}
+  tipoIntegracion?: "INFLUXV1" | "INFLUXV2" | "HTTPS"; // SQL / MONGODB
+  endpoint?: string; // https://miapi.com
+  method?: "GET" | "POST" | "PUT" | "PATCH";
+  credenciales?: IIntegracionInfluxV1 | IIntegracionInfluxV2;
+  credenciales2?: { key: string; value: string }[];
   ubicacionCredenciales?: "Query Params" | "Headers" | "Body";
 }
 
