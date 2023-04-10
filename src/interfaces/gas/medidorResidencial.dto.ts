@@ -1,8 +1,8 @@
-import { ICoordenadas } from '../auxiliares';
-import { IReporteSml } from './reporteSml.model';
+import { ICoordenadas } from "../auxiliares";
+import { IReporteSml } from "./reporteSml.model";
 
 export interface ICreateMedidorResidencial {
-  deviceMeterNumber: number;
+  deviceMeterNumber?: number;
   deveui: string;
   deviceName?: string;
   //

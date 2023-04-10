@@ -1,9 +1,9 @@
-import { ICoordenadas } from '../auxiliares';
-import { ITipoDispositivo } from '../tenant';
-import { IReporteSml } from './reporteSml.model';
+import { ICoordenadas } from "../auxiliares";
+import { ITipoDispositivo } from "../tenant";
+import { IReporteSml } from "./reporteSml.model";
 
 export interface ICreateMedidorResidencialAgua {
-  deviceMeterNumber: number;
+  deviceMeterNumber?: number;
   deveui: string;
   deviceName?: string;
   //
