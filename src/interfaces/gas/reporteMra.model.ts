@@ -1,5 +1,6 @@
 export interface IReporteMra {
   _id: string;
+  tipo?: "SindCon" | "Hac";
   header?: number;
   paquetSequence?: number;
   deviceMeterNumber?: number;

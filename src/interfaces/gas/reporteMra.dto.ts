@@ -1,4 +1,5 @@
 export interface ICreateReporteMra {
+  tipo?: "SindCon" | "Hac";
   header?: number;
   paquetSequence?: number;
   deviceMeterNumber?: number;
