@@ -11,3 +11,4 @@ export * from "./loteDispositivo.model";
 export * from "./tipo-dispositivo.dto";
 export * from "./tipo-dispositivo.model";
 export * from "./integraciones";
+export * from "./config-dispositivo";
