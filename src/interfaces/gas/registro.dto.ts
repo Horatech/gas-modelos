@@ -1,14 +1,21 @@
 export interface ICreateRegistro {
-  timestamp: number;
-  corrected: number;
-  uncorrected: number;
-  presion: number;
-  temperatura: number;
-  contador: number;
-  bateria: number;
+  timestamp?: number;
+  corrected?: number;
+  uncorrected?: number;
+  presion?: number;
+  temperatura?: number;
+  contador?: number;
+  bateria?: number;
+  // Valores firmware nuevo
+  correctedTotalizado?: number;
+  uncorrectedTotalizado?: number;
+  correctedParcializado?: number;
+  uncorrectedParcializado?: number;
+  caudalCorregido?: number;
+  caudalNoCorregido?: number;
   //
-  numeroSerieCorrectora: number;
-  deveui: string;
+  numeroSerieCorrectora?: number;
+  deveui?: string;
   deviceName?: string;
   //
   idCliente: string;

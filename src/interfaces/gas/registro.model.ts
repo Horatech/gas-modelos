@@ -1,14 +1,21 @@
-import { ICorrectora } from './correctora.model';
+import { ICorrectora } from "./correctora.model";
 
 export interface IRegistro {
   _id: string;
   timestamp: string;
-  corrected: number;
-  uncorrected: number;
+  corrected?: number;
+  uncorrected?: number;
   presion: number;
   temperatura: number;
   contador: number;
   bateria: number;
+  // Valores firmware nuevo
+  correctedTotalizado?: number;
+  uncorrectedTotalizado?: number;
+  correctedParcializado?: number;
+  uncorrectedParcializado?: number;
+  caudalCorregido?: number;
+  caudalNoCorregido?: number;
   //
   numeroSerieCorrectora: number;
   deveui: string;
