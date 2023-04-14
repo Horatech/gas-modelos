@@ -9,6 +9,7 @@ export interface ICreateCorrectora {
   deveui: string;
   deviceName?: string;
   modelo?: string;
+  bateria?: number;
   //
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
@@ -34,6 +35,7 @@ export interface IUpdateCorrectora {
   deveui?: string;
   deviceName?: string;
   modelo?: string;
+  bateria?: number;
   //
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;

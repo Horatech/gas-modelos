@@ -17,6 +17,7 @@ export interface ICorrectora {
   deviceName?: string;
   modelo: string;
   fechaCreacion: string;
+  bateria?: number;
   //
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
