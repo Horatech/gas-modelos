@@ -6,6 +6,7 @@ export interface IAlerta {
   apiVersion: string;
   numeroAlerta?: number;
   timestamp?: string;
+  mensaje?: string;
   //
   numeroSerieCorrectora?: number;
   idUnidadNegocio?: string;

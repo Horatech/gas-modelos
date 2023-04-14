@@ -5,6 +5,7 @@ export interface ICreateAlerta {
   apiVersion: string;
   numeroAlerta?: number;
   timestamp?: number;
+  mensaje?: string;
   //
   numeroSerieCorrectora?: number;
   idUnidadNegocio?: string;
