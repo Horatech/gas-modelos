@@ -29,6 +29,7 @@ export interface ICorrectora {
   localidad?: string;
   nombre?: string;
   descripcion?: string;
+  codigoSimec?: string;
   //
   idCliente: string;
   idUnidadNegocio?: string;
