@@ -4,4 +4,5 @@ export interface IUpdateReenvio {
   url?: string;
   body?: string;
   headers?: string;
+  params?: string;
 }

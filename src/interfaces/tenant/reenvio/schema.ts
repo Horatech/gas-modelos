@@ -5,4 +5,5 @@ export interface IReenvio {
   url?: string;
   body?: string;
   headers?: string;
+  params?: string;
 }
