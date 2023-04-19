@@ -1,4 +1,6 @@
-export type TipoDispositivo =
+export type TipoDispositivo = TipoDispositivoAgro | TipoDispositivoGas;
+
+export type TipoDispositivoAgro =
   | "Bomba de Cisterna"
   | "Caravana"
   | "Estacion de Bombeo"
@@ -12,14 +14,9 @@ export type TipoDispositivo =
   | "Pluviometro"
   | "Sensor de CO2"
   | "Sensor Humedad de Suelo"
-  | "Silobolsa"
-  | "Tracker"
-  // GAS
-  | "NUC"
-  | "SML"
-  | "MRA";
+  | "Tracker";
 
-export const TIPOS_DISPOSITIVOS: TipoDispositivo[] = [
+export const TIPOS_DISPOSITIVOS_AGRO: TipoDispositivoAgro[] = [
   "Bomba de Cisterna",
   "Caravana",
   "Estacion de Bombeo",
@@ -33,10 +30,9 @@ export const TIPOS_DISPOSITIVOS: TipoDispositivo[] = [
   "Pluviometro",
   "Sensor de CO2",
   "Sensor Humedad de Suelo",
-  "Silobolsa",
   "Tracker",
-  // GAS
-  "NUC",
-  "SML",
-  "MRA",
 ];
+
+export type TipoDispositivoGas = "NUC" | "SML" | "MRA";
+
+export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = ["NUC", "SML", "MRA"];
