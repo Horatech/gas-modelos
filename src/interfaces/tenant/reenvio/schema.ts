@@ -1,4 +1,4 @@
-export interface IConfigReenvio {
+export interface IReenvio {
   _id?: string;
   fechaCreacion?: string;
   // Info
