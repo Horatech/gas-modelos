@@ -1,5 +1,7 @@
 import { IDeviceInfo } from "../auxiliares/deviceInfo";
 import { ITenantInfo } from "../auxiliares/tenentInfo";
+import { IEstadoComando } from "./estadoComando";
+import { IValoresComando } from "./valoresComando";
 
 export interface ICreateComando {
   fechaCreacion?: string;
@@ -9,6 +11,8 @@ export interface ICreateComando {
   device?: IDeviceInfo;
   // Ids de otras entidades que tienen asignado el dispositivo
   idsAsignados?: string[];
-  // Datos especificos de acuerdo al tipo de dispositivo
-  // valores?: any;
+  valores?: IValoresComando;
+  estado?: IEstadoComando;
+  // Usuario que envió el comando
+  idUsuario?: string;
 }

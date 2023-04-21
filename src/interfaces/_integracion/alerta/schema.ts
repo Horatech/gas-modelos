@@ -1,5 +1,7 @@
 import { IDeviceInfo } from "../auxiliares/deviceInfo";
 import { ITenantInfo } from "../auxiliares/tenentInfo";
+import { IEstadoAlerta } from "./estadoAlerta";
+import { IValoresAlerta } from "./valoresAlerta";
 
 export interface IAlerta {
   _id?: string;
@@ -11,5 +13,6 @@ export interface IAlerta {
   // Ids de otras entidades que tienen asignado el dispositivo
   idsAsignados?: string[];
   // Datos especificos de acuerdo al tipo de dispositivo
-  // valores?: any;
+  valores?: IValoresAlerta;
+  estado?: IEstadoAlerta;
 }

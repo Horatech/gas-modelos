@@ -1,6 +1,6 @@
-import { IDeviceInfo } from "../auxiliares/deviceInfo";
 import { ITenantInfo } from "../auxiliares/tenentInfo";
-import { IValoresReporte } from "../auxiliares/valoresReporte";
+import { IDeviceInfo } from "../auxiliares/deviceInfo";
+import { IValoresReporte } from "./valores reporte/valoresReporte";
 
 export interface IReporte {
   _id?: string;
@@ -9,7 +9,7 @@ export interface IReporte {
   tenant?: ITenantInfo;
   // Datos del dispositivo
   device?: IDeviceInfo;
-  // Otras entidades que tienen asignado el dispositivo
+  // Ids de otras entidades que tienen asignado el dispositivo
   idsAsignados?: string[];
   // Datos especificos de acuerdo al tipo de dispositivo
   valores?: IValoresReporte;
