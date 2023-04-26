@@ -64,6 +64,7 @@ export interface ISetCromatografia {
   apiVersion: string;
 }
 export interface ISetRegistro {
+  deveui: string;
   timestamp: number;
   corrected?: number;
   uncorrected?: number;
@@ -73,6 +74,7 @@ export interface ISetRegistro {
   bateria?: number;
 }
 export interface ISetRegistroV3 {
+  deveui: string;
   timestamp: number;
   correctedTotalizado?: number;
   uncorrectedTotalizado?: number;
