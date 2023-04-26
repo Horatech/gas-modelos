@@ -1,5 +1,8 @@
 import { ITipoDispositivo } from '../../tenant';
 import {
+  IGetConfiguracionV2,
+  IGetCromatografia,
+  IGetRegistro,
   ISetAlerta,
   ISetAlertaV2,
   ISetConfiguracion,
@@ -30,6 +33,9 @@ export interface ILogNuc {
     | ISetRegistro
     | ISetRegistroV3
     | ISetReporte
-    | ISetReporteV3;
+    | ISetReporteV3
+    | IGetConfiguracionV2
+    | IGetCromatografia
+    | IGetRegistro;
   fecha: string;
 }

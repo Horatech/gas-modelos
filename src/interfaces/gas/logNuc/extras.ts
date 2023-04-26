@@ -1,3 +1,5 @@
+/// SETS
+
 export interface ISetAlerta {
   deveui: string;
   appkey: string;
@@ -115,6 +117,56 @@ export interface ISetReporteV3 {
   apiVersion: string;
 }
 
+/// GETS
+export interface IGetConfiguracionV2 {
+  deveui?: string;
+  appkey?: string;
+  numeroSerieCorrectora: number;
+  firmwareNuc: string;
+  apiVersion: string;
+}
+
+export interface IGetCromatografia {
+  deveui?: string;
+  appkey?: string;
+  numeroSerieCorrectora: number;
+  firmwareNuc: string;
+  apiVersion: string;
+}
+
+export interface IResponseGetCromatografia {
+  _id: string;
+  oxigeno?: number;
+  densidad?: number;
+  dioxidoCarbono?: number;
+  nitrogeno?: number;
+  metano?: number;
+  etano?: number;
+  propano?: number;
+  isoButano?: number;
+  nButano?: number;
+  isoPentano?: number;
+  nPentano?: number;
+  nHexano?: number;
+  nHeptano?: number;
+  nOctano?: number;
+}
+
+export interface IGetRegistro {
+  deveui?: string;
+  appkey?: string;
+  numeroSerieCorrectora: number;
+  numeroCorrectora: number;
+  firmwareNuc: string;
+  apiVersion: string;
+}
+
+export interface IResponseGetRegistro {
+  registros: number[];
+}
+
+/// EXTRAS
+
 export enum ucv {
   Nada = 0,
   Corus,
@@ -146,4 +198,7 @@ export type TipoMensaje =
   | 'ISetRegistro'
   | 'ISetRegistroV3'
   | 'ISetReporte'
-  | 'ISetReporteV3';
+  | 'ISetReporteV3'
+  | 'IGetConfiguracionV2'
+  | 'IGetCromatografia'
+  | 'IGetRegistro';
