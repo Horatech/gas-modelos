@@ -1,6 +1,7 @@
 export * from './alerta';
 export * from './auditoria';
 export * from './notificacion';
+export * from './logNuc';
 //
 export * from './aplicacionCromatografia.dto';
 export * from './aplicacionCromatografia.model';
