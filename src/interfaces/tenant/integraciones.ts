@@ -1,7 +1,8 @@
 export interface IIntegracion {
   tipoDispositivo?: string;
-  tipoIntegracion?: "INFLUXV1" | "INFLUXV2" | "HTTPS"; // SQL / MONGODB
+  tipoIntegracion?: "INFLUXV1" | "INFLUXV2" | "HTTPS" | "FTP"; // SQL / MONGODB
   endpoint?: string; // https://miapi.com
+  puerto?: number; // 8080
   method?: "GET" | "POST" | "PUT" | "PATCH";
   credenciales?: IIntegracionInfluxV1 | IIntegracionInfluxV2;
   credenciales2?: { key: string; value: string }[];
