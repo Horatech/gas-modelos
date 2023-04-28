@@ -17,6 +17,7 @@ export interface ICreateRegistro {
   numeroSerieCorrectora?: number;
   deveui?: string;
   deviceName?: string;
+  modelo?: string;
   //
   idCliente: string;
   idUnidadNegocio?: string;
