@@ -1,4 +1,4 @@
-import { ITipoDispositivo } from '../../tenant';
+import { ITipoDispositivo } from "../../tenant";
 import {
   IGetConfiguracionV2,
   IGetCromatografia,
@@ -15,27 +15,16 @@ import {
   ISetReporte,
   ISetReporteV3,
   TipoMensaje,
-} from './extras';
+} from "./extras";
 
 export interface ILogNuc {
   _id: string;
-  deveui: string;
+  deveui?: string;
   // El tipo de Mensaje que tiene adentro
-  tipo: TipoMensaje;
-  body:
-    | ISetAlerta
-    | ISetAlertaV2
-    | ISetConfiguracion
-    | ISetConfiguracionV2
-    | ISetCorrectora
-    | ISetCorrectoraV3
-    | ISetCromatografia
-    | ISetRegistro
-    | ISetRegistroV3
-    | ISetReporte
-    | ISetReporteV3
-    | IGetConfiguracionV2
-    | IGetCromatografia
-    | IGetRegistro;
-  fecha: string;
+  tipo?: TipoMensaje;
+  body?: object;
+  fecha?: string;
+  tiempoRespuesta?: number;
+  codigoRespuesta?: number;
+  respuesta?: object;
 }
