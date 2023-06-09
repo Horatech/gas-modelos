@@ -7,33 +7,35 @@ import { ICorrectora } from "./correctora";
 
 // Resumen
 export interface IResumenUnidadNegocio {
-  unidadNegocio: IUnidadNegocio;
-  centroOperativos: {
-    cantReportesOkCorrectora: number;
-    cantReportesOkMedidor: number;
-    porcentajeReporteCorrectoras: number;
-    porcentajeReporteMedidores: number;
-    centroOperativo: ICentroOperativo;
-    correctoras: ICorrectora[];
-    medidores: IMedidorResidencial[];
+  unidadNegocio?: IUnidadNegocio;
+  centroOperativos?: {
+    cantReportesOkCorrectora?: number;
+    cantReportesOkMedidor?: number;
+    porcentajeReporteCorrectoras?: number;
+    porcentajeReporteMedidores?: number;
+    centroOperativo?: ICentroOperativo;
+    correctoras?: ICorrectora[];
+    medidores?: IMedidorResidencial[];
   }[];
-  cuencas: {
-    cantReportesOkCorrectora: number;
-    cantReportesOkMedidor: number;
-    porcentajeReporteCorrectoras: number;
-    porcentajeReporteMedidores: number;
-    cuenca: ICuenca;
-    correctoras: ICorrectora[];
-    medidores: IMedidorResidencial[];
+  cuencas?: {
+    cantReportesOkCorrectora?: number;
+    cantReportesOkMedidor?: number;
+    porcentajeReporteCorrectoras?: number;
+    porcentajeReporteMedidores?: number;
+    cuenca?: ICuenca;
+    correctoras?: ICorrectora[];
+    medidores?: IMedidorResidencial[];
   }[];
-  cantidadCuencas: number;
-  cantidadCentroOperativos: number;
-  cantidadCorrectoras: number;
-  cantidadMedidores: number;
-  cantReportesOkCorrectora: number;
-  cantReportesOkMedidor: number;
-  porcentajeReporteCorrectoras: number;
-  porcentajeReporteMedidores: number;
+  cantidadCuencas?: number;
+  cantidadCentroOperativos?: number;
+  cantidadCorrectoras?: number;
+  cantidadCorrectorasEnMantenimiento?: number;
+  cantidadCorrectorasResolver?: number;
+  cantidadMedidores?: number;
+  cantReportesOkCorrectora?: number;
+  cantReportesOkMedidor?: number;
+  porcentajeReporteCorrectoras?: number;
+  porcentajeReporteMedidores?: number;
 }
 
 export interface IResumenCliente {
