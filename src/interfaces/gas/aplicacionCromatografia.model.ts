@@ -1,4 +1,4 @@
-import { ICorrectora } from "./correctora.model";
+import { ICorrectora } from "./correctora";
 import { ICromatografia } from "./cromatografia.model";
 import { ICuenca } from "./cuenca.model";
 import { IUnidadNegocio } from "./unidadNegocio.model";

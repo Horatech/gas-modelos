@@ -1,9 +1,9 @@
 import { IUnidadNegocio } from "./unidadNegocio.model";
 import { ICuenca } from "./cuenca.model";
-import { ICorrectora } from "./correctora.model";
 import { ICliente } from "../tenant";
 import { IMedidorResidencial } from "./medidorResidencial.model";
 import { ICentroOperativo } from "./centroOperativo.model";
+import { ICorrectora } from "./correctora";
 
 // Resumen
 export interface IResumenUnidadNegocio {

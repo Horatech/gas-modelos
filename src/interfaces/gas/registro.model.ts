@@ -1,4 +1,4 @@
-import { ICorrectora } from "./correctora.model";
+import { ICorrectora } from "./correctora";
 
 export interface IRegistro {
   _id: string;
