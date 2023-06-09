@@ -1,12 +1,12 @@
-import { ICoordenadas } from "../auxiliares";
-import { IDispositivo } from "../tenant";
-import { IAlerta } from "./alerta";
-import { ICentroOperativo } from "./centroOperativo.model";
-import { ICromatografia } from "./cromatografia.model";
-import { ICuenca } from "./cuenca.model";
-import { IGrupo } from "./grupo.model";
-import { IRegistro } from "./registro.model";
-import { IUnidadNegocio } from "./unidadNegocio.model";
+import { ICoordenadas } from "../../auxiliares";
+import { IDispositivo } from "../../tenant";
+import { IAlerta } from "../alerta";
+import { ICentroOperativo } from "../centroOperativo.model";
+import { ICromatografia } from "../cromatografia.model";
+import { ICuenca } from "../cuenca.model";
+import { IGrupo } from "../grupo.model";
+import { IRegistro } from "../registro.model";
+import { IUnidadNegocio } from "../unidadNegocio.model";
 
 export interface ICorrectora {
   _id: string;
@@ -30,6 +30,7 @@ export interface ICorrectora {
   nombre?: string;
   descripcion?: string;
   codigoSimec?: string;
+  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
   //
   idCliente: string;
   idUnidadNegocio?: string;
