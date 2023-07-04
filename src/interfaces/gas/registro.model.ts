@@ -1,4 +1,4 @@
-import { ICorrectora } from "./correctora";
+import { ICorrectora } from './correctora';
 
 export interface IRegistro {
   _id: string;
@@ -21,6 +21,7 @@ export interface IRegistro {
   deveui: string;
   deviceName?: string;
   modelo?: string;
+  idPuntoMedicion?: string;
   //
   idCliente: string;
   idUnidadNegocio?: string;
