@@ -12,6 +12,11 @@ export interface ICreatePuntoMedicion {
   codigoSimec?: string;
   // Correctora
   idCorrectora?: string;
+  // Tenancy
+  idCliente?: string;
+  idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idsGrupos?: string[];
 }
 
 export interface IUpdatePuntoMedicion {
@@ -26,4 +31,9 @@ export interface IUpdatePuntoMedicion {
   codigoSimec?: string;
   // Correctora
   idCorrectora?: string;
+  // Tenancy
+  idCliente?: string;
+  idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idsGrupos?: string[];
 }
