@@ -1,12 +1,12 @@
-import { ICoordenadas } from "../../auxiliares";
-import { IAlerta } from "../alerta";
-import { ICromatografia } from "../cromatografia.model";
-import { IRegistro } from "../registro.model";
+import { ICoordenadas } from '../../auxiliares';
+import { IAlerta } from '../alerta';
+import { ICromatografia } from '../cromatografia.model';
+import { IRegistro } from '../registro.model';
 
 export interface IUpdateCorrectora {
   firmware?: string;
   numeroSerie?: number;
-  deveui?: string;
+  deveui?: string | null;
   deviceName?: string;
   modelo?: string;
   bateria?: number;
@@ -22,7 +22,7 @@ export interface IUpdateCorrectora {
   nombre?: string;
   descripcion?: string;
   codigoSimec?: string;
-  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
+  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
   //
   idCliente?: string;
   idUnidadNegocio?: string;
