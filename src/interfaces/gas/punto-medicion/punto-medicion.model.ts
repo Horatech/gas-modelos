@@ -18,7 +18,7 @@ export interface IPuntoMedicion {
   descripcion?: string;
   codigoSimec?: string;
   // Correctora
-  idCorrectora?: string;
+  idCorrectora?: string | null;
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;

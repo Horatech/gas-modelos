@@ -11,7 +11,7 @@ export interface ICreatePuntoMedicion {
   descripcion?: string;
   codigoSimec?: string;
   // Correctora
-  idCorrectora?: string;
+  idCorrectora?: string | null;
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;
@@ -30,7 +30,7 @@ export interface IUpdatePuntoMedicion {
   descripcion?: string;
   codigoSimec?: string;
   // Correctora
-  idCorrectora?: string;
+  idCorrectora?: string | null;
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;
