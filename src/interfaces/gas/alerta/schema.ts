@@ -10,6 +10,8 @@ export interface IAlerta {
   //
   numeroSerieCorrectora?: number;
   idUnidadNegocio?: string;
+  idCorrectora?: string;
+  idPuntoMedicion?: string;
   //
   idCliente: string;
   //

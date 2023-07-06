@@ -9,6 +9,8 @@ export interface ICreateAlerta {
   //
   numeroSerieCorrectora?: number;
   idUnidadNegocio?: string;
+  idCorrectora?: string;
+  idPuntoMedicion?: string;
   //
   idCliente: string;
 }
