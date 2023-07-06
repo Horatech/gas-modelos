@@ -18,6 +18,8 @@ export interface ICreateRegistro {
   deveui?: string;
   deviceName?: string;
   modelo?: string;
+  //
+  idCorrectora?: string;
   idPuntoMedicion?: string;
   //
   idCliente: string;
