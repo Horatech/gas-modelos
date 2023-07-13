@@ -18,5 +18,6 @@ export * from "./reporteSml";
 export * from "./unidadNegocio";
 export * from "./unidadPresion";
 //
-export * from "./dispositivoNuc4G.model";
+export * from "./dispositivoNuc4G";
+export * from "./dispositivoNsp4G";
 export * from "./resumen.dto";

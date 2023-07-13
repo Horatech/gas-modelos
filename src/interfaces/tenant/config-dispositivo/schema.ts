@@ -8,6 +8,14 @@ export interface IConfigDispositivoNUC4G {
   modoRegistros: "REG_TOTALIZADOS" | "REG_PARCIALES";
 }
 
+export interface IConfigDispositivoNSP4G {
+  limiteMin: number;
+  limitaMax: number;
+  horaUTC: number;
+  horaInicio: number;
+  modoEnv: "TEST" | "PROD";
+}
+
 export interface IConfigDispositivo {
   // Info autogenerada
   _id: string;
