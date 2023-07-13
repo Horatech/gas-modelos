@@ -2,7 +2,7 @@ import {
   ICentroOperativo,
   ICuenca,
   IGrupo,
-  IRegistro,
+  IReporte,
   IUnidadNegocio,
 } from "..";
 import { GeoJSON, ICoordenadas } from "../../auxiliares";
@@ -20,7 +20,7 @@ export interface IUnidadPresion {
   fechaCreacion: string;
   bateria?: number;
   //
-  ultimoRegistro?: IRegistro;
+  ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   //
   ubicacion?: ICoordenadas;

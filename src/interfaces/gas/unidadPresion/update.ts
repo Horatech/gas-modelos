@@ -1,4 +1,4 @@
-import { IRegistro } from "..";
+import { IReporte } from "..";
 import { GeoJSON, ICoordenadas } from "../../auxiliares";
 import { IAlerta } from "../alerta";
 
@@ -10,7 +10,7 @@ export interface IUpdateUnidadPresion {
   modelo?: string;
   bateria?: number;
   //
-  ultimoRegistro?: IRegistro;
+  ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   //
   ubicacion?: ICoordenadas;

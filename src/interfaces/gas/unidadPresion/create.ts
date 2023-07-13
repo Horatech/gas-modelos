@@ -1,6 +1,6 @@
 import { GeoJSON, ICoordenadas } from "../../auxiliares";
 import { IAlerta } from "../alerta";
-import { IRegistro } from "../registro";
+import { IReporte } from "../reporte";
 
 export interface ICreateUnidadPresion {
   firmware?: string;
@@ -10,7 +10,7 @@ export interface ICreateUnidadPresion {
   modelo?: string;
   bateria?: number;
   //
-  ultimoRegistro?: IRegistro;
+  ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   //
   ubicacion?: ICoordenadas;
