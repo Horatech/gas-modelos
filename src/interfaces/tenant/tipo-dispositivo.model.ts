@@ -1,6 +1,5 @@
-import { ILoraServerConfigPorApp } from './tipo-dispositivo.dto';
-
-export type TipoDispositivo = 'NUC' | 'SML' | 'MRA';
+import { TipoDispositivo } from "../auxiliares";
+import { ILoraServerConfigPorApp } from "./tipo-dispositivo.dto";
 
 export interface ITipoDispositivo {
   _id: string;

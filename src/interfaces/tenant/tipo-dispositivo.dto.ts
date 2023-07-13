@@ -1,5 +1,5 @@
+import { TipoDispositivo } from "../auxiliares";
 import { ILoraServer } from "./lora-server.model";
-import { TipoDispositivo } from "./tipo-dispositivo.model";
 
 export interface ILoraServerConfigPorApp {
   idLoraServer: string;

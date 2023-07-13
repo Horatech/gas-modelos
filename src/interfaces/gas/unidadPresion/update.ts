@@ -1,9 +1,8 @@
-import { ICoordenadas } from "../../auxiliares";
+import { IRegistro } from "..";
+import { GeoJSON, ICoordenadas } from "../../auxiliares";
 import { IAlerta } from "../alerta";
-import { ICromatografia } from "../cromatografia";
-import { IRegistro } from "../registro";
 
-export interface ICreateCorrectora {
+export interface IUpdateUnidadPresion {
   firmware?: string;
   numeroSerie?: number;
   deveui?: string | null;
@@ -13,18 +12,16 @@ export interface ICreateCorrectora {
   //
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
-  ultimaCromatografia?: ICromatografia;
-  fechaUltimaCromatografia?: string;
   //
-  ubicacionGps?: ICoordenadas;
+  ubicacion?: ICoordenadas;
+  geojson?: GeoJSON;
   direccion?: string;
   localidad?: string;
   nombre?: string;
   descripcion?: string;
-  codigoSimec?: string;
   estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
   //
-  idCliente: string;
+  idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idCuenca?: string;

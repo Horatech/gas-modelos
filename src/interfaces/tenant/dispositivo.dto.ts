@@ -1,6 +1,5 @@
-import { ICoordenadas } from "../auxiliares";
+import { ICoordenadas, TipoDispositivo } from "../auxiliares";
 import { IAlerta, IRegistro } from "../gas";
-import { TipoDispositivo } from "./tipo-dispositivo.model";
 
 export type TipoConectividad = "4G" | "LORA";
 

@@ -1,10 +1,9 @@
-import { ICoordenadas } from "../auxiliares";
+import { ICoordenadas, TipoDispositivo } from "../auxiliares";
 import { IAlerta, ICentroOperativo, IRegistro, IUnidadNegocio } from "../gas";
 import { ICliente } from "./cliente.model";
 import { TipoConectividad } from "./dispositivo.dto";
 import { ILoraServer } from "./lora-server.model";
 import { ILoteDispositivo } from "./loteDispositivo.model";
-import { TipoDispositivo } from "./tipo-dispositivo.model";
 
 export interface IDispositivo {
   // Info autogenerada

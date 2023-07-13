@@ -7,10 +7,12 @@ export interface ICreateAlerta {
   timestamp?: number;
   mensaje?: string;
   //
-  numeroSerieCorrectora?: number;
-  idUnidadNegocio?: string;
-  idCorrectora?: string;
-  idPuntoMedicion?: string;
-  //
   idCliente: string;
+  idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idPuntoMedicion?: string;
+  idUnidadPresion?: string;
+  idCorrectora?: string;
+  numeroSerieCorrectora?: number;
+  //
 }

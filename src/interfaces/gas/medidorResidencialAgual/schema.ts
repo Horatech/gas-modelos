@@ -1,36 +1,28 @@
 import { ICoordenadas } from "../../auxiliares";
 import { IDispositivo } from "../../tenant";
-import { IAlerta } from "../alerta";
 import { ICentroOperativo } from "../centroOperativo";
-import { ICromatografia } from "../cromatografia";
 import { ICuenca } from "../cuenca";
 import { IGrupo } from "../grupo";
-import { IRegistro } from "../registro";
+import { IReporteSml } from "../reporteSml";
 import { IUnidadNegocio } from "../unidadNegocio";
 
-export interface ICorrectora {
+export interface IMedidorResidencialAgua {
   _id: string;
   //
-  firmware: string;
-  numeroSerie: number;
-  deveui?: string | null;
+  deviceMeterNumber?: number;
+  deveui: string;
   deviceName?: string;
-  modelo: string;
   fechaCreacion: string;
-  bateria?: number;
   //
-  ultimoRegistro?: IRegistro;
-  ultimaAlerta?: IAlerta;
-  ultimaCromatografia?: ICromatografia;
-  fechaUltimaCromatografia?: string;
+  ultimoReporte?: IReporteSml;
   //
+  consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
   localidad?: string;
   nombre?: string;
   descripcion?: string;
-  codigoSimec?: string;
-  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
+  corregido?: boolean;
   //
   idCliente: string;
   idUnidadNegocio?: string;

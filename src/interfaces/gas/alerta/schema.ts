@@ -8,12 +8,13 @@ export interface IAlerta {
   timestamp?: string;
   mensaje?: string;
   //
-  numeroSerieCorrectora?: number;
-  idUnidadNegocio?: string;
-  idCorrectora?: string;
-  idPuntoMedicion?: string;
-  //
   idCliente: string;
+  idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idPuntoMedicion?: string;
+  idUnidadPresion?: string;
+  idCorrectora?: string;
+  numeroSerieCorrectora?: number;
   //
   fechaCreacion: string;
 }

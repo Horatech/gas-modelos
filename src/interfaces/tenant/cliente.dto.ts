@@ -1,5 +1,5 @@
+import { TipoDispositivo } from "../auxiliares";
 import { IIntegracion } from "./integraciones";
-import { TipoDispositivo } from "./tipo-dispositivo.model";
 
 export interface IImagenesCliente {
   icono?: string;
