@@ -1,4 +1,4 @@
-import { GeoJSON, ICoordenadas } from "../../auxiliares";
+import { GeoJSON, ICoordenadas } from '../../auxiliares';
 
 export interface ICreatePuntoMedicion {
   // GPS
@@ -12,6 +12,10 @@ export interface ICreatePuntoMedicion {
   codigoSimec?: string;
   // Correctora
   idCorrectora?: string | null;
+  fechaAsignacionCorrectora?: string | null;
+  // Unidad de Presion
+  idUnidadPresion?: string | null;
+  fechaAsignacionUnidadPresion?: string | null;
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;

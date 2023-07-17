@@ -1,10 +1,10 @@
-import { GeoJSON, ICoordenadas } from "../../auxiliares";
-import { ICliente } from "../../tenant";
-import { ICentroOperativo } from "../centroOperativo";
-import { ICorrectora } from "../correctora";
-import { IGrupo } from "../grupo";
-import { IUnidadNegocio } from "../unidadNegocio";
-import { IUnidadPresion } from "../unidadPresion";
+import { GeoJSON, ICoordenadas } from '../../auxiliares';
+import { ICliente } from '../../tenant';
+import { ICentroOperativo } from '../centroOperativo';
+import { ICorrectora } from '../correctora';
+import { IGrupo } from '../grupo';
+import { IUnidadNegocio } from '../unidadNegocio';
+import { IUnidadPresion } from '../unidadPresion';
 
 export interface IPuntoMedicion {
   _id: string;
@@ -19,8 +19,10 @@ export interface IPuntoMedicion {
   codigoSimec?: string;
   // Correctora
   idCorrectora?: string | null;
+  fechaAsignacionCorrectora?: string | null;
   // Unidad de Presion
   idUnidadPresion?: string | null;
+  fechaAsignacionUnidadPresion?: string | null;
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;
