@@ -25,3 +25,16 @@ export interface ICreateRegistro {
   idCliente: string;
   idUnidadNegocio?: string;
 }
+
+export interface IUpdateRegistro {
+  numeroSerieCorrectora?: number;
+  deveui?: string;
+  deviceName?: string;
+  modelo?: string;
+  //
+  idCorrectora?: string;
+  idPuntoMedicion?: string;
+  //
+  idCliente?: string;
+  idUnidadNegocio?: string;
+}
