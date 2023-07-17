@@ -1,10 +1,10 @@
-import { GeoJSON, ICoordenadas } from "../../auxiliares";
-import { IAlerta } from "../alerta";
-import { IReporte } from "../reporte";
+import { GeoJSON, ICoordenadas } from '../../auxiliares';
+import { IAlerta } from '../alerta';
+import { IReporte } from '../reporte';
 
 export interface ICreateUnidadPresion {
   firmware?: string;
-  numeroSerie?: number;
+  numeroSerie?: string | null;
   deveui?: string | null;
   deviceName?: string;
   modelo?: string;
@@ -19,7 +19,7 @@ export interface ICreateUnidadPresion {
   localidad?: string;
   nombre?: string;
   descripcion?: string;
-  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
+  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
   //
   idCliente: string;
   idUnidadNegocio?: string;

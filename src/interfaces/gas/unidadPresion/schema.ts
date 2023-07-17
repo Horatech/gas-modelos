@@ -4,16 +4,16 @@ import {
   IGrupo,
   IReporte,
   IUnidadNegocio,
-} from "..";
-import { GeoJSON, ICoordenadas } from "../../auxiliares";
-import { IDispositivo } from "../../tenant";
-import { IAlerta } from "../alerta";
+} from '..';
+import { GeoJSON, ICoordenadas } from '../../auxiliares';
+import { IDispositivo } from '../../tenant';
+import { IAlerta } from '../alerta';
 
 export interface IUnidadPresion {
   _id: string;
   //
   firmware: string;
-  numeroSerie: number;
+  numeroSerie?: string | null;
   deveui?: string | null;
   deviceName?: string;
   modelo: string;
@@ -29,7 +29,7 @@ export interface IUnidadPresion {
   localidad?: string;
   nombre?: string;
   descripcion?: string;
-  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
+  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
   //
   idCliente: string;
   idUnidadNegocio?: string;
