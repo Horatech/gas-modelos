@@ -1,11 +1,11 @@
-import { ICoordenadas } from "../../auxiliares";
-import { IAlerta } from "../alerta";
-import { ICromatografia } from "../cromatografia";
-import { IRegistro } from "../registro";
+import { ICoordenadas } from '../../auxiliares';
+import { IAlerta } from '../alerta';
+import { ICromatografia } from '../cromatografia';
+import { IRegistro } from '../registro';
 
 export interface ICreateCorrectora {
   firmware?: string;
-  numeroSerie?: number;
+  numeroSerie?: string | null;
   deveui?: string | null;
   deviceName?: string;
   modelo?: string;
@@ -22,7 +22,7 @@ export interface ICreateCorrectora {
   nombre?: string;
   descripcion?: string;
   codigoSimec?: string;
-  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
+  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
   //
   idCliente: string;
   idUnidadNegocio?: string;
