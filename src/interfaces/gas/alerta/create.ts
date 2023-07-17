@@ -13,6 +13,6 @@ export interface ICreateAlerta {
   idPuntoMedicion?: string;
   idUnidadPresion?: string;
   idCorrectora?: string;
-  numeroSerieCorrectora?: number;
+  numeroSerieCorrectora?: string | null;
   //
 }

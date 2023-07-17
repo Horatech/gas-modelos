@@ -14,7 +14,7 @@ export interface ICreateRegistro {
   caudalCorregido?: number;
   caudalNoCorregido?: number;
   //
-  numeroSerieCorrectora?: number;
+  numeroSerieCorrectora?: string | null;
   deveui?: string;
   deviceName?: string;
   modelo?: string;
@@ -27,7 +27,7 @@ export interface ICreateRegistro {
 }
 
 export interface IUpdateRegistro {
-  numeroSerieCorrectora?: number;
+  numeroSerieCorrectora?: string | null;
   deveui?: string;
   deviceName?: string;
   modelo?: string;

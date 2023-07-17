@@ -1,4 +1,4 @@
-import { ICorrectora } from "../correctora";
+import { ICorrectora } from '../correctora';
 
 export interface IRegistro {
   _id: string;
@@ -17,7 +17,7 @@ export interface IRegistro {
   caudalCorregido?: number;
   caudalNoCorregido?: number;
   //
-  numeroSerieCorrectora: number;
+  numeroSerieCorrectora: string | null;
   deveui: string;
   deviceName?: string;
   modelo?: string;

@@ -1,11 +1,11 @@
-import { ICromatografia, ICuenca, IUnidadNegocio } from "..";
-import { ICorrectora } from "../correctora";
+import { ICromatografia, ICuenca, IUnidadNegocio } from '..';
+import { ICorrectora } from '../correctora';
 
 export interface IAplicacionCromatografia {
   _id: string;
   aplicada: boolean;
   idCromatografia: string;
-  numeroSerieCorrectora: number;
+  numeroSerieCorrectora: string | null;
   fechaCreacion: string;
   //
   idCliente?: string;
