@@ -10,7 +10,7 @@ export interface IConfigDispositivoNUC4G {
 
 export interface IConfigDispositivoNSP4G {
   limiteMin: number;
-  limitaMax: number;
+  limiteMax: number;
   horaUTC: number;
   horaInicio: number;
   modoEnv: "TEST" | "PROD";
