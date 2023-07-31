@@ -9,12 +9,12 @@ export interface IConfigDispositivoNUC4G {
 }
 
 export interface IConfigDispositivoNSP4G {
-  limiteMin: number;
-  limiteMax: number;
-  horaUTC: number;
-  horaInicio: number;
-  modoEnv: "TEST" | "PROD";
-  modoOperacion:
+  limiteMin?: number;
+  limiteMax?: number;
+  horaUTC?: number;
+  horaInicio?: number;
+  modoEnv?: "TEST" | "PROD";
+  modoOperacion?:
     | "REG1_DIARIO"
     | "REG24_DIARIO"
     | "REG1_1HORA"
@@ -24,6 +24,7 @@ export interface IConfigDispositivoNSP4G {
     | "REG6_6HORAS"
     | "REG8_8HORAS"
     | "REG12_12HORAS";
+  timestampBloqueo?: number;
 }
 
 export interface IConfigDispositivo {
