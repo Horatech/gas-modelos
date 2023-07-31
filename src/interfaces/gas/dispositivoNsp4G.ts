@@ -15,4 +15,6 @@ export interface IDispositivoNsp4G {
   modoEnv: "PROD" | "TEST";
   limiteMin: number;
   limiteMax: number;
+  medicionInstantanea: number;
+  voltajeBateria: number;
 }
