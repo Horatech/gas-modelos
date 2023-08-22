@@ -22,8 +22,10 @@ export interface ICreateRegistro {
   idCorrectora?: string;
   idPuntoMedicion?: string;
   //
-  idCliente: string;
+  idCliente?: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idCuenca?: string;
 }
 
 export interface IUpdateRegistro {

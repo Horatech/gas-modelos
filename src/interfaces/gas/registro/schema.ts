@@ -1,4 +1,8 @@
-import { ICorrectora } from '../correctora';
+import { ICliente } from "../../tenant";
+import { ICentroOperativo } from "../centroOperativo";
+import { ICorrectora } from "../correctora";
+import { IPuntoMedicion } from "../punto-medicion";
+import { IUnidadNegocio } from "../unidadNegocio";
 
 export interface IRegistro {
   _id: string;
@@ -27,8 +31,15 @@ export interface IRegistro {
   //
   idCliente: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idCuenca?: string;
   //
   fechaCreacion: string;
-  //
+
+  // Virtuals
+  cliente?: ICliente;
+  unidadNegocio?: IUnidadNegocio;
+  centroOperativo?: ICentroOperativo;
   correctora?: ICorrectora;
+  puntoMedicion?: IPuntoMedicion;
 }
