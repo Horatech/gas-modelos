@@ -26,6 +26,7 @@ export interface ICreateRegistro {
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idCuenca?: string;
+  idsGrupos?: string[];
 }
 
 export interface IUpdateRegistro {
@@ -39,4 +40,7 @@ export interface IUpdateRegistro {
   //
   idCliente?: string;
   idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idCuenca?: string;
+  idsGrupos?: string[];
 }
