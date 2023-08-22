@@ -2,6 +2,7 @@ import { ICliente } from "../../tenant";
 import { ICentroOperativo } from "../centroOperativo";
 import { ICorrectora } from "../correctora";
 import { ICuenca } from "../cuenca";
+import { IGrupo } from "../grupo";
 import { IPuntoMedicion } from "../punto-medicion";
 import { IUnidadNegocio } from "../unidadNegocio";
 
@@ -34,6 +35,7 @@ export interface IRegistro {
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idCuenca?: string;
+  idsGrupos?: string[];
   //
   fechaCreacion: string;
 
@@ -44,4 +46,5 @@ export interface IRegistro {
   cuenca?: ICuenca;
   correctora?: ICorrectora;
   puntoMedicion?: IPuntoMedicion;
+  grupos?: IGrupo[];
 }
