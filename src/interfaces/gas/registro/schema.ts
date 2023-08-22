@@ -1,6 +1,7 @@
 import { ICliente } from "../../tenant";
 import { ICentroOperativo } from "../centroOperativo";
 import { ICorrectora } from "../correctora";
+import { ICuenca } from "../cuenca";
 import { IPuntoMedicion } from "../punto-medicion";
 import { IUnidadNegocio } from "../unidadNegocio";
 
@@ -40,6 +41,7 @@ export interface IRegistro {
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
+  cuenca?: ICuenca;
   correctora?: ICorrectora;
   puntoMedicion?: IPuntoMedicion;
 }
