@@ -21,4 +21,5 @@ export interface ICreatePuntoMedicion {
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idsGrupos?: string[];
+  idCuenca?: string;
 }

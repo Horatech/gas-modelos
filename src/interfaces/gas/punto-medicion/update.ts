@@ -21,4 +21,5 @@ export interface IUpdatePuntoMedicion {
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idsGrupos?: string[];
+  idCuenca?: string;
 }
