@@ -1,40 +1,40 @@
-import { ICliente } from "../tenant";
-import { ICentroOperativo } from "./centroOperativo";
-import { ICorrectora } from "./correctora";
-import { ICuenca } from "./cuenca";
-import { IMedidorResidencial } from "./medidorResidencial";
-import { IUnidadNegocio } from "./unidadNegocio";
+import { ICliente } from '../tenant';
+import { ICentroOperativo } from './centroOperativo';
+import { ICuenca } from './cuenca';
+import { IMedidorResidencial } from './medidorResidencial';
+import { IPuntoMedicion } from './punto-medicion';
+import { IUnidadNegocio } from './unidadNegocio';
 
 // Resumen
 export interface IResumenUnidadNegocio {
   unidadNegocio?: IUnidadNegocio;
   centroOperativos?: {
-    cantReportesOkCorrectora?: number;
+    cantReportesOkPunto?: number;
     cantReportesOkMedidor?: number;
-    porcentajeReporteCorrectoras?: number;
+    porcentajeReportePuntos?: number;
     porcentajeReporteMedidores?: number;
     centroOperativo?: ICentroOperativo;
-    correctoras?: ICorrectora[];
+    puntos?: IPuntoMedicion[];
     medidores?: IMedidorResidencial[];
   }[];
   cuencas?: {
-    cantReportesOkCorrectora?: number;
+    cantReportesOkPunto?: number;
     cantReportesOkMedidor?: number;
-    porcentajeReporteCorrectoras?: number;
+    porcentajeReportePuntos?: number;
     porcentajeReporteMedidores?: number;
     cuenca?: ICuenca;
-    correctoras?: ICorrectora[];
+    puntos?: IPuntoMedicion[];
     medidores?: IMedidorResidencial[];
   }[];
   cantidadCuencas?: number;
   cantidadCentroOperativos?: number;
-  cantidadCorrectoras?: number;
-  cantidadCorrectorasEnMantenimiento?: number;
-  cantidadCorrectorasResolver?: number;
+  cantidadPuntos?: number;
+  cantidadPuntosEnMantenimiento?: number;
+  cantidadPuntosResolver?: number;
   cantidadMedidores?: number;
-  cantReportesOkCorrectora?: number;
+  cantReportesOkPunto?: number;
   cantReportesOkMedidor?: number;
-  porcentajeReporteCorrectoras?: number;
+  porcentajeReportePuntos?: number;
   porcentajeReporteMedidores?: number;
 }
 
