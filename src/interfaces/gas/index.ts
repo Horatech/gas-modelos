@@ -21,3 +21,4 @@ export * from "./unidadPresion";
 export * from "./dispositivoNuc4G";
 export * from "./dispositivoNsp4G";
 export * from "./resumen.dto";
+export * from "./envioSms";
