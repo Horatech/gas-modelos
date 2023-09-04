@@ -1,11 +1,11 @@
-import { GeoJSON, ICoordenadas } from '../../auxiliares';
-import { ICliente } from '../../tenant';
-import { ICentroOperativo } from '../centroOperativo';
-import { ICorrectora } from '../correctora';
-import { ICuenca } from '../cuenca';
-import { IGrupo } from '../grupo';
-import { IUnidadNegocio } from '../unidadNegocio';
-import { IUnidadPresion } from '../unidadPresion';
+import { GeoJSON, ICoordenadas } from "../../auxiliares";
+import { Division, ICliente } from "../../tenant";
+import { ICentroOperativo } from "../centroOperativo";
+import { ICorrectora } from "../correctora";
+import { ICuenca } from "../cuenca";
+import { IGrupo } from "../grupo";
+import { IUnidadNegocio } from "../unidadNegocio";
+import { IUnidadPresion } from "../unidadPresion";
 
 export interface IPuntoMedicion {
   _id: string;
@@ -30,6 +30,7 @@ export interface IPuntoMedicion {
   idCentroOperativo?: string;
   idsGrupos?: string[];
   idCuenca?: string;
+  division?: Division;
   // Virtuals
   correctora?: ICorrectora;
   unidadPresion?: IUnidadPresion;
