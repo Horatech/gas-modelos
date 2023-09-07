@@ -3,7 +3,7 @@ import { ICentroOperativo } from "../centroOperativo";
 import { IGrupo } from "../grupo";
 import { IUnidadNegocio } from "../unidadNegocio";
 
-export type TipoAlerta = "Unidades Presión - Fuera de límite ";
+export type TipoAlerta = "Unidades Presión - Fuera de límite";
 
 export type Agrupacion =
   | "Global"
