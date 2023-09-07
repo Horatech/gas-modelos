@@ -5,7 +5,11 @@ import { IUnidadNegocio } from "../unidadNegocio";
 
 export type TipoAlerta = "Unidades Presión - Fuera de límite ";
 
-export type Agrupacion = "Unidad de Negocio" | "Centro Operativo" | "Grupo";
+export type Agrupacion =
+  | "Global"
+  | "Unidad de Negocio"
+  | "Centro Operativo"
+  | "Grupo";
 
 export interface IEnvioSms {
   _id?: string;
@@ -15,13 +19,13 @@ export interface IEnvioSms {
 
   idUnidadNegocio?: string | null;
   idCentroOperativo?: string | null;
-  idsGrupos?: string[] | null;
+  idGrupo?: string | null;
 
   idsUsuarios?: string[];
 
   // Virtual
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
-  grupos?: IGrupo[];
+  grupo?: IGrupo;
   usuarios?: IUsuario[];
 }

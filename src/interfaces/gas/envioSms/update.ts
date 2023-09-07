@@ -7,7 +7,7 @@ export interface IUpdateEnvioSms {
 
   idUnidadNegocio?: string | null;
   idCentroOperativo?: string | null;
-  idsGrupos?: string[] | null;
+  idGrupo?: string | null;
 
   idsUsuarios?: string[];
 }
