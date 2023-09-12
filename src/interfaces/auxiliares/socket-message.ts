@@ -16,7 +16,11 @@ export interface ISocketMessage {
    */
   body?: Record<string, any>;
   /**
-   * Por que el usuario recibio el mensaje (para debug mas que nada)
+   * Porque el usuario recibio el mensaje (para debug mas que nada)
    */
   motivo?: string;
+  /**
+   * Porque me place
+   */
+  idCliente?: string;
 }
