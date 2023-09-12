@@ -1,3 +1,4 @@
+import { Division } from "../../tenant";
 import { IUnidadNegocio } from "../unidadNegocio";
 
 export interface IGrupo {
@@ -5,6 +6,7 @@ export interface IGrupo {
   nombre: string;
   idCliente: string;
   idUnidadNegocio: string;
+  division?: Division;
   // Populate
   unidadNegocio?: IUnidadNegocio;
 }

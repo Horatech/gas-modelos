@@ -3,6 +3,7 @@ import { IPermiso } from "./permiso";
 export interface IDatosPersonales {
   nombre?: string;
   email?: string;
+  telefono?: string;
   [key: string]: any;
 }
 

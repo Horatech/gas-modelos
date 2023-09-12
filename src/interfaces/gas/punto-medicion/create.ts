@@ -1,4 +1,5 @@
-import { GeoJSON, ICoordenadas } from '../../auxiliares';
+import { GeoJSON, ICoordenadas } from "../../auxiliares";
+import { Division } from "../../tenant";
 
 export interface ICreatePuntoMedicion {
   // GPS
@@ -22,4 +23,5 @@ export interface ICreatePuntoMedicion {
   idCentroOperativo?: string;
   idsGrupos?: string[];
   idCuenca?: string;
+  division?: Division;
 }
