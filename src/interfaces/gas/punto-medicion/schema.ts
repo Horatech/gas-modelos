@@ -8,7 +8,7 @@ import { IUnidadNegocio } from "../unidadNegocio";
 import { IUnidadPresion } from "../unidadPresion";
 
 export interface IPuntoMedicion {
-  _id: string;
+  _id?: string;
   // GPS
   geojson?: GeoJSON;
   ubicacion?: ICoordenadas;

@@ -2,7 +2,7 @@ import { ICromatografia, ICuenca, IUnidadNegocio } from "..";
 import { ICorrectora } from "../correctora";
 
 export interface IAplicacionCromatografia {
-  _id: string;
+  _id?: string;
   aplicada?: boolean;
   idCromatografia?: string;
   idCorrectora?: string;

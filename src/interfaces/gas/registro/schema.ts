@@ -7,14 +7,14 @@ import { IPuntoMedicion } from "../punto-medicion";
 import { IUnidadNegocio } from "../unidadNegocio";
 
 export interface IRegistro {
-  _id: string;
-  timestamp: string;
+  _id?: string;
+  timestamp?: string;
   corrected?: number;
   uncorrected?: number;
-  presion: number;
-  temperatura: number;
-  contador: number;
-  bateria: number;
+  presion?: number;
+  temperatura?: number;
+  contador?: number;
+  bateria?: number;
   // Valores firmware nuevo
   correctedTotalizado?: number;
   uncorrectedTotalizado?: number;
@@ -23,21 +23,21 @@ export interface IRegistro {
   caudalCorregido?: number;
   caudalNoCorregido?: number;
   //
-  numeroSerieCorrectora: string | null;
-  deveui: string;
+  numeroSerieCorrectora?: string | null;
+  deveui?: string;
   deviceName?: string;
   modelo?: string;
   //
   idCorrectora?: string;
   idPuntoMedicion?: string;
   //
-  idCliente: string;
+  idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idCuenca?: string;
   idsGrupos?: string[];
   //
-  fechaCreacion: string;
+  fechaCreacion?: string;
 
   // Virtuals
   cliente?: ICliente;

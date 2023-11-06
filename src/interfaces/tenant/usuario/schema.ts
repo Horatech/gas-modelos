@@ -4,13 +4,13 @@ import { INotificaciones } from "./notificacion";
 import { IPermiso } from "./permiso";
 
 export interface IUsuario {
-  _id: string;
-  username: string;
+  _id?: string;
+  username?: string;
   hash?: string;
-  idCliente: string;
-  activo: boolean;
-  fechaCreacion: string;
-  permisos: IPermiso[];
+  idCliente?: string;
+  activo?: boolean;
+  fechaCreacion?: string;
+  permisos?: IPermiso[];
   datosPersonales?: IDatosPersonales;
   notificaciones?: INotificaciones[];
   // Virtuals

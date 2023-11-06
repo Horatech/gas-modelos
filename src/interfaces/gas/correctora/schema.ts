@@ -6,13 +6,13 @@ import { IRegistro } from "../registro";
 import { IUnidadNegocio } from "../unidadNegocio";
 
 export interface ICorrectora {
-  _id: string;
+  _id?: string;
   //
-  firmware: string;
+  firmware?: string;
   numeroSerie?: string | null;
   deveui?: string | null;
-  modelo: string;
-  fechaCreacion: string;
+  modelo?: string;
+  fechaCreacion?: string;
   bateria?: number;
   //
   ultimoRegistro?: IRegistro;
@@ -22,7 +22,7 @@ export interface ICorrectora {
   //
   estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
   //
-  idCliente: string;
+  idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   // Populate

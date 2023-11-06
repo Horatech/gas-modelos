@@ -3,8 +3,8 @@ import { IDispositivo } from "../../tenant";
 import { IAlerta } from "../alerta";
 
 export interface IUnidadPresion {
-  _id: string;
-  fechaCreacion: string;
+  _id?: string;
+  fechaCreacion?: string;
   //
   modelo?: string;
   numeroSerie?: string | null;
@@ -15,7 +15,7 @@ export interface IUnidadPresion {
   //
   estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
   //
-  idCliente: string;
+  idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   // Populate

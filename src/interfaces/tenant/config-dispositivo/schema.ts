@@ -29,11 +29,11 @@ export interface IConfigDispositivoNSP4G {
 
 export interface IConfigDispositivo {
   // Info autogenerada
-  _id: string;
-  idCliente: string;
+  _id?: string;
+  idCliente?: string;
   // Info de carga
-  deveui: string;
-  config: Record<string, any>;
+  deveui?: string;
+  config?: Record<string, any>;
   // Virtuals
   dispositivo?: IDispositivo;
 }

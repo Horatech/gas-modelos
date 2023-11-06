@@ -3,12 +3,12 @@ import { IImagenesCliente } from "./cliente.dto";
 import { IIntegracion } from "./integraciones";
 
 export interface ICliente {
-  _id: string;
-  fechaCreacion: string;
-  activo: boolean;
-  nombre: string;
-  admin: boolean;
-  imagenes: IImagenesCliente;
-  tiposDispositivo: TipoDispositivo[];
+  _id?: string;
+  fechaCreacion?: string;
+  activo?: boolean;
+  nombre?: string;
+  admin?: boolean;
+  imagenes?: IImagenesCliente;
+  tiposDispositivo?: TipoDispositivo[];
   integraciones?: IIntegracion[];
 }

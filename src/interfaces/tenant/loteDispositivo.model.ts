@@ -1,5 +1,5 @@
 export interface ILoteDispositivo {
-  _id: string;
-  nombre: string;
-  llave: string;
+  _id?: string;
+  nombre?: string;
+  llave?: string;
 }

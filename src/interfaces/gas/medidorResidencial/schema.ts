@@ -7,12 +7,12 @@ import { IReporteSml } from "../reporteSml";
 import { IUnidadNegocio } from "../unidadNegocio";
 
 export interface IMedidorResidencial {
-  _id: string;
+  _id?: string;
   //
   deviceMeterNumber?: number;
-  deveui: string;
+  deveui?: string;
   deviceName?: string;
-  fechaCreacion: string;
+  fechaCreacion?: string;
   //
   ultimoReporte?: IReporteSml;
   //
@@ -24,7 +24,7 @@ export interface IMedidorResidencial {
   descripcion?: string;
   corregido?: boolean;
   //
-  idCliente: string;
+  idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idCuenca?: string;

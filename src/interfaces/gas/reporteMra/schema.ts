@@ -1,5 +1,5 @@
 export interface IReporteMra {
-  _id: string;
+  _id?: string;
   tipo?: "SindCon" | "Hac";
   header?: number;
   paquetSequence?: number;
@@ -14,9 +14,9 @@ export interface IReporteMra {
   triggerSource?: number;
   checksum?: number;
   //
-  fecha: string;
-  idCliente: string;
-  deveui: string;
+  fecha?: string;
+  idCliente?: string;
+  deveui?: string;
   deviceName?: string;
   idUnidadNegocio?: string;
   //

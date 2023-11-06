@@ -4,16 +4,16 @@ import { IUnidadNegocio } from "../unidadNegocio";
 import { IElementos } from "./elementos";
 
 export interface ICromatografia {
-  _id: string;
+  _id?: string;
   idUsuario?: string;
-  idCuenca: string;
-  idCliente: string;
-  idUnidadNegocio: string;
-  fechaAplicacion: string;
-  fechaVencimiento: string;
-  elementos: IElementos;
+  idCuenca?: string;
+  idCliente?: string;
+  idUnidadNegocio?: string;
+  fechaAplicacion?: string;
+  fechaVencimiento?: string;
+  elementos?: IElementos;
   //
-  fechaCreacion: string;
+  fechaCreacion?: string;
   // Virtual
   cuenca?: ICuenca;
   unidadNegocio?: IUnidadNegocio;

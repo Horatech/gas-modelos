@@ -7,19 +7,19 @@ import { ILoteDispositivo } from "./loteDispositivo.model";
 
 export interface IDispositivo {
   // Info autogenerada
-  _id: string;
-  fechaCreacion: string;
+  _id?: string;
+  fechaCreacion?: string;
   // Tenant
-  idCliente: string;
+  idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   // Info de carga
-  deveui: string;
-  deviceName: string;
-  appkey: string;
-  conectividad: TipoConectividad;
+  deveui?: string;
+  deviceName?: string;
+  appkey?: string;
+  conectividad?: TipoConectividad;
   idLote?: string;
-  tipoDispositivo: TipoDispositivo;
+  tipoDispositivo?: TipoDispositivo;
   // Solo con conectividad Lora
   idLoraServer?: string;
   // Info de comunicacion

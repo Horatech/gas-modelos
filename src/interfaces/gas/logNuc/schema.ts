@@ -18,7 +18,7 @@ import {
 } from "./extras";
 
 export interface ILogNuc {
-  _id: string;
+  _id?: string;
   deveui?: string;
   // El tipo de Mensaje que tiene adentro
   tipo?: TipoMensaje;
