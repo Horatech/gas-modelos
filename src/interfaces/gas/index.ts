@@ -20,5 +20,6 @@ export * from "./unidadPresion";
 //
 export * from "./dispositivoNuc4G";
 export * from "./dispositivoNsp4G";
+export * from "./dispositivoVeriboxMicro";
 export * from "./resumen.dto";
 export * from "./envioSms";
