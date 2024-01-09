@@ -10,6 +10,6 @@ export interface IReporteNUC {
   uncorrectedTotalizado?: number;
   correctedParcializado?: number;
   uncorrectedParcializado?: number;
-  caudalCorregido?: number;
-  caudalNoCorregido?: number;
+  caudalPico?: number;
+  caudalPromedio?: number;
 }
