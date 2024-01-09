@@ -11,8 +11,8 @@ export interface ICreateRegistro {
   uncorrectedTotalizado?: number;
   correctedParcializado?: number;
   uncorrectedParcializado?: number;
-  caudalCorregido?: number;
-  caudalNoCorregido?: number;
+  caudalPromedio?: number;
+  caudalPico?: number;
   //
   numeroSerieCorrectora?: string | null;
   deveui?: string;

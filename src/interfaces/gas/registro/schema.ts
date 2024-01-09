@@ -1,10 +1,10 @@
-import { ICliente } from "../../tenant";
-import { ICentroOperativo } from "../centroOperativo";
-import { ICorrectora } from "../correctora";
-import { ICuenca } from "../cuenca";
-import { IGrupo } from "../grupo";
-import { IPuntoMedicion } from "../punto-medicion";
-import { IUnidadNegocio } from "../unidadNegocio";
+import { ICliente } from '../../tenant';
+import { ICentroOperativo } from '../centroOperativo';
+import { ICorrectora } from '../correctora';
+import { ICuenca } from '../cuenca';
+import { IGrupo } from '../grupo';
+import { IPuntoMedicion } from '../punto-medicion';
+import { IUnidadNegocio } from '../unidadNegocio';
 
 export interface IRegistro {
   _id?: string;
@@ -20,8 +20,8 @@ export interface IRegistro {
   uncorrectedTotalizado?: number;
   correctedParcializado?: number;
   uncorrectedParcializado?: number;
-  caudalCorregido?: number;
-  caudalNoCorregido?: number;
+  caudalPromedio?: number;
+  caudalPico?: number;
   //
   numeroSerieCorrectora?: string | null;
   deveui?: string;
