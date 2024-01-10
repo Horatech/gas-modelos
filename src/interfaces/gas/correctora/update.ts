@@ -1,7 +1,7 @@
-import { ICoordenadas } from "../../auxiliares";
-import { IAlerta } from "../alerta";
-import { ICromatografia } from "../cromatografia";
-import { IRegistro } from "../registro";
+import { ICoordenadas } from '../../auxiliares';
+import { IAlerta } from '../alerta';
+import { ICromatografia } from '../cromatografia';
+import { IRegistro } from '../registro';
 
 export interface IUpdateCorrectora {
   firmware?: string;
@@ -15,7 +15,9 @@ export interface IUpdateCorrectora {
   ultimaCromatografia?: ICromatografia;
   fechaUltimaCromatografia?: string;
   //
-  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
+  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
+  // Calculado por el backend
+  estado?: string;
   //
   idCliente?: string;
   idUnidadNegocio?: string;

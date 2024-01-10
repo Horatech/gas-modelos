@@ -1,6 +1,6 @@
-import { ICentroOperativo, IReporte, IUnidadNegocio } from "..";
-import { IDispositivo } from "../../tenant";
-import { IAlerta } from "../alerta";
+import { ICentroOperativo, IReporte, IUnidadNegocio } from '..';
+import { IDispositivo } from '../../tenant';
+import { IAlerta } from '../alerta';
 
 export interface IUnidadPresion {
   _id?: string;
@@ -13,7 +13,9 @@ export interface IUnidadPresion {
   ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   //
-  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
+  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
+  // Calculado por el backend
+  estado?: string;
   //
   idCliente?: string;
   idUnidadNegocio?: string;
