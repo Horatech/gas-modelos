@@ -1,6 +1,6 @@
 export interface IAuditoriaVeribox {
   _id?: string;
-  serialNumber?: string;
+  deveui?: string;
   fechaCreacion?: string;
   fecha?: string;
   comando?: string;
