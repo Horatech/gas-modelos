@@ -10,10 +10,13 @@ export interface IAuditoriaVeribox {
   idCliente?: string;
 }
 
-type Omitir = '_id' | 'fechaCreacion';
-
+/////////////////////////////////////////
+// CREATE
+type OmitirCreate = '_id';
 export interface ICreateAuditoriaVeribox
-  extends Omit<Partial<IAuditoriaVeribox>, Omitir> {}
-
+  extends Omit<Partial<IAuditoriaVeribox>, OmitirCreate> {}
+// UPDATE
+type OmitirUpdate = '_id' | 'fechaCreacion';
 export interface IUpdateAuditoriaVeribox
-  extends Omit<Partial<IAuditoriaVeribox>, Omitir> {}
+  extends Omit<Partial<IAuditoriaVeribox>, OmitirUpdate> {}
+/////////////////////////////////////////
