@@ -3,4 +3,5 @@ export interface IReporteNSP {
   temperatura?: number;
   presion?: number;
   unidad: string;
+  bateria?: number;
 }

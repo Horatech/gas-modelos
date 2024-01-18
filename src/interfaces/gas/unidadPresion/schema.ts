@@ -9,6 +9,7 @@ export interface IUnidadPresion {
   modelo?: string;
   numeroSerie?: string | null;
   deveui?: string | null;
+  telefono?: string;
   //
   ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
