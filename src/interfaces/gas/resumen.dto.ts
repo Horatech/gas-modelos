@@ -1,9 +1,9 @@
-import { ICliente } from "../tenant";
-import { ICentroOperativo } from "./centroOperativo";
-import { ICuenca } from "./cuenca";
-import { IMedidorResidencial } from "./medidorResidencial";
-import { IPuntoMedicion } from "./punto-medicion";
-import { IUnidadNegocio } from "./unidadNegocio";
+import { ICliente } from '../tenant';
+import { ICentroOperativo } from './centroOperativo';
+import { ICuenca } from './cuenca';
+import { IMedidorResidencial } from './medidorResidencial';
+import { IPuntoMedicion } from './punto-medicion';
+import { IUnidadNegocio } from './unidadNegocio';
 
 // Resumen
 export interface IResumenUnidadNegocio {
@@ -31,6 +31,7 @@ export interface IResumenUnidadNegocio {
   cantidadPuntos?: number;
   cantidadPuntosEnMantenimiento?: number;
   cantidadPuntosResolver?: number;
+  cantidadPuntosSinReportar?: number;
   cantidadPuntosSinDispositivo?: number;
   cantidadMedidores?: number;
   cantReportesOkPunto?: number;
