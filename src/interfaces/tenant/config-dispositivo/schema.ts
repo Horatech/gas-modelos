@@ -35,6 +35,8 @@ export interface IConfigDispositivoVeribox {
   apn?: string;
   usuario?: string;
   clave?: string;
+  // Fecha de Aplicación
+  fechaAplicacion?: string;
 }
 
 export interface IConfigDispositivo {
