@@ -1,11 +1,11 @@
 import { IDispositivo } from "../dispositivo.model";
 
 export interface IConfigDispositivoNUC4G {
-  horaInicio: number;
-  modoOperacion: "REG1_DIARIO" | "REG24_DIARIO" | "REG8_8HORAS";
-  modoEnv: "TEST" | "PROD";
-  claveMercury: string;
-  modoRegistros: "REG_TOTALIZADOS" | "REG_PARCIALES";
+  horaInicio?: number;
+  modoOperacion?: "REG1_DIARIO" | "REG24_DIARIO" | "REG8_8HORAS";
+  modoEnv?: "TEST" | "PROD";
+  claveMercury?: string;
+  modoRegistros?: "REG_TOTALIZADOS" | "REG_PARCIALES";
   nsa?: number; // Numero de serie de american meter
 }
 
