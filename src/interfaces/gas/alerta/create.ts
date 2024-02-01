@@ -6,6 +6,8 @@ export interface ICreateAlerta {
   numeroAlerta?: number;
   timestamp?: number;
   mensaje?: string;
+  estado?: "Cerrado" | "Activo";
+  fechaCierre?: string;
   //
   idCliente: string;
   idUnidadNegocio?: string;

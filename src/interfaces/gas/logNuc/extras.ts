@@ -28,15 +28,16 @@ export interface ISetConfiguracion {
 }
 
 export interface ISetConfiguracionV2 {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  horaInicio: number;
-  modoOperacion: 'REG1_DIARIO' | 'REG24_DIARIO' | 'REG8_8HORAS';
-  modoEnv: 'TEST' | 'PROD';
-  claveMercury: string;
-  modoRegistros: 'REG_TOTALIZADOS' | 'REG_PARCIALES';
+  deveui?: string;
+  appkey?: string;
+  firmwareNuc?: string;
+  apiVersion?: string;
+  horaInicio?: number;
+  modoOperacion?: "REG1_DIARIO" | "REG24_DIARIO" | "REG8_8HORAS";
+  modoEnv?: "TEST" | "PROD";
+  claveMercury?: string;
+  modoRegistros?: "REG_TOTALIZADOS" | "REG_PARCIALES";
+  nsa?: number; // Numero de serie de american meter
 }
 
 export interface ISetCorrectora {
@@ -175,30 +176,32 @@ export enum ucv {
   Proser,
   Mercury,
   Minicor,
+  AmericanMeter,
 }
 
 export const modelosCorrectoras = [
-  'Nada',
-  'Corus',
-  'Dresser1',
-  'Dresser2',
-  'Proser',
-  'Mercury',
-  'Minicor',
+  "Nada",
+  "Corus",
+  "Dresser1",
+  "Dresser2",
+  "Proser",
+  "Mercury",
+  "Minicor",
+  "AmericanMeter",
 ];
 
 export type TipoMensaje =
-  | 'ISetAlerta'
-  | 'ISetAlertaV2'
-  | 'ISetConfiguracion'
-  | 'ISetConfiguracionV2'
-  | 'ISetCorrectora'
-  | 'ISetCorrectoraV3'
-  | 'ISetCromatografia'
-  | 'ISetRegistro'
-  | 'ISetRegistroV3'
-  | 'ISetReporte'
-  | 'ISetReporteV3'
-  | 'IGetConfiguracionV2'
-  | 'IGetCromatografia'
-  | 'IGetRegistro';
+  | "ISetAlerta"
+  | "ISetAlertaV2"
+  | "ISetConfiguracion"
+  | "ISetConfiguracionV2"
+  | "ISetCorrectora"
+  | "ISetCorrectoraV3"
+  | "ISetCromatografia"
+  | "ISetRegistro"
+  | "ISetRegistroV3"
+  | "ISetReporte"
+  | "ISetReporteV3"
+  | "IGetConfiguracionV2"
+  | "IGetCromatografia"
+  | "IGetRegistro";
