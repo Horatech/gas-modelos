@@ -4,7 +4,7 @@ export interface ICreateAlerta {
   firmwareNuc?: string;
   apiVersion?: string;
   numeroAlerta?: number;
-  timestamp?: number;
+  timestamp?: string;
   mensaje?: string;
   estado?: "Cerrado" | "Activo";
   fechaCierre?: string;
