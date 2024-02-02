@@ -1,11 +1,11 @@
-import { GeoJSON, ICoordenadas } from '../../auxiliares';
-import { Division, ICliente } from '../../tenant';
-import { ICentroOperativo } from '../centroOperativo';
-import { ICorrectora } from '../correctora';
-import { ICuenca } from '../cuenca';
-import { IGrupo } from '../grupo';
-import { IUnidadNegocio } from '../unidadNegocio';
-import { IUnidadPresion } from '../unidadPresion';
+import { GeoJSON, ICoordenadas } from "../../auxiliares";
+import { Division, ICliente } from "../../tenant";
+import { ICentroOperativo } from "../centroOperativo";
+import { ICorrectora } from "../correctora";
+import { ICuenca } from "../cuenca";
+import { IGrupo } from "../grupo";
+import { IUnidadNegocio } from "../unidadNegocio";
+import { IUnidadPresion } from "../unidadPresion";
 
 export interface IPuntoMedicion {
   _id?: string;
@@ -25,7 +25,13 @@ export interface IPuntoMedicion {
   idUnidadPresion?: string | null;
   fechaAsignacionUnidadPresion?: string | null;
   // Calculado por el backend
-  estado?: string;
+  estado?:
+    | "Sin Asignar"
+    | "En Mantenimiento"
+    | "Resolver"
+    | "Sin Reportar"
+    | "Operativa"
+    | "Alerta";
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;

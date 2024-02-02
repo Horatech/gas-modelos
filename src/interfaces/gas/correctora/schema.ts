@@ -1,9 +1,9 @@
-import { IDispositivo } from '../../tenant';
-import { IAlerta } from '../alerta';
-import { ICentroOperativo } from '../centroOperativo';
-import { ICromatografia } from '../cromatografia';
-import { IRegistro } from '../registro';
-import { IUnidadNegocio } from '../unidadNegocio';
+import { IDispositivo } from "../../tenant";
+import { IAlerta } from "../alerta";
+import { ICentroOperativo } from "../centroOperativo";
+import { ICromatografia } from "../cromatografia";
+import { IRegistro } from "../registro";
+import { IUnidadNegocio } from "../unidadNegocio";
 
 export interface ICorrectora {
   _id?: string;
@@ -20,9 +20,13 @@ export interface ICorrectora {
   ultimaCromatografia?: ICromatografia;
   fechaUltimaCromatografia?: string;
   //
-  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
-  // Calculado por el backend
-  estado?: string;
+  estadoActual?:
+    | "Sin Asignar"
+    | "En Mantenimiento"
+    | "Resolver"
+    | "Sin Reportar"
+    | "Operativa"
+    | "Alerta";
   //
   idCliente?: string;
   idUnidadNegocio?: string;

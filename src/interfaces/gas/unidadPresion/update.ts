@@ -1,5 +1,5 @@
-import { IReporte } from '..';
-import { IAlerta } from '../alerta';
+import { IReporte } from "..";
+import { IAlerta } from "../alerta";
 
 export interface IUpdateUnidadPresion {
   modelo?: string;
@@ -9,9 +9,14 @@ export interface IUpdateUnidadPresion {
   ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   //
-  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
-  // Calculado por el backend
-  estado?: string;
+  estadoActual?:
+    | "Sin Asignar"
+    | "En Mantenimiento"
+    | "Resolver"
+    | "Sin Reportar"
+    | "Operativa"
+    | "Alerta";
+
   //
   idCliente?: string;
   idUnidadNegocio?: string;

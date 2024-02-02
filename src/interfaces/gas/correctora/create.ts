@@ -15,7 +15,13 @@ export interface ICreateCorrectora {
   ultimaCromatografia?: ICromatografia;
   fechaUltimaCromatografia?: string;
   //
-  estadoActual?: "Operativa" | "En Mantenimiento" | "Resolver" | string;
+  estadoActual?:
+    | "Sin Asignar"
+    | "En Mantenimiento"
+    | "Resolver"
+    | "Sin Reportar"
+    | "Operativa"
+    | "Alerta";
   //
   idCliente: string;
   idUnidadNegocio?: string;

@@ -1,5 +1,5 @@
-import { IAlerta } from '../alerta';
-import { IReporte } from '../reporte';
+import { IAlerta } from "../alerta";
+import { IReporte } from "../reporte";
 
 export interface ICreateUnidadPresion {
   modelo?: string;
@@ -9,7 +9,13 @@ export interface ICreateUnidadPresion {
   ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   //
-  estadoActual?: 'Operativa' | 'En Mantenimiento' | 'Resolver' | string;
+  estadoActual?:
+    | "Sin Asignar"
+    | "En Mantenimiento"
+    | "Resolver"
+    | "Sin Reportar"
+    | "Operativa"
+    | "Alerta";
   //
   idCliente: string;
   idUnidadNegocio?: string;
