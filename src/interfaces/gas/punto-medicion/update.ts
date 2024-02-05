@@ -1,5 +1,5 @@
-import { GeoJSON, ICoordenadas } from '../../auxiliares';
-import { Division } from '../../tenant';
+import { GeoJSON, ICoordenadas } from "../../auxiliares";
+import { Division } from "../../tenant";
 
 export interface IUpdatePuntoMedicion {
   // GPS
@@ -18,7 +18,13 @@ export interface IUpdatePuntoMedicion {
   idUnidadPresion?: string | null;
   fechaAsignacionUnidadPresion?: string | null;
   // Calculado por el backend
-  estado?: string;
+  estado?:
+    | "Sin Asignar"
+    | "En Mantenimiento"
+    | "Resolver"
+    | "Sin Reportar"
+    | "Operativa"
+    | "Alerta";
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;
