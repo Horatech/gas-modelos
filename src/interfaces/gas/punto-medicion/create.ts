@@ -17,6 +17,14 @@ export interface ICreatePuntoMedicion {
   // Unidad de Presion
   idUnidadPresion?: string | null;
   fechaAsignacionUnidadPresion?: string | null;
+  // Calculado por el backend
+  estado?:
+    | "Sin Asignar"
+    | "En Mantenimiento"
+    | "Resolver"
+    | "Sin Reportar"
+    | "Operativa"
+    | "Alerta";
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;
