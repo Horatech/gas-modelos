@@ -1,5 +1,6 @@
 import { GeoJSON, ICoordenadas } from "../../auxiliares";
 import { Division, ICliente } from "../../tenant";
+import { IAgrupacion } from "../agrupacion";
 import { ICentroOperativo } from "../centroOperativo";
 import { ICorrectora } from "../correctora";
 import { ICuenca } from "../cuenca";
@@ -37,6 +38,7 @@ export interface IPuntoMedicion {
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idsGrupos?: string[];
+  idsAgrupaciones?: string[];
   idCuenca?: string;
   division?: Division;
   // Virtuals
@@ -46,5 +48,6 @@ export interface IPuntoMedicion {
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
   grupos?: IGrupo[];
+  agrupaciones?: IAgrupacion[];
   cuenca?: ICuenca;
 }
