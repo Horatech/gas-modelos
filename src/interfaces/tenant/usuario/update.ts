@@ -1,6 +1,6 @@
-import { IDatosPersonales } from "./create";
-import { INotificaciones } from "./notificacion";
-import { IPermiso } from "./permiso";
+import { IDatosPersonales } from './create';
+import { INotificaciones } from './notificacion';
+import { IPermiso } from './permiso';
 
 export interface IUpdateUsuario {
   idCliente?: string;
@@ -8,6 +8,7 @@ export interface IUpdateUsuario {
   clave?: string;
   hash?: string;
   activo?: boolean;
+  tokenPush?: string;
   datosPersonales?: IDatosPersonales;
   permisos?: IPermiso[];
   notificaciones?: INotificaciones[];
