@@ -1,13 +1,11 @@
-import { Agrupacion, TipoAlerta } from "./schema";
+import { IEnvioSms } from "./schema";
 
-export interface IUpdateEnvioSms {
-  idCliente?: string;
-  tiposAlerta?: TipoAlerta[];
-  agrupacion?: Agrupacion;
+type Omitir =
+  | "_id"
+  | "unidadNegocio"
+  | "centroOperativo"
+  | "grupo"
+  | "agrupacion2"
+  | "usuarios";
 
-  idUnidadNegocio?: string | null;
-  idCentroOperativo?: string | null;
-  idGrupo?: string | null;
-
-  idsUsuarios?: string[];
-}
+export interface IUpdateEnvioSms extends Omit<Partial<IEnvioSms>, Omitir> {}
