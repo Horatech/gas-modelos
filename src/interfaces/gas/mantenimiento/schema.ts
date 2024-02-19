@@ -44,7 +44,7 @@ type OmitirCreate =
   | 'fechaCreacion';
 export interface ICreateMantenimiento
   extends Omit<Partial<IMantenimiento>, OmitirCreate> {
-  tipoAsignado: 'Correctora' | 'Dispositivo';
+  tipoAsignado?: 'Correctora' | 'Dispositivo';
 }
 // UPDATE
 type OmitirUpdate =
@@ -59,6 +59,6 @@ type OmitirUpdate =
   | 'agrupacion';
 export interface IUpdateMantenimiento
   extends Omit<Partial<IMantenimiento>, OmitirUpdate> {
-  tipoAsignado: 'Correctora' | 'Dispositivo';
+  tipoAsignado?: 'Correctora' | 'Dispositivo';
 }
 /////////////////////////////////////////
