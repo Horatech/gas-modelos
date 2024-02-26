@@ -1,7 +1,7 @@
 import { IDeviceInfo, ITenantInfo } from "../../auxiliares";
 import { IValoresResumenReporte } from "./valores reporte/valoresReporte";
 
-export interface ICreateReporte {
+export interface ICreateResumenReporte {
   fechaCreacion?: string;
   // Tentant
   tenant?: ITenantInfo;
