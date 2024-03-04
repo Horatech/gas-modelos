@@ -179,7 +179,17 @@ export enum ucv {
   AmericanMeter,
 }
 
-export const modelosCorrectoras = [
+export type ModeloCorrectora =
+  | "Nada"
+  | "Corus"
+  | "Dresser1"
+  | "Dresser2"
+  | "Proser"
+  | "Mercury"
+  | "Minicor"
+  | "AmericanMeter";
+
+export const modelosCorrectoras: ModeloCorrectora[] = [
   "Nada",
   "Corus",
   "Dresser1",

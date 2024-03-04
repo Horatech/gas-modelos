@@ -2,6 +2,7 @@ import { IDispositivo } from "../../tenant";
 import { IAlerta } from "../alerta";
 import { ICentroOperativo } from "../centroOperativo";
 import { ICromatografia } from "../cromatografia";
+import { ModeloCorrectora } from "../logNuc";
 import { IRegistro } from "../registro";
 import { IUnidadNegocio } from "../unidadNegocio";
 
@@ -11,7 +12,7 @@ export interface ICorrectora {
   firmware?: string;
   numeroSerie?: string | null;
   deveui?: string | null;
-  modelo?: string;
+  modelo?: ModeloCorrectora;
   fechaCreacion?: string;
   bateria?: number;
   //
