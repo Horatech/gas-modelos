@@ -6,7 +6,11 @@ import { IUnidadNegocio } from "../unidadNegocio";
 import { IUnidadPresion } from "../unidadPresion";
 
 export type IEstadoAlerta = "Cerrado" | "Activo";
-export type ITipoAlerta = "Sin Reportar" | "Valor Alto" | "Valor Bajo";
+export type ITipoAlerta =
+  | "Sin Reportar"
+  | "Valor Alto"
+  | "Valor Bajo"
+  | "Error de comunicación";
 
 export interface IAlerta {
   _id?: string;
