@@ -1,3 +1,5 @@
+import { IEstadoAlerta, ITipoAlerta } from "./schema";
+
 export interface ICreateAlerta {
   deveui?: string;
   deviceName?: string;
@@ -6,7 +8,8 @@ export interface ICreateAlerta {
   numeroAlerta?: number;
   timestamp?: string;
   mensaje?: string;
-  estado?: "Cerrado" | "Activo";
+  estado?: IEstadoAlerta;
+  tipo?: ITipoAlerta;
   fechaCierre?: string;
   //
   idCliente?: string;

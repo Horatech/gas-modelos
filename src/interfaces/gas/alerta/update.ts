@@ -1,5 +1,7 @@
+import { IEstadoAlerta } from "./schema";
+
 export interface IUpdateAlerta {
-  estado?: "Cerrado" | "Activo";
+  estado?: IEstadoAlerta;
   fechaCierre?: string;
   timestamp?: string;
 }

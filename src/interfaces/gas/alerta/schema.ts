@@ -5,6 +5,9 @@ import { IPuntoMedicion } from "../punto-medicion";
 import { IUnidadNegocio } from "../unidadNegocio";
 import { IUnidadPresion } from "../unidadPresion";
 
+export type IEstadoAlerta = "Cerrado" | "Activo";
+export type ITipoAlerta = "Sin Reportar" | "Valor Alto" | "Valor Bajo";
+
 export interface IAlerta {
   _id?: string;
   deveui?: string;
@@ -14,7 +17,8 @@ export interface IAlerta {
   numeroAlerta?: number;
   timestamp?: string;
   mensaje?: string;
-  estado?: "Cerrado" | "Activo";
+  estado?: IEstadoAlerta;
+  tipo?: ITipoAlerta;
   fechaCierre?: string;
   //
   idCliente?: string;
