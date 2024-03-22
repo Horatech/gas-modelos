@@ -6,7 +6,7 @@ import { IUnidadNegocio } from "../unidadNegocio";
 
 export type TipoAlerta = "Unidades Presión - Fuera de límite";
 
-export type TipoEnvio = "SMS" | "WhatsApp" | "Notificacion Push";
+export type TipoEnvio = "SMS" | "WhatsApp" | "Llamada" | "Notificacion Push";
 
 export type Agrupacion =
   | "Global"
