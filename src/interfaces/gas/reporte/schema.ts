@@ -1,4 +1,6 @@
 import { IDeviceInfo, ITenantInfo } from "../../auxiliares";
+import { IPuntoMedicion } from "../punto-medicion";
+import { IUnidadPresion } from "../unidadPresion";
 import { IValoresReporte } from "./valores reporte/valoresReporte";
 
 export interface IReporte {
@@ -12,4 +14,8 @@ export interface IReporte {
   idsAsignados?: string[];
   // Datos especificos de acuerdo al tipo de dispositivo
   valores?: IValoresReporte;
+
+  // Virtuals
+  puntoMedicion?: IPuntoMedicion;
+  unidadPresion?: IUnidadPresion;
 }
