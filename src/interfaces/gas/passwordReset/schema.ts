@@ -4,7 +4,7 @@ export interface IPasswordReset {
   _id?: string;
   idUsuario?: string;
   token?: string;
-  vencimiento?: number;
+  vencimiento?: string;
   utilizado?: boolean;
 
   // virtuals
