@@ -10,6 +10,7 @@ export * from "./logNuc";
 export * from "./medidorResidencial";
 export * from "./medidorResidencialAgual";
 export * from "./notificacion";
+export * from "./passwordReset";
 export * from "./punto-medicion";
 export * from "./registro";
 export * from "./reporte";
