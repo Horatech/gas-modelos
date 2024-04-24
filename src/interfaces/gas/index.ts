@@ -7,6 +7,7 @@ export * from "./cromatografia";
 export * from "./cuenca";
 export * from "./grupo";
 export * from "./logNuc";
+export * from "./localidad";
 export * from "./medidorResidencial";
 export * from "./medidorResidencialAgual";
 export * from "./notificacion";
