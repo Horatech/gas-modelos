@@ -2,7 +2,7 @@ import { ICliente } from "../../tenant";
 import { ICentroOperativo } from "../centroOperativo";
 import { IUnidadNegocio } from "../unidadNegocio";
 
-export interface IALocalidad {
+export interface ILocalidad {
   _id?: string;
   idCliente?: string;
   idUnidadNegocio?: string;
@@ -19,9 +19,9 @@ export interface IALocalidad {
 type OmitirCreate = "_id";
 
 export interface ICreateLocalidad
-  extends Omit<Partial<IALocalidad>, OmitirCreate> {}
+  extends Omit<Partial<ILocalidad>, OmitirCreate> {}
 
 type OmitirUpdate = "_id";
 
 export interface IUpdateLocalidad
-  extends Omit<Partial<IALocalidad>, OmitirUpdate> {}
+  extends Omit<Partial<ILocalidad>, OmitirUpdate> {}
