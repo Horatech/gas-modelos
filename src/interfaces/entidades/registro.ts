@@ -1,10 +1,11 @@
-import { ICliente } from '../../tenant';
-import { ICentroOperativo } from '../centroOperativo';
-import { ICorrectora } from '../correctora';
-import { ICuenca } from '../cuenca';
-import { IGrupo } from '../grupo';
-import { IPuntoMedicion } from '../punto-medicion';
-import { IUnidadNegocio } from '../unidadNegocio';
+import { ICliente } from "../tenant";
+import { ICentroOperativo } from "../gas/centroOperativo";
+import { ICuenca } from "../gas/cuenca";
+import { IGrupo } from "../gas/grupo";
+import { IUnidadNegocio } from "../gas/unidadNegocio";
+import { ICorrectora } from "./correctora";
+import { IPuntoMedicion } from "./punto-medicion";
+import { ILocalidad } from "./localidad";
 
 export interface IRegistro {
   _id?: string;
@@ -34,6 +35,7 @@ export interface IRegistro {
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
+  idLocalidad?: string;
   idCuenca?: string;
   idsGrupos?: string[];
   //
@@ -43,8 +45,37 @@ export interface IRegistro {
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
+  localidad?: ILocalidad;
   cuenca?: ICuenca;
   correctora?: ICorrectora;
   puntoMedicion?: IPuntoMedicion;
   grupos?: IGrupo[];
 }
+
+////// CREATE
+type OmitirCreate =
+  | "_id"
+  | "cliente"
+  | "unidadNegocio"
+  | "centroOperativo"
+  | "localidad"
+  | "cuenca"
+  | "correctora"
+  | "puntoMedicion"
+  | "grupos";
+export interface ICreateRegistro
+  extends Omit<Partial<IRegistro>, OmitirCreate> {}
+
+////// UPDATE
+type OmitirUpdate =
+  | "_id"
+  | "cliente"
+  | "unidadNegocio"
+  | "centroOperativo"
+  | "localidad"
+  | "cuenca"
+  | "correctora"
+  | "puntoMedicion"
+  | "grupos";
+export interface IUpdateRegistro
+  extends Omit<Partial<IRegistro>, OmitirUpdate> {}

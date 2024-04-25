@@ -1,4 +1,4 @@
-import { IDispositivo } from "../tenant";
+import { IDispositivo } from "../entidades";
 import { TipoDispositivo } from "./tipoDispositivo";
 
 export interface IDeviceInfo {

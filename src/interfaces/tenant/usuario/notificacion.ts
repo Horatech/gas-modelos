@@ -1,4 +1,5 @@
-import { ICentroOperativo, IUnidadNegocio } from "../../gas";
+import { ICentroOperativo } from "../../gas/centroOperativo";
+import { IUnidadNegocio } from "../../gas/unidadNegocio";
 import { Nivel } from "./permiso";
 
 export enum ICodigoNotificacion {

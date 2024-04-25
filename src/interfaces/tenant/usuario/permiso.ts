@@ -1,9 +1,7 @@
-import {
-  IAgrupacion,
-  ICentroOperativo,
-  ICuenca,
-  IUnidadNegocio,
-} from "../../gas";
+import { IAgrupacion } from "../../gas/agrupacion";
+import { ICentroOperativo } from "../../gas/centroOperativo";
+import { ICuenca } from "../../gas/cuenca";
+import { IUnidadNegocio } from "../../gas/unidadNegocio";
 
 export type Rol = "Administrador" | "Usuario" | "Croma" | "Visualizar";
 export type Nivel =

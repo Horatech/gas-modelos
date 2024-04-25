@@ -1,9 +1,13 @@
 import { ICoordenadas, TipoDispositivo } from "../auxiliares";
-import { IAlerta, ICentroOperativo, IRegistro, IUnidadNegocio } from "../gas";
-import { ICliente } from "./cliente.model";
-import { TipoConectividad } from "./dispositivo.dto";
-import { ILoraServer } from "./lora-server.model";
-import { ILoteDispositivo } from "./loteDispositivo.model";
+import { ICentroOperativo } from "../gas/centroOperativo";
+import { IUnidadNegocio } from "../gas/unidadNegocio";
+import { ICliente } from "../tenant/cliente.model";
+import { ILoraServer } from "../tenant/lora-server.model";
+import { ILoteDispositivo } from "../tenant/loteDispositivo.model";
+import { IAlerta } from "./alerta";
+import { IRegistro } from "./registro";
+
+export type TipoConectividad = "4G" | "LORA";
 
 export interface IDispositivo {
   // Info autogenerada
@@ -42,3 +46,23 @@ export interface IDispositivo {
   centroOperativo?: ICentroOperativo;
   loraServer?: ILoraServer;
 }
+
+////// CREATE
+type OmitirCreate =
+  | "_id"
+  | "unidadDeNegocio"
+  | "centroOperativo"
+  | "localidad"
+  | "dispositivo";
+export interface ICreateDispositivo
+  extends Omit<Partial<IDispositivo>, OmitirCreate> {}
+
+////// UPDATE
+type OmitirUpdate =
+  | "_id"
+  | "unidadDeNegocio"
+  | "centroOperativo"
+  | "localidad"
+  | "dispositivo";
+export interface IUpdateDispositivo
+  extends Omit<Partial<IDispositivo>, OmitirUpdate> {}

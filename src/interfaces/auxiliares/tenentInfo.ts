@@ -1,4 +1,6 @@
-import { ICentroOperativo, ICuenca, IUnidadNegocio } from "../gas";
+import { ICentroOperativo } from "../gas/centroOperativo";
+import { ICuenca } from "../gas/cuenca";
+import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICliente } from "../tenant";
 
 export type ITenantInfo =

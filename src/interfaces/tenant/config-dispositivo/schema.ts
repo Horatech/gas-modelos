@@ -1,4 +1,4 @@
-import { IDispositivo } from "../dispositivo.model";
+import { IDispositivo } from "../../entidades/dispositivo";
 
 export interface IConfigDispositivoNUC4G {
   horaInicio?: number;

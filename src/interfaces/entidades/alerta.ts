@@ -1,9 +1,7 @@
-import { ICliente } from "../../tenant";
-import { ICentroOperativo } from "../centroOperativo";
-import { ICorrectora } from "../correctora";
-import { IPuntoMedicion } from "../punto-medicion";
-import { IUnidadNegocio } from "../unidadNegocio";
-import { IUnidadPresion } from "../unidadPresion";
+import { ICorrectora, IPuntoMedicion, IUnidadPresion } from ".";
+import { ICliente } from "../tenant";
+import { ICentroOperativo } from "../gas/centroOperativo";
+import { IUnidadNegocio } from "../gas/unidadNegocio";
 
 export type IEstadoAlerta = "Cerrado" | "Activo";
 export type ITipoAlerta =
@@ -42,3 +40,25 @@ export interface IAlerta {
   unidadPresion?: IUnidadPresion;
   correctora?: ICorrectora;
 }
+
+////// CREATE
+type OmitirCreate =
+  | "_id"
+  | "cliente"
+  | "unidadDeNegocio"
+  | "centroOperativo"
+  | "puntoMedicion"
+  | "unidadPresion"
+  | "correctora";
+export interface ICreateAlerta extends Omit<Partial<IAlerta>, OmitirCreate> {}
+
+////// UPDATE
+type OmitirUpdate =
+  | "_id"
+  | "cliente"
+  | "unidadDeNegocio"
+  | "centroOperativo"
+  | "puntoMedicion"
+  | "unidadPresion"
+  | "correctora";
+export interface IUpdateAlerta extends Omit<Partial<IAlerta>, OmitirUpdate> {}

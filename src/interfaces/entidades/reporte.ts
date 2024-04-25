@@ -1,6 +1,6 @@
-import { IDeviceInfo, ITenantInfo } from "../../auxiliares";
-import { IPuntoMedicion } from "../punto-medicion";
-import { IUnidadPresion } from "../unidadPresion";
+import { IDeviceInfo, ITenantInfo } from "../auxiliares";
+import { IPuntoMedicion } from "./punto-medicion";
+import { IUnidadPresion } from "./unidadPresion";
 import { IValoresReporte } from "./valores reporte/valoresReporte";
 
 export interface IReporte {
@@ -19,3 +19,11 @@ export interface IReporte {
   puntoMedicion?: IPuntoMedicion;
   unidadPresion?: IUnidadPresion;
 }
+
+////// CREATE
+type OmitirCreate = "_id" | "puntoMedicion" | "unidadPrsion";
+export interface ICreateReporte extends Omit<Partial<IReporte>, OmitirCreate> {}
+
+////// UPDATE
+type OmitirUpdate = "_id" | "puntoMedicion" | "unidadPrsion";
+export interface IUpdateReporte extends Omit<Partial<IReporte>, OmitirUpdate> {}
