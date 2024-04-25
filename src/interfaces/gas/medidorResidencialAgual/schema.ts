@@ -1,5 +1,5 @@
 import { ICoordenadas } from "../../auxiliares";
-import { IDispositivo } from "../../tenant";
+import { IDispositivo } from "../../entidades";
 import { ICentroOperativo } from "../centroOperativo";
 import { ICuenca } from "../cuenca";
 import { IGrupo } from "../grupo";

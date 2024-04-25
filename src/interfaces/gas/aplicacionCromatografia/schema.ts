@@ -1,5 +1,5 @@
 import { ICromatografia, ICuenca, IUnidadNegocio } from "..";
-import { ICorrectora } from "../correctora";
+import { ICorrectora } from "../../entidades";
 
 export interface IAplicacionCromatografia {
   _id?: string;
