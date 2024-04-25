@@ -1,4 +1,5 @@
 export * from "./valores reporte";
+export * from "./config-dispositivo";
 // Entidades
 export * from "./alerta";
 export * from "./correctora";
