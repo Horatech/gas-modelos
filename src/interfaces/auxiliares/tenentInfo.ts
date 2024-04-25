@@ -1,3 +1,4 @@
+import { ILocalidad } from "../entidades";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { ICuenca } from "../gas/cuenca";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
@@ -19,10 +20,12 @@ export interface ITenantInfoGas {
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
+  idLocalidad?: string;
   idCuenca?: string;
   // Virtual
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
+  localidad?: ILocalidad;
   cuenca?: ICuenca;
 }
