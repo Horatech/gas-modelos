@@ -1,4 +1,4 @@
-import { ICorrectora, IPuntoMedicion, IUnidadPresion } from ".";
+import { ICorrectora, ILocalidad, IPuntoMedicion, IUnidadPresion } from ".";
 import { ICliente } from "../tenant";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
@@ -26,6 +26,7 @@ export interface IAlerta {
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
+  idLocalidad?: string;
   idPuntoMedicion?: string;
   idUnidadPresion?: string;
   idCorrectora?: string;
@@ -36,6 +37,7 @@ export interface IAlerta {
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
+  localidad?: ILocalidad;
   puntoMedicion?: IPuntoMedicion;
   unidadPresion?: IUnidadPresion;
   correctora?: ICorrectora;
@@ -47,6 +49,7 @@ type OmitirCreate =
   | "cliente"
   | "unidadDeNegocio"
   | "centroOperativo"
+  | "localidad"
   | "puntoMedicion"
   | "unidadPresion"
   | "correctora";
@@ -58,6 +61,7 @@ type OmitirUpdate =
   | "cliente"
   | "unidadDeNegocio"
   | "centroOperativo"
+  | "localidad"
   | "puntoMedicion"
   | "unidadPresion"
   | "correctora";
