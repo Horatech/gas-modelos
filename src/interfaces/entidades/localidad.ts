@@ -11,9 +11,9 @@ export interface ILocalidad {
   nombre?: string;
 
   // Virtuals
-  cliente: ICliente;
-  unidadNegocio: IUnidadNegocio;
-  centroOperativo: ICentroOperativo;
+  cliente?: ICliente;
+  unidadNegocio?: IUnidadNegocio;
+  centroOperativo?: ICentroOperativo;
 }
 
 // CREATE
