@@ -4,6 +4,7 @@ export * from "./config-dispositivo";
 export * from "./alerta";
 export * from "./correctora";
 export * from "./dispositivo";
+export * from "./envioSms";
 export * from "./localidad";
 export * from "./mantenimiento";
 export * from "./punto-medicion";

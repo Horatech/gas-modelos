@@ -15,6 +15,5 @@ export * from "./unidadNegocio";
 export * from "./auditoria-veribox";
 //
 export * from "./resumen.dto";
-export * from "./envioSms";
 export * from "./agrupacion";
 export * from "./resumen-reportes";
