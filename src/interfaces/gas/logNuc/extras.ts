@@ -177,6 +177,7 @@ export enum ucv {
   Mercury,
   Minicor,
   AmericanMeter,
+  Elgas,
 }
 
 export type ModeloCorrectora =
@@ -187,7 +188,8 @@ export type ModeloCorrectora =
   | "Proser"
   | "Mercury"
   | "Minicor"
-  | "AmericanMeter";
+  | "AmericanMeter"
+  | "Elgas";
 
 export const modelosCorrectoras: ModeloCorrectora[] = [
   "Nada",
@@ -198,6 +200,7 @@ export const modelosCorrectoras: ModeloCorrectora[] = [
   "Mercury",
   "Minicor",
   "AmericanMeter",
+  "Elgas",
 ];
 
 export type TipoMensaje =
