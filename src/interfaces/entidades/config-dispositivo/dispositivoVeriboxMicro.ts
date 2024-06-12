@@ -6,4 +6,5 @@ export interface IDispositivoVeriboxMicro {
   apn?: string;
   usuario?: string;
   clave?: string;
+  migrar?: boolean;
 }
