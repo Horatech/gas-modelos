@@ -4,6 +4,7 @@ export interface IReporteWRC {
   meter_info?: MeterInfo;
   valve?: FixIot;
   alarm?: Alarm;
+  timestamp?: string;
 }
 
 export interface Alarm {
