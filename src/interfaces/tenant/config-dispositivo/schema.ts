@@ -26,6 +26,9 @@ export interface IConfigDispositivoNSP4G {
     | "REG8_8HORAS"
     | "REG12_12HORAS";
   timestampBloqueo?: number;
+  telefono1?: string;
+  telefono2?: string;
+  telefono3?: string;
 }
 
 export interface IConfigDispositivoVeribox {
