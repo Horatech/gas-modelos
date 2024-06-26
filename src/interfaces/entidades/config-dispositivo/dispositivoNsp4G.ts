@@ -17,4 +17,7 @@ export interface IDispositivoNsp4G {
   limiteMax?: number;
   medicionInstantanea?: number;
   voltajeBateria?: number;
+  telefono1?: string;
+  telefono2?: string;
+  telefono3?: string;
 }
