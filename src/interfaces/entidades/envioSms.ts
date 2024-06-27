@@ -3,6 +3,7 @@ import { IAgrupacion } from "../gas/agrupacion";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { IGrupo } from "../gas/grupo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
+import { ILocalidad } from "./localidad";
 
 export type TipoAlerta =
   | "Unidades Presión - Fuera de límite"
@@ -15,7 +16,8 @@ export type Agrupacion =
   | "Unidad de Negocio"
   | "Centro Operativo"
   | "Grupo"
-  | "Agrupacion";
+  | "Agrupacion"
+  | "Localidad";
 
 export interface IEnvioSms {
   _id?: string;
@@ -28,6 +30,7 @@ export interface IEnvioSms {
   idCentroOperativo?: string | null;
   idGrupo?: string | null;
   idAgrupacion?: string | null;
+  idLocalidad?: string | null;
 
   idsUsuarios?: string[];
 
@@ -36,6 +39,7 @@ export interface IEnvioSms {
   centroOperativo?: ICentroOperativo;
   grupo?: IGrupo;
   agrupacion2?: IAgrupacion;
+  localidad?: ILocalidad;
   usuarios?: IUsuario[];
 }
 
@@ -46,6 +50,7 @@ type OmitirCreate =
   | "centroOperativo"
   | "grupo"
   | "agrupacion2"
+  | "localidad"
   | "usuarios";
 export interface ICreateEnvioSms
   extends Omit<Partial<IEnvioSms>, OmitirCreate> {}
@@ -57,6 +62,7 @@ type OmitirUpdate =
   | "centroOperativo"
   | "grupo"
   | "agrupacion2"
+  | "localidad"
   | "usuarios";
 export interface IUpdateEnvioSms
   extends Omit<Partial<IEnvioSms>, OmitirUpdate> {}
