@@ -24,4 +24,5 @@ export interface IDispositivoNsp4G {
   iccid?: string;
   apn?: string;
   estadoAPN?: boolean;
+  operadora?: string;
 }

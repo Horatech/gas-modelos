@@ -33,6 +33,7 @@ export interface IConfigDispositivoNSP4G {
   iccid?: string;
   apn?: string;
   estadoAPN?: boolean;
+  operadora?: string;
 }
 
 export interface IConfigDispositivoVeribox {
