@@ -1,4 +1,5 @@
 import { IDeviceInfo, ITenantInfo } from "../auxiliares";
+import { IMedidorResidencial } from "../gas";
 import { IPuntoMedicion } from "./punto-medicion";
 import { IUnidadPresion } from "./unidadPresion";
 import { IValoresReporte } from "./valores reporte/valoresReporte";
@@ -18,12 +19,21 @@ export interface IReporte {
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
   unidadPresion?: IUnidadPresion;
+  medidorResidencial?: IMedidorResidencial;
 }
 
 ////// CREATE
-type OmitirCreate = "_id" | "puntoMedicion" | "unidadPrsion";
+type OmitirCreate =
+  | "_id"
+  | "puntoMedicion"
+  | "unidadPrsion"
+  | "medidorResidencial";
 export interface ICreateReporte extends Omit<Partial<IReporte>, OmitirCreate> {}
 
 ////// UPDATE
-type OmitirUpdate = "_id" | "puntoMedicion" | "unidadPrsion";
+type OmitirUpdate =
+  | "_id"
+  | "puntoMedicion"
+  | "unidadPrsion"
+  | "medidorResidencial";
 export interface IUpdateReporte extends Omit<Partial<IReporte>, OmitirUpdate> {}
