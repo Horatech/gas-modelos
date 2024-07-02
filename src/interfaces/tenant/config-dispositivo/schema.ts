@@ -29,6 +29,10 @@ export interface IConfigDispositivoNSP4G {
   telefono1?: string;
   telefono2?: string;
   telefono3?: string;
+  lugar?: string;
+  iccid?: string;
+  apn?: string;
+  estadoAPN?: boolean;
 }
 
 export interface IConfigDispositivoVeribox {

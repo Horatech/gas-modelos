@@ -21,4 +21,7 @@ export interface IDispositivoNsp4G {
   telefono2?: string;
   telefono3?: string;
   lugar?: string;
+  iccid?: string;
+  apn?: string;
+  estadoAPN?: boolean;
 }
