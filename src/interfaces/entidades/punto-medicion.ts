@@ -3,11 +3,11 @@ import { Division, ICliente } from "../tenant";
 import { IAgrupacion } from "../gas/agrupacion";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { ICuenca } from "../gas/cuenca";
-import { IGrupo } from "../gas/grupo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICorrectora, IEstado } from "./correctora";
 import { IUnidadPresion } from "./unidadPresion";
 import { ILocalidad } from "./localidad";
+import { IGrupo } from "./grupo";
 
 export interface IPuntoMedicion {
   _id?: string;

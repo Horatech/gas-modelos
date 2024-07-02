@@ -1,8 +1,7 @@
 import { ICoordenadas } from "../../auxiliares";
-import { IDispositivo } from "../../entidades";
+import { IDispositivo, IGrupo } from "../../entidades";
 import { ICentroOperativo } from "../centroOperativo";
 import { ICuenca } from "../cuenca";
-import { IGrupo } from "../grupo";
 import { IReporteSml } from "../reporteSml";
 import { IUnidadNegocio } from "../unidadNegocio";
 

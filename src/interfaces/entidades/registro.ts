@@ -1,11 +1,11 @@
 import { ICliente } from "../tenant";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { ICuenca } from "../gas/cuenca";
-import { IGrupo } from "../gas/grupo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICorrectora } from "./correctora";
 import { IPuntoMedicion } from "./punto-medicion";
 import { ILocalidad } from "./localidad";
+import { IGrupo } from "./grupo";
 
 export interface IRegistro {
   _id?: string;

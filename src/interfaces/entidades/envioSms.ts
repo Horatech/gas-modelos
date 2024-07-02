@@ -1,9 +1,9 @@
 import { IUsuario } from "../tenant";
 import { IAgrupacion } from "../gas/agrupacion";
 import { ICentroOperativo } from "../gas/centroOperativo";
-import { IGrupo } from "../gas/grupo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ILocalidad } from "./localidad";
+import { IGrupo } from "./grupo";
 
 export type TipoAlerta =
   | "Unidades Presión - Fuera de límite"
