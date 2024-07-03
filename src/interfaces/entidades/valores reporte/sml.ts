@@ -6,6 +6,8 @@ export interface IReporteSML {
   pulseConstant?: number;
   meterType?: number;
   meteringMode?: number;
+  meter_reading?: number;
+  reverse_accumulated_flow?: number;
   batteryVoltage?: number;
   statusWord?: number;
   triggerSource?: number;
