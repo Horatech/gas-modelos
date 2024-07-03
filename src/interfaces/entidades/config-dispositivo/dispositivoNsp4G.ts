@@ -23,6 +23,8 @@ export interface IDispositivoNsp4G {
   lugar?: string;
   iccid?: string;
   apn?: string;
+  user?: string;
+  pass?: string;
   estadoAPN?: boolean;
   operadora?: string;
 }
