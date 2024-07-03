@@ -11,6 +11,7 @@ export interface IReporteSML {
   triggerSource?: number;
   checksum?: number;
   // Parsed
+  timestamp?: string;
   consumo?: number;
   consumoNegativo?: number;
   bateria?: number;
