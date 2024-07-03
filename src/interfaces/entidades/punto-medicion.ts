@@ -30,6 +30,9 @@ export interface IPuntoMedicion {
   // Medidor Residencial
   idMedidorResidencial?: string | null;
   fechaAsignacionMedidorResidencial?: string | null;
+  // Medidor Residencial Agua
+  idMedidorResidencialAgua?: string | null;
+  fechaAsignacionMedidorResidencialAgua?: string | null;
   // Calculado por el backend
   estado?: IEstado;
   // Tenancy
