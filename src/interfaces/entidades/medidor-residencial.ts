@@ -34,3 +34,25 @@ export interface IMedidorResidencial {
   grupos?: IGrupo[];
   dispositivo?: IDispositivo;
 }
+
+////// CREATE
+type OmitirCreate =
+  | "_id"
+  | "unidadNegocio"
+  | "centroOperativo"
+  | "cuenca"
+  | "grupos"
+  | "dispositivo";
+export interface ICreateMedidorResidencial
+  extends Omit<Partial<IMedidorResidencial>, OmitirCreate> {}
+
+////// UPDATE
+type OmitirUpdate =
+  | "_id"
+  | "unidadNegocio"
+  | "centroOperativo"
+  | "cuenca"
+  | "grupos"
+  | "dispositivo";
+export interface IUpdateMedidorResidencial
+  extends Omit<Partial<IMedidorResidencial>, OmitirUpdate> {}
