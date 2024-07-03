@@ -16,4 +16,3 @@ export * from "./auditoria-veribox";
 export * from "./resumen.dto";
 export * from "./agrupacion";
 export * from "./resumen-reportes";
-export * from "./reporteWrc";

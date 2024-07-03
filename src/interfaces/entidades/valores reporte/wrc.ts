@@ -5,6 +5,10 @@ export interface IReporteWRC {
   valve?: FixIot;
   alarm?: Alarm;
   timestamp?: string;
+  // Parsed
+  consumo?: number;
+  consumoNegativo?: number;
+  bateria?: number;
 }
 
 export interface Alarm {
@@ -45,12 +49,3 @@ export interface MeterInfo {
   daily_dense_data_acquisition_cycle?: number;
   for_test_dept?: number;
 }
-
-type OmitirCreate = '_id';
-export interface ICreateReporteWRC
-  extends Omit<Partial<IReporteWRC>, OmitirCreate> {}
-
-type OmitirUpdate = '_id';
-
-export interface IUpdateReporteWRC
-  extends Omit<Partial<IReporteWRC>, OmitirUpdate> {}

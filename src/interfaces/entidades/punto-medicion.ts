@@ -8,6 +8,7 @@ import { ICorrectora, IEstado } from "./correctora";
 import { IUnidadPresion } from "./unidadPresion";
 import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
+import { IMedidorResidencial } from "../gas";
 
 export interface IPuntoMedicion {
   _id?: string;
@@ -26,6 +27,9 @@ export interface IPuntoMedicion {
   // Unidad de Presion
   idUnidadPresion?: string | null;
   fechaAsignacionUnidadPresion?: string | null;
+  // Medidor Residencial
+  idMedidorResidencial?: string | null;
+  fechaAsignacionMedidorResidencial?: string | null;
   // Calculado por el backend
   estado?: IEstado;
   // Tenancy
@@ -40,6 +44,7 @@ export interface IPuntoMedicion {
   // Virtuals
   correctora?: ICorrectora;
   unidadPresion?: IUnidadPresion;
+  medidorResidencial?: IMedidorResidencial;
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
@@ -54,6 +59,7 @@ type OmitirCreate =
   | "_id"
   | "correctora"
   | "unidadPresion"
+  | "medidorResidencial"
   | "cliente"
   | "unidadNegocio"
   | "centroOperativo"
@@ -69,6 +75,7 @@ type OmitirUpdate =
   | "_id"
   | "correctora"
   | "unidadPresion"
+  | "medidorResidencial"
   | "cliente"
   | "unidadNegocio"
   | "centroOperativo"
