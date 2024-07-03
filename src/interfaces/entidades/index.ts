@@ -8,6 +8,7 @@ export * from "./envioSms";
 export * from "./grupo";
 export * from "./localidad";
 export * from "./mantenimiento";
+export * from "./medidor-residencial";
 export * from "./punto-medicion";
 export * from "./registro";
 export * from "./reporte";

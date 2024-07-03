@@ -8,7 +8,8 @@ import { ICorrectora, IEstado } from "./correctora";
 import { IUnidadPresion } from "./unidadPresion";
 import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
-import { IMedidorResidencial } from "../gas";
+import { IMedidorResidencial } from "./medidor-residencial";
+import { IMedidorResidencialAgua } from "../gas";
 
 export interface IPuntoMedicion {
   _id?: string;
@@ -48,6 +49,7 @@ export interface IPuntoMedicion {
   correctora?: ICorrectora;
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
+  medidorResidencialAgua?: IMedidorResidencialAgua;
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;

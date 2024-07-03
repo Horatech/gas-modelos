@@ -1,5 +1,6 @@
 import { IDeviceInfo, ITenantInfo } from "../auxiliares";
-import { IMedidorResidencial } from "../gas";
+import { IMedidorResidencialAgua } from "../gas";
+import { IMedidorResidencial } from "./medidor-residencial";
 import { IPuntoMedicion } from "./punto-medicion";
 import { IUnidadPresion } from "./unidadPresion";
 import { IValoresReporte } from "./valores reporte/valoresReporte";
@@ -20,6 +21,7 @@ export interface IReporte {
   puntoMedicion?: IPuntoMedicion;
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
+  medidorResidencialAgua?: IMedidorResidencialAgua;
 }
 
 ////// CREATE
