@@ -11,7 +11,7 @@ export type Nivel =
   | "Centro Operativo"
   | "Localidad"
   | "Agrupación";
-export type Division = "Correctoras" | "Presión";
+export type Division = "Correctoras" | "Presión" | "Residencial";
 
 export interface IPermiso {
   nivel?: Nivel;
