@@ -1,5 +1,6 @@
 import { ICoordenadas } from "../auxiliares";
 import { ICentroOperativo, ICuenca, IUnidadNegocio } from "../gas";
+import { IEstado } from "./correctora";
 import { IDispositivo } from "./dispositivo";
 import { IGrupo } from "./grupo";
 import { IReporte } from "./reporte";
@@ -13,6 +14,7 @@ export interface IMedidorResidencial {
   fechaCreacion?: string;
   //
   ultimoReporte?: IReporte;
+  estadoActual?: IEstado;
   //
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
