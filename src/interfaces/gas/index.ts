@@ -4,11 +4,8 @@ export * from "./centroOperativo";
 export * from "./cromatografia";
 export * from "./cuenca";
 export * from "./logNuc";
-export * from "./medidorResidencialAgual";
 export * from "./notificacion";
 export * from "./passwordReset";
-export * from "./reporteMra";
-export * from "./reporteSml";
 export * from "./unidadNegocio";
 export * from "./auditoria-veribox";
 //

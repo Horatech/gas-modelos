@@ -9,7 +9,7 @@ import { IUnidadPresion } from "./unidadPresion";
 import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
 import { IMedidorResidencial } from "./medidor-residencial";
-import { IMedidorResidencialAgua } from "../gas";
+import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 
 export interface IPuntoMedicion {
   _id?: string;

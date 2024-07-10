@@ -3,9 +3,9 @@ import { IMedidorResidencial } from "./medidor-residencial";
 import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IPuntoMedicion } from "./punto-medicion";
 import { IUnidadPresion } from "./unidadPresion";
-import { IValoresReporte } from "./valores-reporte/valoresReporte";
+import { IValoresLogReporte } from "./valores-log-reporte";
 
-export interface IReporte {
+export interface ILogReporte {
   _id?: string;
   fechaCreacion?: string;
   // Tentant
@@ -15,7 +15,7 @@ export interface IReporte {
   // Ids de otras entidades que tienen asignado el dispositivo
   idsAsignados?: string[];
   // Datos especificos de acuerdo al tipo de dispositivo
-  valores?: IValoresReporte;
+  valores?: IValoresLogReporte;
 
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
@@ -30,7 +30,8 @@ type OmitirCreate =
   | "puntoMedicion"
   | "unidadPrsion"
   | "medidorResidencial";
-export interface ICreateReporte extends Omit<Partial<IReporte>, OmitirCreate> {}
+export interface ICreateLogReporte
+  extends Omit<Partial<ILogReporte>, OmitirCreate> {}
 
 ////// UPDATE
 type OmitirUpdate =
@@ -38,4 +39,5 @@ type OmitirUpdate =
   | "puntoMedicion"
   | "unidadPrsion"
   | "medidorResidencial";
-export interface IUpdateReporte extends Omit<Partial<IReporte>, OmitirUpdate> {}
+export interface IUpdateLogReporte
+  extends Omit<Partial<ILogReporte>, OmitirUpdate> {}
