@@ -1,3 +1,4 @@
+import { TipoDispositivo } from "../../auxiliares";
 import { IDispositivo } from "../../entidades/dispositivo";
 
 export interface IConfigDispositivoNUC4G {
@@ -55,7 +56,10 @@ export interface IConfigDispositivo {
   _id?: string;
   idCliente?: string;
   // Info de carga
+  fechaCreacion?: string;
+  fechaAplicacion?: string;
   deveui?: string;
+  tipo?: TipoDispositivo;
   config?: Record<string, any>;
   // Virtuals
   dispositivo?: IDispositivo;
