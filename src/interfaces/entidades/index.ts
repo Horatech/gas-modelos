@@ -1,6 +1,6 @@
 export * from "./valores-reporte";
 export * from "./valores-log-reporte";
-export * from "./config-dispositivo";
+export * from "./configs-dispositivo";
 // Entidades
 export * from "./alerta";
 export * from "./config-dispositivo";
