@@ -1,5 +1,5 @@
-import { TipoDispositivo } from "../../auxiliares";
-import { IDispositivo } from "../../entidades/dispositivo";
+import { TipoDispositivo } from "../auxiliares";
+import { IDispositivo } from "./dispositivo";
 
 export interface IConfigDispositivoNUC4G {
   horaInicio?: number;
@@ -64,3 +64,13 @@ export interface IConfigDispositivo {
   // Virtuals
   dispositivo?: IDispositivo;
 }
+
+// CREATE
+type OmitirCreate = "_id" | "dispositivo";
+export interface ICreateConfigDispositivo
+  extends Omit<Partial<IConfigDispositivo>, OmitirCreate> {}
+
+// UPDATE
+type OmitirUpdate = "_id" | "dispositivo";
+export interface IUpdateConfigDispositivo
+  extends Omit<Partial<IConfigDispositivo>, OmitirUpdate> {}

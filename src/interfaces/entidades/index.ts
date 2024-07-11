@@ -3,6 +3,7 @@ export * from "./valores-log-reporte";
 export * from "./config-dispositivo";
 // Entidades
 export * from "./alerta";
+export * from "./config-dispositivo";
 export * from "./correctora";
 export * from "./dispositivo";
 export * from "./envioSms";
