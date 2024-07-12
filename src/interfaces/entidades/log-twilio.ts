@@ -20,7 +20,7 @@ export interface ILogTwilio {
   tipo?: TipoMensajeTwilio;
   mensaje?: string;
   telefono?: string;
-  respuesta?: string;
+  respuesta?: Record<string, any>;
 
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
