@@ -1,4 +1,5 @@
 import { IDeviceInfo, ITenantInfo } from "../auxiliares";
+import { ICorrectora } from "./correctora";
 import { IMedidorResidencial } from "./medidor-residencial";
 import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IPuntoMedicion } from "./punto-medicion";
@@ -19,6 +20,7 @@ export interface IReporte {
 
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
+  correctora?: ICorrectora;
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
@@ -28,6 +30,7 @@ export interface IReporte {
 type OmitirCreate =
   | "_id"
   | "puntoMedicion"
+  | "correctora"
   | "unidadPrsion"
   | "medidorResidencial";
 export interface ICreateReporte extends Omit<Partial<IReporte>, OmitirCreate> {}
@@ -36,6 +39,7 @@ export interface ICreateReporte extends Omit<Partial<IReporte>, OmitirCreate> {}
 type OmitirUpdate =
   | "_id"
   | "puntoMedicion"
+  | "correctora"
   | "unidadPrsion"
   | "medidorResidencial";
 export interface IUpdateReporte extends Omit<Partial<IReporte>, OmitirUpdate> {}
