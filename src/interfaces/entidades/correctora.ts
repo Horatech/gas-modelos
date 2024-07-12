@@ -1,9 +1,8 @@
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { ICromatografia } from "../gas/cromatografia";
-import { ModeloCorrectora } from "../gas/logNuc";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { IRegistro } from "./registro";
-import { IAlerta, IDispositivo, ILocalidad } from ".";
+import { IAlerta, IDispositivo, ILocalidad, ModeloCorrectora } from ".";
 
 export type IEstado =
   | "Sin Asignar"

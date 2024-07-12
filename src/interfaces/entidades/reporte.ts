@@ -2,7 +2,7 @@ import { IDeviceInfo, ITenantInfo } from "../auxiliares";
 import { IMedidorResidencial } from "./medidor-residencial";
 import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IPuntoMedicion } from "./punto-medicion";
-import { IUnidadPresion } from "./unidadPresion";
+import { IUnidadPresion } from "./unidad-presion";
 import { IValoresReporte } from "./valores-reporte/valoresReporte";
 
 export interface IReporte {

@@ -5,7 +5,7 @@ import { ICentroOperativo } from "../gas/centroOperativo";
 import { ICuenca } from "../gas/cuenca";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICorrectora, IEstado } from "./correctora";
-import { IUnidadPresion } from "./unidadPresion";
+import { IUnidadPresion } from "./unidad-presion";
 import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
 import { IMedidorResidencial } from "./medidor-residencial";
