@@ -1,4 +1,5 @@
 import { IDeviceInfo, ITenantInfo } from "../auxiliares";
+import { ICorrectora } from "./correctora";
 import { IMedidorResidencial } from "./medidor-residencial";
 import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IPuntoMedicion } from "./punto-medicion";
@@ -19,6 +20,7 @@ export interface ILogReporte {
 
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
+  correctora?: ICorrectora;
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
@@ -28,6 +30,7 @@ export interface ILogReporte {
 type OmitirCreate =
   | "_id"
   | "puntoMedicion"
+  | "correctora"
   | "unidadPrsion"
   | "medidorResidencial";
 export interface ICreateLogReporte
@@ -37,6 +40,7 @@ export interface ICreateLogReporte
 type OmitirUpdate =
   | "_id"
   | "puntoMedicion"
+  | "correctora"
   | "unidadPrsion"
   | "medidorResidencial";
 export interface IUpdateLogReporte
