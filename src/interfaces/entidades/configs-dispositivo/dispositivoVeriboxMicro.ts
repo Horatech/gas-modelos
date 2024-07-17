@@ -1,10 +1,13 @@
 export interface IDispositivoVeriboxMicro {
-  telefono?: string;
+  // Config Reportada por las auditorias
   frecuenciaComunicacion?: number;
   limiteMin?: number;
   limiteMax?: number;
   apn?: string;
   usuario?: string;
   clave?: string;
+  // Migracion
+  telefono?: string;
   migrar?: boolean;
+  fechaMigrar?: string;
 }
