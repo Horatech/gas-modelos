@@ -8,6 +8,7 @@ export type ITipoAlerta =
   | "Sin Reportar"
   | "Valor Alto"
   | "Valor Bajo"
+  | "Fuera de rango"
   | "Error de comunicación";
 
 export interface IAlerta {
