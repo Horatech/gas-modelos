@@ -7,7 +7,8 @@ import { IGrupo } from "./grupo";
 
 export type TipoAlerta =
   | "Unidades Presión - Fuera de límite"
-  | "Unidades Presión - Error en reporte de alarma";
+  | "Unidades Presión - Error en reporte de alarma"
+  | "Unidades Presión - Sensor desconectado";
 
 export type TipoEnvio = "SMS" | "WhatsApp" | "Llamada" | "Notificacion Push";
 
