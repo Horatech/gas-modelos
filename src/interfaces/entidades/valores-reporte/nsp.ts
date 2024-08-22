@@ -2,7 +2,7 @@ export interface IReporteNSP {
   timestamp?: string;
   temperatura?: number;
   presion?: number;
-  unidad: string;
+  unidad?: string;
   bateria?: number;
   sensor?: number;
 }
