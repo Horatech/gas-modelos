@@ -9,7 +9,8 @@ export type ITipoAlerta =
   | "Valor Alto"
   | "Valor Bajo"
   | "Fuera de rango"
-  | "Error de comunicación";
+  | "Error de comunicación"
+  | "Sensor desconectado";
 
 export interface IAlerta {
   _id?: string;
