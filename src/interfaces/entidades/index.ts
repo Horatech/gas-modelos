@@ -20,4 +20,5 @@ export * from "./punto-medicion";
 export * from "./registro";
 export * from "./reporte";
 export * from "./unidad-presion";
+export * from "./firmware";
 //
