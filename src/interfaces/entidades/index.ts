@@ -21,4 +21,5 @@ export * from "./registro";
 export * from "./reporte";
 export * from "./unidad-presion";
 export * from "./firmware";
+export * from "./firmware-por-cliente";
 //
