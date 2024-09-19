@@ -3,9 +3,9 @@ import { IFirmware, TipoDispositivoFirmware } from "./firmware";
 
 export interface IFirmwarePorCliente {
   _id?: string;
-  idCliente: string;
-  idFirmware: string;
-  tipo: TipoDispositivoFirmware;
+  idCliente?: string;
+  idFirmware?: string;
+  tipo?: TipoDispositivoFirmware;
   fechaCreacion?: string;
   version?: string;
   // Populate
