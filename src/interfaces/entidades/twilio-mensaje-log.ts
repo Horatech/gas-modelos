@@ -21,7 +21,7 @@ export type TwilioMessageDirection =
   | 'outbound-reply';
 
 export interface ITwilioMensajeLog {
-  id: string;
+  _id: string;
   fechaCreacion?: string;
   idCliente?: string;
   phone?: string;
