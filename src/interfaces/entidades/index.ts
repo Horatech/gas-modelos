@@ -23,4 +23,5 @@ export * from './unidad-presion';
 export * from './firmware';
 export * from './firmware-por-cliente';
 export * from './twilio-templates';
+export * from './twilio-mensaje-log';
 //
