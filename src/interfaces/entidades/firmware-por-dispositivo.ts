@@ -14,11 +14,11 @@ export interface IFirmwarePorDispositivo {
 }
 
 // CREATE
-type OmitirCreate = "_id" | "cliente" | "firmware" | "fechaCreacion";
+type OmitirCreate = "_id" | "dispositivo" | "firmware" | "fechaCreacion";
 export interface ICreateFirmwarePorCliente
   extends Omit<Partial<IFirmwarePorDispositivo>, OmitirCreate> {}
 
 // UPDATE
-type OmitirUpdate = "_id" | "cliente" | "firmware" | "fechaCreacion";
+type OmitirUpdate = "_id" | "dispositivo" | "firmware" | "fechaCreacion";
 export interface IUpdateFirmwarePorCliente
   extends Omit<Partial<IFirmwarePorDispositivo>, OmitirUpdate> {}
