@@ -15,10 +15,10 @@ export interface IFirmwarePorDispositivo {
 
 // CREATE
 type OmitirCreate = "_id" | "dispositivo" | "firmware" | "fechaCreacion";
-export interface ICreateFirmwarePorCliente
+export interface ICreateFirmwarePorDispositivo
   extends Omit<Partial<IFirmwarePorDispositivo>, OmitirCreate> {}
 
 // UPDATE
 type OmitirUpdate = "_id" | "dispositivo" | "firmware" | "fechaCreacion";
-export interface IUpdateFirmwarePorCliente
+export interface IUpdateFirmwarePorDispositivo
   extends Omit<Partial<IFirmwarePorDispositivo>, OmitirUpdate> {}
