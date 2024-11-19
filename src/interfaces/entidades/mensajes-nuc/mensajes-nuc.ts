@@ -189,7 +189,8 @@ export type ModeloCorrectora =
   | "Mercury"
   | "Minicor"
   | "AmericanMeter"
-  | "Elcor";
+  | "Elcor"
+  | "Instromet";
 
 export const modelosCorrectoras: ModeloCorrectora[] = [
   "Nada",
@@ -201,6 +202,7 @@ export const modelosCorrectoras: ModeloCorrectora[] = [
   "Minicor",
   "AmericanMeter",
   "Elcor",
+  "Instromet",
 ];
 
 export type TipoMensaje =
