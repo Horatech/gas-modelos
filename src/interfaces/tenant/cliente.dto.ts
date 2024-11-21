@@ -1,4 +1,5 @@
 import { TipoDispositivo } from "../auxiliares";
+import { IConfigCliente } from "./cliente.model";
 import { IIntegracion } from "./integraciones";
 
 export interface IImagenesCliente {
@@ -13,6 +14,7 @@ export interface ICreateCliente {
   imagenes?: IImagenesCliente;
   tiposDispositivo?: TipoDispositivo[];
   integraciones?: IIntegracion[];
+  config?: IConfigCliente;
 }
 
 export interface IUpdateCliente {
@@ -22,4 +24,5 @@ export interface IUpdateCliente {
   imagenes?: IImagenesCliente;
   tiposDispositivo?: TipoDispositivo[];
   integraciones?: IIntegracion[];
+  config?: IConfigCliente;
 }
