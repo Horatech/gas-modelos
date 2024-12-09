@@ -1,15 +1,16 @@
-import { GeoJSON, ICoordenadas } from "../auxiliares";
-import { Division, ICliente } from "../tenant";
-import { IAgrupacion } from "../gas/agrupacion";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { ICuenca } from "../gas/cuenca";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ICorrectora, IEstado } from "./correctora";
-import { IUnidadPresion } from "./unidad-presion";
-import { ILocalidad } from "./localidad";
-import { IGrupo } from "./grupo";
-import { IMedidorResidencial } from "./medidor-residencial";
-import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
+import { GeoJSON, ICoordenadas } from '../auxiliares';
+import { Division, ICliente } from '../tenant';
+import { IAgrupacion } from '../gas/agrupacion';
+import { ICentroOperativo } from '../gas/centroOperativo';
+import { ICuenca } from '../gas/cuenca';
+import { IUnidadNegocio } from '../gas/unidadNegocio';
+import { ICorrectora, IEstado } from './correctora';
+import { IUnidadPresion } from './unidad-presion';
+import { ILocalidad } from './localidad';
+import { IGrupo } from './grupo';
+import { IMedidorResidencial } from './medidor-residencial';
+import { IMedidorResidencialAgua } from './medidor-residencial-agua';
+import { IPresionScada } from './presion-scada';
 
 export interface IPuntoMedicion {
   _id?: string;
@@ -34,6 +35,9 @@ export interface IPuntoMedicion {
   // Medidor Residencial Agua
   idMedidorResidencialAgua?: string | null;
   fechaAsignacionMedidorResidencialAgua?: string | null;
+  // SCADA
+  idDispositivoScada?: string[] | null;
+  fechaAsignacionDispositivoScada?: string | null;
   // Calculado por el backend
   estado?: IEstado;
   // Tenancy
@@ -50,6 +54,7 @@ export interface IPuntoMedicion {
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
+  presionScadas?: IPresionScada[];
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
@@ -59,34 +64,23 @@ export interface IPuntoMedicion {
   cuenca?: ICuenca;
 }
 
-////// CREATE
-type OmitirCreate =
-  | "_id"
-  | "correctora"
-  | "unidadPresion"
-  | "medidorResidencial"
-  | "cliente"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad2"
-  | "grupos"
-  | "agrupaciones"
-  | "cuenca";
+////// CREATE/UPDATE
+type Omitir =
+  | '_id'
+  | 'correctora'
+  | 'unidadPresion'
+  | 'medidorResidencial'
+  | 'medidorResidencialAgua'
+  | 'presionScadas'
+  | 'cliente'
+  | 'unidadNegocio'
+  | 'centroOperativo'
+  | 'localidad2'
+  | 'grupos'
+  | 'agrupaciones'
+  | 'cuenca';
 export interface ICreatePuntoMedicion
-  extends Omit<Partial<IPuntoMedicion>, OmitirCreate> {}
+  extends Omit<Partial<IPuntoMedicion>, Omitir> {}
 
-////// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "correctora"
-  | "unidadPresion"
-  | "medidorResidencial"
-  | "cliente"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad2"
-  | "grupos"
-  | "agrupaciones"
-  | "cuenca";
 export interface IUpdatePuntoMedicion
-  extends Omit<Partial<IPuntoMedicion>, OmitirUpdate> {}
+  extends Omit<Partial<IPuntoMedicion>, Omitir> {}

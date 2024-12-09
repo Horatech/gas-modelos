@@ -1,16 +1,22 @@
-import { ICorrectora, ILocalidad, IPuntoMedicion, IUnidadPresion } from ".";
-import { ICliente } from "../tenant";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
+import {
+  ICorrectora,
+  ILocalidad,
+  IPresionScada,
+  IPuntoMedicion,
+  IUnidadPresion,
+} from '.';
+import { ICliente } from '../tenant';
+import { ICentroOperativo } from '../gas/centroOperativo';
+import { IUnidadNegocio } from '../gas/unidadNegocio';
 
-export type IEstadoAlerta = "Cerrado" | "Activo";
+export type IEstadoAlerta = 'Cerrado' | 'Activo';
 export type ITipoAlerta =
-  | "Sin Reportar"
-  | "Valor Alto"
-  | "Valor Bajo"
-  | "Fuera de rango"
-  | "Error de comunicación"
-  | "Sensor desconectado";
+  | 'Sin Reportar'
+  | 'Valor Alto'
+  | 'Valor Bajo'
+  | 'Fuera de rango'
+  | 'Error de comunicación'
+  | 'Sensor desconectado';
 
 export interface IAlerta {
   _id?: string;
@@ -32,6 +38,7 @@ export interface IAlerta {
   idPuntoMedicion?: string;
   idUnidadPresion?: string;
   idCorrectora?: string;
+  idPresionScada?: string;
   numeroSerieCorrectora?: string | null;
   //
   fechaCreacion?: string;
@@ -43,28 +50,31 @@ export interface IAlerta {
   puntoMedicion?: IPuntoMedicion;
   unidadPresion?: IUnidadPresion;
   correctora?: ICorrectora;
+  scada?: IPresionScada;
 }
 
 ////// CREATE
 type OmitirCreate =
-  | "_id"
-  | "cliente"
-  | "unidadDeNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "puntoMedicion"
-  | "unidadPresion"
-  | "correctora";
+  | '_id'
+  | 'cliente'
+  | 'unidadDeNegocio'
+  | 'centroOperativo'
+  | 'localidad'
+  | 'puntoMedicion'
+  | 'unidadPresion'
+  | 'correctora'
+  | 'scada';
 export interface ICreateAlerta extends Omit<Partial<IAlerta>, OmitirCreate> {}
 
 ////// UPDATE
 type OmitirUpdate =
-  | "_id"
-  | "cliente"
-  | "unidadDeNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "puntoMedicion"
-  | "unidadPresion"
-  | "correctora";
+  | '_id'
+  | 'cliente'
+  | 'unidadDeNegocio'
+  | 'centroOperativo'
+  | 'localidad'
+  | 'puntoMedicion'
+  | 'unidadPresion'
+  | 'correctora'
+  | 'scada';
 export interface IUpdateAlerta extends Omit<Partial<IAlerta>, OmitirUpdate> {}

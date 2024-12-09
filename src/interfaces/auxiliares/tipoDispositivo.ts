@@ -41,7 +41,8 @@ export type TipoDispositivoGas =
   | 'MRA'
   | 'NSP'
   | 'VERIBOX MICRO'
-  | 'WRC';
+  | 'WRC'
+  | 'SCADA';
 
 export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
   'NUC',
@@ -50,4 +51,5 @@ export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
   'NSP',
   'VERIBOX MICRO',
   'WRC',
+  'SCADA',
 ];
