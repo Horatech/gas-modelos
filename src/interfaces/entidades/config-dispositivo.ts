@@ -1,5 +1,6 @@
 import { TipoDispositivo } from '../auxiliares';
 import { IDispositivo } from './dispositivo';
+import { IPresionScada } from './presion-scada';
 
 export interface IConfigDispositivoNUC4G {
   horaInicio?: number;
@@ -68,10 +69,12 @@ export interface IConfigDispositivo {
   fechaCreacion?: string;
   fechaAplicacion?: string;
   deveui?: string;
+  tag?: string; // Para los SCADA
   tipo?: TipoDispositivo;
   config?: Record<string, any>;
   // Virtuals
   dispositivo?: IDispositivo;
+  scada?: IPresionScada;
 }
 
 // CREATE
