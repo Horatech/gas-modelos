@@ -25,4 +25,5 @@ export * from './firmware-por-entidad';
 export * from './twilio-templates';
 export * from './twilio-mensaje-log';
 export * from './presion-scada';
+export * from './apikey';
 //
