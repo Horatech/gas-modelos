@@ -1,0 +1,9 @@
+{
+  "name": "gas-modelos",
+  "packageManager": "yarn@4.1.0",
+  "version": "1.0.0",
+  "description": "Modelos para el sitema de gas",
+  "author": "GPE Sistemas",
+  "license": "Private",
+  "repository": "https://github.com/GPE-Sistemas/gas-modelos"
+}
