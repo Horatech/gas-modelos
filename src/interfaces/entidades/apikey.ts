@@ -3,6 +3,7 @@ import { ICliente } from '../tenant';
 export interface IApikey {
   _id?: string;
   //
+  fechaCreacion?: string;
   identificacion?: string;
   key?: string;
   idCliente?: string;
@@ -10,10 +11,8 @@ export interface IApikey {
   cliente?: ICliente;
 }
 
-type OmitirCreate = '_id' | 'cliente';
+type Omitir = '_id' | 'fechaCreacion' | 'cliente';
 
-export interface ICreateApikey extends Omit<Partial<IApikey>, OmitirCreate> {}
+export interface ICreateApikey extends Omit<Partial<IApikey>, Omitir> {}
 
-type OmitirUpdate = '_id' | 'cliente';
-
-export interface IUpdateApikey extends Omit<Partial<IApikey>, OmitirUpdate> {}
+export interface IUpdateApikey extends Omit<Partial<IApikey>, Omitir> {}
