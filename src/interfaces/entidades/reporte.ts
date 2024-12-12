@@ -2,7 +2,7 @@ import { IDeviceInfo, ITenantInfo } from '../auxiliares';
 import { ICorrectora } from './correctora';
 import { IMedidorResidencial } from './medidor-residencial';
 import { IMedidorResidencialAgua } from './medidor-residencial-agua';
-import { IPresionScada } from './presion-scada';
+import { IScada } from './scada';
 import { IPuntoMedicion } from './punto-medicion';
 import { IUnidadPresion } from './unidad-presion';
 import { IValoresReporte } from './valores-reporte/valoresReporte';
@@ -25,7 +25,7 @@ export interface IReporte {
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
-  scada?: IPresionScada;
+  scada?: IScada;
 }
 
 ////// CREATE

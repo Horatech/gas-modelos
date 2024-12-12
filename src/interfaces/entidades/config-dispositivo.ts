@@ -1,6 +1,6 @@
 import { TipoDispositivo } from '../auxiliares';
 import { IDispositivo } from './dispositivo';
-import { IPresionScada } from './presion-scada';
+import { IScada } from './scada';
 
 export interface IConfigDispositivoNUC4G {
   horaInicio?: number;
@@ -52,7 +52,7 @@ export interface IConfigDispositivoVeribox {
   fechaAplicacion?: string;
 }
 
-export interface IConfigDispositivoPresionScada {
+export interface IConfigDispositivoScada {
   limiteHH?: number;
   limiteH?: number;
   limiteLL?: number;
@@ -74,7 +74,7 @@ export interface IConfigDispositivo {
   config?: Record<string, any>;
   // Virtuals
   dispositivo?: IDispositivo;
-  scada?: IPresionScada;
+  scada?: IScada;
 }
 
 // CREATE

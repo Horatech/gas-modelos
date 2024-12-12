@@ -1,4 +1,7 @@
-export interface IReportePresionScada {
+import { TipoScada } from '../scada';
+
+export interface IReporteScada {
+  tipo?: TipoScada;
   timestamp?: string;
   valorActual?: number;
   limiteHH?: number;

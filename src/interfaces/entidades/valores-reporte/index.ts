@@ -4,4 +4,4 @@ export * from './nsp';
 export * from './sml';
 export * from './veribox';
 export * from './wrc';
-export * from './presion-scada';
+export * from './scada';

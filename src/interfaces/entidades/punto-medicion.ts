@@ -10,7 +10,7 @@ import { ILocalidad } from './localidad';
 import { IGrupo } from './grupo';
 import { IMedidorResidencial } from './medidor-residencial';
 import { IMedidorResidencialAgua } from './medidor-residencial-agua';
-import { IPresionScada } from './presion-scada';
+import { IScada } from './scada';
 
 export interface IPuntoMedicion {
   _id?: string;
@@ -54,7 +54,7 @@ export interface IPuntoMedicion {
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
-  presionScadas?: IPresionScada[];
+  presionScadas?: IScada[];
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;

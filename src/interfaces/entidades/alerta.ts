@@ -1,7 +1,7 @@
 import {
   ICorrectora,
   ILocalidad,
-  IPresionScada,
+  IScada,
   IPuntoMedicion,
   IUnidadPresion,
 } from '.';
@@ -50,7 +50,7 @@ export interface IAlerta {
   puntoMedicion?: IPuntoMedicion;
   unidadPresion?: IUnidadPresion;
   correctora?: ICorrectora;
-  scada?: IPresionScada;
+  scada?: IScada;
 }
 
 ////// CREATE
