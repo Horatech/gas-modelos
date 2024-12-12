@@ -36,6 +36,6 @@ type Omitir =
   | 'localidad'
   | 'cliente';
 
-export interface ICreatePresionScada extends Omit<Partial<IScada>, Omitir> {}
+export interface ICreateScada extends Omit<Partial<IScada>, Omitir> {}
 
-export interface IUpdatePresionScada extends Omit<Partial<IScada>, Omitir> {}
+export interface IUpdateScada extends Omit<Partial<IScada>, Omitir> {}
