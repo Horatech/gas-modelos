@@ -54,7 +54,7 @@ export interface IPuntoMedicion {
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
-  presionScadas?: IScada[];
+  scadas?: IScada[];
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
@@ -71,7 +71,7 @@ type Omitir =
   | 'unidadPresion'
   | 'medidorResidencial'
   | 'medidorResidencialAgua'
-  | 'presionScadas'
+  | 'scadas'
   | 'cliente'
   | 'unidadNegocio'
   | 'centroOperativo'
