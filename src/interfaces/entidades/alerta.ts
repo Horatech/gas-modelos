@@ -38,7 +38,7 @@ export interface IAlerta {
   idPuntoMedicion?: string;
   idUnidadPresion?: string;
   idCorrectora?: string;
-  idPresionScada?: string;
+  idScada?: string;
   numeroSerieCorrectora?: string | null;
   //
   fechaCreacion?: string;
