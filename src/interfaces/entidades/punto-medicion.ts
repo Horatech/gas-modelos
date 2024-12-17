@@ -36,8 +36,8 @@ export interface IPuntoMedicion {
   idMedidorResidencialAgua?: string | null;
   fechaAsignacionMedidorResidencialAgua?: string | null;
   // SCADA
-  idDispositivoScada?: string[] | null;
-  fechaAsignacionDispositivoScada?: string | null;
+  idsScada?: string[] | null;
+  fechaAsignacionScada?: string | null;
   // Calculado por el backend
   estado?: IEstado;
   // Tenancy
