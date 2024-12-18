@@ -1,6 +1,13 @@
 import { ICentroOperativo } from '../gas/centroOperativo';
 import { IUnidadNegocio } from '../gas/unidadNegocio';
-import { IAlerta, IConfigDispositivo, IEstado, ILocalidad, IReporte } from '.';
+import {
+  IAlerta,
+  IConfigDispositivo,
+  IConfigDispositivoScada,
+  IEstado,
+  ILocalidad,
+  IReporte,
+} from '.';
 import { ICliente } from '../tenant';
 
 export type TipoScada = 'Presión' | 'Temperatura';
@@ -17,7 +24,7 @@ export interface IScada {
   ultimaAlerta?: IAlerta;
   //
   estadoActual?: IEstado;
-  config?: IConfigDispositivo;
+  config?: IConfigDispositivoScada;
   //
   idCliente?: string;
   idUnidadNegocio?: string;
