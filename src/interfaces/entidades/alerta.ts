@@ -21,6 +21,7 @@ export type ITipoAlerta =
 export interface IAlerta {
   _id?: string;
   deveui?: string;
+  tag?: string;
   deviceName?: string;
   firmwareNuc?: string;
   apiVersion?: string;
