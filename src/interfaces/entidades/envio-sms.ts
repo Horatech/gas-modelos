@@ -1,24 +1,25 @@
-import { IUsuario } from "../tenant";
-import { IAgrupacion } from "../gas/agrupacion";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ILocalidad } from "./localidad";
-import { IGrupo } from "./grupo";
+import { IUsuario } from '../tenant';
+import { IAgrupacion } from '../gas/agrupacion';
+import { ICentroOperativo } from '../gas/centroOperativo';
+import { IUnidadNegocio } from '../gas/unidadNegocio';
+import { ILocalidad } from './localidad';
+import { IGrupo } from './grupo';
 
 export type TipoAlerta =
-  | "Unidades Presión - Fuera de límite"
-  | "Unidades Presión - Error en reporte de alarma"
-  | "Unidades Presión - Sensor desconectado";
+  | 'Unidades Presión - Fuera de límite'
+  | 'Unidades Presión - Error en reporte de alarma'
+  | 'Unidades Presión - Sensor desconectado'
+  | 'SCADA - Fuera de límite';
 
-export type TipoEnvio = "SMS" | "WhatsApp" | "Llamada" | "Notificacion Push";
+export type TipoEnvio = 'SMS' | 'WhatsApp' | 'Llamada' | 'Notificacion Push';
 
 export type Agrupacion =
-  | "Global"
-  | "Unidad de Negocio"
-  | "Centro Operativo"
-  | "Grupo"
-  | "Agrupacion"
-  | "Localidad";
+  | 'Global'
+  | 'Unidad de Negocio'
+  | 'Centro Operativo'
+  | 'Grupo'
+  | 'Agrupacion'
+  | 'Localidad';
 
 export interface IEnvioSms {
   _id?: string;
@@ -46,24 +47,24 @@ export interface IEnvioSms {
 
 ////// CREATE
 type OmitirCreate =
-  | "_id"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "grupo"
-  | "agrupacion2"
-  | "localidad"
-  | "usuarios";
+  | '_id'
+  | 'unidadNegocio'
+  | 'centroOperativo'
+  | 'grupo'
+  | 'agrupacion2'
+  | 'localidad'
+  | 'usuarios';
 export interface ICreateEnvioSms
   extends Omit<Partial<IEnvioSms>, OmitirCreate> {}
 
 ////// UPDATE
 type OmitirUpdate =
-  | "_id"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "grupo"
-  | "agrupacion2"
-  | "localidad"
-  | "usuarios";
+  | '_id'
+  | 'unidadNegocio'
+  | 'centroOperativo'
+  | 'grupo'
+  | 'agrupacion2'
+  | 'localidad'
+  | 'usuarios';
 export interface IUpdateEnvioSms
   extends Omit<Partial<IEnvioSms>, OmitirUpdate> {}
