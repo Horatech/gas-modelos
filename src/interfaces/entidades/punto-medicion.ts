@@ -14,6 +14,8 @@ import { IScada } from './scada';
 
 export interface IPuntoMedicion {
   _id?: string;
+  //
+  posicion?: number;
   // GPS
   geojson?: GeoJSON;
   ubicacion?: ICoordenadas;
