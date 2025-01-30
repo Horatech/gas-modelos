@@ -26,4 +26,5 @@ export * from './twilio-templates';
 export * from './twilio-mensaje-log';
 export * from './scada';
 export * from './apikey';
+export * from './config-notificacion';
 //
