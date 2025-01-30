@@ -57,6 +57,9 @@ export interface IConfigDispositivoScada {
   limiteH?: number;
   limiteLL?: number;
   limiteL?: number;
+  // Min-Max para los gráficos.
+  minimo?: number;
+  maximo?: number;
   // Fecha de Aplicación
   fechaAplicacion?: string;
 }

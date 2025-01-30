@@ -23,6 +23,7 @@ export interface IScada {
   ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   //
+  habilitado?: boolean;
   estadoActual?: IEstado;
   config?: IConfigDispositivoScada;
   //
