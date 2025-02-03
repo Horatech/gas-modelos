@@ -19,6 +19,10 @@ export interface IScada {
   nombre?: string; /// Input
   tag?: string; /// Esto configura el tag para el OPC
   tipo?: TipoScada;
+  unidad?: string; // Input, para saber que reporta (además del tipo)
+  // Booleano
+  booleano?: boolean; // Input, para saber si es un valor booleano (Reporta 1 o 0 y andá a saber cuál es cuál)
+  booleanoValorAlarma?: boolean; // Input, para saber si el valor de alarma es 1 o 0
   //
   ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
