@@ -1,6 +1,6 @@
 import { ICliente, IUsuario } from '../tenant';
 import { TipoAlerta, TipoEnvio } from './envio-sms';
-import { IPuntoMedicion } from './punto-medicion';
+import { IScada } from './scada';
 
 export interface IConfigNotificacion {
   _id?: string;
@@ -9,17 +9,17 @@ export interface IConfigNotificacion {
   tipoEnvio?: TipoEnvio;
   tipoAlerta?: TipoAlerta;
   idsUsuarios?: string[];
-  idPuntoMedicion?: string;
+  tag?: string;
   //
   idCliente?: string;
   // Populate
   cliente?: ICliente;
-  puntoMedicion?: IPuntoMedicion;
+  scada?: IScada;
   usuarios?: IUsuario[];
 }
 
 ////// CREATE/UPDATE
-type Omitir = '_id' | 'cliente' | 'puntoMedicion' | 'usuarios';
+type Omitir = '_id' | 'cliente' | 'scada' | 'usuarios';
 export interface ICreateConfigNotificacion
   extends Omit<Partial<IConfigNotificacion>, Omitir> {}
 
