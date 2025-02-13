@@ -11,7 +11,12 @@ export type Nivel =
   | 'Centro Operativo'
   | 'Localidad'
   | 'Agrupación';
-export type Division = 'Correctoras' | 'Presión' | 'Residencial' | 'SCADA';
+export type Division =
+  | 'Correctoras'
+  | 'Presión'
+  | 'Residencial'
+  | 'SCADA Unifilares'
+  | 'SCADA Mediciones';
 
 export interface IPermiso {
   nivel?: Nivel;
