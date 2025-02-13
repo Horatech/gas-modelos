@@ -22,7 +22,7 @@ export interface IScada {
   division?: DivisionScada;
   unidad?: string; // Input, para saber que reporta (además del tipo)
   // Booleano
-  booleano?: boolean; // Input, para saber si es un valor booleano (Reporta 1 o 0 y andá a saber cuál es cuál)
+  booleano?: boolean; // Input, para saber si es un valor booleano (Reporta 1 o 0 y andá a saber cuál es cuál) // Al final reporta true o false pero lo convierto a número para no empmarme el tipo del CV
   booleanoValorAlarma?: boolean; // Input, para saber si el valor de alarma es 1 o 0
   //
   ultimoRegistro?: IReporte;

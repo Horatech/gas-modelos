@@ -60,6 +60,9 @@ export interface IConfigDispositivoScada {
   // Min-Max para los gráficos.
   minimo?: number;
   maximo?: number;
+  // Textos para los booleanos
+  textoTrue?: string;
+  textoFalse?: string;
   // Fecha de Aplicación
   fechaAplicacion?: string;
 }
