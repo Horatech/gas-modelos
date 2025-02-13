@@ -2,7 +2,6 @@ import { ICentroOperativo } from '../gas/centroOperativo';
 import { IUnidadNegocio } from '../gas/unidadNegocio';
 import {
   IAlerta,
-  IConfigDispositivo,
   IConfigDispositivoScada,
   IEstado,
   ILocalidad,
@@ -11,6 +10,7 @@ import {
 import { ICliente } from '../tenant';
 
 export type TipoScada = 'Presión' | 'Temperatura';
+export type DivisionScada = 'Unifilar' | 'Medición';
 
 export interface IScada {
   _id?: string;
@@ -19,6 +19,7 @@ export interface IScada {
   nombre?: string; /// Input
   tag?: string; /// Esto configura el tag para el OPC
   tipo?: TipoScada;
+  division?: DivisionScada;
   unidad?: string; // Input, para saber que reporta (además del tipo)
   // Booleano
   booleano?: boolean; // Input, para saber si es un valor booleano (Reporta 1 o 0 y andá a saber cuál es cuál)
