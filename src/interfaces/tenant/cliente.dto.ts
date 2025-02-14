@@ -15,7 +15,6 @@ export interface ICreateCliente {
   tiposDispositivo?: TipoDispositivo[];
   integraciones?: IIntegracion[];
   config?: IConfigCliente;
-  usaLlm?: boolean;
 }
 
 export interface IUpdateCliente {
@@ -26,5 +25,4 @@ export interface IUpdateCliente {
   tiposDispositivo?: TipoDispositivo[];
   integraciones?: IIntegracion[];
   config?: IConfigCliente;
-  usaLlm?: boolean;
 }
