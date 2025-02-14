@@ -1,3 +1,4 @@
+import { IFuenteMensaje, ITipoMensaje } from "./chat-tipos";
 import { IMetadataModelo } from "./metadata-modelo";
 
 /**
@@ -44,7 +45,3 @@ export interface IChatUsuario {
   // Definir conversación como entidad?
   // Este historial no debería ser infinito, analizar vectorizar los mensajes "viejos"
 }
-
-export type ITipoMensaje = "Usuario" | "Asistente";
-
-export type IFuenteMensaje = "App" | "Web" | "Whatsapp";
