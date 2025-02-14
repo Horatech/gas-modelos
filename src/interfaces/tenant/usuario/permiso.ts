@@ -27,6 +27,7 @@ export interface IPermiso {
   idsLocalidades?: string[];
   idsCuencas?: string[];
   idsAgrupaciones?: string[];
+  usaLlm?: boolean;
   // Populate
   unidadNegocios?: IUnidadNegocio[];
   centroOperativos?: ICentroOperativo[];
