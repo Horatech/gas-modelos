@@ -12,6 +12,12 @@ export interface IConfigCliente {
   apns?: IApn[];
 }
 
+export interface IConfigClienteLlm {
+  usaLlm?: boolean;
+  tokensMensualesDisponibles?: number;
+  maximoUsuariosUsanLlm?: number;
+}
+
 export interface ICliente {
   _id?: string;
   fechaCreacion?: string;
@@ -22,5 +28,5 @@ export interface ICliente {
   tiposDispositivo?: TipoDispositivo[];
   integraciones?: IIntegracion[];
   config?: IConfigCliente;
-  usaLlm?: boolean;
+  configLlm?: IConfigClienteLlm;
 }
