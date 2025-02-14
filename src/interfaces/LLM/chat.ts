@@ -4,7 +4,7 @@ import { IMetadataModelo } from "./metadata-modelo";
 /**
  * Interfaz para el historial de mensajes de un usuario. Esto representa sólo los mensajes de interacción directa entre el usuario y el LLM
  */
-export interface IChatUsuario {
+export interface IChat {
   _id?: string;
 
   /**
