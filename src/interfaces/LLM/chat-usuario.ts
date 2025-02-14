@@ -1,3 +1,5 @@
+import { IMetadataModelo } from "./metadata-modelo";
+
 /**
  * Interfaz para el historial de mensajes de un usuario. Esto representa sólo los mensajes de interacción directa entre el usuario y el LLM
  */
@@ -37,27 +39,10 @@ export interface IChatUsuario {
   /**
    * Metadata del modelo de LLM que generó la respuesta
    */
-  metadataModelo?: IChatUsuarioModeloMetadata;
+  metadataModelo?: IMetadataModelo;
 
   // Definir conversación como entidad?
   // Este historial no debería ser infinito, analizar vectorizar los mensajes "viejos"
-}
-
-/**
- * Metadata del modelo de LLM, esto lo genera LangChain
- */
-export interface IChatUsuarioModeloMetadata {
-  model: string;
-  total_duration: number;
-  load_duration: number;
-  prompt_eval_count: number;
-  prompt_eval_duration: number;
-  eval_count: number;
-  eval_duration: number;
-  input_tokens: number;
-  output_tokens: number;
-  done_reason: string;
-  done: boolean;
 }
 
 export type ITipoMensaje = "Usuario" | "Asistente";
