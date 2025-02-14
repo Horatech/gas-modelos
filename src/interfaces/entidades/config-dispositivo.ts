@@ -1,14 +1,15 @@
-import { TipoDispositivo } from '../auxiliares';
-import { IDispositivo } from './dispositivo';
-import { IScada } from './scada';
+import { TipoDispositivo } from "../auxiliares";
+import { IDispositivo } from "./dispositivo";
+import { IScada } from "./scada";
 
 export interface IConfigDispositivoNUC4G {
   horaInicio?: number;
-  modoOperacion?: 'REG1_DIARIO' | 'REG24_DIARIO' | 'REG8_8HORAS';
-  modoEnv?: 'TEST' | 'PROD';
+  modoOperacion?: "REG1_DIARIO" | "REG24_DIARIO" | "REG8_8HORAS";
+  modoEnv?: "TEST" | "PROD";
   claveMercury?: string;
-  modoRegistros?: 'REG_TOTALIZADOS' | 'REG_PARCIALES';
+  modoRegistros?: "REG_TOTALIZADOS" | "REG_PARCIALES";
   nsa?: number; // Numero de serie de american meter
+  syncHora?: boolean;
 }
 
 export interface IConfigDispositivoNSP4G {
@@ -16,17 +17,17 @@ export interface IConfigDispositivoNSP4G {
   limiteMax?: number;
   horaUTC?: number;
   horaInicio?: number;
-  modoEnv?: 'TEST' | 'PROD';
+  modoEnv?: "TEST" | "PROD";
   modoOperacion?:
-    | 'REG1_DIARIO'
-    | 'REG24_DIARIO'
-    | 'REG1_1HORA'
-    | 'REG2_2HORAS'
-    | 'REG3_3HORAS'
-    | 'REG4_4HORAS'
-    | 'REG6_6HORAS'
-    | 'REG8_8HORAS'
-    | 'REG12_12HORAS';
+    | "REG1_DIARIO"
+    | "REG24_DIARIO"
+    | "REG1_1HORA"
+    | "REG2_2HORAS"
+    | "REG3_3HORAS"
+    | "REG4_4HORAS"
+    | "REG6_6HORAS"
+    | "REG8_8HORAS"
+    | "REG12_12HORAS";
   timestampBloqueo?: number;
   telefono1?: string;
   telefono2?: string;
@@ -84,11 +85,11 @@ export interface IConfigDispositivo {
 }
 
 // CREATE
-type OmitirCreate = '_id' | 'dispositivo';
+type OmitirCreate = "_id" | "dispositivo";
 export interface ICreateConfigDispositivo
   extends Omit<Partial<IConfigDispositivo>, OmitirCreate> {}
 
 // UPDATE
-type OmitirUpdate = '_id' | 'dispositivo';
+type OmitirUpdate = "_id" | "dispositivo";
 export interface IUpdateConfigDispositivo
   extends Omit<Partial<IConfigDispositivo>, OmitirUpdate> {}
