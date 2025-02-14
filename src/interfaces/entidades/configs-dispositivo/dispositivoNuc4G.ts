@@ -5,4 +5,5 @@ export interface IDispositivoNuc4G {
   horaInicio?: number;
   modoOperacion?: string;
   redPreferida?: string;
+  desfaceHorario?: number; // Min
 }
