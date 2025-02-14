@@ -43,6 +43,9 @@ export interface IChatUsuario {
   // Este historial no debería ser infinito, analizar vectorizar los mensajes "viejos"
 }
 
+/**
+ * Metadata del modelo de LLM, esto lo genera LangChain
+ */
 export interface IChatUsuarioModeloMetadata {
   model: string;
   total_duration: number;
