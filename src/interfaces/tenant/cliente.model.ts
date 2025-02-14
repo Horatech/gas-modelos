@@ -22,4 +22,5 @@ export interface ICliente {
   tiposDispositivo?: TipoDispositivo[];
   integraciones?: IIntegracion[];
   config?: IConfigCliente;
+  usaLlm?: boolean;
 }
