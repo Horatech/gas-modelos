@@ -34,8 +34,27 @@ export interface IChatUsuario {
    */
   fuenteMensaje?: IFuenteMensaje;
 
+  /**
+   * Metadata del modelo de LLM que generó la respuesta
+   */
+  metadataModelo?: IChatUsuarioModeloMetadata;
+
   // Definir conversación como entidad?
   // Este historial no debería ser infinito, analizar vectorizar los mensajes "viejos"
+}
+
+export interface IChatUsuarioModeloMetadata {
+  model: string;
+  total_duration: number;
+  load_duration: number;
+  prompt_eval_count: number;
+  prompt_eval_duration: number;
+  eval_count: number;
+  eval_duration: number;
+  input_tokens: number;
+  output_tokens: number;
+  done_reason: string;
+  done: boolean;
 }
 
 export type ITipoMensaje = "Usuario" | "Asistente";
