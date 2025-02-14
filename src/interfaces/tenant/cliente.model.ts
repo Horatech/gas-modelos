@@ -10,6 +10,9 @@ export interface IApn {
 
 export interface IConfigCliente {
   apns?: IApn[];
+  usaLlm?: boolean;
+  tokensMensualesDisponibles?: number;
+  maximoUsuariosUsanLlm?: number;
 }
 
 export interface ICliente {
