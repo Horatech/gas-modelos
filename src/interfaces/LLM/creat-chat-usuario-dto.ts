@@ -10,6 +10,11 @@ export interface ICrearChatUsuarioDto {
   idUsuario?: string;
 
   /**
+   * ID del cliente
+   */
+  idCliente?: string;
+
+  /**
    * Contenido del mensaje
    */
   texto?: string;

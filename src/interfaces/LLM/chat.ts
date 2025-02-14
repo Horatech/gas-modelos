@@ -33,6 +33,11 @@ export interface IChat {
   idUsuario?: string;
 
   /**
+   * ID del cliente
+   */
+  idCliente?: string;
+
+  /**
    * Origen del mensaje (en caso del usuario, puede venir de la App, Web, Whatsapp, etc)
    */
   fuenteMensaje?: IFuenteMensaje;
