@@ -15,9 +15,14 @@ export interface ICrearChatModeloDto {
   idCliente?: string;
 
   /**
-   * Contenido del mensaje
+   * Contenido del mensaje en inglés
    */
   texto?: string;
+
+  /**
+   * Contenido del mensaje en el idioma original
+   */
+  textoOriginal?: string;
 
   /**
    * Razonamiento de la respuesta

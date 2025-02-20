@@ -18,9 +18,14 @@ export interface IChat {
   tipoMensaje?: ITipoMensaje;
 
   /**
-   * Contenido del mensaje
+   * Contenido del mensaje traducido al inglés
    */
   texto?: string;
+
+  /**
+   * Contenido del mensaje en el idioma original
+   */
+  textoOriginal?: string;
 
   /**
    * Si es una respuesta de DeepSeek se puede incluir o mostrar el proceso de razonamiento del LLM

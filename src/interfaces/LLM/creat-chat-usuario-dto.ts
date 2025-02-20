@@ -15,9 +15,14 @@ export interface ICrearChatUsuarioDto {
   idCliente?: string;
 
   /**
-   * Contenido del mensaje
+   * Contenido del mensaje en inglés
    */
   texto?: string;
+
+  /**
+   * Contenido del mensaje en el idioma original o de destino
+   */
+  textoOriginal?: string;
 
   /**
    * Origen del mensaje (en caso del usuario, puede venir de la App, Web, Whatsapp, etc)
