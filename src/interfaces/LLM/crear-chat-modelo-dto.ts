@@ -1,3 +1,4 @@
+import { ITipoMensaje } from "./chat-tipos";
 import { IMetadataModelo } from "./metadata-modelo";
 
 /**
@@ -33,4 +34,9 @@ export interface ICrearChatModeloDto {
    * Metadata del modelo de LLM que generó la respuesta
    */
   metadataModelo?: IMetadataModelo;
+
+  /**
+   * Tipo de mensaje
+   */
+  tipoMensaje?: ITipoMensaje;
 }

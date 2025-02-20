@@ -1,4 +1,4 @@
-import { IFuenteMensaje } from "./chat-tipos";
+import { IFuenteMensaje, ITipoMensaje } from "./chat-tipos";
 
 /**
  * DTO para crear un mensaje de char de un usuario
@@ -28,4 +28,9 @@ export interface ICrearChatUsuarioDto {
    * Origen del mensaje (en caso del usuario, puede venir de la App, Web, Whatsapp, etc)
    */
   fuenteMensaje?: IFuenteMensaje;
+
+  /**
+   * Tipo de mensaje
+   */
+  tipoMensaje?: ITipoMensaje;
 }
