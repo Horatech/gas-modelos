@@ -1,5 +1,7 @@
 import { IFuenteMensaje, ITipoMensaje } from "./chat-tipos";
 import { IMetadataModelo } from "./metadata-modelo";
+import { ICliente } from "../tenant/cliente.model";
+import { IUsuario } from "../tenant/usuario/schema";
 
 /**
  * Interfaz para el historial de mensajes de un usuario. Esto representa sólo los mensajes de interacción directa entre el usuario y el LLM
@@ -54,4 +56,8 @@ export interface IChat {
 
   // Definir conversación como entidad?
   // Este historial no debería ser infinito, analizar vectorizar los mensajes "viejos"
+
+  //Virtuals:
+  usuario?: IUsuario;
+  cliente?: ICliente;
 }
