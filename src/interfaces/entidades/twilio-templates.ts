@@ -57,3 +57,25 @@ export interface ITwilioErrorComunicacionAlarmaSMS {
   valor: string;
   fecha: string;
 }
+
+/**
+ * Interfaz que define la estructura de los templates de mensajes de Twilio
+ * para enviar mensajes de alarma de presión por SMS
+ * @example 'Punto de medición {{1}} pasado a estado En Mantenimiento. Horatech.'
+ * @param punto Punto de medición {{1}}
+ */
+
+export interface ITwilioMantenimientoWA {
+  punto: string;
+}
+
+/**
+ * Interfaz que define la estructura de los templates de mensajes de Twilio
+ * para enviar mensajes de alarma de presión por SMS
+ * @example 'Punto de medición {{1}} pasado a estado En Mantenimiento. Horatech.'
+ * @param punto Punto de medición {{1}}
+ */
+
+export interface ITwilioMantenimientoSMS {
+  punto: string;
+}
