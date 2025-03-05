@@ -1,7 +1,7 @@
-import { ICliente } from '../cliente.model';
-import { IDatosPersonales } from './create';
-import { INotificaciones } from './notificacion';
-import { IPermiso } from './permiso';
+import { ICliente } from "../cliente.model";
+import { IDatosPersonales } from "./create";
+import { INotificaciones } from "./notificacion";
+import { IPermiso } from "./permiso";
 
 export interface IUsuario {
   _id?: string;
@@ -14,6 +14,7 @@ export interface IUsuario {
   datosPersonales?: IDatosPersonales;
   notificaciones?: INotificaciones[];
   tokenPush?: string;
+  fecha_activacion?: string;
   // Virtuals
   cliente?: ICliente;
 }
