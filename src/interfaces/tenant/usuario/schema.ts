@@ -14,7 +14,7 @@ export interface IUsuario {
   datosPersonales?: IDatosPersonales;
   notificaciones?: INotificaciones[];
   tokenPush?: string;
-  fecha_activacion?: string;
+  fecha_activacion_whatsapp?: string;
   // Virtuals
   cliente?: ICliente;
 }
