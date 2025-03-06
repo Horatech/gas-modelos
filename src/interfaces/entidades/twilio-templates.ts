@@ -141,7 +141,7 @@ export interface ITwilioScadaBooleanoAlertaTemplate {
  * @param punto Punto de medición {{3}}
  * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
  */
-export interface ITwilioScadaBooleanoAlertaTemplate {
+export interface ITwilioFueraDeLimiteTemplate {
   valor: string;
   nivel: string;
   punto: string;
@@ -157,7 +157,8 @@ export interface IMensajeTwilio {
     | ITwilioScadaBooleanoReestablecidoTemplate
     | ITwilioScadaCambioLimiteTemplate
     | ITwilioScadaValorReestablecidoTemplate
-    | ITwilioSensorDesconectadoTemplate;
+    | ITwilioSensorDesconectadoTemplate
+    | ITwilioFueraDeLimiteTemplate;
   pais?: string;
   telefono?: string;
   idCliente?: string;
