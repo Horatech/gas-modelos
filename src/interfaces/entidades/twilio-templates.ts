@@ -167,6 +167,6 @@ export interface IMensajeTwilio {
 export interface ILlamadaTwilio {
   telefono?: string;
   mensaje?: string;
-  idCliente: string;
+  idCliente?: string;
   usuario?: string;
 }
