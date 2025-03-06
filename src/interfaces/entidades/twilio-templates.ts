@@ -147,3 +147,26 @@ export interface ITwilioScadaBooleanoAlertaTemplate {
   punto: string;
   sid: string;
 }
+
+export interface IMensajeTwilio {
+  datos?:
+    | ITwilioErrorComunicacionAlarmaTemplate
+    | ITwilioMantenimientoTemplate
+    | ITwilioPresionTemplate
+    | ITwilioScadaBooleanoAlertaTemplate
+    | ITwilioScadaBooleanoReestablecidoTemplate
+    | ITwilioScadaCambioLimiteTemplate
+    | ITwilioScadaValorReestablecidoTemplate
+    | ITwilioSensorDesconectadoTemplate;
+  pais?: string;
+  telefono?: string;
+  idCliente?: string;
+  usuario?: string;
+}
+
+export interface ILlamadaTwilio {
+  telefono?: string;
+  mensaje?: string;
+  idCliente: string;
+  usuario?: string;
+}
