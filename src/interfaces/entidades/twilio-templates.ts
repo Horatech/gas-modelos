@@ -10,9 +10,9 @@
  * @param sid HXfb4194701ce4baf115447c6b0baad06c
  */
 export interface ITwilioPresionTemplate {
-  estado: string;
-  punto: string;
-  valor: string;
+  1: string;
+  2: string;
+  3: string;
   sid: string;
 }
 
@@ -26,7 +26,7 @@ export interface ITwilioPresionTemplate {
  * @param sid HX36663f2a4ef4b29455df5cc6c6eb00a8
  */
 export interface ITwilioMantenimientoTemplate {
-  punto: string;
+  1: string;
   sid: string;
 }
 
@@ -40,7 +40,7 @@ export interface ITwilioMantenimientoTemplate {
  * @param sid HXa73924c271c567499fc61c8e3c629909
  */
 export interface ITwilioSensorDesconectadoTemplate {
-  punto: string;
+  1: string;
   sid: string;
 }
 
@@ -57,10 +57,10 @@ export interface ITwilioSensorDesconectadoTemplate {
  * @param sid HX30c8f98ac067a102c2ec970482b393ba
  */
 export interface ITwilioErrorComunicacionAlarmaTemplate {
-  estado: string;
-  punto: string;
-  valor: string;
-  fecha: string;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
   sid: string;
 }
 
@@ -74,7 +74,7 @@ export interface ITwilioErrorComunicacionAlarmaTemplate {
  * @param sid HX79264e34254ed1f65121644a3f4d8979
  */
 export interface ITwilioScadaBooleanoReestablecidoTemplate {
-  punto: string;
+  1: string;
   sid: string;
 }
 
@@ -89,8 +89,8 @@ export interface ITwilioScadaBooleanoReestablecidoTemplate {
  * @param sid HX9bb2b5180e4d9a25b67423bc2e5eb43f
  */
 export interface ITwilioScadaValorReestablecidoTemplate {
-  valor: string;
-  punto: string;
+  1: string;
+  2: string;
   sid: string;
 }
 
@@ -106,9 +106,9 @@ export interface ITwilioScadaValorReestablecidoTemplate {
  * @param sid HX062696564a7a45eb649751fb6bb98220
  */
 export interface ITwilioScadaCambioLimiteTemplate {
-  limite: string;
-  punto: string;
-  valor: string;
+  1: string;
+  2: string;
+  3: string;
   sid: string;
 }
 
@@ -124,9 +124,9 @@ export interface ITwilioScadaCambioLimiteTemplate {
  * @param sid HXe87e6d98251d55a6a6ddf000c3146b75
  */
 export interface ITwilioScadaBooleanoAlertaTemplate {
-  punto: string;
-  valor: string;
-  alarma: string;
+  1: string;
+  2: string;
+  3: string;
   sid: string;
 }
 
@@ -142,9 +142,9 @@ export interface ITwilioScadaBooleanoAlertaTemplate {
  * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
  */
 export interface ITwilioFueraDeLimiteTemplate {
-  valor: string;
-  nivel: string;
-  punto: string;
+  1: string;
+  2: string;
+  3: string;
   sid: string;
 }
 
