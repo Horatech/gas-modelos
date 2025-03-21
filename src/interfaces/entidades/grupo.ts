@@ -7,7 +7,7 @@ export interface IGrupo {
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
-  orden?: number; // para ordenar en las pantallas
+  posicion?: number; // para ordenar en las pantallas
   division?: Division;
   // Populate
   unidadNegocio?: IUnidadNegocio;
