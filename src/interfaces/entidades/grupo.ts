@@ -1,5 +1,5 @@
-import { ICentroOperativo, IUnidadNegocio } from "../gas";
-import { Division } from "../tenant";
+import { ICentroOperativo, IUnidadNegocio } from '../gas';
+import { Division } from '../tenant';
 
 export interface IGrupo {
   _id?: string;
@@ -7,6 +7,7 @@ export interface IGrupo {
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
+  orden?: number; // para ordenar en las pantallas
   division?: Division;
   // Populate
   unidadNegocio?: IUnidadNegocio;
@@ -14,9 +15,9 @@ export interface IGrupo {
 }
 
 // CREATE
-type OmitirCreate = "_id" | "unidadNegocio" | "centroOperativo";
+type OmitirCreate = '_id' | 'unidadNegocio' | 'centroOperativo';
 export interface ICreateGrupo extends Omit<Partial<IGrupo>, OmitirCreate> {}
 
 // UPDATE
-type OmitirUpdate = "_id" | "unidadNegocio" | "centroOperativo";
+type OmitirUpdate = '_id' | 'unidadNegocio' | 'centroOperativo';
 export interface IUpdateGrupo extends Omit<Partial<IGrupo>, OmitirUpdate> {}
