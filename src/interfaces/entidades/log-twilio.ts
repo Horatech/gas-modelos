@@ -22,6 +22,8 @@ export interface ILogTwilio {
   telefono?: string;
   respuesta?: Record<string, any>;
 
+  email?: string;
+
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
   correctora?: ICorrectora;
