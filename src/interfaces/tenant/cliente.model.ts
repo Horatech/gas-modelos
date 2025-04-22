@@ -13,6 +13,15 @@ export interface IConfigCliente {
   usaLlm?: boolean;
   tokensMensualesDisponibles?: number;
   maximoUsuariosUsanLlm?: number;
+  twilio?: {
+    phoneSms?: string;
+    phoneWhatsapp?: string;
+    phoneLlamada?: string;
+    accSid?: string;
+    authToken?: string;
+    msgServiceSid?: string;
+    statusCallback?: string;
+  };
 }
 
 export interface ICliente {
