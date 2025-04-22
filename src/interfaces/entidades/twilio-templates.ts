@@ -1,3 +1,5 @@
+import { IConfigTwilio } from "../tenant";
+
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
  * enviar a través de la API de Twilio. Estos mensajes pueden ser personalizados
@@ -163,6 +165,7 @@ export interface IMensajeTwilio {
   telefono?: string;
   idCliente?: string;
   usuario?: string;
+  twilio?: IConfigTwilio;
 }
 
 export interface ILlamadaTwilio {
@@ -170,4 +173,5 @@ export interface ILlamadaTwilio {
   mensaje?: string;
   idCliente?: string;
   usuario?: string;
+  twilio?: IConfigTwilio;
 }

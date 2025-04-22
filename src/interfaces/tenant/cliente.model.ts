@@ -8,20 +8,22 @@ export interface IApn {
   password?: string;
 }
 
+export interface IConfigTwilio {
+  phoneSms?: string;
+  phoneWhatsapp?: string;
+  phoneLlamada?: string;
+  accSid?: string;
+  authToken?: string;
+  msgServiceSid?: string;
+  statusCallback?: string;
+}
+
 export interface IConfigCliente {
   apns?: IApn[];
   usaLlm?: boolean;
   tokensMensualesDisponibles?: number;
   maximoUsuariosUsanLlm?: number;
-  twilio?: {
-    phoneSms?: string;
-    phoneWhatsapp?: string;
-    phoneLlamada?: string;
-    accSid?: string;
-    authToken?: string;
-    msgServiceSid?: string;
-    statusCallback?: string;
-  };
+  twilio?: IConfigTwilio;
 }
 
 export interface ICliente {
