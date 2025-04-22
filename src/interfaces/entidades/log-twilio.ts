@@ -1,11 +1,11 @@
-import { IDeviceInfo, ITenantInfo } from "../auxiliares";
-import { ICorrectora } from "./correctora";
-import { IMedidorResidencial } from "./medidor-residencial";
-import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
-import { IPuntoMedicion } from "./punto-medicion";
-import { IUnidadPresion } from "./unidad-presion";
+import { IDeviceInfo, ITenantInfo } from '../auxiliares';
+import { ICorrectora } from './correctora';
+import { IMedidorResidencial } from './medidor-residencial';
+import { IMedidorResidencialAgua } from './medidor-residencial-agua';
+import { IPuntoMedicion } from './punto-medicion';
+import { IUnidadPresion } from './unidad-presion';
 
-export type TipoMensajeTwilio = "sms" | "whatsapp" | "llamada";
+export type TipoMensajeTwilio = 'sms' | 'whatsapp' | 'llamada' | 'email'; /// Email es sendgrid;
 
 export interface ILogTwilio {
   _id?: string;
@@ -22,6 +22,8 @@ export interface ILogTwilio {
   telefono?: string;
   respuesta?: Record<string, any>;
 
+  email?: string;
+
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
   correctora?: ICorrectora;
@@ -32,20 +34,20 @@ export interface ILogTwilio {
 
 ////// CREATE
 type OmitirCreate =
-  | "_id"
-  | "puntoMedicion"
-  | "correctora"
-  | "unidadPrsion"
-  | "medidorResidencial";
+  | '_id'
+  | 'puntoMedicion'
+  | 'correctora'
+  | 'unidadPrsion'
+  | 'medidorResidencial';
 export interface ICreateLogTwilio
   extends Omit<Partial<ILogTwilio>, OmitirCreate> {}
 
 ////// UPDATE
 type OmitirUpdate =
-  | "_id"
-  | "puntoMedicion"
-  | "correctora"
-  | "unidadPrsion"
-  | "medidorResidencial";
+  | '_id'
+  | 'puntoMedicion'
+  | 'correctora'
+  | 'unidadPrsion'
+  | 'medidorResidencial';
 export interface IUpdateLogTwilio
   extends Omit<Partial<ILogTwilio>, OmitirUpdate> {}
