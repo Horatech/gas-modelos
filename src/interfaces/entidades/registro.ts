@@ -16,6 +16,7 @@ export interface IRegistro {
   temperatura?: number;
   contador?: number;
   bateria?: number;
+  bateriaNUC?: number;
   // Valores firmware nuevo
   correctedTotalizado?: number;
   uncorrectedTotalizado?: number;
