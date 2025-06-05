@@ -1,6 +1,6 @@
-import { ICliente, IUsuario } from '../tenant';
-import { TipoAlerta, TipoEnvio } from './envio-sms';
-import { IScada } from './scada';
+import { ICliente, IUsuario } from "../tenant";
+import { TipoAlerta, TipoEnvio } from "./envio-sms";
+import { IScada } from "./scada";
 
 export interface IConfigNotificacion {
   _id?: string;
@@ -12,6 +12,11 @@ export interface IConfigNotificacion {
   tag?: string;
   //
   idCliente?: string;
+  idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idGrupo?: string;
+  idAgrupacion?: string;
+  idLocalidad?: string;
   // Populate
   cliente?: ICliente;
   scada?: IScada;
@@ -19,7 +24,7 @@ export interface IConfigNotificacion {
 }
 
 ////// CREATE/UPDATE
-type Omitir = '_id' | 'cliente' | 'scada' | 'usuarios';
+type Omitir = "_id" | "cliente" | "scada" | "usuarios";
 export interface ICreateConfigNotificacion
   extends Omit<Partial<IConfigNotificacion>, Omitir> {}
 
