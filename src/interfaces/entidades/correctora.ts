@@ -11,7 +11,9 @@ export type IEstado =
   | "Sin Reportar"
   | "Operativa"
   | "Alerta"
-  | "Sin Comunicación";
+  | "Sin Comunicación"
+  | "Dado de Baja"
+  | "Incompleto";
 
 export interface ICorrectora {
   _id?: string;
