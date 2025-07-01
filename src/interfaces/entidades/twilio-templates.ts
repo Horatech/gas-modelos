@@ -166,6 +166,7 @@ export interface IMensajeTwilio {
   idCliente?: string;
   usuario?: string;
   twilio?: IConfigTwilio;
+  extra?: Record<string, any>;
 }
 
 export interface ILlamadaTwilio {
@@ -174,4 +175,5 @@ export interface ILlamadaTwilio {
   idCliente?: string;
   usuario?: string;
   twilio?: IConfigTwilio;
+  extra?: Record<string, any>;
 }
