@@ -1,6 +1,6 @@
-import { ITipoMensaje } from '../LLM';
+import { ITipoMensaje } from "../LLM";
 import { ICliente } from "../tenant";
-import { TipoMensajeTwilio } from './log-twilio';
+import { TipoMensajeTwilio } from "./log-twilio";
 export type TwilioMessageStatus =
   | "queued"
   | "sending"
@@ -23,7 +23,7 @@ export type TwilioMessageDirection =
   | "outbound-reply";
 
 export interface ITwilioMensajeLog {
-  _id: string;
+  _id?: string;
   fechaCreacion?: string;
   idCliente?: string;
   tipo?: TipoMensajeTwilio;
