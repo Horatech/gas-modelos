@@ -165,12 +165,12 @@ export interface ITwilioFueraDeLimiteTemplate {
  * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
  */
 export interface ITwilioEmailFueraDeLimiteTemplate {
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-  5: string;
-  6: string;
+  presion: string;
+  variable: string;
+  nombreLimite: string;
+  valorLimite: string;
+  puntoMedicion: string;
+  fecha: string;
   sid: string;
 }
 
@@ -187,10 +187,10 @@ export interface ITwilioEmailFueraDeLimiteTemplate {
  * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
  */
 export interface ITwilioEmailLimiteReestablecidoTemplate {
-  1: string;
-  2: string;
-  3: string;
-  4: string;
+  presion: string;
+  variable: string;
+  puntoMedicion: string;
+  fecha: string;
   sid: string;
 }
 
