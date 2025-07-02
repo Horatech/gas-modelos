@@ -9,13 +9,23 @@ export interface IApn {
 }
 
 export interface IConfigTwilio {
-  phoneSms?: string;
-  phoneWhatsapp?: string;
-  phoneLlamada?: string;
+  //Mensajes y llamadas
   accSid?: string;
   authToken?: string;
   msgServiceSid?: string;
   statusCallback?: string;
+  phoneSms?: string;
+  phoneWhatsapp?: string;
+  phoneLlamada?: string;
+
+  //Email
+  senderEmail?: string;
+  senderName?: string;
+  senderAddress?: string;
+  senderCity?: string;
+  senderState?: string;
+  senderZip?: number;
+  sendGridApiKey?: string;
 }
 
 export interface IConfigCliente {
