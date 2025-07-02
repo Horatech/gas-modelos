@@ -1,16 +1,24 @@
-import { GeoJSON, ICoordenadas } from '../auxiliares';
-import { Division, ICliente } from '../tenant';
-import { IAgrupacion } from '../gas/agrupacion';
-import { ICentroOperativo } from '../gas/centroOperativo';
-import { ICuenca } from '../gas/cuenca';
-import { IUnidadNegocio } from '../gas/unidadNegocio';
-import { ICorrectora, IEstado } from './correctora';
-import { IUnidadPresion } from './unidad-presion';
-import { ILocalidad } from './localidad';
-import { IGrupo } from './grupo';
-import { IMedidorResidencial } from './medidor-residencial';
-import { IMedidorResidencialAgua } from './medidor-residencial-agua';
-import { IScada } from './scada';
+import { GeoJSON, ICoordenadas } from "../auxiliares";
+import { Division, ICliente } from "../tenant";
+import { IAgrupacion } from "../gas/agrupacion";
+import { ICentroOperativo } from "../gas/centroOperativo";
+import { ICuenca } from "../gas/cuenca";
+import { IUnidadNegocio } from "../gas/unidadNegocio";
+import { ICorrectora, IEstado } from "./correctora";
+import { IUnidadPresion } from "./unidad-presion";
+import { ILocalidad } from "./localidad";
+import { IGrupo } from "./grupo";
+import { IMedidorResidencial } from "./medidor-residencial";
+import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
+import { IScada } from "./scada";
+
+export interface ILimitesNotificacion {
+  sms?: number;
+  whatsapp?: number;
+  llamada?: number;
+  email?: number;
+  push?: number;
+}
 
 export interface IPuntoMedicion {
   _id?: string;
@@ -51,6 +59,7 @@ export interface IPuntoMedicion {
   idsAgrupaciones?: string[];
   idCuenca?: string;
   division?: Division;
+  limitesNotificacion?: ILimitesNotificacion;
   // Virtuals
   correctora?: ICorrectora;
   unidadPresion?: IUnidadPresion;
@@ -68,19 +77,19 @@ export interface IPuntoMedicion {
 
 ////// CREATE/UPDATE
 type Omitir =
-  | '_id'
-  | 'correctora'
-  | 'unidadPresion'
-  | 'medidorResidencial'
-  | 'medidorResidencialAgua'
-  | 'scadas'
-  | 'cliente'
-  | 'unidadNegocio'
-  | 'centroOperativo'
-  | 'localidad2'
-  | 'grupos'
-  | 'agrupaciones'
-  | 'cuenca';
+  | "_id"
+  | "correctora"
+  | "unidadPresion"
+  | "medidorResidencial"
+  | "medidorResidencialAgua"
+  | "scadas"
+  | "cliente"
+  | "unidadNegocio"
+  | "centroOperativo"
+  | "localidad2"
+  | "grupos"
+  | "agrupaciones"
+  | "cuenca";
 export interface ICreatePuntoMedicion
   extends Omit<Partial<IPuntoMedicion>, Omitir> {}
 
