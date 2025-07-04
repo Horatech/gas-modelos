@@ -1,5 +1,9 @@
+import { IAgrupacion, IUnidadNegocio } from "../gas";
 import { ICliente, IUsuario } from "../tenant";
 import { TipoAlerta, TipoEnvio } from "./envio-sms";
+import { IGrupo } from "./grupo";
+import { ILocalidad } from "./localidad";
+import { IPuntoMedicion } from "./punto-medicion";
 import { IScada } from "./scada";
 
 export interface IConfigNotificacion {
@@ -17,9 +21,17 @@ export interface IConfigNotificacion {
   idGrupo?: string;
   idAgrupacion?: string;
   idLocalidad?: string;
-  // Populate
+  idScada?: string;
+  idPuntoMedicion?: string;
+  // Virtuals
   cliente?: ICliente;
+  unidadNegocio?: IUnidadNegocio;
+  centroOperativo?: string;
+  grupo?: IGrupo;
+  agrupacion?: IAgrupacion;
+  localidad?: ILocalidad;
   scada?: IScada;
+  puntoMedicion?: IPuntoMedicion;
   usuarios?: IUsuario[];
 }
 
