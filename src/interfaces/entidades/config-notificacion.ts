@@ -1,4 +1,4 @@
-import { IAgrupacion, IUnidadNegocio } from "../gas";
+import { IAgrupacion, ICentroOperativo, IUnidadNegocio } from "../gas";
 import { ICliente, IUsuario } from "../tenant";
 import { TipoAlerta, TipoEnvio } from "./envio-sms";
 import { IGrupo } from "./grupo";
@@ -26,7 +26,7 @@ export interface IConfigNotificacion {
   // Virtuals
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: string;
+  centroOperativo?: ICentroOperativo;
   grupo?: IGrupo;
   agrupacion?: IAgrupacion;
   localidad?: ILocalidad;
