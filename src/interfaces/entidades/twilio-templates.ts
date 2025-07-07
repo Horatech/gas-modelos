@@ -213,6 +213,16 @@ export interface IMensajeTwilio {
   extra?: Record<string, any>;
 }
 
+export interface ISMSTwilio {
+  pais?: string;
+  telefono?: string;
+  mensaje?: string;
+  idCliente?: string;
+  usuario?: string;
+  twilio?: IConfigTwilio;
+  extra?: Record<string, any>;
+}
+
 export interface ILlamadaTwilio {
   telefono?: string;
   mensaje?: string;
