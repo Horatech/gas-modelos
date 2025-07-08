@@ -257,7 +257,8 @@ export interface IEmailTwilio {
     | IEmailFueraDeLimite
     | IEmailLimiteReestablecido
     | IEmailResetPassword
-    | IEmailNuevoUsuario;
+    | IEmailNuevoUsuario
+    | IEmailCambioPassword;
   idCliente?: string;
   usuario?: string;
   twilio?: IConfigTwilio;
