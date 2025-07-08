@@ -252,7 +252,6 @@ export interface IEmailCambioPassword extends IEmailDataBase {
 
 export interface IEmailTwilio {
   email?: string;
-  templateId?: string;
   datos?:
     | IEmailFueraDeLimite
     | IEmailLimiteReestablecido
