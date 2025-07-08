@@ -150,50 +150,6 @@ export interface ITwilioFueraDeLimiteTemplate {
   sid: string;
 }
 
-/**
- * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
- * enviar a través de la API de Twilio. Estos mensajes pueden ser personalizados
- * con variables que se reemplazan por valores específicos al momento de enviar
- * el mensaje.
- * @example 'El valor de presión {{1}} está fuera de rango del límite {{2}} de {{3}} para {{4}} de el Punto de Medición {{5}}. Fecha y hora del evento: {{6}}.'
- * @param presion Presión {{1}}
- * @param nombreLimite Nombre límite {{2}}
- * @param valorLimite Valor límite {{3}}
- * @param variable Variable {{4}}
- * @param puntoMedicion Punto de medición {{5}}
- * @param fecha Fecha {{6}}
- * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
- */
-export interface ITwilioEmailFueraDeLimiteTemplate {
-  presion: string;
-  variable: string;
-  nombreLimite: string;
-  valorLimite: string;
-  puntoMedicion: string;
-  fecha: string;
-  sid: string;
-}
-
-/**
- * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
- * enviar a través de la API de Twilio. Estos mensajes pueden ser personalizados
- * con variables que se reemplazan por valores específicos al momento de enviar
- * el mensaje.
- * @example 'El valor de presión {{1}} volvió a valores normales para {{2}} de el Punto de Medición {{3}}. Fecha y hora del evento: {{4}}'
- * @param presion Presión {{1}}
- * @param variable Variable {{2}}
- * @param puntoMedicion Punto de medición {{3}}
- * @param fecha Fecha {{4}}
- * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
- */
-export interface ITwilioEmailLimiteReestablecidoTemplate {
-  presion: string;
-  variable: string;
-  puntoMedicion: string;
-  fecha: string;
-  sid: string;
-}
-
 export interface IMensajeTwilio {
   datos?:
     | ITwilioErrorComunicacionAlarmaTemplate
@@ -232,11 +188,76 @@ export interface ILlamadaTwilio {
   extra?: Record<string, any>;
 }
 
+// EMAIL
+
+export interface IEmailDataBase {
+  sid: string;
+  subject?: string;
+}
+
+/**
+ * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
+ * enviar a través de la API de Twilio. Estos mensajes pueden ser personalizados
+ * con variables que se reemplazan por valores específicos al momento de enviar
+ * el mensaje.
+ * @example 'El valor de presión {{1}} está fuera de rango del límite {{2}} de {{3}} para {{4}} de el Punto de Medición {{5}}. Fecha y hora del evento: {{6}}.'
+ * @param presion Presión {{1}}
+ * @param nombreLimite Nombre límite {{2}}
+ * @param valorLimite Valor límite {{3}}
+ * @param variable Variable {{4}}
+ * @param puntoMedicion Punto de medición {{5}}
+ * @param fecha Fecha {{6}}
+ * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
+ */
+export interface IEmailFueraDeLimite extends IEmailDataBase {
+  presion: string;
+  variable: string;
+  nombreLimite: string;
+  valorLimite: string;
+  puntoMedicion: string;
+  fecha: string;
+}
+
+/**
+ * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
+ * enviar a través de la API de Twilio. Estos mensajes pueden ser personalizados
+ * con variables que se reemplazan por valores específicos al momento de enviar
+ * el mensaje.
+ * @example 'El valor de presión {{1}} volvió a valores normales para {{2}} de el Punto de Medición {{3}}. Fecha y hora del evento: {{4}}'
+ * @param presion Presión {{1}}
+ * @param variable Variable {{2}}
+ * @param puntoMedicion Punto de medición {{3}}
+ * @param fecha Fecha {{4}}
+ * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
+ */
+export interface IEmailLimiteReestablecido extends IEmailDataBase {
+  presion: string;
+  variable: string;
+  puntoMedicion: string;
+  fecha: string;
+}
+
+export interface IEmailResetPassword extends IEmailDataBase {
+  token: string;
+}
+
+export interface IEmailNuevoUsuario extends IEmailDataBase {
+  usuario: string;
+  password: string;
+}
+
+export interface IEmailCambioPassword extends IEmailDataBase {
+  codigo: string;
+}
+
 export interface IEmailTwilio {
   email?: string;
+  templateId?: string;
   datos?:
-    | ITwilioEmailFueraDeLimiteTemplate
-    | ITwilioEmailLimiteReestablecidoTemplate;
+    | IEmailFueraDeLimite
+    | IEmailLimiteReestablecido
+    | IEmailResetPassword
+    | IEmailNuevoUsuario;
   idCliente?: string;
   usuario?: string;
   twilio?: IConfigTwilio;
