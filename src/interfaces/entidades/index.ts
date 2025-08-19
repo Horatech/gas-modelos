@@ -4,6 +4,7 @@ export * from "./configs-dispositivo";
 export * from "./mensajes-nuc";
 // Entidades
 export * from "./alerta";
+export * from "./aplicacion-cromatografia";
 export * from "./config-dispositivo";
 export * from "./correctora";
 export * from "./cromatografia";
