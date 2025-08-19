@@ -1,6 +1,5 @@
-import { ILocalidad } from "../entidades";
+import { ICuenca, ILocalidad } from "../entidades";
 import { ICentroOperativo } from "../gas/centroOperativo";
-import { ICuenca } from "../gas/cuenca";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICliente } from "../tenant";
 

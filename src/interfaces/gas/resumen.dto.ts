@@ -1,7 +1,6 @@
-import { IMedidorResidencial, IPuntoMedicion } from "../entidades";
+import { ICuenca, IMedidorResidencial, IPuntoMedicion } from "../entidades";
 import { ICliente } from "../tenant";
 import { ICentroOperativo } from "./centroOperativo";
-import { ICuenca } from "./cuenca";
 import { IUnidadNegocio } from "./unidadNegocio";
 
 // Resumen

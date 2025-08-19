@@ -1,6 +1,7 @@
 import { ICoordenadas } from "../auxiliares";
-import { ICentroOperativo, ICuenca, IUnidadNegocio } from "../gas";
+import { ICentroOperativo, IUnidadNegocio } from "../gas";
 import { IEstado } from "./correctora";
+import { ICuenca } from "./cuenca";
 import { IDispositivo } from "./dispositivo";
 import { IGrupo } from "./grupo";
 import { IReporte } from "./reporte";

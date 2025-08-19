@@ -1,22 +1,26 @@
-import { ILocalidad } from '../../entidades';
-import { IAgrupacion } from '../../gas/agrupacion';
-import { ICentroOperativo } from '../../gas/centroOperativo';
-import { ICuenca } from '../../gas/cuenca';
-import { IUnidadNegocio } from '../../gas/unidadNegocio';
+import { ICuenca, ILocalidad } from "../../entidades";
+import { IAgrupacion } from "../../gas/agrupacion";
+import { ICentroOperativo } from "../../gas/centroOperativo";
+import { IUnidadNegocio } from "../../gas/unidadNegocio";
 
-export type Rol = 'Administrador' | 'Usuario' | 'Croma' | 'Visualizar';
+export type Rol =
+  | "Administrador"
+  | "Usuario"
+  | "Croma"
+  | "Visualizar"
+  | "Laboratorista";
 export type Nivel =
-  | 'Global'
-  | 'Unidad de Negocio'
-  | 'Centro Operativo'
-  | 'Localidad'
-  | 'Agrupación';
+  | "Global"
+  | "Unidad de Negocio"
+  | "Centro Operativo"
+  | "Localidad"
+  | "Agrupación";
 export type Division =
-  | 'Correctoras'
-  | 'Presión'
-  | 'Residencial'
-  | 'SCADA Unifilares'
-  | 'SCADA Mediciones';
+  | "Correctoras"
+  | "Presión"
+  | "Residencial"
+  | "SCADA Unifilares"
+  | "SCADA Mediciones";
 
 export interface IPermiso {
   nivel?: Nivel;

@@ -2,7 +2,6 @@ import { GeoJSON, ICoordenadas } from "../auxiliares";
 import { Division, ICliente } from "../tenant";
 import { IAgrupacion } from "../gas/agrupacion";
 import { ICentroOperativo } from "../gas/centroOperativo";
-import { ICuenca } from "../gas/cuenca";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICorrectora, IEstado } from "./correctora";
 import { IUnidadPresion } from "./unidad-presion";
@@ -11,6 +10,7 @@ import { IGrupo } from "./grupo";
 import { IMedidorResidencial } from "./medidor-residencial";
 import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IScada } from "./scada";
+import { ICuenca } from "./cuenca";
 
 export interface ILimitesNotificacion {
   sms?: number;
