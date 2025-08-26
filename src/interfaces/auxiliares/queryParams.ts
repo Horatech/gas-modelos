@@ -5,6 +5,13 @@ export interface IQueryParam {
   filter?: string;
   populate?: string;
   select?: string;
+  excludeTotalCount?: boolean;
+  onlyTotalCount?: boolean;
+  executionStats?: boolean;
+  /**
+   * Si está en true setea el limit en 0, lo que significa que no hay límite en la cantidad de resultados
+   */
+  unlimited?: boolean;
   [key: string]: any;
 }
 export interface IPopulate {
