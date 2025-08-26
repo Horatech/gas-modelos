@@ -8,6 +8,7 @@ export interface IDispositivoVeriboxMicro {
   clave?: string;
   // Migracion
   telefono?: string;
+  operadora?: string;
   migrar?: boolean;
   fechaMigrar?: string;
 }

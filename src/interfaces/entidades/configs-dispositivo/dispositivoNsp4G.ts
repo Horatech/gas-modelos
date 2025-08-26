@@ -27,4 +27,5 @@ export interface IDispositivoNsp4G {
   pass?: string;
   estadoAPN?: boolean;
   operadora?: string;
+  telefono?: string;
 }
