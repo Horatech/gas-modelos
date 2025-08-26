@@ -11,6 +11,7 @@ export interface IDispositivoNuc4G {
   modoRegistros?: "REG_TOTALIZADOS" | "REG_PARCIALES";
   iccid?: number;
   operadora?: string;
+  telefono?: string;
   nsa?: number;
   voltajeBateria?: number;
   versionHardware?: string;
