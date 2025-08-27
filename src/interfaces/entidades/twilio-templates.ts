@@ -150,8 +150,14 @@ export interface ITwilioFueraDeLimiteTemplate {
   sid: string;
 }
 
+export interface ITwilioMsgGenericTemplate {
+  [key: number]: string;
+  sid: string;
+}
+
 export interface IMensajeTwilio {
   datos?:
+    | ITwilioMsgGenericTemplate
     | ITwilioErrorComunicacionAlarmaTemplate
     | ITwilioMantenimientoTemplate
     | ITwilioPresionTemplate
