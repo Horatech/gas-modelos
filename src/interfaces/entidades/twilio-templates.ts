@@ -201,6 +201,10 @@ export interface IEmailDataBase {
   subject?: string;
 }
 
+export interface IEmailGenerico extends IEmailDataBase {
+  [key: string]: string;
+}
+
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
  * enviar a través de la API de Twilio. Estos mensajes pueden ser personalizados
@@ -259,6 +263,7 @@ export interface IEmailCambioPassword extends IEmailDataBase {
 export interface IEmailTwilio {
   email?: string;
   datos?:
+    | IEmailGenerico
     | IEmailFueraDeLimite
     | IEmailLimiteReestablecido
     | IEmailResetPassword
