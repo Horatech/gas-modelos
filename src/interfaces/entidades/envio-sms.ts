@@ -37,7 +37,7 @@ export type Agrupacion =
 
 export interface IConfigEnvioSms {
   // Para Equipos fuera de línea
-  porcentaje?: string;
+  porcentaje?: number;
 }
 
 export interface IEnvioSms {
