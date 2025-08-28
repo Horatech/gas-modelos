@@ -202,7 +202,7 @@ export interface IEmailDataBase {
 }
 
 export interface IEmailGenerico extends IEmailDataBase {
-  [key: string]: string;
+  [key: string]: string | undefined;
 }
 
 /**
