@@ -2,6 +2,25 @@ import { TipoDispositivo } from "../auxiliares";
 import { IImagenesCliente } from "./cliente.dto";
 import { IIntegracion } from "./integraciones";
 
+export type TemplatesWhatsapp =
+  | "Alerta de presión"
+  | "Punto de medición en mantenimiento"
+  | "Sensor de presión desconectado"
+  | "Error de comunicación de alarma"
+  | "Scada valor fuera de límite"
+  | "Scada valor reestablecido"
+  | "Scada booleano alarma"
+  | "Scada booleano reestablecido"
+  | "Scada error de comunicación con servidor"
+  | "Equipos fuera de línea"
+  | "Batería baja";
+
+export type TemplatesMail =
+  | TemplatesWhatsapp
+  | "Nuevo usuario"
+  | "Reset de contraseña"
+  | "Cambio de contraseña";
+
 export interface IApn {
   apn?: string;
   usuario?: string;
@@ -17,6 +36,9 @@ export interface IConfigTwilio {
   phoneSms?: string;
   phoneWhatsapp?: string;
   phoneLlamada?: string;
+  templatesWhatsapp?: {
+    [K in TemplatesWhatsapp]?: string;
+  };
 
   //Email
   senderEmail?: string;
@@ -26,6 +48,9 @@ export interface IConfigTwilio {
   senderState?: string;
   senderZip?: number;
   sendGridApiKey?: string;
+  templatesMail?: {
+    [K in TemplatesMail]?: string;
+  };
 }
 
 export interface IConfigCliente {
