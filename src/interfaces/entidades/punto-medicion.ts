@@ -36,6 +36,7 @@ export interface IPuntoMedicion {
   // Correctora
   idCorrectora?: string | null;
   fechaAsignacionCorrectora?: string | null;
+  desfaseHorario?: number | null;
   // Unidad de Presion
   idUnidadPresion?: string | null;
   fechaAsignacionUnidadPresion?: string | null;
