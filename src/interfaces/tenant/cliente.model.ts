@@ -12,7 +12,7 @@ export type TemplatesWhatsapp =
   | "Scada booleano alarma"
   | "Scada booleano reestablecido"
   | "Scada error de comunicación con servidor"
-  | "Scada cambio de limites por fuera"
+  | "Scada cambio de límites por fuera"
   | "Equipos fuera de línea"
   | "Batería baja";
 
