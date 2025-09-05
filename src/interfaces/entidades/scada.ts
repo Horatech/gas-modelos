@@ -9,7 +9,16 @@ import {
 } from ".";
 import { ICliente } from "../tenant";
 
-export type TipoScada = "Presión" | "Temperatura" | "Corriente" | "Tensión";
+export type TipoScada =
+  | "Presión en bar"
+  | "Presión en mbar"
+  | "Temperatura en C"
+  | "Porcentaje"
+  | "Booleano"
+  | "mg sobre m3"
+  | "Voltaje en V"
+  | "Corriente en A"
+  | "Potencial en mV";
 export type DivisionScada = "Unifilar" | "Medición";
 
 export interface IScada {
