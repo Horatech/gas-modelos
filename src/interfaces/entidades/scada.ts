@@ -1,16 +1,16 @@
-import { ICentroOperativo } from '../gas/centroOperativo';
-import { IUnidadNegocio } from '../gas/unidadNegocio';
+import { ICentroOperativo } from "../gas/centroOperativo";
+import { IUnidadNegocio } from "../gas/unidadNegocio";
 import {
   IAlerta,
   IConfigDispositivoScada,
   IEstado,
   ILocalidad,
   IReporte,
-} from '.';
-import { ICliente } from '../tenant';
+} from ".";
+import { ICliente } from "../tenant";
 
-export type TipoScada = 'Presión' | 'Temperatura';
-export type DivisionScada = 'Unifilar' | 'Medición';
+export type TipoScada = "Presión" | "Temperatura" | "Corriente" | "Tensión";
+export type DivisionScada = "Unifilar" | "Medición";
 
 export interface IScada {
   _id?: string;
@@ -44,11 +44,11 @@ export interface IScada {
 }
 
 type Omitir =
-  | '_id'
-  | 'unidadDeNegocio'
-  | 'centroOperativo'
-  | 'localidad'
-  | 'cliente';
+  | "_id"
+  | "unidadDeNegocio"
+  | "centroOperativo"
+  | "localidad"
+  | "cliente";
 
 export interface ICreateScada extends Omit<Partial<IScada>, Omitir> {}
 
