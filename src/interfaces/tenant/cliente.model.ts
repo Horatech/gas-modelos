@@ -1,5 +1,5 @@
 import { TipoDispositivo } from "../auxiliares";
-import { ModeloCorrectora } from "../entidades";
+import { ModeloCorrectora, modelosCorrectoras } from "../entidades";
 import { IImagenesCliente } from "./cliente.dto";
 import { IIntegracion } from "./integraciones";
 
@@ -57,7 +57,6 @@ export interface IConfigTwilio {
 
 export interface IConfigSincHoraria {
   activo?: boolean;
-  modelosCorrectora?: ModeloCorrectora[];
   desfaseMinimo?: number;
   desfaseMaximo?: number;
 }
@@ -68,7 +67,7 @@ export interface IConfigCliente {
   tokensMensualesDisponibles?: number;
   maximoUsuariosUsanLlm?: number;
   twilio?: IConfigTwilio;
-  sincHoraria?: IConfigSincHoraria[];
+  sincHoraria?: Partial<Record<ModeloCorrectora, IConfigSincHoraria>>;
 }
 
 export interface ICliente {
