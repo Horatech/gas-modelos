@@ -4,19 +4,23 @@ import {
   IScada,
   IPuntoMedicion,
   IUnidadPresion,
-} from '.';
-import { ICliente } from '../tenant';
-import { ICentroOperativo } from '../gas/centroOperativo';
-import { IUnidadNegocio } from '../gas/unidadNegocio';
+  IMedidorResidencial,
+  IMedidorResidencialAgua,
+} from ".";
+import { ICliente } from "../tenant";
+import { ICentroOperativo } from "../gas/centroOperativo";
+import { IUnidadNegocio } from "../gas/unidadNegocio";
 
-export type IEstadoAlerta = 'Cerrado' | 'Activo';
+export type IEstadoAlerta = "Cerrado" | "Activo";
 export type ITipoAlerta =
-  | 'Sin Reportar'
-  | 'Valor Alto'
-  | 'Valor Bajo'
-  | 'Fuera de rango'
-  | 'Error de comunicación'
-  | 'Sensor desconectado';
+  | "Sin Reportar"
+  | "Valor Alto"
+  | "Valor Bajo"
+  | "Fuera de rango"
+  | "Error de comunicación"
+  | "Sensor desconectado"
+  | "Batería baja"
+  | "Ataque magnético";
 
 export interface IAlerta {
   _id?: string;
@@ -39,6 +43,8 @@ export interface IAlerta {
   idPuntoMedicion?: string;
   idUnidadPresion?: string;
   idCorrectora?: string;
+  idMedidorResidencial?: string;
+  idMedidorResidencialAgua?: string;
   idScada?: string;
   numeroSerieCorrectora?: string | null;
   //
@@ -52,30 +58,36 @@ export interface IAlerta {
   unidadPresion?: IUnidadPresion;
   correctora?: ICorrectora;
   scada?: IScada;
+  medidorResidencial?: IMedidorResidencial;
+  medidorResidencialAgua?: IMedidorResidencialAgua;
 }
 
 ////// CREATE
 type OmitirCreate =
-  | '_id'
-  | 'cliente'
-  | 'unidadDeNegocio'
-  | 'centroOperativo'
-  | 'localidad'
-  | 'puntoMedicion'
-  | 'unidadPresion'
-  | 'correctora'
-  | 'scada';
+  | "_id"
+  | "cliente"
+  | "unidadNegocio"
+  | "centroOperativo"
+  | "localidad"
+  | "puntoMedicion"
+  | "unidadPresion"
+  | "correctora"
+  | "scada"
+  | "medidorResidencial"
+  | "medidorResidencialAgua";
 export interface ICreateAlerta extends Omit<Partial<IAlerta>, OmitirCreate> {}
 
 ////// UPDATE
 type OmitirUpdate =
-  | '_id'
-  | 'cliente'
-  | 'unidadDeNegocio'
-  | 'centroOperativo'
-  | 'localidad'
-  | 'puntoMedicion'
-  | 'unidadPresion'
-  | 'correctora'
-  | 'scada';
+  | "_id"
+  | "cliente"
+  | "unidadNegocio"
+  | "centroOperativo"
+  | "localidad"
+  | "puntoMedicion"
+  | "unidadPresion"
+  | "correctora"
+  | "scada"
+  | "medidorResidencial"
+  | "medidorResidencialAgua";
 export interface IUpdateAlerta extends Omit<Partial<IAlerta>, OmitirUpdate> {}
