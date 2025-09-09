@@ -22,8 +22,6 @@ export interface ILimitesNotificacion {
 
 export interface IPuntoMedicion {
   _id?: string;
-  //
-  posicion?: number;
   // GPS
   geojson?: GeoJSON;
   ubicacion?: ICoordenadas;
@@ -32,7 +30,7 @@ export interface IPuntoMedicion {
   // Detalles
   nombre?: string;
   descripcion?: string;
-  codigoSimec?: string;
+  codigoSimec?: string; // Para exportacion de datos a Simec
   // Correctora
   idCorrectora?: string | null;
   fechaAsignacionCorrectora?: string | null;
@@ -49,8 +47,10 @@ export interface IPuntoMedicion {
   // SCADA
   idsScada?: string[] | null;
   fechaAsignacionScada?: string | null;
+  posicion?: number; // Orden en el listado
   // Calculado por el backend
   estado?: IEstado;
+  timestampUltimoReporte?: string | null;
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;
@@ -60,6 +60,7 @@ export interface IPuntoMedicion {
   idsAgrupaciones?: string[];
   idCuenca?: string;
   division?: Division;
+  // Notificaciones
   limitesNotificacion?: ILimitesNotificacion;
   // Virtuals
   correctora?: ICorrectora;
