@@ -12,6 +12,7 @@ export * from "./cuenca";
 export * from "./dispositivo";
 export * from "./envio-sms";
 export * from "./grupo";
+export * from "./kmz";
 export * from "./localidad";
 export * from "./log-nuc";
 export * from "./log-reporte";
