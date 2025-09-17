@@ -36,14 +36,14 @@ export interface IAsignacion {
   nombreEntidadAsignada?: string;
 
   // Populate
-  dispositivo?: IDispositivo;
-  correctora?: ICorrectora;
-  unidadPresion?: IUnidadPresion;
-  scada?: IScada;
-  medidorResidencial?: IMedidorResidencial;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
+  dispositivoAsignado?: IDispositivo;
+  correctoraAsignada?: ICorrectora;
+  unidadPresionAsignada?: IUnidadPresion;
+  scadaAsignado?: IScada;
+  medidorResidencialAsignado?: IMedidorResidencial;
+  unidadNegocioAsignado?: IUnidadNegocio;
+  centroOperativoAsignado?: ICentroOperativo;
+  localidadAsignada?: ILocalidad;
   usuario?: IUsuario;
 }
 
