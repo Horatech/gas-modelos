@@ -8,6 +8,7 @@ import {
   IScada,
   IUnidadPresion,
 } from ".";
+import { IUsuario } from "../tenant";
 
 export type IEntidades =
   | "Dispositivo"
@@ -43,6 +44,7 @@ export interface IAsignacion {
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
   localidad?: ILocalidad;
+  usuario?: IUsuario;
 }
 
 ////// CREATE
@@ -55,7 +57,8 @@ type OmitirCreate =
   | "medidorResidencial"
   | "unidadNegocio"
   | "centroOperativo"
-  | "localidad";
+  | "localidad"
+  | "usuario";
 
 export interface ICreateAsignacion
   extends Omit<Partial<IAsignacion>, OmitirCreate> {}
@@ -71,7 +74,8 @@ type OmitirUpdate =
   | "medidorResidencial"
   | "unidadNegocio"
   | "centroOperativo"
-  | "localidad";
+  | "localidad"
+  | "usuario";
 
 export interface IUpdateAsignacion
   extends Omit<Partial<IAsignacion>, OmitirUpdate> {}
