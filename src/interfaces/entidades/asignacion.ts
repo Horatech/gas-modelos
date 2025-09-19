@@ -50,14 +50,14 @@ export interface IAsignacion {
 ////// CREATE
 type OmitirCreate =
   | "_id"
-  | "dispositivo"
-  | "correctora"
-  | "unidadPresion"
-  | "scada"
-  | "medidorResidencial"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad"
+  | "dispositivoAsignado"
+  | "correctoraAsignada"
+  | "unidadPresionAsignada"
+  | "scadaAsignado"
+  | "medidorResidencialAsignado"
+  | "unidadNegocioAsignado"
+  | "centroOperativoAsignado"
+  | "localidadAsignada"
   | "usuario";
 
 export interface ICreateAsignacion
@@ -66,15 +66,14 @@ export interface ICreateAsignacion
 ////// UPDATE
 type OmitirUpdate =
   | "_id"
-  | "idCliente"
-  | "dispositivo"
-  | "correctora"
-  | "unidadPresion"
-  | "scada"
-  | "medidorResidencial"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad"
+  | "dispositivoAsignado"
+  | "correctoraAsignada"
+  | "unidadPresionAsignada"
+  | "scadaAsignado"
+  | "medidorResidencialAsignado"
+  | "unidadNegocioAsignado"
+  | "centroOperativoAsignado"
+  | "localidadAsignada"
   | "usuario";
 
 export interface IUpdateAsignacion
