@@ -5,6 +5,7 @@ import { ICliente } from "../tenant/cliente.model";
 import { ILoraServer } from "../tenant/lora-server.model";
 import { ILoteDispositivo } from "../tenant/loteDispositivo.model";
 import { IAlerta } from "./alerta";
+import { ILocalidad } from "./localidad";
 import { IRegistro } from "./registro";
 
 export type TipoConectividad = "4G" | "LORA";
@@ -17,6 +18,7 @@ export interface IDispositivo {
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
+  idLocalidad?: string;
   // Info de carga
   deveui?: string;
   deviceName?: string;
@@ -44,6 +46,7 @@ export interface IDispositivo {
   lote?: ILoteDispositivo;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
+  localidad?: ILocalidad;
   loraServer?: ILoraServer;
 }
 
@@ -53,7 +56,7 @@ type OmitirCreate =
   | "unidadDeNegocio"
   | "centroOperativo"
   | "localidad"
-  | "dispositivo";
+  | "cliente";
 export interface ICreateDispositivo
   extends Omit<Partial<IDispositivo>, OmitirCreate> {}
 
@@ -63,6 +66,6 @@ type OmitirUpdate =
   | "unidadDeNegocio"
   | "centroOperativo"
   | "localidad"
-  | "dispositivo";
+  | "cliente";
 export interface IUpdateDispositivo
   extends Omit<Partial<IDispositivo>, OmitirUpdate> {}
