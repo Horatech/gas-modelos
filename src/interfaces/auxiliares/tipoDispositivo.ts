@@ -36,22 +36,24 @@ export type TipoDispositivo =
 // ];
 
 export type TipoDispositivoGas =
-  | 'NUC'
-  | 'SML'
-  | 'MRA'
-  | 'NSP'
-  | 'VERIBOX MICRO'
-  | 'WRC'
-  | 'SCADA Unifilares'
-  | 'SCADA Mediciones';
+  | "NUC"
+  | "SML"
+  | "MRA"
+  | "NSP"
+  | "VERIBOX MICRO"
+  | "WRC"
+  | "SCADA Unifilares"
+  | "SCADA Mediciones"
+  | "ML107A";
 
 export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
-  'NUC',
-  'SML',
-  'MRA',
-  'NSP',
-  'VERIBOX MICRO',
-  'WRC',
-  'SCADA Unifilares',
-  'SCADA Mediciones',
+  "NUC",
+  "SML",
+  "MRA",
+  "NSP",
+  "VERIBOX MICRO",
+  "WRC",
+  "SCADA Unifilares",
+  "SCADA Mediciones",
+  "ML107A",
 ];
