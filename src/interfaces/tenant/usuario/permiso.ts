@@ -19,6 +19,7 @@ export type Division =
   | "Correctoras"
   | "Presión"
   | "Residencial"
+  | "Residencial Agua"
   | "SCADA Unifilares"
   | "SCADA Mediciones";
 
