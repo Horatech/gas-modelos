@@ -4,6 +4,7 @@ import { IEstado } from "./correctora";
 import { ICuenca } from "./cuenca";
 import { IDispositivo } from "./dispositivo";
 import { IGrupo } from "./grupo";
+import { ILocalidad } from "./localidad";
 import { IReporte } from "./reporte";
 
 export interface IMedidorResidencialAgua {
@@ -20,7 +21,6 @@ export interface IMedidorResidencialAgua {
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
-  localidad?: string;
   nombre?: string;
   descripcion?: string;
   corregido?: boolean;
@@ -28,11 +28,13 @@ export interface IMedidorResidencialAgua {
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
+  idLocalidad?: string;
   idCuenca?: string;
   idsGrupos?: string[];
   // Populate
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
+  localidad?: ILocalidad;
   cuenca?: ICuenca;
   grupos?: IGrupo[];
   dispositivo?: IDispositivo;
@@ -43,6 +45,7 @@ type OmitirCreate =
   | "_id"
   | "unidadNegocio"
   | "centroOperativo"
+  | "localidad"
   | "cuenca"
   | "grupos"
   | "dispositivo";
@@ -54,6 +57,7 @@ type OmitirUpdate =
   | "_id"
   | "unidadNegocio"
   | "centroOperativo"
+  | "localidad"
   | "cuenca"
   | "grupos"
   | "dispositivo";
