@@ -6,6 +6,7 @@ import { IPuntoMedicion } from "./punto-medicion";
 import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
 import { ICuenca } from "./cuenca";
+import { IAgrupacion } from "../gas";
 
 export interface IRegistro {
   _id?: string;
@@ -39,6 +40,7 @@ export interface IRegistro {
   idLocalidad?: string;
   idCuenca?: string;
   idsGrupos?: string[];
+  idsAgrupaciones?: string[];
   //
   fechaCreacion?: string;
 
@@ -51,6 +53,7 @@ export interface IRegistro {
   correctora?: ICorrectora;
   puntoMedicion?: IPuntoMedicion;
   grupos?: IGrupo[];
+  agrupaciones?: IAgrupacion[];
 }
 
 ////// CREATE
@@ -63,7 +66,8 @@ type OmitirCreate =
   | "cuenca"
   | "correctora"
   | "puntoMedicion"
-  | "grupos";
+  | "grupos"
+  | "agrupaciones";
 export interface ICreateRegistro
   extends Omit<Partial<IRegistro>, OmitirCreate> {}
 
@@ -77,6 +81,7 @@ type OmitirUpdate =
   | "cuenca"
   | "correctora"
   | "puntoMedicion"
-  | "grupos";
+  | "grupos"
+  | "agrupaciones";
 export interface IUpdateRegistro
   extends Omit<Partial<IRegistro>, OmitirUpdate> {}
