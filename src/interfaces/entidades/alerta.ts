@@ -10,6 +10,7 @@ import {
 import { ICliente } from "../tenant";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
+import { IAgrupacion } from "../gas";
 
 export type IEstadoAlerta = "Cerrado" | "Activo";
 export type ITipoAlerta =
@@ -40,6 +41,7 @@ export interface IAlerta {
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idLocalidad?: string;
+  idsAgrupaciones?: string[];
   idPuntoMedicion?: string;
   idUnidadPresion?: string;
   idCorrectora?: string;
@@ -54,6 +56,7 @@ export interface IAlerta {
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
   localidad?: ILocalidad;
+  agrupaciones?: IAgrupacion[];
   puntoMedicion?: IPuntoMedicion;
   unidadPresion?: IUnidadPresion;
   correctora?: ICorrectora;
@@ -69,6 +72,7 @@ type OmitirCreate =
   | "unidadNegocio"
   | "centroOperativo"
   | "localidad"
+  | "agrupaciones"
   | "puntoMedicion"
   | "unidadPresion"
   | "correctora"
@@ -84,6 +88,7 @@ type OmitirUpdate =
   | "unidadNegocio"
   | "centroOperativo"
   | "localidad"
+  | "agrupaciones"
   | "puntoMedicion"
   | "unidadPresion"
   | "correctora"
