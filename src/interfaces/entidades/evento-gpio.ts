@@ -11,8 +11,8 @@ export interface IEventoGpio {
   // Datos del reporte
   contador_1?: number;
   contador_2?: number;
-  flag_1?: boolean;
-  flag_2?: boolean;
+  testigo_1?: number; // 0 o 1 según firmware
+  testigo_2?: number; // 0 o 1 según firmware
 
   // Metadata
   firmwareNuc?: string;
