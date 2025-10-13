@@ -36,6 +36,7 @@ export interface IDispositivo {
   fechaUltimaComunicacion?: string;
   // Otra info
   firmware?: string;
+  versionHardware?: string; // Versión de hardware (ej: "v1", "v3" para NUC con/sin GPIO)
   ubicacion?: ICoordenadas;
   // Info especifica de cada tipo de dispositivo
   config?: Record<string, any>;
