@@ -5,6 +5,12 @@ export interface IEventoGpio {
   idDispositivo?: string;
   idPuntoMedicion?: string;
 
+  // Campos organizativos para permisos (copiados desde punto de medición)
+  idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idLocalidad?: string;
+  idsAgrupaciones?: string[];
+
   // Timestamp del evento
   fecha?: string;
 
