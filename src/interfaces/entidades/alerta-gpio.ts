@@ -5,6 +5,12 @@ export interface IAlertaGpio {
   idDispositivo?: string;
   idPuntoMedicion?: string;
 
+  // Campos organizativos para permisos (copiados desde punto de medición)
+  idUnidadNegocio?: string;
+  idCentroOperativo?: string;
+  idLocalidad?: string;
+  idsAgrupaciones?: string[];
+
   // Datos de la alerta
   fecha?: string;
   input?: 1 | 2; // Número de entrada que generó la alerta
