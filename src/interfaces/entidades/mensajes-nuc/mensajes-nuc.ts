@@ -205,6 +205,31 @@ export const modelosCorrectoras: ModeloCorrectora[] = [
   "Instromet",
 ];
 
+/// GPIO - NUC v2.0
+
+export interface ISetReporteGpio {
+  deveui: string;
+  appkey: string;
+  firmwareNuc: string;
+  apiVersion: string;
+  data_ios: {
+    contador_1?: number;
+    contador_2?: number;
+    flag_1?: boolean;
+    flag_2?: boolean;
+  };
+}
+
+export interface ISetAlertaGpio {
+  deveui: string;
+  appkey: string;
+  firmwareNuc: string;
+  apiVersion: string;
+  alerta: {
+    input: 1 | 2;
+  };
+}
+
 export type TipoMensaje =
   | "ISetAlerta"
   | "ISetAlertaV2"
@@ -219,4 +244,6 @@ export type TipoMensaje =
   | "ISetReporteV3"
   | "IGetConfiguracionV2"
   | "IGetCromatografia"
-  | "IGetRegistro";
+  | "IGetRegistro"
+  | "ISetReporteGpio"
+  | "ISetAlertaGpio";

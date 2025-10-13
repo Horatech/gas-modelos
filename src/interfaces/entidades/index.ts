@@ -33,4 +33,6 @@ export * from "./scada";
 export * from "./apikey";
 export * from "./config-notificacion";
 export * from "./registros-faltantes";
+export * from "./evento-gpio";
+export * from "./alerta-gpio";
 //

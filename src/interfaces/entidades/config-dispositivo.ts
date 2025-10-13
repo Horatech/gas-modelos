@@ -2,6 +2,8 @@ import { TipoDispositivo } from "../auxiliares";
 import { IDispositivo } from "./dispositivo";
 import { IScada } from "./scada";
 
+export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
+
 export interface IConfigDispositivoNUC4G {
   horaInicio?: number;
   modoOperacion?: "REG1_DIARIO" | "REG24_DIARIO" | "REG8_8HORAS";
@@ -10,6 +12,13 @@ export interface IConfigDispositivoNUC4G {
   modoRegistros?: "REG_TOTALIZADOS" | "REG_PARCIALES";
   nsa?: number; // Numero de serie de american meter
   syncHora?: boolean;
+
+  // Configuración GPIO (NUC v2.0)
+  in1Type?: TipoEntradaDigital;
+  in2Type?: TipoEntradaDigital;
+  outputActivo?: boolean;
+  timestampActivacion?: number; // Segundos desde 00:00:00 del día
+  tiempoActivacion?: number; // Segundos que debe estar activada
 }
 
 export interface IConfigDispositivoNSP4G {
