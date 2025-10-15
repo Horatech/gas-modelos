@@ -38,6 +38,13 @@ export interface ISetConfiguracionV2 {
   claveMercury?: string;
   modoRegistros?: "REG_TOTALIZADOS" | "REG_PARCIALES";
   nsa?: number; // Numero de serie de american meter
+  // Teléfonos para alertas SMS (NUC v2.0)
+  telefono1?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
+  telefono2?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
+  telefono3?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
+  // Configuración GPIO (NUC v2.0)
+  tipo_input_1?: number;
+  tipo_input_2?: number;
 }
 
 export interface ISetCorrectora {

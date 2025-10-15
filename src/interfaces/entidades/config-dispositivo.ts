@@ -19,6 +19,11 @@ export interface IConfigDispositivoNUC4G {
   outputActivo?: boolean;
   timestampActivacion?: number; // Segundos desde 00:00:00 del día
   tiempoActivacion?: number; // Segundos que debe estar activada
+
+  // Teléfonos para alertas SMS (NUC v2.0)
+  telefono1?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
+  telefono2?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
+  telefono3?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
 }
 
 export interface IConfigDispositivoNSP4G {
