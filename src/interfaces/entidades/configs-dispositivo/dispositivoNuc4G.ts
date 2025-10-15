@@ -28,4 +28,9 @@ export interface IDispositivoNuc4G {
   outputActivo?: boolean;
   timestampActivacion?: number; // Segundos desde 00:00:00 del día
   tiempoActivacion?: number; // Segundos que debe estar activada
+
+  // Teléfonos para alertas SMS (NUC v2.0)
+  telefono1?: string; // Formato: 13 caracteres sin + (ej: 5491112345678)
+  telefono2?: string;
+  telefono3?: string;
 }
