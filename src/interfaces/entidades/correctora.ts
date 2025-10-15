@@ -34,6 +34,9 @@ export interface ICorrectora {
   ultimaAlerta?: IAlerta;
   ultimaCromatografia?: ICromatografia;
   fechaUltimaCromatografia?: string;
+  // GPIO (NUC v2.0)
+  ultimoEventoGpio?: import("./evento-gpio").IEventoGpio;
+  ultimaAlertaGpio?: import("./alerta-gpio").IAlertaGpio;
   //
   estadoActual?: IEstado;
   //
