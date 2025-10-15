@@ -173,6 +173,15 @@ export interface IResponseGetRegistro {
   registros: number[];
 }
 
+export interface ISyncHora {
+  deveui?: string;
+  appkey?: string;
+  firmwareNuc: string;
+  apiVersion: string;
+  timestamp?: number;
+  forzarSync?: boolean; // Fuerza respuesta del servidor independiente de configuración
+}
+
 /// EXTRAS
 
 export enum ucv {
@@ -252,5 +261,6 @@ export type TipoMensaje =
   | "IGetConfiguracionV2"
   | "IGetCromatografia"
   | "IGetRegistro"
+  | "ISyncHora"
   | "ISetReporteGpio"
   | "ISetAlertaGpio";
