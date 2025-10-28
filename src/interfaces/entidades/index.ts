@@ -35,4 +35,5 @@ export * from "./config-notificacion";
 export * from "./registros-faltantes";
 export * from "./evento-gpio";
 export * from "./alerta-gpio";
+export * from "./medidor-turbina";
 //
