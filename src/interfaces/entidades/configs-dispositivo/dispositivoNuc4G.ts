@@ -1,4 +1,4 @@
-import { TipoEntradaDigital } from "../config-dispositivo";
+import { TipoEdgeDeteccion, TipoEntradaDigital } from "../config-dispositivo";
 
 export interface IDispositivoNuc4G {
   // Lo que viene en set configuracion
@@ -24,7 +24,9 @@ export interface IDispositivoNuc4G {
 
   // Configuración GPIO (NUC v2.0)
   in1Type?: TipoEntradaDigital;
+  in1EdgeType?: TipoEdgeDeteccion; // Tipo de detección de flanco para IN1
   in2Type?: TipoEntradaDigital;
+  in2EdgeType?: TipoEdgeDeteccion; // Tipo de detección de flanco para IN2
   outputActivo?: boolean;
   timestampActivacion?: number; // Segundos desde 00:00:00 del día
   tiempoActivacion?: number; // Segundos que debe estar activada

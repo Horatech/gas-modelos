@@ -4,6 +4,14 @@ import { IScada } from "./scada";
 
 export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
+export type TipoEdgeDeteccion =
+  | "NONE"     // 0 - Sin detección
+  | "FALLING"  // 1 - Flanco descendente
+  | "RISING"   // 2 - Flanco ascendente
+  | "BOTH"     // 3 - Ambos flancos
+  | "LOW"      // 4 - Nivel bajo (continuo)
+  | "HIGH";    // 5 - Nivel alto (continuo)
+
 export interface IConfigDispositivoNUC4G {
   horaInicio?: number;
   modoOperacion?: "REG1_DIARIO" | "REG24_DIARIO" | "REG8_8HORAS";
@@ -15,7 +23,9 @@ export interface IConfigDispositivoNUC4G {
 
   // Configuración GPIO (NUC v2.0)
   in1Type?: TipoEntradaDigital;
+  in1EdgeType?: TipoEdgeDeteccion; // Tipo de detección de flanco para IN1
   in2Type?: TipoEntradaDigital;
+  in2EdgeType?: TipoEdgeDeteccion; // Tipo de detección de flanco para IN2
   outputActivo?: boolean;
   timestampActivacion?: number; // Segundos desde 00:00:00 del día
   tiempoActivacion?: number; // Segundos que debe estar activada

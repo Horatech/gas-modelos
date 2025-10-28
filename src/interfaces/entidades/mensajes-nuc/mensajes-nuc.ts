@@ -44,7 +44,9 @@ export interface ISetConfiguracionV2 {
   telefono3?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
   // Configuración GPIO (NUC v2.0)
   tipo_input_1?: number;
+  tipo_edge_input_1?: number; // Tipo de detección de flanco (0-5)
   tipo_input_2?: number;
+  tipo_edge_input_2?: number; // Tipo de detección de flanco (0-5)
 }
 
 export interface ISetCorrectora {
