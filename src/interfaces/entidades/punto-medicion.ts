@@ -11,6 +11,7 @@ import { IMedidorResidencial } from "./medidor-residencial";
 import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IScada } from "./scada";
 import { ICuenca } from "./cuenca";
+import { IMedidorTurbina } from "./medidor-turbina";
 
 export interface ILimitesNotificacion {
   sms?: number;
@@ -48,6 +49,9 @@ export interface IPuntoMedicion {
   idsScada?: string[] | null;
   fechaAsignacionScada?: string | null;
   posicion?: number; // Orden en el listado
+  // Medidor Turbina
+  idMedidorTurbina?: string | null;
+  fechaAsignacionMedidorTurbina?: string | null;
   // Calculado por el backend
   estado?: IEstado;
   timestampUltimoReporte?: string | null;
@@ -68,6 +72,7 @@ export interface IPuntoMedicion {
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
   scadas?: IScada[];
+  medidorTurbina?: IMedidorTurbina;
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
