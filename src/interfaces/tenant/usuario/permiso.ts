@@ -21,7 +21,8 @@ export type Division =
   | "Residencial"
   | "Residencial Agua"
   | "SCADA Unifilares"
-  | "SCADA Mediciones";
+  | "SCADA Mediciones"
+  | "Medidor Turbina";
 
 export interface IPermiso {
   nivel?: Nivel;
