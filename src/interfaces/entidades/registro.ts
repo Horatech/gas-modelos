@@ -32,6 +32,7 @@ export interface IRegistro {
   modelo?: string;
   //
   idCorrectora?: string;
+  idMedidorTurbina?: string;
   idPuntoMedicion?: string;
   //
   idCliente?: string;
