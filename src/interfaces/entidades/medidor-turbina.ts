@@ -5,9 +5,11 @@ import {
   IAlerta,
   IAlertaGpio,
   ICromatografia,
+  ICuenca,
   IDispositivo,
   IEstado,
   IEventoGpio,
+  IGrupo,
   ILocalidad,
   ModeloCorrectora,
 } from ".";
@@ -40,10 +42,14 @@ export interface IMedidorTurbina {
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idLocalidad?: string;
+  idCuenca?: string;
+  idsGrupos?: string[];
   // Populate
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
   localidad?: ILocalidad;
+  cuenca?: ICuenca;
+  grupos?: IGrupo[];
   dispositivo?: IDispositivo;
 }
 
@@ -53,6 +59,8 @@ type OmitirCreate =
   | "unidadDeNegocio"
   | "centroOperativo"
   | "localidad"
+  | "cuenca"
+  | "grupos"
   | "dispositivo";
 export interface ICreateMedidorTurbina
   extends Omit<Partial<IMedidorTurbina>, OmitirCreate> {}
@@ -63,6 +71,8 @@ type OmitirUpdate =
   | "unidadDeNegocio"
   | "centroOperativo"
   | "localidad"
+  | "cuenca"
+  | "grupos"
   | "dispositivo";
 export interface IUpdateMedidorTurbina
   extends Omit<Partial<IMedidorTurbina>, OmitirUpdate> {}
