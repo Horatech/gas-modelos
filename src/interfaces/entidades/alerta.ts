@@ -6,6 +6,7 @@ import {
   IUnidadPresion,
   IMedidorResidencial,
   IMedidorResidencialAgua,
+  IMedidorTurbina,
 } from ".";
 import { ICliente } from "../tenant";
 import { ICentroOperativo } from "../gas/centroOperativo";
@@ -61,6 +62,7 @@ export interface IAlerta {
   scada?: IScada;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
+  medidorTurbina?: IMedidorTurbina;
 }
 
 ////// CREATE
@@ -75,7 +77,8 @@ type OmitirCreate =
   | "correctora"
   | "scada"
   | "medidorResidencial"
-  | "medidorResidencialAgua";
+  | "medidorResidencialAgua"
+  | "medidorTurbina";
 export interface ICreateAlerta extends Omit<Partial<IAlerta>, OmitirCreate> {}
 
 ////// UPDATE
@@ -90,5 +93,6 @@ type OmitirUpdate =
   | "correctora"
   | "scada"
   | "medidorResidencial"
-  | "medidorResidencialAgua";
+  | "medidorResidencialAgua"
+  | "medidorTurbina";
 export interface IUpdateAlerta extends Omit<Partial<IAlerta>, OmitirUpdate> {}
