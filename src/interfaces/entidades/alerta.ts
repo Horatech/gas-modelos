@@ -46,6 +46,7 @@ export interface IAlerta {
   idMedidorResidencial?: string;
   idMedidorResidencialAgua?: string;
   idScada?: string;
+  idMedidorTurbina?: string;
   numeroSerieCorrectora?: string | null;
   //
   fechaCreacion?: string;
