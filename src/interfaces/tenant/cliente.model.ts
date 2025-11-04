@@ -9,6 +9,7 @@ export type TemplatesWhatsapp =
   | "Sensor de presión desconectado"
   | "Error de comunicación de alarma"
   | "Scada valor fuera de límite"
+  | "Scada valor fuera de límite genérico"
   | "Scada valor reestablecido"
   | "Scada booleano alarma"
   | "Scada booleano reestablecido"
