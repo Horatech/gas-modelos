@@ -150,6 +150,25 @@ export interface ITwilioFueraDeLimiteTemplate {
   sid: string;
 }
 
+/**
+ * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
+ * enviar a través de la API de Twilio. Estos mensajes pueden ser personalizados
+ * con variables que se reemplazan por valores específicos al momento de enviar
+ * el mensaje.
+ * @example 'Alerta de {{1}}, el valor {{2}} a sobrepasado el nivel {{3}} en el punto {{4}}.'
+ * @param tipo Tipo {{1}} // Ejemplo: presión, temperatura, caudal, etc.
+ * @param valor Valor {{2}} // Ejemplo: 100 psi, 50 °C, 200 l/s, etc.
+ * @param nivel Nivel {{3}} // Ejemplo: límite máximo, límite mínimo, etc.
+ * @param punto Punto de medición {{4}}
+ * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
+ */
+export interface ITwilioScadaFueraDeLimiteTemplate {
+  1: string;
+  2: string;
+  3: string;
+  sid: string;
+}
+
 export interface ITwilioMsgGenericTemplate {
   [key: number]: string;
   sid: string;
@@ -166,7 +185,8 @@ export interface IMensajeTwilio {
     | ITwilioScadaCambioLimiteTemplate
     | ITwilioScadaValorReestablecidoTemplate
     | ITwilioSensorDesconectadoTemplate
-    | ITwilioFueraDeLimiteTemplate;
+    | ITwilioFueraDeLimiteTemplate
+    | ITwilioScadaFueraDeLimiteTemplate;
   pais?: string;
   telefono?: string;
   idCliente?: string;
