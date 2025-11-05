@@ -16,6 +16,12 @@ import {
 
 export type modeloTurbina = "Clasico" | "AltaCapacidad";
 
+export interface IConfigTurbina {
+  // configuracion para multiplicar los valores de entradas digitales por un factor de correccion
+  factorIn1?: number;
+  factorIn2?: number;
+}
+
 export interface IMedidorTurbina {
   _id?: string;
   //
@@ -27,6 +33,7 @@ export interface IMedidorTurbina {
   bateria?: number;
   consumoInicial?: number;
   tipo?: modeloTurbina;
+  config?: IConfigTurbina;
   //
   ultimoRegistro?: IRegistro;
   ultimaAlerta?: IAlerta;
