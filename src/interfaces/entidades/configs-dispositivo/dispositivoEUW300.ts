@@ -59,6 +59,16 @@ export interface IReporteDiarioEUW300 {
   fechaHora?: string; // ISO string de la fecha/hora real
   estados?: IEstadosEUW300; // 2 bytes HEX convertidos a objeto
   intensidadSenal?: number; // 1 byte HEX
+
+  tipoReporte?: "diario" | "evento"; // Diferencia entre 0x7028 y 0x7029
+  motivoEvento?: string; // Si es evento o alarma, motivo del mismo
+  timestamp?: string; // Timestamp de recepción (fechaCreacion del reporte)
+  deviceAddress?: string; // Dirección del dispositivo (14 dígitos BCD)
+  modoTransmision?: "texto-plano" | "cifrado"; // Modo de transmisión
+
+  consumo?: number; // Alias de flujoAcumuladoActual para compatibilidad
+  nivelBateria?: number; // Porcentaje estimado de batería
+  serialNumber?: string; // Número de serie del medidor
 }
 
 /**
@@ -71,6 +81,16 @@ export interface IReporteHorarioEUW300 {
   unidadFlujoAcumulado?: UnidadFlujoAcumulado;
   flujoAcumuladoInicial?: number; // HEX, 4 bytes
   incrementosHorarios?: number[]; // Array de 12 elementos (incrementos por hora)
+
+  tipoReporte?: "horario" | "evento"; // Puede ser disparado por evento
+  motivoEvento?: string; // Si fue disparado por alarma/evento
+  timestamp?: string; // ✅ Se genera al recibir
+  deviceAddress?: string; // ✅ Viene en header de trama
+  modoTransmision?: "texto-plano" | "cifrado"; // ✅ Control code
+
+  // Campos calculados útiles
+  consumoTotal?: number; // Suma total de incrementos
+  consumoPromedioPorHora?: number; // Promedio por hora
 }
 
 /**
