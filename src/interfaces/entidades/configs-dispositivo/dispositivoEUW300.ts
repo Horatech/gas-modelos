@@ -53,7 +53,7 @@ export interface IEstadosEUW300 {
 export interface IDispositivoEUW300 {
   // Configuración básica
   meterType?: number; // Siempre 10H para water meter
-  address?: string; // 7 bytes BCD (14 dígitos)
+  deviceMeterNumber?: string; // 7 bytes BCD (14 dígitos)
 
   // Configuración de comunicación
   modoTransmision?: "texto-plano" | "cifrado"; // D3 del control code
