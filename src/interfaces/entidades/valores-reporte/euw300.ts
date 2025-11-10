@@ -25,7 +25,7 @@ export interface IReporteDiarioEUW300 {
   tipoReporte?: "diario" | "evento"; // Diferencia entre 0x7028 y 0x7029
   motivoEvento?: string; // Si es evento o alarma, motivo del mismo
   timestamp?: string; // Timestamp de recepción (fechaCreacion del reporte)
-  deviceAddress?: string; // Dirección del dispositivo (14 dígitos BCD)
+  deviceMeterNumber?: string; // Dirección del dispositivo (14 dígitos BCD)
   modoTransmision?: "texto-plano" | "cifrado"; // Modo de transmisión
 
   consumo?: number; // Alias de flujoAcumuladoActual para compatibilidad
@@ -47,7 +47,7 @@ export interface IReporteHorarioEUW300 {
   tipoReporte?: "horario" | "evento"; // Puede ser disparado por evento
   motivoEvento?: string; // Si fue disparado por alarma/evento
   timestamp?: string; // ✅ Se genera al recibir
-  deviceAddress?: string; // ✅ Viene en header de trama
+  deviceMeterNumber?: string; // ✅ Viene en header de trama
   modoTransmision?: "texto-plano" | "cifrado"; // ✅ Control code
 
   // Campos calculados útiles
