@@ -69,6 +69,7 @@ export interface IConfigCliente {
   maximoUsuariosUsanLlm?: number;
   twilio?: IConfigTwilio;
   sincHoraria?: Partial<Record<ModeloCorrectora, IConfigSincHoraria>>;
+  nucv3: boolean;
 }
 
 export interface ICliente {
