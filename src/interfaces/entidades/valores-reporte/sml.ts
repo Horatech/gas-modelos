@@ -14,7 +14,9 @@ export interface IReporteSML {
   checksum?: number;
   // Parsed
   timestamp?: string;
-  consumo?: number;
-  consumoNegativo?: number;
+  consumo?: number; // Es el consumo acumulado reportado por el dispositivo
+  consumoNegativo?: number; // Es el consumo acumulado en sentido negativo reportado por el dispositivo
+  consumoCorregido?: number; // Es el consumo acumulado reportado por el dispositvo +- el consumo incial cargado en la plataforma
+  consumoInstantaneo?: number; // Es el consumo instantaneo reportado por el dispositivo
   bateria?: number;
 }
