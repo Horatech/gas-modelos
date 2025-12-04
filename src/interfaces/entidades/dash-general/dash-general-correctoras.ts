@@ -15,6 +15,8 @@ export interface IEstadoGeneralCorrectoras {
 
   // Metadata
   fechaCreacion: string;
+  mes: number;
+  anio: number;
 
   // Filtros aplicados (referencia a entidades)
   idCliente?: string;
@@ -40,7 +42,7 @@ export interface IEstadoGeneralCorrectoras {
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
   localidad?: ILocalidad;
-  dispositivos?: IDispositivo;
+  dispositivo?: IDispositivo;
 }
 
 type Omitir =
