@@ -36,4 +36,5 @@ export * from "./registros-faltantes";
 export * from "./evento-gpio";
 export * from "./alerta-gpio";
 export * from "./medidor-turbina";
+export * from "./dash-general";
 //
