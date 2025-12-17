@@ -224,7 +224,7 @@ export const modelosCorrectoras: ModeloCorrectora[] = [
 ];
 
 /// GPIO - NUC v2.0
-
+// - Testigos de inputs
 export interface ISetReporteGpio {
   deveui: string;
   appkey: string;
@@ -248,6 +248,14 @@ export interface ISetAlertaGpio {
   };
 }
 
+export interface ISetRegistrosInputs {
+  deveui: string;
+  appkey: string;
+  firmwareNuc: string;
+  apiVersion: string;
+  reg_ios: [number, number, number][]; // Array of [timestamp, contador_input_1, contador_input_2]
+}
+
 export type TipoMensaje =
   | "ISetAlerta"
   | "ISetAlertaV2"
@@ -265,4 +273,5 @@ export type TipoMensaje =
   | "IGetRegistro"
   | "ISyncHora"
   | "ISetReporteGpio"
-  | "ISetAlertaGpio";
+  | "ISetAlertaGpio"
+  | "ISetRegistrosInputs";
