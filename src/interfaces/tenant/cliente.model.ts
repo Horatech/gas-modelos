@@ -70,6 +70,11 @@ export interface IConfigCliente {
   twilio?: IConfigTwilio;
   sincHoraria?: Partial<Record<ModeloCorrectora, IConfigSincHoraria>>;
   nucV3?: boolean;
+  /**
+   * Si es true, los registros se insertan con upsert, es decir, si ya existe un registro con el mismo
+   * identificador, se sobreescribe. Si es false o no está definido, los registros duplicados se ignoran.
+   */
+  sobreEscribirRegistrosNuc?: boolean;
 }
 
 export interface ICliente {
