@@ -10,7 +10,9 @@ import {
   IEstado,
   IEventoGpio,
   IGrupo,
+  IInputsRegistrosNUCV2,
   ILocalidad,
+  ITestigoNUCV2,
   ModeloCorrectora,
 } from ".";
 
@@ -41,6 +43,8 @@ export interface IMedidorTurbina {
   fechaUltimaCromatografia?: string;
   // GPIO (NUC v2.0)
   ultimoEventoGpio?: IEventoGpio;
+  ultimoReporteInput?: IInputsRegistrosNUCV2;
+  ultimoReporteTestigo?: ITestigoNUCV2;
   ultimaAlertaGpio?: IAlertaGpio;
   //
   estadoActual?: IEstado;
