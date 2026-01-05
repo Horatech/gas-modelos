@@ -6,3 +6,5 @@ export * from "./veribox";
 export * from "./wrc";
 export * from "./scada";
 export * from "./euw300";
+export * from "./nucv2-inputs-registros";
+export * from "./nucv2-testigo";
