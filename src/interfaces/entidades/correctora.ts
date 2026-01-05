@@ -5,7 +5,9 @@ import {
   IAlerta,
   ICromatografia,
   IDispositivo,
+  IInputsRegistrosNUCV2,
   ILocalidad,
+  ITestigoNUCV2,
   ModeloCorrectora,
 } from ".";
 
@@ -36,6 +38,8 @@ export interface ICorrectora {
   fechaUltimaCromatografia?: string;
   // GPIO (NUC v2.0)
   ultimoEventoGpio?: import("./evento-gpio").IEventoGpio;
+  ultimoReporteInput?: IInputsRegistrosNUCV2;
+  ultimoReporteTestigo?: ITestigoNUCV2;
   ultimaAlertaGpio?: import("./alerta-gpio").IAlertaGpio;
   //
   estadoActual?: IEstado;
