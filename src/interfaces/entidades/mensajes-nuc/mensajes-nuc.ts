@@ -256,6 +256,18 @@ export interface ISetRegistrosInputs {
   reg_ios: [number, number, number][]; // Array of [timestamp, contador_input_1, contador_input_2]
 }
 
+export interface IInputsFlag {
+  deveui: string;
+  appkey: string;
+  firmwareNuc: string;
+  apiVersion: string;
+  flag_ios: {
+    // Siempre llega como 1 si hay mensaje sino no hay mensaje de testigo.
+    testigo_1?: number;
+    testigo_2?: number;
+  };
+}
+
 export type TipoMensaje =
   | "ISetAlerta"
   | "ISetAlertaV2"
@@ -274,4 +286,5 @@ export type TipoMensaje =
   | "ISyncHora"
   | "ISetReporteGpio"
   | "ISetAlertaGpio"
-  | "ISetRegistrosInputs";
+  | "ISetRegistrosInputs"
+  | "IInputsFlag";
