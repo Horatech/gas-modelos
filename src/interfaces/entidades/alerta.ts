@@ -21,7 +21,15 @@ export type ITipoAlerta =
   | "Error de comunicación"
   | "Sensor desconectado"
   | "Batería baja"
-  | "Ataque magnético";
+  | "Ataque magnético"
+  | "Alerta de Entrada Digital";
+export interface IAlertaInputsNucv2 {
+  input: 1 | 2; // Número de entrada que generó la alerta
+  // Estado del SMS
+  smsEnviado?: boolean;
+  fechaEnvioSms?: string;
+  errorSms?: string;
+}
 
 export interface IAlerta {
   _id?: string;
@@ -36,6 +44,9 @@ export interface IAlerta {
   estado?: IEstadoAlerta;
   tipo?: ITipoAlerta;
   fechaCierre?: string;
+  // Campos para NUC-V2
+  valoresNucV2?: IAlertaInputsNucv2;
+
   //
   idCliente?: string;
   idUnidadNegocio?: string;
