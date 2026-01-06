@@ -256,6 +256,17 @@ export interface ISetRegistrosInputs {
   reg_ios: [number, number, number][]; // Array of [timestamp, contador_input_1, contador_input_2]
 }
 
+export interface IGetRegistrosInputs {
+  deveui: string;
+  appkey: string;
+  firmwareNuc: string;
+  apiVersion: string;
+}
+
+export interface IResponseGetRegistrosInputs {
+  registros: number[]; // Array of [timestamps, timestamps...]
+}
+
 export interface IInputsFlag {
   deveui: string;
   appkey: string;
@@ -287,4 +298,5 @@ export type TipoMensaje =
   | "ISetReporteGpio"
   | "ISetAlertaGpio"
   | "ISetRegistrosInputs"
+  | "IGetRegistrosInputs"
   | "IInputsFlag";
