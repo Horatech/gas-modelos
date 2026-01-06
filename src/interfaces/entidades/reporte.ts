@@ -7,6 +7,10 @@ import { IPuntoMedicion } from "./punto-medicion";
 import { IUnidadPresion } from "./unidad-presion";
 import { IValoresReporte } from "./valores-reporte/valoresReporte";
 
+export type reporteTypes = ITypeReporteNuc | null;
+
+export type ITypeReporteNuc = "Inputs" | "Testigos";
+
 export interface IReporte {
   _id?: string;
   fechaCreacion?: string;
@@ -19,6 +23,7 @@ export interface IReporte {
   idsAsignadosHash?: string; // Esto es un string para usar como indice unico los ids asignados
   // Datos especificos de acuerdo al tipo de dispositivo
   valores?: IValoresReporte;
+  tipoReporte?: reporteTypes;
 
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
