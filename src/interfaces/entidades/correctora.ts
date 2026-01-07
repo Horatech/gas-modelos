@@ -40,6 +40,7 @@ export interface ICorrectora {
   ultimoEventoGpio?: import("./evento-gpio").IEventoGpio;
   ultimoReporteInput?: IInputsRegistrosNUCV2;
   ultimoReporteTestigo?: ITestigoNUCV2;
+  ultimaAlertaInput?: IAlerta;
   ultimaAlertaGpio?: import("./alerta-gpio").IAlertaGpio;
   //
   estadoActual?: IEstado;

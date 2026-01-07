@@ -45,6 +45,7 @@ export interface IMedidorTurbina {
   ultimoEventoGpio?: IEventoGpio;
   ultimoReporteInput?: IInputsRegistrosNUCV2;
   ultimoReporteTestigo?: ITestigoNUCV2;
+  ultimaAlertaInput?: IAlerta;
   ultimaAlertaGpio?: IAlertaGpio;
   //
   estadoActual?: IEstado;
