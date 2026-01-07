@@ -8,7 +8,7 @@ import {
   IMedidorResidencialAgua,
   IMedidorTurbina,
 } from ".";
-import { ICliente } from "../tenant";
+import { Division, ICliente } from "../tenant";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 
@@ -46,6 +46,7 @@ export interface IAlerta {
   estado?: IEstadoAlerta;
   tipo?: ITipoAlerta;
   fechaCierre?: string;
+  division?: Division;
   // Campos para NUC-V2
   valores?: IValoresAlerta;
 
