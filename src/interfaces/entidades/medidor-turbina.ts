@@ -35,6 +35,7 @@ export interface IMedidorTurbina {
   modelo?: ModeloCorrectora;
   fechaCreacion?: string;
   bateria?: number;
+  consumoInicial?: number;
   tipo?: modeloTurbina;
   config?: IConfigTurbina;
   //
