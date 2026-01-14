@@ -22,6 +22,8 @@ export interface IConfigTurbina {
   // configuracion para multiplicar los valores de entradas digitales por un factor de correccion
   factorIn1?: number;
   factorIn2?: number;
+  consumoInicialIn1?: number; // valor inicial de la entrada digital 1 para calcular el consumo real
+  consumoInicialIn2?: number; // valor inicial de la entrada digital 2 para calcular el consumo real
 }
 
 export interface IMedidorTurbina {
