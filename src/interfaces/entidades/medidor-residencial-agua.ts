@@ -7,6 +7,17 @@ import { IGrupo } from "./grupo";
 import { ILocalidad } from "./localidad";
 import { IReporte } from "./reporte";
 
+export interface ITitularMedidorResidencialAgua {
+  nombre?: string;
+  tipo: "persona" | "empresa";
+  documento?: string; // DNI o CUIT
+  tipoDocumento?: "DNI" | "CUIT";
+  telefono?: string;
+  email?: string;
+  // Estado
+  activo?: boolean;
+}
+
 export interface IMedidorResidencialAgua {
   _id?: string;
   //
@@ -23,6 +34,7 @@ export interface IMedidorResidencialAgua {
   direccion?: string;
   nombre?: string;
   descripcion?: string;
+  titular?: ITitularMedidorResidencialAgua;
   corregido?: boolean;
   //
   idCliente?: string;
