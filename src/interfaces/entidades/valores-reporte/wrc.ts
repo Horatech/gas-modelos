@@ -4,6 +4,8 @@ export interface IReporteWRC {
   meter_info?: MeterInfo;
   valve?: FixIot;
   alarm?: Alarm;
+  ip?: string;
+  port?: number;
   // Parsed
   timestamp?: string;
   consumoNegativo?: number; // Es el consumo acumulado en sentido negativo reportado por el dispositivo
