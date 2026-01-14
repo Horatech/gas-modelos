@@ -5,12 +5,12 @@ import { IScada } from "./scada";
 export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 export type TipoEdgeDeteccion =
-  | "NONE"     // 0 - Sin detección
-  | "FALLING"  // 1 - Flanco descendente
-  | "RISING"   // 2 - Flanco ascendente
-  | "BOTH"     // 3 - Ambos flancos
-  | "LOW"      // 4 - Nivel bajo (continuo)
-  | "HIGH";    // 5 - Nivel alto (continuo)
+  | "NONE" // 0 - Sin detección
+  | "FALLING" // 1 - Flanco descendente
+  | "RISING" // 2 - Flanco ascendente
+  | "BOTH" // 3 - Ambos flancos
+  | "LOW" // 4 - Nivel bajo (continuo)
+  | "HIGH"; // 5 - Nivel alto (continuo)
 
 export interface IConfigDispositivoNUC4G {
   horaInicio?: number;
@@ -88,6 +88,18 @@ export interface IConfigDispositivoScada {
   // Textos para los booleanos
   textoTrue?: string;
   textoFalse?: string;
+  // Fecha de Aplicación
+  fechaAplicacion?: string;
+}
+
+export interface IConfigDispositivoSml {
+  calibrationDeviceNodeReading?: number;
+  reportingCycleInterval?: number; // Segundos
+  timezone?: string; // UTC+2 | UTC-3 | etc.
+  ipReporte?: string; // La IP de a donde va a reportar -> 47.92.222.233 :1822
+  pn?: number; // Pulse number
+  maximunMeterReading?: number; // Valor maximo del medidor
+  reportingRange?: number; // 321: 0321 3--3+21/2 ,Means to report randomly in the range of 3-13:30
   // Fecha de Aplicación
   fechaAplicacion?: string;
 }
