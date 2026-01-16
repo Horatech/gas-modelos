@@ -1,5 +1,6 @@
 export interface IDispositivoSml {
   // Comunicacion
+  imei?: string;
   ip?: string; // IP desde la cual se comunica el dispositivo
   port?: number;
 

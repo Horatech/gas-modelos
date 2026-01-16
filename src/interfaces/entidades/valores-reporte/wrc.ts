@@ -1,4 +1,5 @@
 export interface IReporteWRC {
+  nb_delivery?: NBDelivery;
   device_information?: DeviceInformation;
   fix_iot?: FixIot;
   meter_info?: MeterInfo;
@@ -25,6 +26,34 @@ export interface Alarm {
   over_flow_alarm?: number;
   meter_stop_alarm?: number;
   reverse_flow_alarm?: number;
+}
+
+export interface NBDelivery {
+  NBModelVer: string;
+  imei: string;
+  imsi: string;
+  iccid: string;
+  IP: string;
+  APN: string;
+  plmnID: string;
+  BandIndicator: number;
+  EARFCN: number;
+  CellID: number;
+  pci: number;
+  rsrp: number;
+  rsrq: number;
+  rssi: number;
+  snr: number;
+  ECL: number;
+  TXPower: number;
+  TXTime: number;
+  RXTime: number;
+  CSQ: number;
+  ReadNBInformation: number;
+  PSM: number;
+  NetworkProtocol: number;
+  alternateIP: string;
+  changeAlternateIPTimes: number;
 }
 
 export interface DeviceInformation {
