@@ -1,4 +1,5 @@
 import { IReporteDiarioEUW300, IReporteHorarioEUW300 } from "./euw300";
+import { IReporteTotalizadorBove, IReporteLogsHorariosBove } from "./bove";
 import { IReporteNSP } from "./nsp";
 import { IReporteNUC } from "./nuc";
 import { IInputsRegistrosNUCV2 } from "./nucv2-inputs-registros";
@@ -18,4 +19,6 @@ export type IValoresReporte =
   | IReporteSML
   | IReporteScada
   | IReporteDiarioEUW300
-  | IReporteHorarioEUW300;
+  | IReporteHorarioEUW300
+  | IReporteTotalizadorBove
+  | IReporteLogsHorariosBove;
