@@ -37,4 +37,5 @@ export * from "./evento-gpio";
 export * from "./alerta-gpio";
 export * from "./medidor-turbina";
 export * from "./dash-general";
+export * from "./mensajes-bove";
 //
