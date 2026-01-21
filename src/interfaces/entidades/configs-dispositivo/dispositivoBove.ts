@@ -35,18 +35,16 @@ export interface IBoveCapabilities {
  * Los bits se interpretan según el perfil de capacidades del dispositivo.
  */
 export interface IEstadosBove {
-  bateriaBaja?: boolean;
-  flujoInverso?: boolean;
-  tuberiaVacia?: boolean;
-  fuga?: boolean;
-  rotura?: boolean;
-  manipulacion?: boolean;
-  errorSensores?: boolean;
-  // Bits adicionales interpretados según capabilities (válvula, presión, etc.)
-  valvulaAbierta?: boolean; // Solo si hasValve
-  presionAlta?: boolean; // Solo si hasPressureSensor
-  temperaturaAlta?: boolean; // Solo si hasTemperatureSensor
-  congelamiento?: boolean; // solo si hasTemperatureSensor
+  lowBatteryAlarm: boolean;
+  emptyPipeAlarm: boolean;
+  reverseFlowAlarm: boolean;
+  overRangeAlarm: boolean;
+  overTempratureAlarm: boolean;
+  eEPROMError: boolean;
+  leakagealarm: boolean;
+  burstAlarm: boolean;
+  valveStatus: "Open" | "Close" | "Abnormal";
+  batteryAlarm: boolean;
 }
 
 /**

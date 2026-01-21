@@ -5,24 +5,21 @@ import { IEstadosBove, UnidadConsumoBove } from "../configs-dispositivo";
  * Control Code variable, DI0/DI1 indican tipo
  */
 export interface IReporteTotalizadorBove {
-  consumoAcumulado?: number; // BCD, valor acumulado
+  consumo?: number; // BCD, valor acumulado
+  bateryCapacity?: number; //
   unidadConsumo?: UnidadConsumoBove;
-  fechaCreacion?: string; // fecha real de creación del reporte
   estados?: IEstadosBove; // ST1 y ST2
-  intensidadSenal?: number; // RSSI o SNR si disponible
 
+  timestamp?: string; // Timestamp del reporte recibido
+  intensidadSenal?: number; // RSSI o SNR si disponible
   tipoReporte?: "totalizador";
   motivoEvento?: string; // Si es respuesta a comando o evento
-  timestamp?: string; // Timestamp del reporte recibido
   deviceMeterNumber?: string; // Número de serie como identificador
 
   // Campos adicionales para modelos con presión/temperatura
   // se registran si están disponibles (según capabilities)
   presion?: number; // En bar o psi, según modelo
   temperatura?: number; // °C
-
-  // Alias para compatibilidad
-  consumo?: number; // Alias de consumoAcumulado
 }
 
 /**
