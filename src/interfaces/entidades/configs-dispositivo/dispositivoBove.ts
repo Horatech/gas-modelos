@@ -35,16 +35,16 @@ export interface IBoveCapabilities {
  * Los bits se interpretan según el perfil de capacidades del dispositivo.
  */
 export interface IEstadosBove {
-  lowBatteryAlarm: boolean;
-  emptyPipeAlarm: boolean;
-  reverseFlowAlarm: boolean;
-  overRangeAlarm: boolean;
-  overTempratureAlarm: boolean;
-  eEPROMError: boolean;
-  leakagealarm: boolean;
-  burstAlarm: boolean;
-  valveStatus: "Open" | "Close" | "Abnormal";
-  batteryAlarm: boolean;
+  lowBatteryAlarm?: boolean;
+  emptyPipeAlarm?: boolean;
+  reverseFlowAlarm?: boolean;
+  overRangeAlarm?: boolean;
+  overTempratureAlarm?: boolean;
+  eEPROMError?: boolean;
+  leakagealarm?: boolean;
+  burstAlarm?: boolean;
+  valveStatus?: "Open" | "Close" | "Abnormal";
+  batteryAlarm?: boolean;
 }
 
 /**
