@@ -20,6 +20,11 @@ export interface IConfigDispositivoNUC4G {
   modoRegistros?: "REG_TOTALIZADOS" | "REG_PARCIALES";
   nsa?: number; // Numero de serie de american meter
   syncHora?: boolean;
+  firmwareNuc?: string;
+  iccid?: string;
+  apiVersion?: string;
+  operadora?: string;
+  voltajeBateria?: number;
 
   // Configuración GPIO (NUC v2.0)
   in1Type?: TipoEntradaDigital;
@@ -29,6 +34,10 @@ export interface IConfigDispositivoNUC4G {
   outputActivo?: boolean;
   timestampActivacion?: number; // Segundos desde 00:00:00 del día
   tiempoActivacion?: number; // Segundos que debe estar activada
+  // Configuracion modos de NUC + fechas de aplicación para determinar fechas de busquedas de reportes pulsos
+  deviceMode?: number; // Modo de dispositivo NUC
+  fechaUpdateContadorIN1?: string; // Fecha de aplicación configuración contador IN1
+  fechaUpdateContadorIN2?: string; // Fecha de aplicación configuración contador IN2
 
   // Teléfonos para alertas SMS (NUC v2.0)
   telefono1?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
@@ -122,10 +131,14 @@ export interface IConfigDispositivo {
 
 // CREATE
 type OmitirCreate = "_id" | "dispositivo";
-export interface ICreateConfigDispositivo
-  extends Omit<Partial<IConfigDispositivo>, OmitirCreate> {}
+export interface ICreateConfigDispositivo extends Omit<
+  Partial<IConfigDispositivo>,
+  OmitirCreate
+> {}
 
 // UPDATE
 type OmitirUpdate = "_id" | "dispositivo";
-export interface IUpdateConfigDispositivo
-  extends Omit<Partial<IConfigDispositivo>, OmitirUpdate> {}
+export interface IUpdateConfigDispositivo extends Omit<
+  Partial<IConfigDispositivo>,
+  OmitirUpdate
+> {}
