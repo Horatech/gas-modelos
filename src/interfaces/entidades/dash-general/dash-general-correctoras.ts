@@ -36,6 +36,10 @@ export interface IEstadoGeneralCorrectoras {
 
   // Hash del query para identificar búsquedas duplicadas
   queryHash?: string;
+  // Fecha de última actualización del registro
+  fechaActualizacion?: string;
+  estado?: "Recalcular" | "Activo" | "Error";
+  fechaRecalculo?: string;
 
   // Populate
   puntoMedicion?: IPuntoMedicion;
@@ -54,8 +58,12 @@ type Omitir =
   | "localidad"
   | "dispositivos";
 
-export interface ICreateEstadoGeneralCorrectoras
-  extends Omit<Partial<IEstadoGeneralCorrectoras>, Omitir> {}
+export interface ICreateEstadoGeneralCorrectoras extends Omit<
+  Partial<IEstadoGeneralCorrectoras>,
+  Omitir
+> {}
 
-export interface IUpdateEstadoGeneralCorrectoras
-  extends Omit<Partial<IEstadoGeneralCorrectoras>, Omitir> {}
+export interface IUpdateEstadoGeneralCorrectoras extends Omit<
+  Partial<IEstadoGeneralCorrectoras>,
+  Omitir
+> {}
