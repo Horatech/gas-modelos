@@ -36,8 +36,6 @@ export interface IConfigDispositivoNUC4G {
   tiempoActivacion?: number; // Segundos que debe estar activada
   // Configuracion modos de NUC + fechas de aplicación para determinar fechas de busquedas de reportes pulsos
   deviceMode?: number; // Modo de dispositivo NUC
-  fechaUpdateContadorIN1?: string; // Fecha de aplicación configuración contador IN1
-  fechaUpdateContadorIN2?: string; // Fecha de aplicación configuración contador IN2
 
   // Teléfonos para alertas SMS (NUC v2.0)
   telefono1?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
