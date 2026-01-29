@@ -38,4 +38,5 @@ export * from "./alerta-gpio";
 export * from "./medidor-turbina";
 export * from "./dash-general";
 export * from "./mensajes-bove";
+export * from "./gpio-config-nuc-auditoria";
 //
