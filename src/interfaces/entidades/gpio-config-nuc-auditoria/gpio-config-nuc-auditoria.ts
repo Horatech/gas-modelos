@@ -22,8 +22,9 @@ export interface IAuditoriaConfigGpio {
 }
 
 export interface ITimelineEntry {
-  fechaInicio?: string; // Fecha del inicio del cambio
-  fechaFin?: string; // Si es null, esta configuración sigue activa para este canal
+  fechaInicio: string; // Fecha del inicio del cambio (ISO 8601) - NO opcional para garantizar búsquedas
+  fechaFin?: string; // Si es null/undefined, esta configuración sigue activa para este canal
+  activo: boolean; // true si es la configuración actual activa (fechaFin == null), facilita consultas
 
   type: TipoEntradaDigital; // El nuevo tipo asignado
   edgeType?: TipoEdgeDeteccion; // El nuevo tipo de detección
