@@ -29,7 +29,7 @@ export interface ITimelineEntry {
   type: TipoEntradaDigital; // El nuevo tipo asignado
   edgeType?: TipoEdgeDeteccion; // El nuevo tipo de detección
   // Metadatos de la auditoría (El "Quién")
-  auditoria: IAuditoriaConfigGpio;
+  auditoria?: IAuditoriaConfigGpio;
 }
 
 export interface gpioConfigNucAuditoria {
