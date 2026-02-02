@@ -57,3 +57,17 @@ export interface IGpioConfigNucAuditoria {
   dispositivo?: IDispositivo;
   configDispositivo?: IConfigDispositivo;
 }
+
+////// CREATE
+type OmitirCreate = "_id" | "dispositivo" | "cliente" | "configDispositivo";
+export interface ICreateGpioConfigNucAuditoria extends Omit<
+  Partial<IGpioConfigNucAuditoria>,
+  OmitirCreate
+> {}
+
+////// UPDATE
+type OmitirUpdate = "_id" | "dispositivo" | "cliente" | "configDispositivo";
+export interface IUpdateGpioConfigNucAuditoria extends Omit<
+  Partial<IGpioConfigNucAuditoria>,
+  OmitirUpdate
+> {}
