@@ -32,7 +32,7 @@ export interface ITimelineEntry {
   auditoria?: IAuditoriaConfigGpio;
 }
 
-export interface gpioConfigNucAuditoria {
+export interface IGpioConfigNucAuditoria {
   // Info autogenerada
   _id?: string;
   fechaCreacion?: string;
