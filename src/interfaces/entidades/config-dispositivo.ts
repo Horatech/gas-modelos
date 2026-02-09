@@ -21,7 +21,7 @@ export interface IConfigDispositivoNUC4G {
   nsa?: number; // Numero de serie de american meter
   syncHora?: boolean;
   firmwareNuc?: string;
-  iccid?: string;
+  iccid?: number;
   apiVersion?: string;
   operadora?: string;
   voltajeBateria?: number;
