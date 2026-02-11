@@ -50,7 +50,7 @@ export interface IGpioConfigNucAuditoria {
   // Tenant
   idCliente?: string;
   idDispositivo: string;
-  idConfigDispositivo: string; // El _id de IConfigDispositivo que disparó este cambio
+  idConfigDispositivo?: string; // El _id de IConfigDispositivo que disparó este cambio
   tipoDispositivo?: TipoDispositivo;
   // populate
   cliente?: ICliente;
