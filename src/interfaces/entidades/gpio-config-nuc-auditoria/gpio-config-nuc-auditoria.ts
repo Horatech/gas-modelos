@@ -7,65 +7,48 @@ import {
 } from "../config-dispositivo";
 import { IDispositivo } from "../dispositivo";
 
-// Configuración GPIO (NUC v2.0)
-// in1Type?: TipoEntradaDigital;
-// in1EdgeType?: TipoEdgeDeteccion; // Tipo de detección de flanco para IN1
-// in2Type?: TipoEntradaDigital;
-// in2EdgeType?: TipoEdgeDeteccion; // Tipo de detección de flanco para IN2
-// outputActivo?: boolean;
-// timestampActivacion?: number; // Segundos desde 00:00:00 del día
-// tiempoActivacion?: number; // Segundos que debe estar activada
-
+// Metadatos de auditoría (sin cambios)
 export interface IAuditoriaConfigGpio {
   usuarioId: string;
   nombreUsuario: string;
 }
 
-export interface ITimelineEntry {
-  fechaInicio: string; // Fecha del inicio del cambio (ISO 8601) - NO opcional para garantizar búsquedas
-  fechaFin?: string; // Si es null/undefined, esta configuración sigue activa para este canal
-  activo: boolean; // true si es la configuración actual activa (fechaFin == null), facilita consultas
-
-  type: TipoEntradaDigital; // El nuevo tipo asignado
-  edgeType?: TipoEdgeDeteccion; // El nuevo tipo de detección
-  // Metadatos de la auditoría (El "Quién")
-  auditoria?: IAuditoriaConfigGpio;
-}
-
+// Nueva interfaz: Cada documento es una entrada individual de timeline
 export interface IGpioConfigNucAuditoria {
-  // Info autogenerada
-  _id?: string;
-  fechaCreacion?: string;
-  // El historial ordenado de todos los cambios que sufrieron las configuraciones GPIO del NUC
-  // Con auditoría completa de usuario que hizo el cambio y cuándo
-  // HISTORIALES INDEPENDIENTES
-  // Esto permite que IN1 tenga una fecha de inicio y IN2 otra totalmente distinta
-  historialIn1?: ITimelineEntry[];
-  historialIn2?: ITimelineEntry[];
+  _id?: string; // ObjectId generado por MongoDB
+  fechaCreacion?: string; // Fecha de creación de esta entrada (opcional)
 
-  // Guardamos tambien un currentConfig para consultas rápidas
-  currentConfigIn1?: ITimelineEntry;
-  currentConfigIn2?: ITimelineEntry;
+  // Campos de timeline (de ITimelineEntry)
+  fechaInicio: string; // Fecha del inicio del cambio (ISO 8601) - NO opcional
+  fechaFin?: string; // Si es null/undefined, esta configuración sigue activa
+  activo: boolean; // true si es la configuración actual activa (fechaFin == null)
+  type: TipoEntradaDigital; // El tipo asignado
+  edgeType?: TipoEdgeDeteccion; // Tipo de detección
+  auditoria?: IAuditoriaConfigGpio; // Metadatos de auditoría
 
-  // Tenant
+  // Nuevo campo para distinguir canal
+  canal: "IN1" | "IN2"; // Indica el canal GPIO
+
+  // Tenant y referencias (sin cambios)
   idCliente?: string;
   idDispositivo: string;
   idConfigDispositivo?: string; // El _id de IConfigDispositivo que disparó este cambio
   tipoDispositivo?: TipoDispositivo;
-  // populate
+
+  // Populate (sin cambios)
   cliente?: ICliente;
   dispositivo?: IDispositivo;
   configDispositivo?: IConfigDispositivo;
 }
 
-////// CREATE
+// CREATE: Omitir campos autogenerados
 type OmitirCreate = "_id" | "dispositivo" | "cliente" | "configDispositivo";
 export interface ICreateGpioConfigNucAuditoria extends Omit<
   Partial<IGpioConfigNucAuditoria>,
   OmitirCreate
 > {}
 
-////// UPDATE
+// UPDATE: Similar, pero parcial
 type OmitirUpdate = "_id" | "dispositivo" | "cliente" | "configDispositivo";
 export interface IUpdateGpioConfigNucAuditoria extends Omit<
   Partial<IGpioConfigNucAuditoria>,
