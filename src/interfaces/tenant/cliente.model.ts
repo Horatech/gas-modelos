@@ -75,6 +75,11 @@ export interface IConfigCliente {
    * identificador, se sobreescribe. Si es false o no está definido, los registros duplicados se ignoran.
    */
   sobreEscribirRegistrosNuc?: boolean;
+
+  /**
+   * A nivel global genera alertas de batería baja para los dispositivos SML con bateria menor al valor definido
+   */
+  valorAlarmaBateriaSml?: number;
 }
 
 export interface ICliente {
