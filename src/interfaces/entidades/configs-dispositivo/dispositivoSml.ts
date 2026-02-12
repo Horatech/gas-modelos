@@ -10,6 +10,8 @@ export interface IDispositivoSml {
   operadora?: string;
   telefono?: string;
 
+  valorAlarmaBateria?: number;
+
   // Configuracion del SML
   // valveControl?: boolean;
   calibrationDeviceNodeReading?: number;
