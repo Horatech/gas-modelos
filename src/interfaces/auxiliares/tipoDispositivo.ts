@@ -46,7 +46,8 @@ export type TipoDispositivoGas =
   | "SCADA Mediciones"
   | "ML107A"
   | "EUW300"
-  | "BOVE";
+  | "BOVE"
+  | "HyZim-188B";
 
 export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
   "NUC",
@@ -60,4 +61,5 @@ export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
   "ML107A",
   "EUW300",
   "BOVE",
+  "HyZim-188B",
 ];
