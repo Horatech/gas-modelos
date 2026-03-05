@@ -254,6 +254,7 @@ export interface ISetRegistrosInputs {
   firmwareNuc: string;
   apiVersion: string;
   reg_ios: [number, number, number][]; // Array of [timestamp, contador_input_1, contador_input_2]
+  recuperado?: boolean; // Indica si los registros son recuperados o no
 }
 
 export interface IGetRegistrosInputs {
