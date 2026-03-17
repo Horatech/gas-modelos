@@ -1,5 +1,5 @@
 export type TipoDispositivoFirmware = "NSP" | "NUC";
-export type VersionHardware = "v2" | "v3";
+export type VersionHardware = "v1.0" | "v1.1" | "v2.0";
 export interface IFirmware {
   _id?: string;
   fechaCreacion?: string;
