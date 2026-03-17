@@ -1,6 +1,10 @@
 import { ICliente } from "../tenant/cliente.model";
 import { IDispositivo } from "./dispositivo";
-import { IFirmware, TipoDispositivoFirmware } from "./firmware";
+import {
+  IFirmware,
+  TipoDispositivoFirmware,
+  VersionHardware,
+} from "./firmware";
 
 export interface IFirmwarePorEntidad {
   _id?: string;
@@ -8,6 +12,7 @@ export interface IFirmwarePorEntidad {
   idDispositivo?: string;
   idFirmware?: string;
   tipo?: TipoDispositivoFirmware;
+  versionHardware?: VersionHardware;
   fechaCreacion?: string;
   version?: string;
   // Populate
@@ -23,8 +28,10 @@ type OmitirCreate =
   | "dispositivo"
   | "firmware"
   | "fechaCreacion";
-export interface ICreateFirmwarePorEntidad
-  extends Omit<Partial<IFirmwarePorEntidad>, OmitirCreate> {}
+export interface ICreateFirmwarePorEntidad extends Omit<
+  Partial<IFirmwarePorEntidad>,
+  OmitirCreate
+> {}
 
 // UPDATE
 type OmitirUpdate =
@@ -33,5 +40,7 @@ type OmitirUpdate =
   | "dispositivo"
   | "firmware"
   | "fechaCreacion";
-export interface IUpdateFirmwarePorEntidad
-  extends Omit<Partial<IFirmwarePorEntidad>, OmitirUpdate> {}
+export interface IUpdateFirmwarePorEntidad extends Omit<
+  Partial<IFirmwarePorEntidad>,
+  OmitirUpdate
+> {}
