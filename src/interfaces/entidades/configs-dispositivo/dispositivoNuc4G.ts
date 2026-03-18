@@ -1,4 +1,5 @@
 import { TipoEdgeDeteccion, TipoEntradaDigital } from "../config-dispositivo";
+import { VersionHardware } from "../firmware";
 
 export interface IDispositivoNuc4G {
   // Lo que viene en set configuracion
@@ -17,6 +18,10 @@ export interface IDispositivoNuc4G {
   nsa?: number;
   voltajeBateria?: number;
   versionHardware?: string;
+  /**
+   * Este campo viene a partir una version de FW especifica y deja de venir el campo versionHardware
+   */
+  hardwareVersion?: VersionHardware;
   //
   frecuenciaComunicacion?: number;
   redPreferida?: string;
