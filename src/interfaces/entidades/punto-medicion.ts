@@ -32,6 +32,7 @@ export interface IPuntoMedicion {
   nombre?: string;
   descripcion?: string;
   codigoSimec?: string; // Para exportacion de datos a Simec
+  numeroSuministro?: string; // Identificador Numero de Suministro para facturacion
   // Correctora
   idCorrectora?: string | null;
   fechaAsignacionCorrectora?: string | null;
@@ -97,8 +98,12 @@ type Omitir =
   | "grupos"
   | "agrupaciones"
   | "cuenca";
-export interface ICreatePuntoMedicion
-  extends Omit<Partial<IPuntoMedicion>, Omitir> {}
+export interface ICreatePuntoMedicion extends Omit<
+  Partial<IPuntoMedicion>,
+  Omitir
+> {}
 
-export interface IUpdatePuntoMedicion
-  extends Omit<Partial<IPuntoMedicion>, Omitir> {}
+export interface IUpdatePuntoMedicion extends Omit<
+  Partial<IPuntoMedicion>,
+  Omitir
+> {}
