@@ -33,6 +33,9 @@ export interface IPuntoMedicion {
   descripcion?: string;
   codigoSimec?: string; // Para exportacion de datos a Simec
   numeroSuministro?: string; // Identificador Numero de Suministro para facturacion
+  // Dispositivo externo NUC
+  idDipositivoExternoNuc?: string | null;
+  fechaAsignacionDispositivoExternoNuc?: string | null;
   // Correctora
   idCorrectora?: string | null;
   fechaAsignacionCorrectora?: string | null;
