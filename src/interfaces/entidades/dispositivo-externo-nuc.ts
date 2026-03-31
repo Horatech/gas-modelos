@@ -1,9 +1,8 @@
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICliente } from "../tenant/cliente.model";
-import { ILoraServer } from "../tenant/lora-server.model";
-import { ILoteDispositivo } from "../tenant/loteDispositivo.model";
 import { IAlerta } from "./alerta";
+import { IDispositivo } from "./dispositivo";
 import { ILocalidad } from "./localidad";
 import { IReporte } from "./reporte";
 
@@ -43,21 +42,21 @@ export interface IDispositivoExternoNuc {
   ultimaAlerta?: IAlerta;
 
   // Virtuals
+  dispositivo?: IDispositivo; // Vinculacion al dispositivo mediante el deveui
   cliente?: ICliente;
-  lote?: ILoteDispositivo;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
   localidad?: ILocalidad;
-  loraServer?: ILoraServer;
 }
 
 ////// CREATE
 type OmitirCreate =
   | "_id"
+  | "dispositivo"
+  | "cliente"
   | "unidadDeNegocio"
   | "centroOperativo"
-  | "localidad"
-  | "cliente";
+  | "localidad";
 export interface ICreateDispositivoExternoNuc extends Omit<
   Partial<IDispositivoExternoNuc>,
   OmitirCreate
@@ -66,10 +65,11 @@ export interface ICreateDispositivoExternoNuc extends Omit<
 ////// UPDATE
 type OmitirUpdate =
   | "_id"
+  | "dispositivo"
+  | "cliente"
   | "unidadDeNegocio"
   | "centroOperativo"
-  | "localidad"
-  | "cliente";
+  | "localidad";
 export interface IUpdateDispositivoExternoNuc extends Omit<
   Partial<IDispositivoExternoNuc>,
   OmitirUpdate
