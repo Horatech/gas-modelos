@@ -12,6 +12,8 @@ import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IScada } from "./scada";
 import { ICuenca } from "./cuenca";
 import { IMedidorTurbina } from "./medidor-turbina";
+import { IDispositivoEUW300 } from "./configs-dispositivo";
+import { IDispositivoExternoNuc } from "./dispositivo-externo-nuc";
 
 export interface ILimitesNotificacion {
   sms?: number;
@@ -34,7 +36,7 @@ export interface IPuntoMedicion {
   codigoSimec?: string; // Para exportacion de datos a Simec
   numeroSuministro?: string; // Identificador Numero de Suministro para facturacion
   // Dispositivo externo NUC
-  idDipositivoExternoNuc?: string | null;
+  idsDipositivosExternosNuc?: string[] | null;
   fechaAsignacionDispositivoExternoNuc?: string | null;
   // Correctora
   idCorrectora?: string | null;
@@ -76,6 +78,7 @@ export interface IPuntoMedicion {
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
   scadas?: IScada[];
+  dispositivosExternosNuc?: IDispositivoExternoNuc[];
   medidorTurbina?: IMedidorTurbina;
   cliente?: ICliente;
   unidadNegocio?: IUnidadNegocio;
