@@ -19,7 +19,10 @@ export interface IDispositivoExternoNuc {
   idLocalidad?: string;
 
   // Info de carga
-  nombre?: string;
+  identificador?: string; // Identificador del dispositivo externo (ej: "Medidor de presión del pozo 1")
+  marca?: string;
+  modelo?: string;
+  numeroSerie?: string;
   deveui?: string; // deveui del nuc asignado al dispositivo externo
   // Input 1
   usaInput1?: boolean; // Si el dispositivo externo reporta un valor de input1
