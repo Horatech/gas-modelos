@@ -5,9 +5,7 @@ import {
   IAlerta,
   ICromatografia,
   IDispositivo,
-  IInputsRegistrosNUCV2,
   ILocalidad,
-  ITestigoNUCV2,
   ModeloCorrectora,
 } from ".";
 
@@ -36,12 +34,6 @@ export interface ICorrectora {
   ultimaAlerta?: IAlerta;
   ultimaCromatografia?: ICromatografia;
   fechaUltimaCromatografia?: string;
-  // GPIO (NUC v2.0)
-  ultimoEventoGpio?: import("./evento-gpio").IEventoGpio;
-  ultimoReporteInput?: IInputsRegistrosNUCV2;
-  ultimoReporteTestigo?: ITestigoNUCV2;
-  ultimaAlertaInput?: IAlerta;
-  ultimaAlertaGpio?: import("./alerta-gpio").IAlertaGpio;
   //
   estadoActual?: IEstado;
   //
@@ -63,8 +55,10 @@ type OmitirCreate =
   | "centroOperativo"
   | "localidad"
   | "dispositivo";
-export interface ICreateCorrectora
-  extends Omit<Partial<ICorrectora>, OmitirCreate> {}
+export interface ICreateCorrectora extends Omit<
+  Partial<ICorrectora>,
+  OmitirCreate
+> {}
 
 ////// UPDATE
 type OmitirUpdate =
@@ -73,5 +67,7 @@ type OmitirUpdate =
   | "centroOperativo"
   | "localidad"
   | "dispositivo";
-export interface IUpdateCorrectora
-  extends Omit<Partial<ICorrectora>, OmitirUpdate> {}
+export interface IUpdateCorrectora extends Omit<
+  Partial<ICorrectora>,
+  OmitirUpdate
+> {}

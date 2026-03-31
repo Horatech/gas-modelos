@@ -27,6 +27,8 @@ export interface IDispositivoNuc4G {
   redPreferida?: string;
   desfaceHorario?: number; // Min
 
+  deviceMode?: 0 | 1 | 2; // 0: Solo Correctora, 1: Solo I/O, 2: Ambos
+
   // Configuración GPIO (NUC v2.0)
   in1Type?: TipoEntradaDigital;
   in1EdgeType?: TipoEdgeDeteccion; // Tipo de detección de flanco para IN1

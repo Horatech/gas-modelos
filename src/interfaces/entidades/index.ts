@@ -36,6 +36,7 @@ export * from "./registros-faltantes";
 export * from "./evento-gpio";
 export * from "./alerta-gpio";
 export * from "./medidor-turbina";
+export * from "./dispositivo-externo-nuc";
 export * from "./dash-general";
 export * from "./mensajes-bove";
 export * from "./gpio-config-nuc-auditoria";

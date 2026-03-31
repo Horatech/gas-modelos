@@ -8,6 +8,7 @@ import { IReporteScada } from "./scada";
 import { IReporteSML } from "./sml";
 import { IReporteVeribox } from "./veribox";
 import { IReporteWRC } from "./wrc";
+import { IReporteInputsNuc } from "./reporte-inputs-nuc";
 
 export type IValoresReporte =
   | IReporteNUC
@@ -21,4 +22,5 @@ export type IValoresReporte =
   | IReporteDiarioEUW300
   | IReporteHorarioEUW300
   | IReporteTotalizadorBove
-  | IReporteLogsHorariosBove;
+  | IReporteLogsHorariosBove
+  | IReporteInputsNuc;
