@@ -6,7 +6,11 @@ import { IDispositivo } from "./dispositivo";
 import { ILocalidad } from "./localidad";
 import { IReporte } from "./reporte";
 
-export type TipoInput = "Alarma" | "Contador" | "Testigo" | "Estado";
+export type TipoInputDispositivoExterno =
+  | "Alarma"
+  | "Contador"
+  | "Testigo"
+  | "Estado";
 
 export interface IDispositivoExternoNuc {
   // Info autogenerada

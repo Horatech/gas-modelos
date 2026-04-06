@@ -7,7 +7,6 @@ import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
 import { ICuenca } from "./cuenca";
 import { IAgrupacion } from "../gas";
-import { IMedidorTurbina } from "./medidor-turbina";
 
 export interface IRegistro {
   _id?: string;
@@ -33,7 +32,6 @@ export interface IRegistro {
   modelo?: string;
   //
   idCorrectora?: string;
-  idMedidorTurbina?: string;
   idPuntoMedicion?: string;
   //
   idCliente?: string;
@@ -53,7 +51,6 @@ export interface IRegistro {
   localidad?: ILocalidad;
   cuenca?: ICuenca;
   correctora?: ICorrectora;
-  medidorTurbina?: IMedidorTurbina;
   puntoMedicion?: IPuntoMedicion;
   grupos?: IGrupo[];
   agrupaciones?: IAgrupacion[];
@@ -68,7 +65,6 @@ type OmitirCreate =
   | "localidad"
   | "cuenca"
   | "correctora"
-  | "medidorTurbina"
   | "puntoMedicion"
   | "grupos"
   | "agrupaciones";
@@ -84,7 +80,6 @@ type OmitirUpdate =
   | "localidad"
   | "cuenca"
   | "correctora"
-  | "medidorTurbina"
   | "puntoMedicion"
   | "grupos"
   | "agrupaciones";

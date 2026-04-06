@@ -6,10 +6,17 @@ import { IScada } from "./scada";
 import { IPuntoMedicion } from "./punto-medicion";
 import { IUnidadPresion } from "./unidad-presion";
 import { IValoresReporte } from "./valores-reporte/valoresReporte";
+import {
+  IDispositivoExternoNuc,
+  TipoInputDispositivoExterno,
+} from "./dispositivo-externo-nuc";
 
-export type reporteTypes = ITypeReporteNuc | null;
-
-export type ITypeReporteNuc = "Inputs" | "Testigos";
+export type reporteTypes =
+  | TipoInputDispositivoExterno
+  | "Presion"
+  | "Residencial"
+  | "Residencial Agua"
+  | "Scada";
 
 export interface IReporte {
   _id?: string;
@@ -27,7 +34,7 @@ export interface IReporte {
 
   // Virtuals
   puntoMedicion?: IPuntoMedicion;
-  correctora?: ICorrectora;
+  dispositivoExterno?: IDispositivoExternoNuc;
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
@@ -38,7 +45,7 @@ export interface IReporte {
 type Omitir =
   | "_id"
   | "puntoMedicion"
-  | "correctora"
+  | "dispositivoExterno"
   | "unidadPrsion"
   | "medidorResidencial"
   | "medidorResidencialAgua"
