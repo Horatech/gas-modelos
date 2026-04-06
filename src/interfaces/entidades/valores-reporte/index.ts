@@ -7,7 +7,5 @@ export * from "./wrc";
 export * from "./scada";
 export * from "./euw300";
 export * from "./bove";
-export * from "./nucv2-inputs-registros";
-export * from "./nucv2-testigo";
 export * from "./reporte-medidor-agual";
 export * from "./reporte-inputs-nuc";
