@@ -25,6 +25,7 @@ export interface IRegistro {
   uncorrectedParcializado?: number;
   caudalPromedio?: number;
   caudalPico?: number;
+  fpv?: number; // Factor de compresibilidad
   //
   numeroSerieCorrectora?: string | null;
   deveui?: string;
@@ -68,8 +69,10 @@ type OmitirCreate =
   | "puntoMedicion"
   | "grupos"
   | "agrupaciones";
-export interface ICreateRegistro
-  extends Omit<Partial<IRegistro>, OmitirCreate> {}
+export interface ICreateRegistro extends Omit<
+  Partial<IRegistro>,
+  OmitirCreate
+> {}
 
 ////// UPDATE
 type OmitirUpdate =
@@ -83,5 +86,7 @@ type OmitirUpdate =
   | "puntoMedicion"
   | "grupos"
   | "agrupaciones";
-export interface IUpdateRegistro
-  extends Omit<Partial<IRegistro>, OmitirUpdate> {}
+export interface IUpdateRegistro extends Omit<
+  Partial<IRegistro>,
+  OmitirUpdate
+> {}
