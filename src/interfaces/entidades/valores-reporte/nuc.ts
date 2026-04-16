@@ -12,4 +12,5 @@ export interface IReporteNUC {
   uncorrectedParcializado?: number;
   caudalPico?: number;
   caudalPromedio?: number;
+  fpv?: number; // Factor de compresibilidad
 }
