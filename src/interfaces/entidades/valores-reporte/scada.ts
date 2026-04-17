@@ -9,7 +9,7 @@ import { TipoScada } from '../scada';
 export interface IReporteScada {
   tipo?: TipoScada;
   timestamp?: string;
-  valorActual?: number;
+  valorActual?: number | boolean;
   limiteHH?: number | null;
   limiteH?: number | null;
   limiteLL?: number | null;
