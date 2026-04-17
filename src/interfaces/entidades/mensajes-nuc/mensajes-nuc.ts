@@ -276,7 +276,9 @@ export interface IInputsFlag {
   flag_ios: {
     // Siempre llega como 1 si hay mensaje sino no hay mensaje de testigo.
     testigo_1?: number;
+    estado_actual_1?: number;
     testigo_2?: number;
+    estado_actual_2?: number;
   };
 }
 
