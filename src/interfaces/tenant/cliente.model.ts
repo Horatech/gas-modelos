@@ -80,6 +80,13 @@ export interface IConfigCliente {
    * A nivel global genera alertas de batería baja para los dispositivos SML con bateria menor al valor definido
    */
   valorAlarmaBateriaSml?: number;
+
+  /**
+   * Si es true, los usuarios del cliente con rol TecnicoCampo o Administrador pueden crear dispositivos
+   * vía el flujo de la app móvil (POST /dispositivos en gas-api-cliente). Default: false.
+   * Pensado para habilitar la alta de medidores ML107A en campo, leyendo las keys LoRaWAN por NFC.
+   */
+  puedeCrearDispositivos?: boolean;
 }
 
 export interface ICliente {
