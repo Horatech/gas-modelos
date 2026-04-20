@@ -8,7 +8,8 @@ export type Rol =
   | "Usuario"
   | "Croma"
   | "Visualizar"
-  | "Laboratorista";
+  | "Laboratorista"
+  | "TecnicoCampo";
 export type Nivel =
   | "Global"
   | "Unidad de Negocio"
