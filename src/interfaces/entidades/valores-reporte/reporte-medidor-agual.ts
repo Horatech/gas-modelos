@@ -1,7 +1,7 @@
-export interface IReporteHyzim188b {
+export interface IReporteML107GH {
   timestamp?: string;
 
-  // HyZim-188B
+  // ML107GH
   flujoPositivo?: number;
   flujoNegativo?: number;
   voltajeBateria?: number;
@@ -12,4 +12,4 @@ export interface IReporteHyzim188b {
   flujoNegativoParcial?: number; // Flujo negativo desde el último reporte
 }
 
-export type IReporteMedidorAgua = IReporteHyzim188b;
+export type IReporteMedidorAgua = IReporteML107GH;
