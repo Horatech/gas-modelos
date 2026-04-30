@@ -18,6 +18,7 @@ export type TipoScada =
   | "mg sobre m3"
   | "Voltaje en V"
   | "Corriente en A"
+  | "Caudal en m3/h"
   | "Potencial en mV";
 export type DivisionScada = "Unifilar" | "Medición";
 
