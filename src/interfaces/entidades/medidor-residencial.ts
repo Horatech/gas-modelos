@@ -1,11 +1,11 @@
-import { ICoordenadas } from "../auxiliares";
-import { ICentroOperativo, IUnidadNegocio } from "../gas";
-import { IEstado } from "./correctora";
-import { ICuenca } from "./cuenca";
-import { IDispositivo } from "./dispositivo";
-import { IGrupo } from "./grupo";
-import { ILocalidad } from "./localidad";
-import { IReporte } from "./reporte";
+import { ICoordenadas } from '../auxiliares';
+import { ICentroOperativo, IUnidadNegocio } from '../gas';
+import { IEstado } from './correctora';
+import { ICuenca } from './cuenca';
+import { IDispositivo } from './dispositivo';
+import { IGrupo } from './grupo';
+import { ILocalidad } from './localidad';
+import { IReporte } from './reporte';
 
 export interface IMedidorResidencial {
   _id?: string;
@@ -25,6 +25,7 @@ export interface IMedidorResidencial {
   nombre?: string;
   descripcion?: string;
   corregido?: boolean;
+  modelo?: string; /// Accell, Actaris, Itron, Gallus, Elster + lo que escriba el usuario.
   //
   idCliente?: string;
   idUnidadNegocio?: string;
@@ -42,24 +43,28 @@ export interface IMedidorResidencial {
 
 ////// CREATE
 type OmitirCreate =
-  | "_id"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "cuenca"
-  | "grupos"
-  | "dispositivo";
-export interface ICreateMedidorResidencial
-  extends Omit<Partial<IMedidorResidencial>, OmitirCreate> {}
+  | '_id'
+  | 'unidadNegocio'
+  | 'centroOperativo'
+  | 'localidad'
+  | 'cuenca'
+  | 'grupos'
+  | 'dispositivo';
+export interface ICreateMedidorResidencial extends Omit<
+  Partial<IMedidorResidencial>,
+  OmitirCreate
+> {}
 
 ////// UPDATE
 type OmitirUpdate =
-  | "_id"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "cuenca"
-  | "grupos"
-  | "dispositivo";
-export interface IUpdateMedidorResidencial
-  extends Omit<Partial<IMedidorResidencial>, OmitirUpdate> {}
+  | '_id'
+  | 'unidadNegocio'
+  | 'centroOperativo'
+  | 'localidad'
+  | 'cuenca'
+  | 'grupos'
+  | 'dispositivo';
+export interface IUpdateMedidorResidencial extends Omit<
+  Partial<IMedidorResidencial>,
+  OmitirUpdate
+> {}

@@ -1,17 +1,17 @@
-import { ICoordenadas } from "../auxiliares";
-import { ICentroOperativo, IUnidadNegocio } from "../gas";
-import { IEstado } from "./correctora";
-import { ICuenca } from "./cuenca";
-import { IDispositivo } from "./dispositivo";
-import { IGrupo } from "./grupo";
-import { ILocalidad } from "./localidad";
-import { IReporte } from "./reporte";
+import { ICoordenadas } from '../auxiliares';
+import { ICentroOperativo, IUnidadNegocio } from '../gas';
+import { IEstado } from './correctora';
+import { ICuenca } from './cuenca';
+import { IDispositivo } from './dispositivo';
+import { IGrupo } from './grupo';
+import { ILocalidad } from './localidad';
+import { IReporte } from './reporte';
 
 export interface ITitularMedidorResidencialAgua {
   nombre?: string;
-  tipo: "persona" | "empresa";
+  tipo: 'persona' | 'empresa';
   documento?: string; // DNI o CUIT
-  tipoDocumento?: "DNI" | "CUIT";
+  tipoDocumento?: 'DNI' | 'CUIT';
   telefono?: string;
   email?: string;
   // Estado
@@ -36,6 +36,7 @@ export interface IMedidorResidencialAgua {
   descripcion?: string;
   titular?: ITitularMedidorResidencialAgua;
   corregido?: boolean;
+  modelo?: string; /// Accell, Actaris, Itron, Gallus, Elster + lo que escriba el usuario.
   //
   idCliente?: string;
   idUnidadNegocio?: string;
@@ -54,24 +55,28 @@ export interface IMedidorResidencialAgua {
 
 ////// CREATE
 type OmitirCreate =
-  | "_id"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "cuenca"
-  | "grupos"
-  | "dispositivo";
-export interface ICreateMedidorResidencialAgua
-  extends Omit<Partial<IMedidorResidencialAgua>, OmitirCreate> {}
+  | '_id'
+  | 'unidadNegocio'
+  | 'centroOperativo'
+  | 'localidad'
+  | 'cuenca'
+  | 'grupos'
+  | 'dispositivo';
+export interface ICreateMedidorResidencialAgua extends Omit<
+  Partial<IMedidorResidencialAgua>,
+  OmitirCreate
+> {}
 
 ////// UPDATE
 type OmitirUpdate =
-  | "_id"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "cuenca"
-  | "grupos"
-  | "dispositivo";
-export interface IUpdateMedidorResidencialAgua
-  extends Omit<Partial<IMedidorResidencialAgua>, OmitirUpdate> {}
+  | '_id'
+  | 'unidadNegocio'
+  | 'centroOperativo'
+  | 'localidad'
+  | 'cuenca'
+  | 'grupos'
+  | 'dispositivo';
+export interface IUpdateMedidorResidencialAgua extends Omit<
+  Partial<IMedidorResidencialAgua>,
+  OmitirUpdate
+> {}
