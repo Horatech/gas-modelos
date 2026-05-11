@@ -1,6 +1,7 @@
 export * from "./interfaces/auxiliares";
 export * from "./interfaces/entidades";
 export * from "./interfaces/chirpstack";
+export * from "./interfaces/chirpstack-v4";
 export * from "./interfaces/lora";
 export * from "./interfaces/oauth";
 export * from "./interfaces/orbiwise";
