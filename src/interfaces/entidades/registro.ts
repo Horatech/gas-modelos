@@ -26,6 +26,7 @@ export interface IRegistro {
   caudalPromedio?: number;
   caudalPico?: number;
   fpv?: number; // Factor de compresibilidad
+  horaTruncada?: boolean;
   //
   numeroSerieCorrectora?: string | null;
   deveui?: string;
