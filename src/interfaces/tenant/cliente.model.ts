@@ -2,6 +2,7 @@ import { TipoDispositivo } from "../auxiliares";
 import { ModeloCorrectora, modelosCorrectoras } from "../entidades";
 import { IImagenesCliente } from "./cliente.dto";
 import { IIntegracion } from "./integraciones";
+import { Division } from "./usuario/permiso";
 
 export type TemplatesWhatsapp =
   | "Alerta de presión"
@@ -62,6 +63,30 @@ export interface IConfigSincHoraria {
   desfaseMaximo?: number;
 }
 
+export type ColumnaVistaPersonalizadaCorrectoras =
+  | "temperatura"
+  | "presion"
+  | "volumenBaseTotalizado"
+  | "volumenCorregidoTotalizado"
+  | "volumenBaseHorario"
+  | "volumenCorregidoHorario"
+  | "caudalPico"
+  | "caudalPromedio"
+  | "fpv";
+
+export interface IVistaPersonalizadaCorrectoras {
+  activo: boolean;
+  columnas: ColumnaVistaPersonalizadaCorrectoras[];
+  agrupacion: "hora" | "dia";
+  tipoDia?: "gas" | "calendario";
+}
+
+export interface IVistasPersonalizadasPorDivision {
+  Correctoras?: IVistaPersonalizadaCorrectoras;
+}
+
+export type DivisionConVistaPersonalizada = Extract<Division, "Correctoras">;
+
 export interface IConfigCliente {
   apns?: IApn[];
   usaLlm?: boolean;
@@ -87,6 +112,12 @@ export interface IConfigCliente {
    * Pensado para habilitar la alta de medidores ML107A en campo, leyendo las keys LoRaWAN por NFC.
    */
   puedeCrearDispositivos?: boolean;
+
+  /**
+   * Vista personalizada del tab de registros, por división. Si activo, agrega un tab al inicio del
+   * detalle del punto que muestra los mismos registros con columnas/agrupación configuradas.
+   */
+  vistasPersonalizadas?: IVistasPersonalizadasPorDivision;
 }
 
 export interface ICliente {
