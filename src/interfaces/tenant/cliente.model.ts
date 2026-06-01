@@ -86,7 +86,18 @@ export interface IVistaPersonalizadaColumna {
    * Si no se define o queda vacío, se muestran los tres.
    */
   stats?: StatVistaPersonalizada[];
+  /**
+   * Sólo aplica a columnas de volumen totalizado (acumulativas) en agrupación
+   * por día. Si es false, no se muestra la columna de consumo del período
+   * calculado a partir del totalizado (sólo el acumulado total). Default true.
+   */
+  mostrarConsumo?: boolean;
 }
+
+/**
+ * El orden de los elementos en el array `columnas` define el orden de
+ * visualización y exportación de las columnas.
+ */
 
 export interface IVistaPersonalizadaFecha {
   /** true: fecha y hora en 2 columnas; false (default): una sola columna combinada */
