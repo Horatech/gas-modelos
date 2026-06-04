@@ -38,4 +38,6 @@ export * from "./dash-general";
 export * from "./mensajes-bove";
 export * from "./gpio-config-nuc-auditoria";
 export * from "./indicadores-historicos";
+export * from "./gateway-lorawan";
+export * from "./cobertura-lorawan";
 //
