@@ -4,7 +4,7 @@ import { ILoraServer } from "../tenant";
 export type EstadoGatewayLorawan = "NEVER_SEEN" | "ONLINE" | "OFFLINE";
 
 /**
- * Gateway LoRaWAN sincronizado desde el network server (ChirpStack v4).
+ * Gateway LoRaWAN sincronizado desde el network server (ChirpStack v3/v4).
  * Mantenido por gas-field-tester (sync periódico vía API REST).
  */
 export interface IGatewayLorawan {
