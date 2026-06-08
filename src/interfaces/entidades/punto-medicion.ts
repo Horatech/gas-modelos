@@ -9,6 +9,7 @@ import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
 import { IMedidorResidencial } from "./medidor-residencial";
 import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
+import { IMedidorElectrico } from "./medidor-electrico";
 import { IScada } from "./scada";
 import { ICuenca } from "./cuenca";
 import { IDispositivoEUW300 } from "./configs-dispositivo";
@@ -50,6 +51,9 @@ export interface IPuntoMedicion {
   // Medidor Residencial Agua
   idMedidorResidencialAgua?: string | null;
   fechaAsignacionMedidorResidencialAgua?: string | null;
+  // Medidor Electrico
+  idMedidorElectrico?: string | null;
+  fechaAsignacionMedidorElectrico?: string | null;
   // SCADA
   idsScada?: string[] | null;
   fechaAsignacionScada?: string | null;
@@ -73,6 +77,7 @@ export interface IPuntoMedicion {
   unidadPresion?: IUnidadPresion;
   medidorResidencial?: IMedidorResidencial;
   medidorResidencialAgua?: IMedidorResidencialAgua;
+  medidorElectrico?: IMedidorElectrico;
   scadas?: IScada[];
   dispositivosExternosNuc?: IDispositivoExternoNuc[];
   cliente?: ICliente;
@@ -91,6 +96,7 @@ type Omitir =
   | "unidadPresion"
   | "medidorResidencial"
   | "medidorResidencialAgua"
+  | "medidorElectrico"
   | "scadas"
   | "cliente"
   | "unidadNegocio"

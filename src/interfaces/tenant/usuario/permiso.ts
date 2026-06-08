@@ -23,7 +23,8 @@ export type Division =
   | "Residencial Agua"
   | "SCADA Unifilares"
   | "SCADA Mediciones"
-  | "Dispositivo Externo NUC";
+  | "Dispositivo Externo NUC"
+  | "Medidores Eléctricos";
 
 export interface IPermiso {
   nivel?: Nivel;

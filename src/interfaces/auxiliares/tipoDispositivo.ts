@@ -47,7 +47,8 @@ export type TipoDispositivoGas =
   | "ML107A"
   | "EUW300"
   | "BOVE"
-  | "ML107GH";
+  | "ML107GH"
+  | "NME";
 
 export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
   "NUC",
@@ -62,4 +63,5 @@ export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
   "EUW300",
   "BOVE",
   "ML107GH",
+  "NME",
 ];

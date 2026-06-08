@@ -59,6 +59,33 @@ Dispositivo de medición con configuración de APN y teléfono.
 ### SCADA
 Tags de telemetría con límites configurables.
 
+### NME (Medidor Eléctrico)
+Medidor inteligente de energía sobre ESP32-S3 que lee un medidor HEXING HXE34K-S por
+RS-485 y reporta por LoRaWAN (AU915, Clase C, OTAA con **JoinEUI = DevEUI**). Pertenece
+a la división `"Medidores Eléctricos"`. Protocolo y formato de uplinks en
+`/INTEGRACION_LORAWAN_NUBE.md` (raíz del sistema). Energías en Wh/varh **acumuladas**
+(little-endian, epoch UTC); el backend calcula los deltas.
+
+**Interfaces relevantes:**
+- `IMedidorElectrico` (`medidor-electrico.ts`) - Entidad del medidor
+- `IRegistroMedidorElectrico` (`registro-medidor-electrico.ts`) - Registro horario (serie
+  temporal; colección propia, upsert por `deveui` + `timestamp`)
+- `IDispositivoNme` (`configs-dispositivo/dispositivoNme.ts`) - Config del dispositivo
+- `tipoDispositivo = "NME"` en `TipoDispositivoGas`
+
+## Divisiones y modelo Punto de Medición
+
+El catálogo de divisiones es el type `Division` en
+`src/interfaces/tenant/usuario/permiso.ts`. Cada permiso de usuario pertenece a una
+división y el filtrado por división se aplica en `gas-api-cliente`.
+
+Patrón de cada división: un **dispositivo** (`IDispositivo`, distinguido por
+`tipoDispositivo`) se vincula por `deveui` a una **entidad medidor** (p. ej.
+`IMedidorResidencial`, `IMedidorElectrico`), que a su vez se asocia a un
+`IPuntoMedicion` mediante un campo `idMedidor*` + `fechaAsignacionMedidor*`, y el punto
+lleva el campo `division`. Para sumar una división nueva se replica esta cadena
+(ver división "Residencial" como espejo).
+
 ## Convenciones
 
 ### Tipos de Entrada Digital (NUC v2.0)
@@ -77,6 +104,14 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 - En firmware: `SIZE_TEL_STANDARD = 13`
 
 ## Cambios recientes
+
+### 2026-06-08 - Nueva división "Medidores Eléctricos" (dispositivo NME)
+- Agregado `"Medidores Eléctricos"` al type `Division`
+- Agregado `"NME"` a `TipoDispositivoGas` y `TIPOS_DISPOSITIVOS`
+- Nuevas interfaces: `IMedidorElectrico`, `IRegistroMedidorElectrico`, `IDispositivoNme`
+- `IPuntoMedicion`: agregados `idMedidorElectrico`, `fechaAsignacionMedidorElectrico` y
+  virtual `medidorElectrico`
+- `IAlerta`: agregados `idMedidorElectrico` y virtual `medidorElectrico`
 
 ### 2025-10-15 - Soporte de teléfonos SMS para NUC v2.0
 - Agregados `telefono1`, `telefono2`, `telefono3` a `IConfigDispositivoNUC4G`
