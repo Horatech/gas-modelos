@@ -128,6 +128,19 @@ export interface IVistasPersonalizadasPorDivision {
   Correctoras?: IVistaPersonalizadaCorrectoras;
 }
 
+export interface IModuloCoberturaLorawan {
+  /**
+   * Habilita la vista "Cobertura LoRaWAN" en gas-web-cliente y los endpoints
+   * asociados de gas-api-cliente. Si no está o es false, la feature está oculta.
+   */
+  activo?: boolean;
+  /**
+   * Si es true, el cliente ve métricas de gateway (proxy a ChirpStack).
+   * Default: false.
+   */
+  verMetricas?: boolean;
+}
+
 export type DivisionConVistaPersonalizada = Extract<Division, "Correctoras">;
 
 export interface IConfigCliente {
@@ -161,6 +174,13 @@ export interface IConfigCliente {
    * detalle del punto que muestra los mismos registros con columnas/agrupación configuradas.
    */
   vistasPersonalizadas?: IVistasPersonalizadasPorDivision;
+
+  /**
+   * Visualización de cobertura LoRaWAN. Habilita la vista de mapa de cobertura
+   * y la sección "LoRaWAN" de configuración para el cliente. Los gateways
+   * visibles se definen vía la colección AsignacionGatewayCliente.
+   */
+  moduloCoberturaLorawan?: IModuloCoberturaLorawan;
 }
 
 export interface ICliente {

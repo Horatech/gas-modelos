@@ -6,6 +6,7 @@ export * from "./mensajes-nuc";
 export * from "./alerta";
 export * from "./aplicacion-cromatografia";
 export * from "./asignacion";
+export * from "./asignacion-gateway-cliente";
 export * from "./config-dispositivo";
 export * from "./correctora";
 export * from "./cromatografia";
