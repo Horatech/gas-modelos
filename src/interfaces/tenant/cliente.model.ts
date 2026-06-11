@@ -181,6 +181,18 @@ export interface IConfigCliente {
    * visibles se definen vía la colección AsignacionGatewayCliente.
    */
   moduloCoberturaLorawan?: IModuloCoberturaLorawan;
+
+  /**
+   * Si es true, un Admin Global puede editar la Unidad de Negocio y el Centro
+   * Operativo de un dispositivo AUNQUE esté asignado a una entidad intermedia
+   * (correctora / medidor residencial / unidad de presión / medidor de agua /
+   * medidor eléctrico). El backend propaga el cambio a la entidad asignada y a
+   * su punto de medición. Default false: comportamiento actual, en el que la
+   * UN/CO quedan bloqueadas mientras el dispositivo está asignado y para
+   * cambiarlas hay que desasignar. No afecta a la localidad, que se edita y
+   * propaga independientemente de este flag.
+   */
+  permitirEditarUnNcoAsignado?: boolean;
 }
 
 export interface ICliente {
