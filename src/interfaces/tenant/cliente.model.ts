@@ -193,6 +193,17 @@ export interface IConfigCliente {
    * propaga independientemente de este flag.
    */
   permitirEditarUnNcoAsignado?: boolean;
+
+  /**
+   * Controla la creación automática de la entidad medidor en gas-sml cuando un
+   * dispositivo SML / WRC (medidor residencial de gas) o MRA (medidor
+   * residencial de agua) reporta y no tiene un medidor asignado por deveui.
+   * undefined o true (default): se crea el medidor automáticamente
+   * (comportamiento actual). false: NO se crea; el reporte se guarda igual pero
+   * sin quedar asignado a ningún medidor (idsAsignados sin el medidor) y sin
+   * actualizar punto. Chequear con `!== false` para preservar el default.
+   */
+  crearMedidorResidencialAutomatico?: boolean;
 }
 
 export interface ICliente {
