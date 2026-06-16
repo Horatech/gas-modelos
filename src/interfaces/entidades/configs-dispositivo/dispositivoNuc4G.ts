@@ -27,6 +27,9 @@ export interface IDispositivoNuc4G {
   redPreferida?: string;
   desfaceHorario?: number; // Min
 
+  // Si es true, gas-nuc4g responde 404 a registros/get (no se recuperan registros)
+  deshabilitarRecuperacionRegistros?: boolean;
+
   deviceMode?: 0 | 1 | 2; // 0: Solo Correctora, 1: Solo I/O, 2: Ambos
 
   // Configuración GPIO (NUC v2.0)
