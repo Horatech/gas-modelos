@@ -18,10 +18,22 @@ export interface IGatewayLorawan {
   idLoraServer?: string;
   ubicacion?: ICoordenadas;
   altitud?: number;
+  /** Origen de la ubicación reportado por el NS (GPS = fix real, CONFIG = tipeada) */
+  locationSource?: "UNKNOWN" | "GPS" | "CONFIG" | "GEO_RESOLVER";
+  /** Precisión de la ubicación en metros (location.accuracy del NS) */
+  locationAccuracy?: number;
   estado?: EstadoGatewayLorawan;
   lastSeenAt?: string;
   /** Región/subbanda configurada (ej. au915_3) */
   region?: string;
+  /** propertiesMap completo del NS (modelo/firmware/region_config_id, etc.) */
+  propiedades?: Record<string, string>;
+  /** Fecha de alta del gateway en el NS (Gateway.createdAt, v4) */
+  createdAtNs?: string;
+  /** Fecha de última modificación en el NS (Gateway.updatedAt, v4) */
+  updatedAtNs?: string;
+  /** Intervalo de stats configurado en el NS en segundos (v4) */
+  statsInterval?: number;
   /** Última sincronización contra el network server */
   fechaSync?: string;
 

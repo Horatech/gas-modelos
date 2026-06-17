@@ -8,6 +8,8 @@ export interface IGatewayCobertura {
   rssi?: number;
   snr?: number;
   ubicacion?: ICoordenadas;
+  /** Altitud del gateway en metros (de rxInfo[].location.altitude) */
+  altitud?: number;
   /** Distancia great-circle dispositivo-gateway en metros (si el gateway tiene ubicación) */
   distancia?: number;
 }
@@ -30,6 +32,10 @@ export interface ICoberturaLorawan {
   altitud?: number;
   hdop?: number;
   satelites?: number;
+  /** Precisión estimada del fix GPS en metros: (hdop*5+5)/10 */
+  accuracy?: number;
+  /** Medición sin fix GPS válido: conserva RSSI/SNR/diversidad pero no se ubica en el mapa */
+  sinFix?: boolean;
   /** fPort del uplink (1 = corto, 11 = extendido) */
   fPort?: number;
   fCnt?: number;
@@ -39,6 +45,10 @@ export interface ICoberturaLorawan {
   sf?: number;
   /** Frecuencia en Hz */
   frecuencia?: number;
+  /** Ancho de banda en Hz (de txInfo) */
+  bandwidth?: number;
+  /** Code rate (de txInfo, ej. "4/5") */
+  codeRate?: string;
   /** Gateways que recibieron el uplink */
   gateways?: IGatewayCobertura[];
   cantidadGateways?: number;

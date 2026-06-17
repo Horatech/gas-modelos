@@ -43,4 +43,5 @@ export * from "./gpio-config-nuc-auditoria";
 export * from "./indicadores-historicos";
 export * from "./gateway-lorawan";
 export * from "./cobertura-lorawan";
+export * from "./estadistica-gateway-lorawan";
 //
