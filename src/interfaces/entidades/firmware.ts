@@ -1,5 +1,5 @@
-export type TipoDispositivoFirmware = "NSP" | "NUC";
-export type VersionHardware = "v1.0" | "v1.1" | "v2.0";
+export type TipoDispositivoFirmware = 'NSP' | 'NUC' | 'NME';
+export type VersionHardware = 'v1.0' | 'v1.1' | 'v2.0';
 export interface IFirmware {
   _id?: string;
   fechaCreacion?: string;
@@ -10,14 +10,14 @@ export interface IFirmware {
 }
 
 // CREATE
-type OmitirCreate = "_id";
+type OmitirCreate = '_id';
 export interface ICreateFirmware extends Omit<
   Partial<IFirmware>,
   OmitirCreate
 > {}
 
 // UPDATE
-type OmitirUpdate = "_id";
+type OmitirUpdate = '_id';
 export interface IUpdateFirmware extends Omit<
   Partial<IFirmware>,
   OmitirUpdate
