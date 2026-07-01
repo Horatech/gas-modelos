@@ -19,6 +19,7 @@ export * from "./localidad";
 export * from "./log-nuc";
 export * from "./log-reporte";
 export * from "./log-twilio";
+export * from "./subzona-tarifaria";
 export * from "./mantenimiento";
 export * from "./medidor-residencial";
 export * from "./medidor-residencial-agua";

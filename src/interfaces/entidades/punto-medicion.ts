@@ -8,6 +8,7 @@ import { ITipoAlerta } from "./alerta";
 import { IUnidadPresion } from "./unidad-presion";
 import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
+import { ISubzonaTarifaria } from "./subzona-tarifaria";
 import { IMedidorResidencial } from "./medidor-residencial";
 import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IMedidorElectrico } from "./medidor-electrico";
@@ -71,6 +72,7 @@ export interface IPuntoMedicion {
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idLocalidad?: string;
+  idSubzonaTarifaria?: string; // solo división Residencial
   idsGrupos?: string[];
   idsAgrupaciones?: string[];
   idCuenca?: string;
@@ -89,6 +91,7 @@ export interface IPuntoMedicion {
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
   localidad2?: ILocalidad;
+  subzonaTarifaria?: ISubzonaTarifaria;
   grupos?: IGrupo[];
   agrupaciones?: IAgrupacion[];
   cuenca?: ICuenca;
@@ -107,6 +110,7 @@ type Omitir =
   | "unidadNegocio"
   | "centroOperativo"
   | "localidad2"
+  | "subzonaTarifaria"
   | "grupos"
   | "agrupaciones"
   | "cuenca";
