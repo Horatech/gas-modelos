@@ -105,6 +105,13 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-06-26 - Subfiltro por tipo de alerta en Punto de Medición
+- `IPuntoMedicion`: agregado `tiposAlertaActivos?: ITipoAlerta[]` (campo calculado por
+  el backend). Permite subfiltrar el listado de puntos por tipo de alerta cuando
+  `estado === "Alerta"`. Reutiliza el type `ITipoAlerta` de `alerta.ts`. Se espeja la
+  señal de `estado` en los write-paths de cada división (no se consulta la colección
+  `alertas`, salvo SCADA que la recomputa por ser 1:N con closure confiable).
+
 ### 2026-06-08 - Nueva división "Medidores Eléctricos" (dispositivo NME)
 - Agregado `"Medidores Eléctricos"` al type `Division`
 - Agregado `"NME"` a `TipoDispositivoGas` y `TIPOS_DISPOSITIVOS`
