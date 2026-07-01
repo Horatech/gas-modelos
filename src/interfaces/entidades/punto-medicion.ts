@@ -4,6 +4,7 @@ import { IAgrupacion } from "../gas/agrupacion";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICorrectora, IEstado } from "./correctora";
+import { ITipoAlerta } from "./alerta";
 import { IUnidadPresion } from "./unidad-presion";
 import { ILocalidad } from "./localidad";
 import { IGrupo } from "./grupo";
@@ -61,6 +62,10 @@ export interface IPuntoMedicion {
   // Calculado por el backend
   estado?: IEstado;
   timestampUltimoReporte?: string | null;
+  // Tipos de alerta activos (denormalizado para subfiltrar el listado por tipo
+  // de alerta cuando estado === "Alerta"). Espeja la señal de estado en los
+  // write-paths de cada división; SCADA lo recomputa desde alertas activas.
+  tiposAlertaActivos?: ITipoAlerta[];
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;

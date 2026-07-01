@@ -22,7 +22,8 @@ export type ITipoAlerta =
   | "Sensor desconectado"
   | "Batería baja"
   | "Ataque magnético"
-  | "Alerta de Entrada Digital";
+  | "Alerta de Entrada Digital"
+  | "Alarma Correctora";
 
 export type IValoresAlerta = IAlertaInputsNucv2 | null;
 export interface IAlertaInputsNucv2 {
