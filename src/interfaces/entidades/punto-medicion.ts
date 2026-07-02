@@ -25,6 +25,10 @@ export interface ILimitesNotificacion {
   push?: number;
 }
 
+// Estado del Factor de Carga: "Parcial" si el punto tiene menos de 365 días de
+// reportes; "Completo" si tiene 365 días o más.
+export type FactorCargaEstado = "Parcial" | "Completo";
+
 export interface IPuntoMedicion {
   _id?: string;
   // GPS
@@ -67,6 +71,14 @@ export interface IPuntoMedicion {
   // de alerta cuando estado === "Alerta"). Espeja la señal de estado en los
   // write-paths de cada división; SCADA lo recomputa desde alertas activas.
   tiposAlertaActivos?: ITipoAlerta[];
+  // Factor de Carga (FC) — solo división Residencial. Denormalizado por el cron
+  // de gas-cron (recalcularFactorCargaResidencial en gas-datos) a partir de la
+  // serie de consumos diarios del punto (sus reportes, vía idsAsignados).
+  // FC = (Σ consumos diarios / días con consumo) / consumo diario máximo. ≤ 1.
+  factorCarga?: number | null;
+  factorCargaEstado?: FactorCargaEstado | null;
+  fechaConsumoMaximo?: string | null; // fecha del día de mayor consumo del período
+  fechaCalculoFactorCarga?: string | null; // última vez que se computó
   // Tenancy
   idCliente?: string;
   idUnidadNegocio?: string;
