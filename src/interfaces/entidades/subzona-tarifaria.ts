@@ -8,21 +8,23 @@ export interface ISubzonaTarifaria {
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
-  idLocalidad?: string; // vínculo obligatorio con la Localidad
+  // Una SZT agrupa varias Localidades; cada Localidad pertenece a lo sumo a
+  // una SZT (unicidad enforced en backend).
+  idsLocalidades?: string[];
   posicion?: number; // para ordenar en las pantallas
   division?: Division; // siempre 'Residencial'
   // Populate
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
+  localidades?: ILocalidad[];
 }
 
 // CREATE
-type OmitirCreate = '_id' | 'unidadNegocio' | 'centroOperativo' | 'localidad';
+type OmitirCreate = '_id' | 'unidadNegocio' | 'centroOperativo' | 'localidades';
 export interface ICreateSubzonaTarifaria
   extends Omit<Partial<ISubzonaTarifaria>, OmitirCreate> {}
 
 // UPDATE
-type OmitirUpdate = '_id' | 'unidadNegocio' | 'centroOperativo' | 'localidad';
+type OmitirUpdate = '_id' | 'unidadNegocio' | 'centroOperativo' | 'localidades';
 export interface IUpdateSubzonaTarifaria
   extends Omit<Partial<ISubzonaTarifaria>, OmitirUpdate> {}
