@@ -105,6 +105,15 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-08 - Vista personalizada para división Residencial
+- `DivisionConVistaPersonalizada`: ahora incluye `"Residencial"` además de
+  `"Correctoras"`
+- `IVistasPersonalizadasPorDivision`: agregado `Residencial?`
+- Nuevos types: `ColumnaVistaPersonalizadaResidencial` (`consumoInstantaneo`,
+  `consumo`, `consumoCorregido`, `bateria`) y `ColumnaVistaPersonalizada`
+  (unión de correctoras + residencial). `IVistaPersonalizadaColumna.key` usa
+  la unión.
+
 ### 2026-06-26 - Subfiltro por tipo de alerta en Punto de Medición
 - `IPuntoMedicion`: agregado `tiposAlertaActivos?: ITipoAlerta[]` (campo calculado por
   el backend). Permite subfiltrar el listado de puntos por tipo de alerta cuando
