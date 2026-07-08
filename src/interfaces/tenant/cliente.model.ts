@@ -74,10 +74,20 @@ export type ColumnaVistaPersonalizadaCorrectoras =
   | "caudalPromedio"
   | "fpv";
 
+export type ColumnaVistaPersonalizadaResidencial =
+  | "consumoInstantaneo" // Consumo Parcial
+  | "consumo" // Consumo Acumulado Dispositivo
+  | "consumoCorregido" // Consumo Acumulado Medidor
+  | "bateria"; // Batería
+
+export type ColumnaVistaPersonalizada =
+  | ColumnaVistaPersonalizadaCorrectoras
+  | ColumnaVistaPersonalizadaResidencial;
+
 export type StatVistaPersonalizada = "min" | "max" | "avg";
 
 export interface IVistaPersonalizadaColumna {
-  key: ColumnaVistaPersonalizadaCorrectoras;
+  key: ColumnaVistaPersonalizada;
   /** Nombre custom de la columna; si no se define usa el label por defecto */
   label?: string;
   /**
@@ -126,6 +136,7 @@ export interface IVistaPersonalizadaCorrectoras {
 
 export interface IVistasPersonalizadasPorDivision {
   Correctoras?: IVistaPersonalizadaCorrectoras;
+  Residencial?: IVistaPersonalizadaCorrectoras;
 }
 
 export interface IModuloCoberturaLorawan {
@@ -141,7 +152,10 @@ export interface IModuloCoberturaLorawan {
   verMetricas?: boolean;
 }
 
-export type DivisionConVistaPersonalizada = Extract<Division, "Correctoras">;
+export type DivisionConVistaPersonalizada = Extract<
+  Division,
+  "Correctoras" | "Residencial"
+>;
 
 export interface IConfigCliente {
   apns?: IApn[];
