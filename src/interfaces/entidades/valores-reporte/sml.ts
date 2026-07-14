@@ -10,6 +10,12 @@ export interface IReporteSML {
   reverse_accumulated_flow?: number;
   batteryVoltage?: number;
   statusWord?: number;
+  // Código de unidad de caudal del medidor (byte de unidad de la trama, familia
+  // ML107A Reallin/HolleyBeta). Determina el factor de escala del flujo acumulado
+  // a m³. Enum del fabricante: 0x29 L (÷1000), 0x2A L×10 (÷100), 0x2B L×100 (÷10),
+  // 0x2C m³ (×1), 0x2D m³×10 (×10), 0x2E m³×100 (×100). Se persiste el código crudo
+  // para trazabilidad; el consumo ya viene escalado con el factor correspondiente.
+  unidad?: number;
   triggerSource?: number;
   checksum?: number;
   // Parsed
