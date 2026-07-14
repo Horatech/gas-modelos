@@ -46,10 +46,10 @@ export interface IMedidorResidencialAgua {
   diametro?: number;
   caudalMaximo?: number;
   claseMetrologica?: string;
-  // Ventana de asignación vigente medidor↔dispositivo (modelo temporal mínimo
-  // viable): el vínculo de facto es `deveui`; estas fechas acotan la ventana.
+  // Inicio de la asignación vigente medidor↔dispositivo (puntero abierto; el
+  // vínculo de facto es `deveui`). Sin fecha de fin: la atribución histórica de
+  // cada lectura la da el reporte (device.deveui + idsAsignados, inmutable).
   fechaAsignacionDispositivo?: string | null;
-  fechaFinAsignacionDispositivo?: string | null;
   //
   idCliente?: string;
   idUnidadNegocio?: string;

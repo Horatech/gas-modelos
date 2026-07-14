@@ -70,9 +70,6 @@ export interface IPuntoMedicion {
   // Medidor Residencial Agua
   idMedidorResidencialAgua?: string | null;
   fechaAsignacionMedidorResidencialAgua?: string | null;
-  // Cierre de ventana de asignación vigente (modelo temporal mínimo viable):
-  // al reasignar/desasignar, se setea el fin antes de pisar el puntero.
-  fechaFinAsignacionMedidorResidencialAgua?: string | null;
   // Medidor Electrico
   idMedidorElectrico?: string | null;
   fechaAsignacionMedidorElectrico?: string | null;
