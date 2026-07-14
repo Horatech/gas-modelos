@@ -11,6 +11,7 @@ export * from "./config-dispositivo";
 export * from "./correctora";
 export * from "./cromatografia";
 export * from "./cuenca";
+export * from "./cuenta-cliente";
 export * from "./dispositivo";
 export * from "./envio-sms";
 export * from "./grupo";

@@ -37,6 +37,8 @@ export interface IDispositivo {
   // Otra info
   firmware?: string;
   versionHardware?: string; // Versión de hardware (ej: "v1", "v3" para NUC con/sin GPIO)
+  serieTransmisor?: string; // serie del transmisor (integración externa, p. ej. TNS_NRO_SERIE)
+  codigoExternoTransmisor?: string; // TNS_ID del sistema externo (idempotencia de la ingesta)
   ubicacion?: ICoordenadas;
   // Info especifica de cada tipo de dispositivo
   config?: Record<string, any>;
