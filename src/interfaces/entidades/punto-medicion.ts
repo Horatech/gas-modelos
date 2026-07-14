@@ -51,7 +51,9 @@ export interface IPuntoMedicion {
   diametroConexion?: number;
   materialConexion?: string;
   facturable?: boolean;
-  ruta?: string; // agrupación "ruta" del sistema externo
+  // La "ruta" del sistema externo (nivel conexión) se modela como IAgrupacion y
+  // se vincula vía `idsAgrupaciones` (más abajo); la ingesta hace find-or-create
+  // de la agrupación por nombre. No se guarda como string suelto.
   // Dispositivo externo NUC
   idsDipositivosExternosNuc?: string[] | null;
   fechaAsignacionDispositivoExternoNuc?: string | null;
