@@ -1,6 +1,7 @@
 import { ICoordenadas } from "../auxiliares";
 import { ICentroOperativo, IUnidadNegocio } from "../gas";
 import { Division } from "../tenant";
+import { ILocalidad } from "./localidad";
 import { IPuntoMedicion } from "./punto-medicion";
 
 /**
@@ -25,15 +26,18 @@ export interface ICuentaCliente {
   supTerreno?: number;
   domicilio?: string;
   ubicacion?: ICoordenadas; // coord_x / coord_y del inmueble
-  codProvincia?: number;
+  // Provincia y departamento NO son entidades en INSIDEht → strings de dirección.
   provincia?: string;
-  codDepartamento?: number;
   departamento?: string;
-  codLocalidad?: number;
-  localidad?: string;
+  // La localidad SÍ es entidad (ILocalidad) → se referencia, no se duplica como
+  // string. La ingesta resuelve el nombre externo → ILocalidad (find-or-create
+  // por nombre dentro del cliente). Ver virtual `localidad`.
+  idLocalidad?: string;
   // Identidad externa (idempotencia de la ingesta)
   codigoExternoInmueble?: string; // inm_id del sistema externo
-  // Bag para el resto de campos externos no modelados (fidelidad sin bloat)
+  // Bag para campos externos no modelados: fidelidad sin bloat. Incluye los
+  // códigos del sistema externo (cod_localidad, cod_provincia, cod_departamento,
+  // etc.), que son identificadores del otro sistema, no semántica de INSIDEht.
   datosExternos?: Record<string, any>;
   // Estado
   estado?: "Activa" | "Baja";
@@ -45,6 +49,7 @@ export interface ICuentaCliente {
   division?: Division;
   // Virtuals
   puntosMedicion?: IPuntoMedicion[]; // las conexiones de la cuenta
+  localidad?: ILocalidad;
   unidadNegocio?: IUnidadNegocio;
   centroOperativo?: ICentroOperativo;
 }
@@ -53,6 +58,7 @@ export interface ICuentaCliente {
 type OmitirCreate =
   | "_id"
   | "puntosMedicion"
+  | "localidad"
   | "unidadNegocio"
   | "centroOperativo";
 export interface ICreateCuentaCliente
@@ -62,6 +68,7 @@ export interface ICreateCuentaCliente
 type OmitirUpdate =
   | "_id"
   | "puntosMedicion"
+  | "localidad"
   | "unidadNegocio"
   | "centroOperativo";
 export interface IUpdateCuentaCliente
