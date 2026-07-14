@@ -7,6 +7,15 @@ export interface IIntegracion {
   credenciales?: IIntegracionInfluxV1 | IIntegracionInfluxV2;
   credenciales2?: { key: string; value: string }[];
   ubicacionCredenciales?: "Query Params" | "Headers" | "Body";
+  // Integración de altas/asociaciones + devolución de lecturas (p. ej. Manantial
+  // de AYSAM). Las integraciones históricas modelan push OUTBOUND; estos campos
+  // agregan la ingesta pull INBOUND y el perfil del adaptador.
+  direccion?: "INBOUND_PULL" | "OUTBOUND_API";
+  perfil?: "MANANTIAL"; // adaptador/mapper específico del sistema externo
+  endpointIngesta?: string; // base del GET de altas (p. ej. .../mediciones/v1)
+  // Watermark de la ingesta incremental (idempotencia / "solo lo nuevo").
+  cursorAltas?: string;
+  ultimaSincronizacion?: string;
 }
 
 export interface IIntegracionInfluxV1 {

@@ -14,6 +14,7 @@ import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
 import { IMedidorElectrico } from "./medidor-electrico";
 import { IScada } from "./scada";
 import { ICuenca } from "./cuenca";
+import { ICuentaCliente } from "./cuenta-cliente";
 import { IDispositivoEUW300 } from "./configs-dispositivo";
 import { IDispositivoExternoNuc } from "./dispositivo-externo-nuc";
 
@@ -41,6 +42,16 @@ export interface IPuntoMedicion {
   descripcion?: string;
   codigoSimec?: string; // Para exportacion de datos a Simec
   numeroSuministro?: string; // Identificador Numero de Suministro para facturacion
+  // Cuenta / agrupador de facturación (integración externa, p. ej. Manantial).
+  // Opcional: solo lo usan clientes con la integración activa. El PM equivale a
+  // una "conexión"; la cuenta agrupa varias conexiones (ver ICuentaCliente).
+  idCuenta?: string | null;
+  codigoExternoConexion?: string; // con_id del sistema externo
+  codigoExternoInmueble?: string; // inm_id (parte de la PK compuesta externa)
+  diametroConexion?: number;
+  materialConexion?: string;
+  facturable?: boolean;
+  ruta?: string; // agrupación "ruta" del sistema externo
   // Dispositivo externo NUC
   idsDipositivosExternosNuc?: string[] | null;
   fechaAsignacionDispositivoExternoNuc?: string | null;
@@ -57,6 +68,9 @@ export interface IPuntoMedicion {
   // Medidor Residencial Agua
   idMedidorResidencialAgua?: string | null;
   fechaAsignacionMedidorResidencialAgua?: string | null;
+  // Cierre de ventana de asignación vigente (modelo temporal mínimo viable):
+  // al reasignar/desasignar, se setea el fin antes de pisar el puntero.
+  fechaFinAsignacionMedidorResidencialAgua?: string | null;
   // Medidor Electrico
   idMedidorElectrico?: string | null;
   fechaAsignacionMedidorElectrico?: string | null;
@@ -107,6 +121,7 @@ export interface IPuntoMedicion {
   grupos?: IGrupo[];
   agrupaciones?: IAgrupacion[];
   cuenca?: ICuenca;
+  cuenta?: ICuentaCliente;
 }
 
 ////// CREATE/UPDATE
@@ -125,7 +140,8 @@ type Omitir =
   | "subzonaTarifaria"
   | "grupos"
   | "agrupaciones"
-  | "cuenca";
+  | "cuenca"
+  | "cuenta";
 export interface ICreatePuntoMedicion extends Omit<
   Partial<IPuntoMedicion>,
   Omitir

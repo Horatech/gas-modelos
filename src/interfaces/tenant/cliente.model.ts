@@ -218,6 +218,16 @@ export interface IConfigCliente {
    * actualizar punto. Chequear con `!== false` para preservar el default.
    */
   crearMedidorResidencialAutomatico?: boolean;
+
+  /**
+   * Habilita la UI de Cuentas (agrupador de facturación, ver ICuentaCliente) en
+   * los frontends. Capability de solo-visualización: la lógica de backend es
+   * transparente (campos nullable) y la ingesta se activa por presencia de
+   * config en `integraciones`. El backend AUTO-SETEA este flag al configurar una
+   * integración que puebla cuentas (p. ej. Manantial); no hay toggle en admin.
+   * Default undefined/false: el cliente no ve nada de cuentas.
+   */
+  gestionCuentas?: boolean;
 }
 
 export interface ICliente {
