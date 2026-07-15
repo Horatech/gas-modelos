@@ -16,6 +16,13 @@ import { IMedidorElectrico } from './medidor-electrico';
  * por (deveui, timestamp de hora) y arma un registro por hora (upsert), guardando el
  * acumulado de cada metrica y el delta consumido en esa hora respecto del registro
  * previo. Energias en Wh / varh (acumulados little-endian, epoch UTC).
+ *
+ * Los campos de acumulado (`*Acum`) pueden valer -1 ("registro ausente"): el
+ * dispositivo NO tiene el registro para ese timestamp (llega 0xFFFFFFFF en el
+ * uplink) y NO se puede recuperar. Distinto de un registro faltante (ausente en
+ * la coleccion), que si podria recuperarse si el mensaje se perdio. El valor -1
+ * (constante REGISTRO_AUSENTE) se define en cada repo consumidor, porque este
+ * paquete es solo de tipos (no se compila a JS).
  */
 export interface IRegistroMedidorElectrico {
   _id?: string;
