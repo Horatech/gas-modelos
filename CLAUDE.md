@@ -105,6 +105,14 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-16 - Recuperación de registros faltantes NME (GET_HISTORIC)
+- Nueva interfaz `IRecuperacionNme` (`recuperacion-nme.ts`) + `ICreate/IUpdate` y
+  types `EstadoRecuperacionNme` / `IIntentoRecuperacionNme`. Control y auditoría de
+  la recuperación de días incompletos de un NME: gas-cron detecta huecos en
+  `registrosmedidorelectrico`, encola y envía un downlink GET_HISTORIC (fPort 108) a
+  ChirpStack, y persiste estado/intentos por (`deveui`, `dia`). Colección
+  `recuperacionNme` en gas-datos.
+
 ### 2026-07-08 - Vista personalizada para división Residencial
 - `DivisionConVistaPersonalizada`: ahora incluye `"Residencial"` además de
   `"Correctoras"`

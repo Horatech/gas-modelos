@@ -38,6 +38,7 @@ export * from "./scada";
 export * from "./apikey";
 export * from "./config-notificacion";
 export * from "./registros-faltantes";
+export * from "./recuperacion-nme";
 export * from "./dispositivo-externo-nuc";
 export * from "./dash-general";
 export * from "./mensajes-bove";
