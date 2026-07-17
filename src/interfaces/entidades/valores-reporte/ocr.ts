@@ -24,6 +24,12 @@ export interface IReporteOCR {
   // entrega la lectura acumulada del odómetro, así que el parcial se CALCULA en el
   // backend. Misma convención que consumoParcialInputN (NUC) y flujo*Parcial (agua).
   consumoParcial?: number;
+  // Tiempo transcurrido desde el último reporte, en segundos (timestamp de este
+  // reporte - timestamp del último reporte del medidor). Contextualiza el parcial:
+  // permite derivar una tasa de consumo (consumoParcial / intervalo) y validar la
+  // cadencia. Se calcula en el backend junto con consumoParcial. En segundos (no
+  // intervaloHoras como EUW300/BOVE) porque la cadencia del OCR es variable.
+  intervaloReporteSegundos?: number;
 
   // Fuente 1: lectura del propio dispositivo (OCR on-device).
   ocrReadingDevice?: number;
