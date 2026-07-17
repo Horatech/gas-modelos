@@ -18,6 +18,12 @@ export interface IReporteOCR {
   lectura?: number;
   consumo?: number; // Acumulado reportado (= lectura del odómetro).
   consumoCorregido?: number; // Acumulado +- consumoInicial cargado en la plataforma.
+  // Consumo parcial desde el último reporte (consumoCorregido de este reporte -
+  // consumoCorregido del último reporte del medidor). A diferencia de SML/WRC —que
+  // reportan consumoInstantaneo desde el propio device—, el dispositivo OCR solo
+  // entrega la lectura acumulada del odómetro, así que el parcial se CALCULA en el
+  // backend. Misma convención que consumoParcialInputN (NUC) y flujo*Parcial (agua).
+  consumoParcial?: number;
 
   // Fuente 1: lectura del propio dispositivo (OCR on-device).
   ocrReadingDevice?: number;
