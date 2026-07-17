@@ -10,7 +10,7 @@ import { IReporte } from './reporte';
 export interface IMedidorResidencial {
   _id?: string;
   //
-  deviceMeterNumber?: number;
+  deviceMeterNumber?: string;
   deveui?: string;
   deviceName?: string;
   fechaCreacion?: string;

@@ -21,7 +21,7 @@ export interface ITitularMedidorResidencialAgua {
 export interface IMedidorResidencialAgua {
   _id?: string;
   //
-  deviceMeterNumber?: number;
+  deviceMeterNumber?: string;
   deveui?: string;
   deviceName?: string;
   fechaCreacion?: string;
@@ -38,8 +38,8 @@ export interface IMedidorResidencialAgua {
   corregido?: boolean;
   modelo?: string; /// Accell, Actaris, Itron, Gallus, Elster + lo que escriba el usuario.
   // Metadatos / identidad externa (integración de facturación, p. ej. Manantial).
-  // La UK externa del medidor es serie+letra; `deviceMeterNumber` es numérico, por
-  // eso `serieAlfa` aloja la serie alfanumérica cuando corresponde.
+  // La UK externa del medidor es serie+letra; `serieAlfa` aloja la serie
+  // alfanumérica externa cuando difiere del `deviceMeterNumber`.
   letra?: string; // MED_LETRA (parte de la UK externa serie+letra)
   serieAlfa?: string; // serie alfanumérica externa (si difiere de deviceMeterNumber)
   medIdExterno?: string; // MED_ID del sistema externo (idempotencia)
