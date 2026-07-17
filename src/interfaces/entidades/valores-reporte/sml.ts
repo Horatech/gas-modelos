@@ -24,6 +24,11 @@ export interface IReporteSML {
   consumoPositivo?: number; // Es el consumo acumulado en sentido positivo reportado por el dispositivo
   consumo?: number; // Es el consumo acumulado reportado por el dispositivo // restando lo negativo
   consumoCorregido?: number; // Es el consumo acumulado +- el consumo incial cargado en la plataforma
+  // Consumo del período: consumoCorregido de este reporte - consumoCorregido del
+  // último reporte del medidor. El dispositivo SML/MRA reporta el acumulado
+  // (odómetro), no el parcial, así que se CALCULA en el backend (misma convención
+  // que OCR/NUC/agua). undefined en el primer reporte (sin acumulado anterior).
+  consumoParcial?: number;
   consumoInstantaneo?: number; // Es el consumo instantaneo reportado por el dispositivo
   bateria?: number;
 }
