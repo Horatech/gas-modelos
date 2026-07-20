@@ -9,6 +9,26 @@
 // Bag plano de campos opcionales, convención del sistema (ver IReporteSML). Los
 // campos `imageRef` + `estadoOcr` + `confianzaBackend` lo discriminan de otras
 // variantes de IValoresReporte sin ambigüedad.
+
+// Códigos de defecto de lectura que emite el pipeline del worker (gas-ocr-worker)
+// para explicar por qué una lectura falló o fue a revisión. Multi-etiqueta: una
+// lectura puede acumular varios. La etapa/umbral/acción de cada uno está en
+// gas/PLAN-OCR-PIPELINE.md (§3). Se persisten en `defectosLectura`.
+export type DefectoLecturaOCR =
+  | "IMAGEN_ILEGIBLE" // no se pudo decodificar la imagen
+  | "NO_ES_MEDIDOR" // el ROI no parece un visor de medidor mecánico
+  | "REGISTRO_NO_LOCALIZADO" // no se encontró la banda de dígitos
+  | "IMAGEN_CORTADA" // el registro queda fuera del cuadro
+  | "IMAGEN_INCLINADA" // skew no corregible por rectificación
+  | "BORROSA" // baja nitidez (varianza de Laplaciano baja)
+  | "GLARE_SEVERO" // reflejo especular tapa celdas del registro
+  | "ROLL_PARCIAL" // una rueda a medio girar (dígito en transición)
+  | "DIGITOS_INSUFICIENTES" // se leyeron menos dígitos que el ancho del registro
+  | "BAJA_CONFIANZA" // confianza del OCR backend bajo el umbral
+  | "DIVERGENCIA_DEVICE" // lectura backend difiere de la del dispositivo
+  | "NO_MONOTONICO" // lectura menor que la última verificada del medidor
+  | "EXCESO_DIGITOS"; // más dígitos que el máximo plausible (ROI contaminado)
+
 export interface IReporteOCR {
   // ISO 8601 (nunca Date).
   timestamp?: string;
@@ -64,4 +84,9 @@ export interface IReporteOCR {
 
   // Nivel de batería (%). Convención `bateria` de las familias de medidor.
   bateria?: number;
+
+  // Defectos de lectura detectados por el pipeline del worker (multi-etiqueta).
+  // Explican por qué la lectura fue a `revision`/rechazo; alimentan reportes de
+  // lecturas fallidas y la cola de revisión. Ver DefectoLecturaOCR.
+  defectosLectura?: DefectoLecturaOCR[];
 }
