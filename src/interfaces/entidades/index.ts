@@ -18,6 +18,7 @@ export * from "./grupo";
 export * from "./kmz";
 export * from "./localidad";
 export * from "./log-nuc";
+export * from "./log-lora";
 export * from "./log-reporte";
 export * from "./log-twilio";
 export * from "./subzona-tarifaria";
