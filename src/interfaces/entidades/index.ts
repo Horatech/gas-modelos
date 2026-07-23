@@ -17,6 +17,7 @@ export * from "./envio-sms";
 export * from "./grupo";
 export * from "./kmz";
 export * from "./localidad";
+export * from "./registro-clima";
 export * from "./log-nuc";
 export * from "./log-lora";
 export * from "./log-reporte";
