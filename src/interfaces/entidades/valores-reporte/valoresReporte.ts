@@ -8,6 +8,7 @@ import { IReporteVeribox } from "./veribox";
 import { IReporteWRC } from "./wrc";
 import { IReporteInputsNuc } from "./reporte-inputs-nuc";
 import { IReporteOCR } from "./ocr";
+import { IReporteUWMNB } from "./uwm-nb";
 
 export type IValoresReporte =
   | IReporteNUC
@@ -21,4 +22,5 @@ export type IValoresReporte =
   | IReporteTotalizadorBove
   | IReporteLogsHorariosBove
   | IReporteInputsNuc
-  | IReporteOCR;
+  | IReporteOCR
+  | IReporteUWMNB;
