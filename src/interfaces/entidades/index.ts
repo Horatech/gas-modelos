@@ -29,6 +29,7 @@ export * from "./medidor-electrico";
 export * from "./punto-medicion";
 export * from "./registro";
 export * from "./registro-medidor-electrico";
+export * from "./registro-horario-agua";
 export * from "./reporte";
 export * from "./unidad-presion";
 export * from "./firmware";

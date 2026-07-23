@@ -8,5 +8,6 @@ export * from "./scada";
 export * from "./euw300";
 export * from "./bove";
 export * from "./ocr";
+export * from "./uwm-nb";
 export * from "./reporte-medidor-agual";
 export * from "./reporte-inputs-nuc";
