@@ -21,7 +21,8 @@ import { IDispositivo } from "./dispositivo";
 export type EstadoConfigDownlinkEuw300 =
   | "pendiente" // config guardada desde la web, aún no encolada
   | "encolado" // job creado en la cola de downlinks
-  | "enviado" // downlink SET_CONFIG enviado a ChirpStack
+  | "enviado" // downlink SET_CONFIG encolado en ChirpStack (a la espera de ack)
+  | "confirmado" // el device confirmó (ack=true) la recepción del downlink
   | "agotado" // se alcanzó el tope de intentos sin éxito
   | "error"; // último enqueue falló
 
@@ -48,7 +49,8 @@ export interface IConfigDownlinkEuw300 {
   historialIntentos?: IIntentoConfigDownlinkEuw300[]; // acotado al tope de intentos
   //
   fechaSolicitud?: string; // ISO en que el usuario guardó la config
-  fechaEnviado?: string; // ISO en que se envió el downlink a ChirpStack
+  fechaEnviado?: string; // ISO en que se encoló el downlink en ChirpStack
+  fechaConfirmado?: string; // ISO del ack=true del device (Clase A)
   //
   idLoraServer?: string;
   //
