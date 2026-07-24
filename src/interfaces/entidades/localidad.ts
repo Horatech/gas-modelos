@@ -7,8 +7,11 @@ import { ICoordenadas, GeoJSON } from "../auxiliares/coordenadas";
  * Origen de la geometria de una Localidad.
  * - "OSM": importada de OpenStreetMap (Overpass, admin boundaries) con confirmacion manual.
  * - "Manual": dibujada/editada a mano en el frontend.
+ * - "Puntos": centroide derivado de las ubicaciones de los puntos de medicion de la
+ *   Localidad (sin poligono). Se usa cuando OSM no tiene un limite propio de la localidad
+ *   (p. ej. pueblos dentro de un partido). Solo setea `ubicacion`, no `geojson`.
  */
-export type OrigenGeometriaLocalidad = "OSM" | "Manual";
+export type OrigenGeometriaLocalidad = "OSM" | "Manual" | "Puntos";
 
 export interface ILocalidad {
   _id?: string;
