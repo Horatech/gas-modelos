@@ -35,6 +35,19 @@ export interface ILocalidad {
   centroOperativo?: ICentroOperativo;
 }
 
+/**
+ * Candidato de geometria para una Localidad, obtenido del import asistido desde
+ * OpenStreetMap (Nominatim). El operador elige uno y confirma; la geometria se
+ * guarda en la Localidad con origenGeometria = "OSM". Atribucion: datos © OSM (ODbL).
+ */
+export interface ICandidatoGeoOsm {
+  nombre: string; // display_name de OSM
+  osmId: number;
+  osmType: string; // "relation" | "way" | "node"
+  ubicacion: ICoordenadas; // centroide (lat/lon de OSM)
+  geojson?: GeoJSON; // poligono, si OSM lo provee
+}
+
 // CREATE
 type OmitirCreate = "_id";
 export interface ICreateLocalidad
