@@ -1,0 +1,55 @@
+import { TipoDatoClima } from "./registro-clima";
+
+/**
+ * DTO de respuesta de las vistas RESUMEN por nivel jerarquico (INSIDEht 2.0).
+ * Lo produce gas-api-cliente (a partir del rollup diario resumendiariolocalidad
+ * + la serie de clima) y lo consume gas-web-cliente. No es una entidad.
+ */
+
+export type NivelResumen = "UnidadNegocio" | "CentroOperativo" | "Localidad";
+
+/** Punto de la serie diaria: consumo + temperatura (tendencia + correlacion). */
+export interface IPuntoSerieResumen {
+  fecha: string; // inicio del dia gas
+  volumenGasTotal?: number;
+  volumenCorregidoCorrectoras?: number;
+  consumoResidencial?: number;
+  temperaturaMedia?: number;
+  temperaturaMin?: number;
+  temperaturaMax?: number;
+}
+
+/** Clima agregado al nivel (actual o un punto de pronostico). Unidades canonicas. */
+export interface IClimaResumen {
+  fecha?: string;
+  tipo?: TipoDatoClima;
+  temperatura?: number; // °C
+  temperaturaMin?: number;
+  temperaturaMax?: number;
+  vientoVelocidad?: number; // m/s
+  radiacion?: number; // W/m2
+  humedad?: number; // %
+}
+
+export interface IResumenOperativoNivel {
+  nivel: NivelResumen;
+  id: string;
+  desde?: string;
+  hasta?: string;
+
+  // Consumo agregado del periodo (suma de las filas de rollup del nivel)
+  volumenGasTotal?: number;
+  volumenBaseCorrectoras?: number;
+  volumenCorregidoCorrectoras?: number;
+  consumoResidencial?: number;
+  cantidadCorrectoras?: number;
+  cantidadMedidoresResidenciales?: number;
+  cantidadLocalidades?: number; // localidades con dato en el periodo
+
+  // Serie diaria (consumo + temperatura) para tendencia y correlacion clima-demanda
+  serie?: IPuntoSerieResumen[];
+
+  // Clima
+  climaActual?: IClimaResumen; // ultimo dato ACTUAL, promediado al nivel
+  pronostico?: IClimaResumen[]; // PRONOSTICO a futuro (>=1 semana), por dia
+}
