@@ -105,6 +105,18 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-24 - Consumo parcial EUW300 (agua residencial)
+- `IReporteDiarioEUW300`: agregado `consumoParcial?: number` (consumo del período =
+  `consumo` de este reporte − `consumo` del reporte anterior del medidor). Lo calcula
+  `gas-api-euw300`, mismo patrón que `IReporteSML.consumoParcial` en gas-sml /
+  gas-api-mra-beta-ml107a.
+- Aclarado que `consumo` (alias de `flujoAcumuladoActual`) es **acumulado/odómetro**,
+  no parcial: el frontend lo sumaba a lo largo de la ventana e inflaba los cards de
+  consumo 24hs / mensual / bimestral.
+- `IReporteHorarioEUW300`: `flujoAcumuladoInicial` e `incrementosHorarios` ahora vienen
+  escalados según `unidadFlujoAcumulado` (antes eran enteros crudos, a diferencia del
+  reporte diario).
+
 ### 2026-07-16 - Recuperación de registros faltantes NME (GET_HISTORIC)
 - Nueva interfaz `IRecuperacionNme` (`recuperacion-nme.ts`) + `ICreate/IUpdate` y
   types `EstadoRecuperacionNme` / `IIntentoRecuperacionNme`. Control y auditoría de

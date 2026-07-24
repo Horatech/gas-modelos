@@ -28,7 +28,8 @@ export interface IReporteDiarioEUW300 {
   deviceMeterNumber?: string; // Dirección del dispositivo (14 dígitos BCD)
   modoTransmision?: "texto-plano" | "cifrado"; // Modo de transmisión
 
-  consumo?: number; // Alias de flujoAcumuladoActual para compatibilidad
+  consumo?: number; // Alias de flujoAcumuladoActual (ACUMULADO/odómetro, no parcial)
+  consumoParcial?: number; // Consumo del período = consumo(este) - consumo(reporte anterior)
   nivelBateria?: number; // Porcentaje estimado de batería
   serialNumber?: string; // Número de serie del medidor
 }
@@ -41,8 +42,8 @@ export interface IReporteHorarioEUW300 {
   horaInicio?: string; // Formato: MMDDhhmm convertido a string
   intervaloHoras?: number; // Fijo en 1 hora
   unidadFlujoAcumulado?: UnidadFlujoAcumulado;
-  flujoAcumuladoInicial?: number; // HEX, 4 bytes
-  incrementosHorarios?: number[]; // Array de 12 elementos (incrementos por hora)
+  flujoAcumuladoInicial?: number; // Lectura acumulada al inicio del período, ya escalada según unidadFlujoAcumulado
+  incrementosHorarios?: number[]; // 11 incrementos por hora (parciales), ya escalados según unidadFlujoAcumulado
 
   tipoReporte?: "horario" | "evento"; // Puede ser disparado por evento
   motivoEvento?: string; // Si fue disparado por alarma/evento
@@ -50,7 +51,7 @@ export interface IReporteHorarioEUW300 {
   deviceMeterNumber?: string; // ✅ Viene en header de trama
   modoTransmision?: "texto-plano" | "cifrado"; // ✅ Control code
 
-  // Campos calculados útiles
-  consumoTotal?: number; // Suma total de incrementos
+  // Campos calculados útiles (en la unidad base de unidadFlujoAcumulado)
+  consumoTotal?: number; // Suma total de incrementos = consumo del período
   consumoPromedioPorHora?: number; // Promedio por hora
 }
