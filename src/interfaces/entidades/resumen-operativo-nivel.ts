@@ -11,9 +11,15 @@ export type NivelResumen = "UnidadNegocio" | "CentroOperativo" | "Localidad";
 /** Punto de la serie diaria: consumo + temperatura (tendencia + correlacion). */
 export interface IPuntoSerieResumen {
   fecha: string; // inicio del dia gas
+  // Consumo TOTALIZADO del dia (suma de todos los medidores del nivel).
   volumenGasTotal?: number;
   volumenCorregidoCorrectoras?: number;
   consumoResidencial?: number;
+  // Consumo PROMEDIO por medidor del dia (= total / cantidad de medidores del nivel).
+  // Independiente de la cantidad de medidores instalados: refleja la relacion
+  // temperatura <-> consumo sin distorsionarse al agregar/quitar medidores.
+  consumoResidencialPromedio?: number;
+  consumoCorrectorasPromedio?: number;
   temperaturaMedia?: number;
   temperaturaMin?: number;
   temperaturaMax?: number;
