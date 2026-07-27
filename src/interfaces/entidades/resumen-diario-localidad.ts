@@ -33,16 +33,22 @@ export interface IResumenDiarioLocalidad {
   // Consumo / volumen de gas del dia (m3)
   volumenBaseCorrectoras?: number; // suma uncorrectedParcializado
   volumenCorregidoCorrectoras?: number; // suma correctedParcializado
-  consumoResidencial?: number; // suma consumoTotal residencial
+  consumoResidencial?: number; // delta del acumulado valores.consumo de los medidores del dia
   volumenGasTotal?: number; // corregido correctoras + residencial
   cantidadCorrectoras?: number;
   cantidadMedidoresResidenciales?: number;
 
-  // Clima del dia (canonico; desde registroclimas tipo ACTUAL)
-  temperaturaMedia?: number; // °C
-  temperaturaMin?: number; // °C
-  temperaturaMax?: number; // °C
+  // Clima del dia (canonico). Se calcula sobre la serie HORARIA del dia
+  // (granularidad "horaria", cualquier tipo), agrupando primero por hora para
+  // que cada hora pese igual y no se cuente dos veces. La serie diaria de
+  // pronostico (granularidad "diaria") NO entra: describe el dia entero, no un
+  // instante, y duplicaria el peso de ese dia.
+  temperaturaMedia?: number; // °C — media de las horas del dia
+  temperaturaMin?: number; // °C — minima horaria del dia
+  temperaturaMax?: number; // °C — maxima horaria del dia
+  sensacionTermicaMedia?: number; // °C
   vientoVelocidadMedia?: number; // m/s
+  horasClima?: number; // horas distintas con dato (calidad de la media: 24 = dia completo)
 
   // Idempotencia / control (patron estadogeneralcorrectoras)
   queryHash?: string;

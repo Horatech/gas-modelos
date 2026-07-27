@@ -32,6 +32,23 @@ export type FuenteClima =
  */
 export type TipoDatoClima = "ACTUAL" | "PRONOSTICO" | "CLIMATOLOGIA";
 
+/**
+ * Resolucion temporal del dato. Discrimina la serie HORARIA de la DIARIA:
+ * ambas se persisten con `tipo: "PRONOSTICO"` y sin este campo NO se pueden
+ * separar. Mezclarlas rompe los dos calculos que dependen del clima:
+ * - el promedio diario (una media de 24 muestras horarias vs 1-3 muestras diurnas), y
+ * - la curva de pronostico (promediar horas sueltas con la media del dia sesga
+ *   los primeros dias, donde hay serie horaria, contra el resto donde no).
+ *
+ * - "horaria": una muestra por hora (instante). Es la que se promedia para el dia.
+ * - "diaria": un punto por dia con `temperatura` = media del dia + min/max.
+ *
+ * Los registros previos a este campo quedan sin `granularidad`: los `ACTUAL`
+ * historicos (poleo horario y backfill Open-Meteo) se tratan como horarios, y
+ * los `PRONOSTICO` sin granularidad se excluyen de los calculos diarios.
+ */
+export type GranularidadClima = "horaria" | "diaria";
+
 export interface IViento {
   velocidad?: number; // m/s
   direccion?: number; // grados 0-360 (de donde viene)
@@ -43,12 +60,14 @@ export interface IRegistroClima {
 
   timestamp?: string; // ISO UTC — instante del dato (o dia objetivo para PRONOSTICO/CLIMATOLOGIA)
   tipo?: TipoDatoClima;
+  granularidad?: GranularidadClima; // resolucion temporal (ver type)
   fuente?: FuenteClima;
 
   // Variables canonicas (normalizadas por gas-api-clima)
   temperatura?: number; // °C
   temperaturaMin?: number; // °C — agregados diarios / pronostico
   temperaturaMax?: number; // °C
+  sensacionTermica?: number; // °C — temperatura aparente (viento/humedad); driver de consumo
   viento?: IViento;
   radiacion?: number; // W/m2 — relevante para agua
   humedad?: number; // % — opcional
