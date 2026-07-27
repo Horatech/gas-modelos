@@ -23,6 +23,10 @@ export interface IPuntoSerieResumen {
   temperaturaMedia?: number;
   temperaturaMin?: number;
   temperaturaMax?: number;
+  sensacionTermicaMedia?: number;
+  // Horas del dia con dato climatico (24 = dia completo). Deja ver si un punto
+  // de la correlacion se apoya en una media horaria completa o en pocas muestras.
+  horasClima?: number;
 }
 
 /** Clima agregado al nivel (actual o un punto de pronostico). Unidades canonicas. */
@@ -32,6 +36,7 @@ export interface IClimaResumen {
   temperatura?: number; // °C
   temperaturaMin?: number;
   temperaturaMax?: number;
+  sensacionTermica?: number; // °C
   vientoVelocidad?: number; // m/s
   radiacion?: number; // W/m2
   humedad?: number; // %
@@ -56,6 +61,6 @@ export interface IResumenOperativoNivel {
   serie?: IPuntoSerieResumen[];
 
   // Clima
-  climaActual?: IClimaResumen; // ultimo dato ACTUAL, promediado al nivel
+  climaActual?: IClimaResumen; // punto horario mas cercano a ahora, promediado al nivel
   pronostico?: IClimaResumen[]; // PRONOSTICO a futuro (>=1 semana), por dia
 }

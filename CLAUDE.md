@@ -105,6 +105,24 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-27 - Granularidad del dato climático + sensación térmica
+
+- `IRegistroClima`: nuevos `granularidad?: GranularidadClima` (`"horaria" | "diaria"`) y
+  `sensacionTermica?: number` (°C). La serie horaria y la diaria se persistían ambas con
+  `tipo: "PRONOSTICO"` y sin discriminante: el promedio del día usaba 1-3 muestras
+  diurnas (nunca la madrugada) y la curva de pronóstico promediaba horas sueltas con la
+  media del día, sesgando los primeros días. Los registros previos quedan sin
+  `granularidad`: los `ACTUAL` históricos se tratan como horarios, los `PRONOSTICO` sin
+  granularidad quedan fuera de los cálculos diarios.
+- `IResumenDiarioLocalidad`: nuevos `sensacionTermicaMedia?` y `horasClima?` (horas
+  distintas con dato: 24 = día completo). El clima del día ahora se calcula agrupando
+  primero **por hora** (cada hora pesa igual y no se cuenta dos veces) y después por día.
+  Corregido el comentario de `consumoResidencial`: es el delta del acumulado
+  `valores.consumo`, no una suma de `consumoTotal`.
+- `IPuntoSerieResumen`: nuevos `sensacionTermicaMedia?` y `horasClima?`.
+  `IClimaResumen`: nuevo `sensacionTermica?`. `climaActual` pasa a ser el punto horario
+  más cercano a ahora (antes: último `ACTUAL`, hasta 6 h de atraso).
+
 ### 2026-07-24 - Consumo parcial EUW300 (agua residencial)
 - `IReporteDiarioEUW300`: agregado `consumoParcial?: number` (consumo del período =
   `consumo` de este reporte − `consumo` del reporte anterior del medidor). Lo calcula
