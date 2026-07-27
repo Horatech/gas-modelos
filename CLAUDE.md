@@ -36,6 +36,34 @@ Los proyectos que lo consumen lo importan directamente:
 
 Los cambios en las interfaces se reflejan automáticamente en los proyectos que las consumen mediante el sistema de módulos de TypeScript.
 
+### ⛔ Este paquete es de SOLO TIPOS: no exportar valores runtime
+
+Sólo hay archivos `.ts` y **no se emite JS**. Consecuencia:
+
+- Importar **tipos** (`interface`, `type`) es gratis: TypeScript los borra al compilar y no queda nada en el `dist`.
+- Importar un **valor** (una función, una constante, un `enum` real) deja un
+  `require('modelos/src')` en el JS compilado, y **Node no lo puede resolver**: en
+  `node_modules/modelos/src` no hay ningún `index.js`. El servicio arranca y muere con
+  `MODULE_NOT_FOUND`.
+
+**`npm run lint && npm run build` NO lo detectan** — para TypeScript la resolución es
+correcta. El fallo aparece sólo al ejecutar. Ya ocurrió (jul 2026): un helper de wind
+chill exportado desde acá dejó `gas-api-clima v1.1.2` y `gas-api-cliente v3.7.4` en
+CrashLoopBackOff en producción.
+
+Por eso `TIPOS_DISPOSITIVOS` (`auxiliares/tipoDispositivo.ts`) no tiene ningún
+consumidor de código en los servicios: **no puede tenerlo**.
+
+**Si hace falta lógica compartida** entre servicios: duplicarla en cada uno con un
+comentario que lo explique, o crear un paquete aparte que sí compile a JS. Los frontends
+Angular sí podrían importar valores (bundlean el TS), pero los backends NestJS no.
+
+Chequeo rápido antes de dar por buena una importación nueva:
+
+```bash
+npm run build && node -e "require('./dist/<archivo-que-importa>.js')"
+```
+
 ## Dispositivos soportados
 
 ### NUC4G (Network Unit Concentrator 4G)
@@ -104,6 +132,14 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 - En firmware: `SIZE_TEL_STANDARD = 13`
 
 ## Cambios recientes
+
+### 2026-07-27 - Revertido: helper `windChillC`
+
+Se había agregado `auxiliares/clima.ts` con una función `windChillC` compartida entre
+`gas-api-clima` y `gas-api-cliente`. **Se revierte**: al ser un valor y no un tipo,
+dejó a los dos servicios en CrashLoopBackOff con `MODULE_NOT_FOUND` (ver la sección
+"Este paquete es de SOLO TIPOS" arriba). La fórmula quedó duplicada en cada servicio,
+documentada en ambos.
 
 ### 2026-07-27 - Granularidad del dato climático + sensación térmica
 
