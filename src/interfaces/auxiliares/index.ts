@@ -1,3 +1,4 @@
+export * from "./clima";
 export * from "./coordenadas";
 export * from "./listado";
 export * from "./queryParams";
