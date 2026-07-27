@@ -133,6 +133,14 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-27 - Módulo Clima activable por cliente
+
+- `IConfigCliente`: nuevo `moduloClima?: IModuloClima` (`{ activo?: boolean }`), mismo
+  patrón que `moduloCoberturaLorawan`. Gatea la sección "Clima" (vistas resumen) en
+  gas-web-cliente: sin el flag no aparece en el menú y la ruta `/clima` redirige. Permite
+  desplegar el frontend a producción con la funcionalidad aún sin liberar al cliente.
+  No requiere cambios en gas-datos: `config` es `@Prop({ type: Object })`.
+
 ### 2026-07-27 - Revertido: helper `windChillC`
 
 Se había agregado `auxiliares/clima.ts` con una función `windChillC` compartida entre
