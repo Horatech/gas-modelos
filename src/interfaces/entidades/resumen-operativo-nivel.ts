@@ -64,3 +64,51 @@ export interface IResumenOperativoNivel {
   climaActual?: IClimaResumen; // punto horario mas cercano a ahora, promediado al nivel
   pronostico?: IClimaResumen[]; // PRONOSTICO a futuro (>=1 semana), por dia
 }
+
+/** Direccion de la tendencia de temperatura del pronostico. */
+export type DireccionTendencia = "sube" | "baja" | "estable";
+
+export interface ITendenciaResumen {
+  direccion: DireccionTendencia;
+  delta: number; // °C entre el inicio y el fin del pronostico
+}
+
+/**
+ * Tarjeta CLIMATICA de un hijo del nivel actual (una UN / CO / Localidad de la
+ * grilla de drill-down de la vista Resumen).
+ *
+ * Existe para que la grilla se pinte con **un solo pedido**. Antes el frontend
+ * llamaba `GET /resumen/:nivel/:id` una vez POR TARJETA: cada una de esas
+ * llamadas dispara 4 consultas a gas-datos (localidades + rollups + clima
+ * horario + pronostico) y devuelve `serie[30]` + `pronostico[8]` completos, de
+ * los que la tarjeta usaba 6 valores. Con N hijos era N veces todo el pipeline.
+ *
+ * Es deliberadamente SOLO CLIMA: el consumo y los conteos de parque no van en la
+ * tarjeta, y traerlos obligaria a leer los rollups de consumo de todos los hijos.
+ * `serieTemperatura` si sale del rollup diario, pero pidiendo unicamente
+ * `fecha` + temperatura (payload chico).
+ */
+export interface IResumenClimaHijo {
+  nivel: NivelResumen;
+  id: string;
+
+  climaActual?: IClimaResumen;
+  tendencia?: ITendenciaResumen;
+
+  /** Temperatura media diaria REAL de los ultimos dias (sparkline, mas viejo primero). */
+  serieTemperatura?: IPuntoTemperaturaResumen[];
+  /** Temperatura media diaria PRONOSTICADA (continua el sparkline hacia adelante). */
+  pronosticoTemperatura?: IPuntoTemperaturaResumen[];
+
+  /**
+   * `false` cuando el hijo no tiene ninguna Localidad visible para el usuario.
+   * Sin esto la tarjeta no puede distinguir "no hay clima cargado para la zona"
+   * de "la zona no tiene localidades", y mostraba el mismo "Sin dato climatico".
+   */
+  tieneLocalidades?: boolean;
+}
+
+export interface IPuntoTemperaturaResumen {
+  fecha: string; // ISO (dia)
+  temperatura?: number; // °C
+}

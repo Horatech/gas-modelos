@@ -133,6 +133,18 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-28 - Tarjetas climáticas de la vista Resumen (1 pedido en vez de N)
+
+- `resumen-operativo-nivel.ts`: nuevos `IResumenClimaHijo`, `IPuntoTemperaturaResumen`,
+  `ITendenciaResumen` y `DireccionTendencia`. DTO de la grilla de drill-down de la vista
+  Resumen (Clima): describe la tarjeta de cada hijo (UN / CO / Localidad) con clima
+  actual, tendencia del pronóstico y serie de temperatura para el sparkline.
+  Lo produce `GET /resumen/hijos/:nivel` en gas-api-cliente, que resuelve **todos** los
+  hijos en una sola llamada. Antes el frontend pedía `GET /resumen/:nivel/:id` una vez
+  por tarjeta (N veces las 4 consultas a gas-datos, devolviendo `serie[30]` +
+  `pronostico[8]` para usar 6 valores).
+- Es solo clima a propósito: consumo y conteos de parque no van en la tarjeta.
+
 ### 2026-07-27 - Módulo Clima activable por cliente
 
 - `IConfigCliente`: nuevo `moduloClima?: IModuloClima` (`{ activo?: boolean }`), mismo
