@@ -101,9 +101,11 @@ export interface IResumenClimaHijo {
   pronosticoTemperatura?: IPuntoTemperaturaResumen[];
 
   /**
-   * `false` cuando el hijo no tiene ninguna Localidad visible para el usuario.
-   * Sin esto la tarjeta no puede distinguir "no hay clima cargado para la zona"
-   * de "la zona no tiene localidades", y mostraba el mismo "Sin dato climatico".
+   * Siempre `true` en las entradas devueltas: la respuesta trae **solo** los hijos
+   * con al menos una Localidad visible para el usuario. Un hijo de la grilla que no
+   * aparezca en la respuesta no tiene localidades, y la tarjeta lo dice asi en vez
+   * de mostrar "Sin dato climatico" (que es otra cosa: hay localidades pero todavia
+   * no hay clima cargado para ellas).
    */
   tieneLocalidades?: boolean;
 }
