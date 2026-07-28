@@ -152,6 +152,17 @@ export interface IModuloCoberturaLorawan {
   verMetricas?: boolean;
 }
 
+export interface IModuloClima {
+  /**
+   * Habilita la sección "Clima" (vistas resumen de INSIDEht 2.0) en
+   * gas-web-cliente. Si no está o es false, la feature está oculta: no aparece
+   * en el menú y la ruta redirige al inicio. Pensado como módulo activable por
+   * cliente mientras la funcionalidad se termina de pulir, para poder desplegar
+   * el frontend sin exponerla.
+   */
+  activo?: boolean;
+}
+
 export type DivisionConVistaPersonalizada = Extract<
   Division,
   "Correctoras" | "Residencial"
@@ -195,6 +206,13 @@ export interface IConfigCliente {
    * visibles se definen vía la colección AsignacionGatewayCliente.
    */
   moduloCoberturaLorawan?: IModuloCoberturaLorawan;
+
+  /**
+   * Sección "Clima" (vistas resumen por UN / Centro Operativo / Localidad).
+   * Módulo activable por cliente: mientras esté apagado, el frontend no muestra
+   * la sección aunque la versión desplegada la incluya.
+   */
+  moduloClima?: IModuloClima;
 
   /**
    * Si es true, un Admin Global puede editar la Unidad de Negocio y el Centro
