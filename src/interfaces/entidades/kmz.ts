@@ -8,6 +8,10 @@ export interface IKmz {
   idCentroOperativo?: string;
   nombre?: string;
   urlKmz?: string;
+  // GeoJSON pre-convertido del KMZ, generado por la API al momento del
+  // upload y subido a GCS igual que urlKmz. Opcional: KMZs anteriores a
+  // esta feature no lo tienen y el frontend cae al parseo client-side.
+  urlGeoJson?: string;
 
   // Virtuals
   cliente?: ICliente;
