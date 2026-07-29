@@ -36,9 +36,6 @@ export interface IPermiso {
   idsCuencas?: string[];
   idsAgrupaciones?: string[];
   usaLlm?: boolean;
-  // Exportación de listados/indicadores. `undefined` = se decide por rol (el
-  // comportamiento actual); `false` la deniega explícitamente.
-  puedeExportar?: boolean;
   // Populate
   unidadNegocios?: IUnidadNegocio[];
   centroOperativos?: ICentroOperativo[];
