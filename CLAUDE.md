@@ -133,6 +133,20 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-29 - Catálogo de exportación y jobs de export
+
+- Nuevo namespace `interfaces/gas/exportacion`: descriptores del catálogo
+  (`IColumnaExportDescriptor`, `IFiltroExportDescriptor`, `IPresetColumnasExport`,
+  `ICatalogoExport`), pedido y estado del job (`ICrearExportRequest`,
+  `ICrearExportResponse`, `IExportJob`) y filtros del padrón de puntos
+  (`IFiltrosExportPuntosMedicion`). `TipoExportJob` agrega `"puntos-medicion"`.
+- El **catálogo con sus valores vive en gas-datos**
+  (`entidades/puntos-medicion-export/puntos-medicion-export.catalogo.ts`), no acá: son
+  valores runtime y romperían los servicios NestJS (ver "SOLO TIPOS" arriba). Acá solo
+  está la forma que viaja por la API.
+- `IExportJob` reemplaza las cinco copias sueltas de esa interfaz que había en el front
+  y en los services de gas-api-cliente.
+
 ### 2026-07-28 - Tarjetas climáticas de la vista Resumen (1 pedido en vez de N)
 
 - `resumen-operativo-nivel.ts`: nuevos `IResumenClimaHijo`, `IPuntoTemperaturaResumen`,
