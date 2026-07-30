@@ -133,6 +133,21 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-30 - Ingesta v3 del NME (ciclo A de plataforma)
+
+- `IDispositivoNme`: nuevos `reporteMask?` y `disponibleMask?` (u24 del fPort 100 de
+  11 B). El primero es configuración (qué reporta), el segundo observación (qué lista el
+  medidor). `reporteMask` **no** indica disponibilidad. `intervaloRegistroMin` queda
+  declarado pero deprecado: el firmware dejó de mandarlo en junio 2026.
+- `IRegistroMedidorElectrico`: nuevo `regresionAcumulado?` — marca la hora cuyo acumulado
+  bajó respecto del último válido. La muestra no produce delta ni avanza el baseline, así
+  que tras un recambio de medidor el equipo deja de producir deltas: este flag es cómo se
+  encuentran los equipos que esperan intervención.
+- `EstadoRecuperacionNme`: nuevo `'sin_datos'` — el equipo confirmó por fPort 34 que el día
+  no tiene registros. Terminal. **No confundir con `'agotado'`**: acá el dato no existe,
+  allá no lo pudimos traer; piden acciones opuestas.
+- `IIntentoRecuperacionNme`: nuevo `motivo?` — el motivo del fPort 34 (1/2/3).
+
 ### 2026-07-29 - Demandas máximas horarias del NME
 
 - `IRegistroMedidorElectrico`: nuevos `demandaMaxImportadaW`, `demandaMaxExportadaW`,

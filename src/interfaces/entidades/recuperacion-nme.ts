@@ -22,6 +22,9 @@ export type EstadoRecuperacionNme =
   | 'encolado' // job creado en la cola de downlinks
   | 'enviado' // downlink GET_HISTORIC enviado a ChirpStack
   | 'recuperado' // el día quedó completo en registrosmedidorelectrico
+  | 'sin_datos' // el equipo confirmó que ese día no tiene registros (fPort 34
+  //               motivo 1). TERMINAL: no re-pedir nunca. Distinto de 'agotado':
+  //               acá el dato NO EXISTE, no es que no lo pudimos traer.
   | 'agotado' // se alcanzó el tope de intentos sin recuperar
   | 'error'; // último enqueue falló
 
@@ -29,6 +32,12 @@ export interface IIntentoRecuperacionNme {
   fecha?: string; // ISO del intento
   resultado?: 'ok' | 'error';
   error?: string; // mensaje si resultado = 'error'
+  /**
+   * Motivo del uplink fPort 34 que cerró el intento, si lo hubo:
+   * 1 = día terminado sin registros · 2 = día en curso · 3 = fecha futura.
+   * Con `resultado: 'ok'` (el intercambio funcionó; lo que no hay es dato).
+   */
+  motivo?: number;
 }
 
 export interface IRecuperacionNme {
