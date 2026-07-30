@@ -60,6 +60,17 @@ export interface IRegistroMedidorElectrico {
   demandaMaxExportadaT1W?: number; // OBIS 2.6.0.1 — fPort 123 / BLE dmd_exp_t1_w
   //
   periodoIncompleto?: boolean; // count < 24 -> hubo huecos (corte/reboot)
+  /**
+   * El acumulado de esta hora es MENOR que el último válido: regresión.
+   * Causas típicas: recambio de medidor (baja legítima y permanente) o un rebote
+   * transitorio del readout.
+   *
+   * La muestra se persiste pero NO produce delta, y NO avanza el baseline de la
+   * serie — por eso, tras un recambio, el equipo deja de producir deltas hasta
+   * que alguien intervenga. Este flag es cómo se encuentran esos equipos:
+   * `db.registromedidorelectricos.find({ regresionAcumulado: true })`.
+   */
+  regresionAcumulado?: boolean;
   //
   deveui?: string;
   deviceName?: string;
