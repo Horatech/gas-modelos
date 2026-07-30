@@ -16,6 +16,11 @@ export interface IDispositivoUwmNb {
   meterId?: string; // METER_ID, 12 díg (equiv. deviceMeterNumber; string, no number)
   deviceMeterNumber?: string; // alias/compatibilidad con el resto de medidores de agua
   imsi?: string; // IMSI de la SIM (15 díg; string para no perder ceros)
+  // IMEI del módulo (15 díg). En payload V4 (cifrado) viaja EN CLARO antes del
+  // METER_ID y es la clave de lookup para resolver `claveAes` antes de descifrar.
+  // OJO: el ejemplo del vendor trae un valor con formato IMSI (748...); confirmar
+  // si el campo es realmente IMEI (86.../35...) — no cambia el modelo, sí la carga.
+  imei?: string;
   iccid?: string; // ICCID de la SIM (opcional; string, 19-20 díg)
 
   // --- Comunicación NB-IoT/LTE-M ---

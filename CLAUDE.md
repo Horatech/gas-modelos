@@ -133,6 +133,14 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-30 - IMEI del UWM-NB (payload V4 cifrado)
+
+- `IDispositivoUwmNb`: nuevo `imei?: string`. El payload V4 (AES) del UWM-NB deja el
+  IMEI **en claro** (reemplaza al IMSI del V1, que pasa adentro del bloque cifrado…
+  desaparece del frame) y es la clave de lookup para resolver `claveAes` del device
+  antes de descifrar.
+- `IReporteUWMNB`: nuevo `imei?: string`; `imsi` queda como campo del payload V1.
+
 ### 2026-07-29 - Catálogo de exportación y jobs de export
 
 - Nuevo namespace `interfaces/gas/exportacion`: descriptores del catálogo

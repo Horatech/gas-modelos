@@ -36,7 +36,8 @@ export interface IReporteUWMNB {
   // --- Identidad / radio (crudos del frame) ---
   meterId: string; // METER_ID, 12 díg ASCII
   ip?: string; // Local_IP del device
-  imsi?: string; // IMSI de la SIM
+  imsi?: string; // IMSI de la SIM (payload V1 plano; ausente en V4)
+  imei?: string; // IMEI del módulo (payload V4 cifrado: en claro, reemplaza al IMSI)
   ciclosTx?: number; // CYCLES_TX (transmisiones totales)
   ciclosTxBad?: number; // CYCLES_TX_BAD (transmisiones fallidas)
   rssi?: number; // RSSI_SNR[0] (unidad sin confirmar; ver R4 del plan)
