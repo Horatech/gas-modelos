@@ -11,11 +11,14 @@ import { IMedidorElectrico } from './medidor-electrico';
 /**
  * Registro horario de un medidor electrico NME.
  *
- * El reporte diario del NME llega como 4 uplinks separados (fPort 110/111/112/113),
- * cada uno con hasta 24 acumulados horarios. El backend correlaciona los 4 puertos
- * por (deveui, timestamp de hora) y arma un registro por hora (upsert), guardando el
- * acumulado de cada metrica y el delta consumido en esa hora respecto del registro
- * previo. Energias en Wh / varh (acumulados little-endian, epoch UTC).
+ * El reporte diario del NME llega como un uplink por métrica habilitada
+ * (fPort = 110 + bit del reporte_mask; con el default de fábrica son 110-114),
+ * cada uno con 24 acumulados horarios. El backend correlaciona los puertos por
+ * (deveui, timestamp de hora) y arma un registro por hora (upsert), guardando el
+ * acumulado de cada metrica y el delta consumido en esa hora respecto del
+ * registro previo. Energias en Wh / varh (acumulados little-endian, epoch UTC).
+ * Las demandas maximas (fPort 114/115/122/123) son snapshots en W: se guardan
+ * tal cual, sin delta.
  *
  * Los campos de acumulado (`*Acum`) pueden valer -1 ("registro ausente"): el
  * dispositivo NO tiene el registro para ese timestamp (llega 0xFFFFFFFF en el
@@ -42,6 +45,19 @@ export interface IRegistroMedidorElectrico {
   kwhExportada?: number;
   kvarhImportada?: number;
   kvarhExportada?: number;
+  // Demanda máxima del medidor en W, SNAPSHOT al cierre de la hora (NO acumulado):
+  // es la máxima registrada desde el último reset de facturación del medidor. Si
+  // nadie lo resetea, la serie es monótona no decreciente y un salto entre dos
+  // horas indica que en esa hora se registró un pico nuevo. NO calcular deltas ni
+  // sumar estos campos.
+  //
+  // Ausencia = campo OMITIDO: el medidor no lista ese OBIS, o el registro es
+  // previo al upgrade de firmware del equipo. El valor -1 (REGISTRO_AUSENTE)
+  // queda reservado al centinela 0xFFFFFFFF del path LoRa, igual que los *Acum.
+  demandaMaxImportadaW?: number; // OBIS 1.6.0   — fPort 114 / BLE dmd_w
+  demandaMaxExportadaW?: number; // OBIS 2.6.0   — fPort 115 / BLE dmd_exp_w
+  demandaMaxImportadaT1W?: number; // OBIS 1.6.0.1 — fPort 122 / BLE dmd_t1_w
+  demandaMaxExportadaT1W?: number; // OBIS 2.6.0.1 — fPort 123 / BLE dmd_exp_t1_w
   //
   periodoIncompleto?: boolean; // count < 24 -> hubo huecos (corte/reboot)
   //
