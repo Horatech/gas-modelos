@@ -133,6 +133,21 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-29 - Demandas máximas horarias del NME
+
+- `IRegistroMedidorElectrico`: nuevos `demandaMaxImportadaW`, `demandaMaxExportadaW`,
+  `demandaMaxImportadaT1W`, `demandaMaxExportadaT1W` (OBIS 1.6.0 / 2.6.0 / 1.6.0.1 /
+  2.6.0.1). **Snapshots en W al cierre de la hora, NO acumulados**: es la máxima desde el
+  último reset de facturación del medidor. No calcular deltas ni sumarlos.
+- Llegan por dos caminos con la misma forma: el reporte diario LoRaWAN (fPort 114/115/122/123)
+  y el backfill BLE de la app móvil (claves `dmd_w`/`dmd_exp_w`/`dmd_t1_w`/`dmd_exp_t1_w` de
+  la característica Registros `…06`).
+- Ausencia = campo **omitido** (el medidor no lista ese OBIS, o el registro es previo al
+  upgrade de firmware). El `-1` (`REGISTRO_AUSENTE`) sigue reservado al centinela
+  `0xFFFFFFFF` del path LoRa.
+- Los puertos de reporte diario ya no son fijos 110-113: son `110 + bit` del `reporte_mask`
+  configurable (ver `INTEGRACION_LORAWAN_NUBE_NME.md` §4).
+
 ### 2026-07-30 - IMEI del UWM-NB (payload V4 cifrado)
 
 - `IDispositivoUwmNb`: nuevo `imei?: string`. El payload V4 (AES) del UWM-NB deja el
