@@ -163,6 +163,17 @@ export interface IModuloClima {
   activo?: boolean;
 }
 
+export interface IParametrosObis {
+  /**
+   * reporte_mask de 24 bits que el cliente quiere en todos sus NME.
+   *
+   * Solo bits soportados por el firmware (0x00303F = bits 0-5, 12, 13). Los bits
+   * sin soporte los limpia el equipo al aplicar, así que un mask con bits de más
+   * nunca llegaría a confirmarse: gas-api-cliente los rechaza al guardar.
+   */
+  reporteMask?: number;
+}
+
 export type DivisionConVistaPersonalizada = Extract<
   Division,
   "Correctoras" | "Residencial"
@@ -213,6 +224,16 @@ export interface IConfigCliente {
    * la sección aunque la versión desplegada la incluya.
    */
   moduloClima?: IModuloClima;
+
+  /**
+   * Configuración Global «Parámetros OBIS»: qué métricas reportan los NME del
+   * cliente. Al guardarla, gas-api-cliente hace fan-out de un SET_CONFIG por
+   * equipo (ver IConfigDownlinkNme).
+   *
+   * Es de un solo tiro, NO reconciliación: si después un técnico cambia el mask
+   * de un equipo por BLE, la plataforma no lo pisa.
+   */
+  parametrosObis?: IParametrosObis;
 
   /**
    * Si es true, un Admin Global puede editar la Unidad de Negocio y el Centro
