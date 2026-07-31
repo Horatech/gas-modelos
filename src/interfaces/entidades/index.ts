@@ -45,6 +45,7 @@ export * from "./config-notificacion";
 export * from "./registros-faltantes";
 export * from "./recuperacion-nme";
 export * from "./configDownlinkEuw300";
+export * from "./configDownlinkNme";
 export * from "./dispositivo-externo-nuc";
 export * from "./dash-general";
 export * from "./mensajes-bove";

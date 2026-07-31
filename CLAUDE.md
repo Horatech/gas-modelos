@@ -133,6 +133,24 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-31 - Configuración Global «Parámetros OBIS» (ciclo C)
+
+- `IConfigCliente`: nuevo `parametrosObis?: IParametrosObis` — el `reporte_mask` de
+  24 bits que el cliente quiere en todos sus NME. Cuarta configuración global, al
+  lado de `sincHoraria`, `moduloClima` y `vistasPersonalizadas`.
+- Nueva `IConfigDownlinkNme` (`configDownlinkNme.ts`) + `ICreate`/`IUpdate` y los
+  types `EstadoConfigDownlinkNme` / `IIntentoConfigDownlinkNme`. Control por equipo
+  del SET_CONFIG, espejo de `IConfigDownlinkEuw300`. Colección `configDownlinkNme`
+  en gas-datos.
+- **Es de un solo tiro, NO reconciliación.** La existencia del documento de control
+  es lo que lo garantiza: la pasada de alta solo toma equipos que nunca lo tuvieron,
+  así que un mask cambiado por BLE en campo no se pisa. Se descarta a propósito la
+  reconciliación continua que recomienda la doc del firmware, porque dejaría sin
+  sentido la pantalla OBIS de la app móvil.
+- El estado nuevo `'esperando_equipo'` es para el equipo que nunca mandó un fPort
+  100: el SET_CONFIG de 4 B lleva `tz` + mask juntos y no se le inventa una zona
+  horaria. **No consume intentos.**
+
 ### 2026-07-31 - Estado 'fecha_invalida' en la recuperación NME (ciclo B)
 
 - `EstadoRecuperacionNme`: nuevo `'fecha_invalida'` — la plataforma pidió un día
@@ -142,9 +160,10 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
   opuestos: el original "falló el enqueue" (transitorio, se reintenta) y el motivo
   3 del fPort 34 (el pedido estaba mal armado, no reintentar). `'error'` vuelve a
   significar solo lo primero.
-- **Al agregar un estado hay que darlo de alta en los tres lugares de `gas-cron`
-  que enumeran estados**: el `$nin` de `agotarFueraDeVentana`, el anti-loop del
-  detector y la pasada de cierre de auditoría.
+- **Al agregar un estado hay que darlo de alta en `ESTADOS_TERMINALES`**
+  (`gas-cron/src/auxiliares/recuperacion-nme/constants.ts`), que es el único lugar
+  que los enumera desde el ciclo B. Antes eran tres listas separadas y esa
+  duplicación es justo lo que rompió `'sin_datos'`.
 
 ### 2026-07-30 - Ingesta v3 del NME (ciclo A de plataforma)
 
