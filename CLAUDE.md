@@ -133,6 +133,19 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-07-31 - Estado 'fecha_invalida' en la recuperación NME (ciclo B)
+
+- `EstadoRecuperacionNme`: nuevo `'fecha_invalida'` — la plataforma pidió un día
+  futuro y el equipo lo rechazó (fPort 34 motivo 3). **Terminal**: reintentar
+  repite el error.
+- Sale de desambiguar `'error'`, que el ciclo A había dejado con dos significados
+  opuestos: el original "falló el enqueue" (transitorio, se reintenta) y el motivo
+  3 del fPort 34 (el pedido estaba mal armado, no reintentar). `'error'` vuelve a
+  significar solo lo primero.
+- **Al agregar un estado hay que darlo de alta en los tres lugares de `gas-cron`
+  que enumeran estados**: el `$nin` de `agotarFueraDeVentana`, el anti-loop del
+  detector y la pasada de cierre de auditoría.
+
 ### 2026-07-30 - Ingesta v3 del NME (ciclo A de plataforma)
 
 - `IDispositivoNme`: nuevos `reporteMask?` y `disponibleMask?` (u24 del fPort 100 de

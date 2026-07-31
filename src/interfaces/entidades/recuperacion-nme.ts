@@ -25,8 +25,11 @@ export type EstadoRecuperacionNme =
   | 'sin_datos' // el equipo confirmó que ese día no tiene registros (fPort 34
   //               motivo 1). TERMINAL: no re-pedir nunca. Distinto de 'agotado':
   //               acá el dato NO EXISTE, no es que no lo pudimos traer.
+  | 'fecha_invalida' // pedimos un día futuro (fPort 34 motivo 3). TERMINAL:
+  //                    reintentar repite el error. Distinto de 'error', que es un
+  //                    fallo TRANSITORIO del enqueue y sí se reintenta.
   | 'agotado' // se alcanzó el tope de intentos sin recuperar
-  | 'error'; // último enqueue falló
+  | 'error'; // último enqueue falló (transitorio, se reintenta)
 
 export interface IIntentoRecuperacionNme {
   fecha?: string; // ISO del intento
