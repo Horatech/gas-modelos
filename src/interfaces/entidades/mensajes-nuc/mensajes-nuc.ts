@@ -355,4 +355,7 @@ export const TipoMensajeNucSchema = z.enum([
   "IGetRegistrosInputs",
   "IInputsFlag",
 ]);
-export type TipoMensajeNuc = z.infer<typeof TipoMensajeNucSchema>;
+// El tipo se mantiene como `TipoMensaje` (nombre original, sin prefijo I);
+// solo el *Schema se renombró para no chocar con TipoMensajeSchema de
+// LLM/chat-tipos.ts (rol de un mensaje de chat, concepto no relacionado).
+export type TipoMensaje = z.infer<typeof TipoMensajeNucSchema>;

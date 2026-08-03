@@ -23,7 +23,11 @@ export const TipoAlertaEnvioSchema = z.enum([
   "NSP - Batería baja",
   "SCADA - Error de comunicación con servidor",
 ]);
-export type TipoAlertaEnvio = z.infer<typeof TipoAlertaEnvioSchema>;
+// El nombre del TIPO se mantiene igual al original (TipoAlerta, sin prefijo I
+// porque nunca fue una interface) — solo la constante *Schema se renombró
+// para no chocar con TipoAlertaSchema de alerta.ts. Consumidores existentes
+// importan `TipoAlerta` por este nombre.
+export type TipoAlerta = z.infer<typeof TipoAlertaEnvioSchema>;
 
 export const TipoEnvioSchema = z.enum([
   "SMS",
@@ -43,7 +47,9 @@ export const AgrupacionEnvioSchema = z.enum([
   "Agrupacion",
   "Localidad",
 ]);
-export type AgrupacionEnvio = z.infer<typeof AgrupacionEnvioSchema>;
+// Ídem: el tipo se mantiene como `Agrupacion` (nombre original, consumido
+// así por servicios existentes); solo el *Schema se renombró.
+export type Agrupacion = z.infer<typeof AgrupacionEnvioSchema>;
 
 export const ConfigEnvioSmsSchema = z.object({
   // Para Equipos fuera de línea
