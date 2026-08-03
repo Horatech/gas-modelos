@@ -1,14 +1,11 @@
 import { z } from "zod";
-import { NotificacionSchema } from "./schema";
 
-export const CreateNotificacionSchema = NotificacionSchema.omit({
-  _id: true,
-  fechaCreacion: true,
-  leido: true,
-  fechaLeido: true,
-}).required({
-  idUsuario: true,
-  titulo: true,
-  mensaje: true,
+// Definido explícito (no derivado de .omit().required()): ver el comentario
+// en gas/auditoria/create.ts — .required() no sobrevive portablemente al
+// .d.ts compilado consumido desde otro paquete.
+export const CreateNotificacionSchema = z.object({
+  idUsuario: z.string(),
+  titulo: z.string(),
+  mensaje: z.string(),
 });
 export type ICreateNotificacion = z.infer<typeof CreateNotificacionSchema>;

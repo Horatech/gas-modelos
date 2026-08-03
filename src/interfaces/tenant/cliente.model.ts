@@ -196,10 +196,20 @@ export type ICliente = z.infer<typeof ClienteSchema>;
 // real de ClienteSchema desde cliente.dto.ts, que rompería el ciclo que se
 // evita justo arriba. cliente.dto.ts re-exporta estos tipos (type-only) para
 // mantener los paths de import de siempre.
-export const CreateClienteSchema = ClienteSchema.omit({
-  _id: true,
-  fechaCreacion: true,
-}).required({ nombre: true });
+//
+// Definido explícito (no ClienteSchema.omit().required()): .required()
+// encadenado no sobrevive portablemente al .d.ts consumido desde otro
+// paquete (verificado con gas-datos vía CreateAuditoriaSchema — ver el
+// comentario en gas/auditoria/create.ts).
+export const CreateClienteSchema = z.object({
+  activo: z.boolean().optional(),
+  nombre: z.string(),
+  admin: z.boolean().optional(),
+  imagenes: ImagenesClienteSchema.optional(),
+  tiposDispositivo: z.array(TipoDispositivoSchema).optional(),
+  integraciones: z.array(IntegracionSchema).optional(),
+  config: ConfigClienteSchema.optional(),
+});
 export type ICreateCliente = z.infer<typeof CreateClienteSchema>;
 
 export const UpdateClienteSchema = ClienteSchema.omit({
