@@ -133,6 +133,28 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-03 - Registro NME: las 18 métricas del protocolo declaradas
+
+`IRegistroMedidorElectrico` suma los 26 campos de las tarifas 1 y 2 (energías T1/T2 con
+acumulado + delta + kilo, y las dos demandas de T2). Con eso están las **18 métricas** que
+define el protocolo: 6 bases × 3 tarifas, `bit = base + 8×tarifa`, fPort `110 + bit`.
+
+**Declarados a propósito sin productor.** Ningún firmware las reporta todavía
+(`INTEGRACION_LORAWAN_NUBE_NME.md` §4: "Definido, sin soporte aún" para los bits 8-11 y
+toda la tarifa 2). Se declaran igual porque **este es el paso caro** del cambio futuro:
+este repo es dependencia de todos los servicios, así que un campo nuevo son un PR acá, un
+bump en cada consumidor y un `@Prop()` en el schema de gas-datos — que es **estricto**, y
+sin el `@Prop()` Mongoose descarta el valor en silencio. Mapear el fPort en cada servicio,
+en cambio, es una línea. El día que el firmware las mande, no hay que tocar modelos.
+
+No cuesta nada: un campo opcional ausente no ocupa lugar en el documento ni pide
+migración. El `implements Exactly<IRegistroMedidorElectrico, ...>` del schema de gas-datos
+fuerza que los dos lados queden alineados.
+
+El medidor de banco ya lista dos de éstas — reporta `disponible_mask = 7199`, con los bits
+10 y 11 (`3.8.0.1` y `4.8.0.1`) encendidos: el dato existe en el medidor, falta que el
+firmware lo pueda reportar.
+
 ### 2026-08-03 - Serie climática histórica por celda (grados-día) — Modelos A
 
 Primer PR de `PLAN-GRADOS-DIA.md`. Sólo la superficie que **cruza el borde de la API**;
