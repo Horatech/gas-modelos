@@ -1,13 +1,69 @@
-import { ICliente } from "../tenant";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ICorrectora } from "./correctora";
-import { IPuntoMedicion } from "./punto-medicion";
-import { ILocalidad } from "./localidad";
-import { IGrupo } from "./grupo";
-import { ICuenca } from "./cuenca";
-import { IAgrupacion } from "../gas";
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { LocalidadSchema } from "./localidad";
+import { GrupoSchema } from "./grupo";
+import { CuencaSchema } from "./cuenca";
+import { AgrupacionSchema } from "../gas/agrupacion/schema";
+import type { ICorrectora } from "./correctora";
+import type { IPuntoMedicion } from "./punto-medicion";
 
+// Populates intra-SCC (ICorrectora, IPuntoMedicion) como z.custom: ver
+// CLAUDE.md, "De solo tipos a schemas Zod".
+export const RegistroSchema = z.object({
+  _id: z.string().optional(),
+  timestamp: z.string().optional(),
+  corrected: z.number().optional(),
+  uncorrected: z.number().optional(),
+  presion: z.number().optional(),
+  temperatura: z.number().optional(),
+  contador: z.number().optional(),
+  bateria: z.number().optional(),
+  bateriaNUC: z.number().optional(),
+  // Valores firmware nuevo
+  correctedTotalizado: z.number().optional(),
+  uncorrectedTotalizado: z.number().optional(),
+  correctedParcializado: z.number().optional(),
+  uncorrectedParcializado: z.number().optional(),
+  caudalPromedio: z.number().optional(),
+  caudalPico: z.number().optional(),
+  fpv: z.number().optional(), // Factor de compresibilidad
+  horaTruncada: z.boolean().optional(),
+  //
+  numeroSerieCorrectora: z.string().nullable().optional(),
+  deveui: z.string().optional(),
+  deviceName: z.string().optional(),
+  modelo: z.string().optional(),
+  //
+  idCorrectora: z.string().optional(),
+  idPuntoMedicion: z.string().optional(),
+  //
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  idCuenca: z.string().optional(),
+  idsGrupos: z.array(z.string()).optional(),
+  idsAgrupaciones: z.array(z.string()).optional(),
+  //
+  fechaCreacion: z.string().optional(),
+  // Virtuals
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+  cuenca: CuencaSchema.optional(),
+  correctora: z.custom<ICorrectora>().optional(),
+  puntoMedicion: z.custom<IPuntoMedicion>().optional(),
+  grupos: z.array(GrupoSchema).optional(),
+  agrupaciones: z.array(AgrupacionSchema).optional(),
+});
+
+/**
+ * Interface hand-written (mismo shape que el schema): parte del SCC de
+ * IDispositivo, no usa z.infer.
+ */
 export interface IRegistro {
   _id?: string;
   timestamp?: string;
@@ -47,18 +103,30 @@ export interface IRegistro {
   fechaCreacion?: string;
 
   // Virtuals
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
-  cuenca?: ICuenca;
+  cliente?: import("../tenant/cliente.model").ICliente;
+  unidadNegocio?: import("../gas/unidadNegocio/schema").IUnidadNegocio;
+  centroOperativo?: import("../gas/centroOperativo/schema").ICentroOperativo;
+  localidad?: import("./localidad").ILocalidad;
+  cuenca?: import("./cuenca").ICuenca;
   correctora?: ICorrectora;
   puntoMedicion?: IPuntoMedicion;
-  grupos?: IGrupo[];
-  agrupaciones?: IAgrupacion[];
+  grupos?: import("./grupo").IGrupo[];
+  agrupaciones?: import("../gas/agrupacion/schema").IAgrupacion[];
 }
 
 ////// CREATE
+export const CreateRegistroSchema = RegistroSchema.omit({
+  _id: true,
+  cliente: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+  localidad: true,
+  cuenca: true,
+  correctora: true,
+  puntoMedicion: true,
+  grupos: true,
+  agrupaciones: true,
+});
 type OmitirCreate =
   | "_id"
   | "cliente"
@@ -76,6 +144,7 @@ export interface ICreateRegistro extends Omit<
 > {}
 
 ////// UPDATE
+export const UpdateRegistroSchema = CreateRegistroSchema;
 type OmitirUpdate =
   | "_id"
   | "cliente"

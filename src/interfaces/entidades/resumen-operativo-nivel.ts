@@ -1,4 +1,5 @@
-import { TipoDatoClima } from "./registro-clima";
+import { z } from "zod";
+import { TipoDatoClimaSchema } from "./registro-clima";
 
 /**
  * DTO de respuesta de las vistas RESUMEN por nivel jerarquico (INSIDEht 2.0).
@@ -6,72 +7,92 @@ import { TipoDatoClima } from "./registro-clima";
  * + la serie de clima) y lo consume gas-web-cliente. No es una entidad.
  */
 
-export type NivelResumen = "UnidadNegocio" | "CentroOperativo" | "Localidad";
+export const NivelResumenSchema = z.enum([
+  "UnidadNegocio",
+  "CentroOperativo",
+  "Localidad",
+]);
+export type NivelResumen = z.infer<typeof NivelResumenSchema>;
 
 /** Punto de la serie diaria: consumo + temperatura (tendencia + correlacion). */
-export interface IPuntoSerieResumen {
-  fecha: string; // inicio del dia gas
+export const PuntoSerieResumenSchema = z.object({
+  fecha: z.string(), // inicio del dia gas
   // Consumo TOTALIZADO del dia (suma de todos los medidores del nivel).
-  volumenGasTotal?: number;
-  volumenCorregidoCorrectoras?: number;
-  consumoResidencial?: number;
+  volumenGasTotal: z.number().optional(),
+  volumenCorregidoCorrectoras: z.number().optional(),
+  consumoResidencial: z.number().optional(),
   // Consumo PROMEDIO por medidor del dia (= total / cantidad de medidores del nivel).
   // Independiente de la cantidad de medidores instalados: refleja la relacion
   // temperatura <-> consumo sin distorsionarse al agregar/quitar medidores.
-  consumoResidencialPromedio?: number;
-  consumoCorrectorasPromedio?: number;
-  temperaturaMedia?: number;
-  temperaturaMin?: number;
-  temperaturaMax?: number;
-  sensacionTermicaMedia?: number;
+  consumoResidencialPromedio: z.number().optional(),
+  consumoCorrectorasPromedio: z.number().optional(),
+  temperaturaMedia: z.number().optional(),
+  temperaturaMin: z.number().optional(),
+  temperaturaMax: z.number().optional(),
+  sensacionTermicaMedia: z.number().optional(),
   // Horas del dia con dato climatico (24 = dia completo). Deja ver si un punto
   // de la correlacion se apoya en una media horaria completa o en pocas muestras.
-  horasClima?: number;
-}
+  horasClima: z.number().optional(),
+});
+export type IPuntoSerieResumen = z.infer<typeof PuntoSerieResumenSchema>;
 
 /** Clima agregado al nivel (actual o un punto de pronostico). Unidades canonicas. */
-export interface IClimaResumen {
-  fecha?: string;
-  tipo?: TipoDatoClima;
-  temperatura?: number; // °C
-  temperaturaMin?: number;
-  temperaturaMax?: number;
-  sensacionTermica?: number; // °C
-  vientoVelocidad?: number; // m/s
-  radiacion?: number; // W/m2
-  humedad?: number; // %
-}
+export const ClimaResumenSchema = z.object({
+  fecha: z.string().optional(),
+  tipo: TipoDatoClimaSchema.optional(),
+  temperatura: z.number().optional(), // °C
+  temperaturaMin: z.number().optional(),
+  temperaturaMax: z.number().optional(),
+  sensacionTermica: z.number().optional(), // °C
+  vientoVelocidad: z.number().optional(), // m/s
+  radiacion: z.number().optional(), // W/m2
+  humedad: z.number().optional(), // %
+});
+export type IClimaResumen = z.infer<typeof ClimaResumenSchema>;
 
-export interface IResumenOperativoNivel {
-  nivel: NivelResumen;
-  id: string;
-  desde?: string;
-  hasta?: string;
+export const ResumenOperativoNivelSchema = z.object({
+  nivel: NivelResumenSchema,
+  id: z.string(),
+  desde: z.string().optional(),
+  hasta: z.string().optional(),
 
   // Consumo agregado del periodo (suma de las filas de rollup del nivel)
-  volumenGasTotal?: number;
-  volumenBaseCorrectoras?: number;
-  volumenCorregidoCorrectoras?: number;
-  consumoResidencial?: number;
-  cantidadCorrectoras?: number;
-  cantidadMedidoresResidenciales?: number;
-  cantidadLocalidades?: number; // localidades con dato en el periodo
+  volumenGasTotal: z.number().optional(),
+  volumenBaseCorrectoras: z.number().optional(),
+  volumenCorregidoCorrectoras: z.number().optional(),
+  consumoResidencial: z.number().optional(),
+  cantidadCorrectoras: z.number().optional(),
+  cantidadMedidoresResidenciales: z.number().optional(),
+  cantidadLocalidades: z.number().optional(), // localidades con dato en el periodo
 
   // Serie diaria (consumo + temperatura) para tendencia y correlacion clima-demanda
-  serie?: IPuntoSerieResumen[];
+  serie: z.array(PuntoSerieResumenSchema).optional(),
 
   // Clima
-  climaActual?: IClimaResumen; // punto horario mas cercano a ahora, promediado al nivel
-  pronostico?: IClimaResumen[]; // PRONOSTICO a futuro (>=1 semana), por dia
-}
+  climaActual: ClimaResumenSchema.optional(), // punto horario mas cercano a ahora, promediado al nivel
+  pronostico: z.array(ClimaResumenSchema).optional(), // PRONOSTICO a futuro (>=1 semana), por dia
+});
+export type IResumenOperativoNivel = z.infer<
+  typeof ResumenOperativoNivelSchema
+>;
 
 /** Direccion de la tendencia de temperatura del pronostico. */
-export type DireccionTendencia = "sube" | "baja" | "estable";
+export const DireccionTendenciaSchema = z.enum(["sube", "baja", "estable"]);
+export type DireccionTendencia = z.infer<typeof DireccionTendenciaSchema>;
 
-export interface ITendenciaResumen {
-  direccion: DireccionTendencia;
-  delta: number; // °C entre el inicio y el fin del pronostico
-}
+export const TendenciaResumenSchema = z.object({
+  direccion: DireccionTendenciaSchema,
+  delta: z.number(), // °C entre el inicio y el fin del pronostico
+});
+export type ITendenciaResumen = z.infer<typeof TendenciaResumenSchema>;
+
+export const PuntoTemperaturaResumenSchema = z.object({
+  fecha: z.string(), // ISO (dia)
+  temperatura: z.number().optional(), // °C
+});
+export type IPuntoTemperaturaResumen = z.infer<
+  typeof PuntoTemperaturaResumenSchema
+>;
 
 /**
  * Tarjeta CLIMATICA de un hijo del nivel actual (una UN / CO / Localidad de la
@@ -88,17 +109,17 @@ export interface ITendenciaResumen {
  * `serieTemperatura` si sale del rollup diario, pero pidiendo unicamente
  * `fecha` + temperatura (payload chico).
  */
-export interface IResumenClimaHijo {
-  nivel: NivelResumen;
-  id: string;
+export const ResumenClimaHijoSchema = z.object({
+  nivel: NivelResumenSchema,
+  id: z.string(),
 
-  climaActual?: IClimaResumen;
-  tendencia?: ITendenciaResumen;
+  climaActual: ClimaResumenSchema.optional(),
+  tendencia: TendenciaResumenSchema.optional(),
 
   /** Temperatura media diaria REAL de los ultimos dias (sparkline, mas viejo primero). */
-  serieTemperatura?: IPuntoTemperaturaResumen[];
+  serieTemperatura: z.array(PuntoTemperaturaResumenSchema).optional(),
   /** Temperatura media diaria PRONOSTICADA (continua el sparkline hacia adelante). */
-  pronosticoTemperatura?: IPuntoTemperaturaResumen[];
+  pronosticoTemperatura: z.array(PuntoTemperaturaResumenSchema).optional(),
 
   /**
    * Siempre `true` en las entradas devueltas: la respuesta trae **solo** los hijos
@@ -107,10 +128,6 @@ export interface IResumenClimaHijo {
    * de mostrar "Sin dato climatico" (que es otra cosa: hay localidades pero todavia
    * no hay clima cargado para ellas).
    */
-  tieneLocalidades?: boolean;
-}
-
-export interface IPuntoTemperaturaResumen {
-  fecha: string; // ISO (dia)
-  temperatura?: number; // °C
-}
+  tieneLocalidades: z.boolean().optional(),
+});
+export type IResumenClimaHijo = z.infer<typeof ResumenClimaHijoSchema>;

@@ -1,23 +1,26 @@
-import { ICentroOperativo, IUnidadNegocio } from '../gas';
-import { Division } from '../tenant';
+import { z } from "zod";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { DivisionSchema } from "../tenant/usuario/permiso";
 
-export interface IGrupo {
-  _id?: string;
-  nombre?: string;
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
-  posicion?: number; // para ordenar en las pantallas
-  division?: Division;
+export const GrupoSchema = z.object({
+  _id: z.string().optional(),
+  nombre: z.string().optional(),
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  posicion: z.number().optional(), // para ordenar en las pantallas
+  division: DivisionSchema.optional(),
   // Populate
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-}
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+});
+export type IGrupo = z.infer<typeof GrupoSchema>;
 
-// CREATE
-type OmitirCreate = '_id' | 'unidadNegocio' | 'centroOperativo';
-export interface ICreateGrupo extends Omit<Partial<IGrupo>, OmitirCreate> {}
+const omitir = { _id: true, unidadNegocio: true, centroOperativo: true } as const;
 
-// UPDATE
-type OmitirUpdate = '_id' | 'unidadNegocio' | 'centroOperativo';
-export interface IUpdateGrupo extends Omit<Partial<IGrupo>, OmitirUpdate> {}
+export const CreateGrupoSchema = GrupoSchema.omit(omitir);
+export type ICreateGrupo = z.infer<typeof CreateGrupoSchema>;
+
+export const UpdateGrupoSchema = GrupoSchema.omit(omitir);
+export type IUpdateGrupo = z.infer<typeof UpdateGrupoSchema>;

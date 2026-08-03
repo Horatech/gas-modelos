@@ -1,12 +1,31 @@
 {
   "name": "gas-modelos",
-  "version": "1.0.0",
-  "description": "Modelos para el sitema de gas",
+  "version": "2.0.0",
+  "description": "Modelos para el sistema de gas. Schemas Zod + tipos TypeScript inferidos.",
   "author": "GPE Sistemas",
   "license": "Private",
   "repository": "https://github.com/Horatech/gas-modelos",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
   "engines": {
     "node": ">=22.0.0 <23.0.0",
     "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "gen:json-schema": "node scripts/gen-json-schema.mjs",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
   }
 }

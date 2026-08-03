@@ -1,30 +1,45 @@
-import { ICentroOperativo, IUnidadNegocio } from '../gas';
-import { Division } from '../tenant';
-import { ILocalidad } from './localidad';
+import { z } from "zod";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { DivisionSchema } from "../tenant/usuario/permiso";
+import { LocalidadSchema } from "./localidad";
 
-export interface ISubzonaTarifaria {
-  _id?: string;
-  nombre?: string;
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
+export const SubzonaTarifariaSchema = z.object({
+  _id: z.string().optional(),
+  nombre: z.string().optional(),
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
   // Una SZT agrupa varias Localidades; cada Localidad pertenece a lo sumo a
   // una SZT (unicidad enforced en backend).
-  idsLocalidades?: string[];
-  posicion?: number; // para ordenar en las pantallas
-  division?: Division; // siempre 'Residencial'
+  idsLocalidades: z.array(z.string()).optional(),
+  posicion: z.number().optional(), // para ordenar en las pantallas
+  division: DivisionSchema.optional(), // siempre 'Residencial'
   // Populate
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidades?: ILocalidad[];
-}
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidades: z.array(LocalidadSchema).optional(),
+});
+export type ISubzonaTarifaria = z.infer<typeof SubzonaTarifariaSchema>;
 
 // CREATE
-type OmitirCreate = '_id' | 'unidadNegocio' | 'centroOperativo' | 'localidades';
-export interface ICreateSubzonaTarifaria
-  extends Omit<Partial<ISubzonaTarifaria>, OmitirCreate> {}
+export const CreateSubzonaTarifariaSchema = SubzonaTarifariaSchema.omit({
+  _id: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+  localidades: true,
+});
+export type ICreateSubzonaTarifaria = z.infer<
+  typeof CreateSubzonaTarifariaSchema
+>;
 
 // UPDATE
-type OmitirUpdate = '_id' | 'unidadNegocio' | 'centroOperativo' | 'localidades';
-export interface IUpdateSubzonaTarifaria
-  extends Omit<Partial<ISubzonaTarifaria>, OmitirUpdate> {}
+export const UpdateSubzonaTarifariaSchema = SubzonaTarifariaSchema.omit({
+  _id: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+  localidades: true,
+});
+export type IUpdateSubzonaTarifaria = z.infer<
+  typeof UpdateSubzonaTarifariaSchema
+>;

@@ -1,9 +1,12 @@
-export interface ICreateLoteDispositivo {
-  nombre: string;
-  llave: string;
-}
+import { z } from "zod";
+import { LoteDispositivoSchema } from "./loteDispositivo.model";
 
-export interface IUpdateLoteDispositivo {
-  nombre?: string;
-  llave?: string;
-}
+export const CreateLoteDispositivoSchema = LoteDispositivoSchema.omit({
+  _id: true,
+}).required();
+export type ICreateLoteDispositivo = z.infer<typeof CreateLoteDispositivoSchema>;
+
+export const UpdateLoteDispositivoSchema = LoteDispositivoSchema.omit({
+  _id: true,
+});
+export type IUpdateLoteDispositivo = z.infer<typeof UpdateLoteDispositivoSchema>;

@@ -1,17 +1,21 @@
-import { IPermiso } from "./permiso";
+import { z } from "zod";
+import { PermisoSchema } from "./permiso";
 
-export interface IDatosPersonales {
-  nombre?: string;
-  email?: string;
-  telefono?: string;
-  [key: string]: any;
-}
+export const DatosPersonalesSchema = z
+  .object({
+    nombre: z.string().optional(),
+    email: z.string().optional(),
+    telefono: z.string().optional(),
+  })
+  .catchall(z.any());
+export type IDatosPersonales = z.infer<typeof DatosPersonalesSchema>;
 
-export interface ICreateUsuario {
-  idCliente?: string;
-  username: string;
-  clave?: string;
-  hash?: string;
-  datosPersonales?: IDatosPersonales;
-  permisos: IPermiso[];
-}
+export const CreateUsuarioSchema = z.object({
+  idCliente: z.string().optional(),
+  username: z.string(),
+  clave: z.string().optional(),
+  hash: z.string().optional(),
+  datosPersonales: DatosPersonalesSchema.optional(),
+  permisos: z.array(PermisoSchema),
+});
+export type ICreateUsuario = z.infer<typeof CreateUsuarioSchema>;

@@ -1,44 +1,50 @@
-import { IAgrupacion, ICentroOperativo, IUnidadNegocio } from "../gas";
-import { ICliente, IUsuario } from "../tenant";
-import { TipoAlerta, TipoEnvio } from "./envio-sms";
-import { IGrupo } from "./grupo";
-import { ILocalidad } from "./localidad";
-import { IPuntoMedicion } from "./punto-medicion";
-import { IScada } from "./scada";
+import { z } from "zod";
+import { AgrupacionSchema } from "../gas/agrupacion/schema";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { UsuarioSchema } from "../tenant/usuario/schema";
+import { TipoAlertaEnvioSchema, TipoEnvioSchema } from "./envio-sms";
+import { GrupoSchema } from "./grupo";
+import { LocalidadSchema } from "./localidad";
+import { PuntoMedicionSchema } from "./punto-medicion";
+import { ScadaSchema } from "./scada";
 
-export interface IConfigNotificacion {
-  _id?: string;
+export const ConfigNotificacionSchema = z.object({
+  _id: z.string().optional(),
   //
-  fechaCreacion?: string;
-  tipoEnvio?: TipoEnvio;
-  tipoAlerta?: TipoAlerta;
-  idsUsuarios?: string[];
-  tag?: string;
+  fechaCreacion: z.string().optional(),
+  tipoEnvio: TipoEnvioSchema.optional(),
+  tipoAlerta: TipoAlertaEnvioSchema.optional(),
+  idsUsuarios: z.array(z.string()).optional(),
+  tag: z.string().optional(),
   //
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
-  idGrupo?: string;
-  idAgrupacion?: string;
-  idLocalidad?: string;
-  idScada?: string;
-  idPuntoMedicion?: string;
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idGrupo: z.string().optional(),
+  idAgrupacion: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  idScada: z.string().optional(),
+  idPuntoMedicion: z.string().optional(),
   // Virtuals
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  grupo?: IGrupo;
-  agrupacion?: IAgrupacion;
-  localidad?: ILocalidad;
-  scada?: IScada;
-  puntoMedicion?: IPuntoMedicion;
-  usuarios?: IUsuario[];
-}
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  grupo: GrupoSchema.optional(),
+  agrupacion: AgrupacionSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+  scada: ScadaSchema.optional(),
+  puntoMedicion: PuntoMedicionSchema.optional(),
+  usuarios: z.array(UsuarioSchema).optional(),
+});
+export type IConfigNotificacion = z.infer<typeof ConfigNotificacionSchema>;
 
 ////// CREATE/UPDATE
-type Omitir = "_id" | "cliente" | "scada" | "usuarios";
-export interface ICreateConfigNotificacion
-  extends Omit<Partial<IConfigNotificacion>, Omitir> {}
+const omitir = { _id: true, cliente: true, scada: true, usuarios: true } as const;
 
-export interface IUpdateConfigNotificacion
-  extends Omit<Partial<IConfigNotificacion>, Omitir> {}
+export const CreateConfigNotificacionSchema = ConfigNotificacionSchema.omit(omitir);
+export type ICreateConfigNotificacion = z.infer<typeof CreateConfigNotificacionSchema>;
+
+export const UpdateConfigNotificacionSchema = ConfigNotificacionSchema.omit(omitir);
+export type IUpdateConfigNotificacion = z.infer<typeof UpdateConfigNotificacionSchema>;

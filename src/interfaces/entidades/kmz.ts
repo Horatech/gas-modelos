@@ -1,33 +1,40 @@
-import { ICentroOperativo, IUnidadNegocio } from "../gas";
-import { ICliente } from "../tenant";
+import { z } from "zod";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { ClienteSchema } from "../tenant/cliente.model";
 
-export interface IKmz {
-  _id?: string;
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
-  nombre?: string;
-  urlKmz?: string;
+export const KmzSchema = z.object({
+  _id: z.string().optional(),
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  nombre: z.string().optional(),
+  urlKmz: z.string().optional(),
   // GeoJSON pre-convertido del KMZ, generado por la API al momento del
   // upload y subido a GCS igual que urlKmz. Opcional: KMZs anteriores a
   // esta feature no lo tienen y el frontend cae al parseo client-side.
-  urlGeoJson?: string;
+  urlGeoJson: z.string().optional(),
 
   // Virtuals
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-}
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+});
+export type IKmz = z.infer<typeof KmzSchema>;
 
-// CREATE
-type OmitirCreate = "_id" | "cliente" | "unidadNegocio" | "centroOperativo";
-export interface ICreateKmz extends Omit<Partial<IKmz>, OmitirCreate> {}
+export const CreateKmzSchema = KmzSchema.omit({
+  _id: true,
+  cliente: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+});
+export type ICreateKmz = z.infer<typeof CreateKmzSchema>;
 
-// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "cliente"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "idCliente";
-export interface IUpdateKmz extends Omit<Partial<IKmz>, OmitirUpdate> {}
+export const UpdateKmzSchema = KmzSchema.omit({
+  _id: true,
+  cliente: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+  idCliente: true,
+});
+export type IUpdateKmz = z.infer<typeof UpdateKmzSchema>;

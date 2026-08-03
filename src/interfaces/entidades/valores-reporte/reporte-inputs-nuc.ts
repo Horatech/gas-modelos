@@ -1,21 +1,43 @@
-import { TipoInputDispositivoExterno } from "../dispositivo-externo-nuc";
+import { z } from "zod";
+import type { TipoInputDispositivoExterno } from "../dispositivo-externo-nuc";
 
+// tipoInput1/tipoInput2 como z.custom: dispositivo-externo-nuc.ts es parte
+// del SCC de IDispositivo (a través de reporte.ts -> valoresReporte.ts ->
+// este archivo -> dispositivo-externo-nuc.ts). Ver CLAUDE.md, "De solo tipos
+// a schemas Zod".
+export const ReporteInputsNucSchema = z.object({
+  timestamp: z.string().optional(),
+  // Input 1
+  tipoInput1: z.custom<TipoInputDispositivoExterno>().optional(),
+  valorInput1: z.number().optional(),
+  valorActualInput1: z.number().optional(),
+  consumoInput1: z.number().optional(),
+  factorAplicadoInput1: z.number().optional(),
+  valorInicialAplicadoInput1: z.number().optional(),
+  consumoParcialInput1: z.number().optional(),
+  // Input 2
+  tipoInput2: z.custom<TipoInputDispositivoExterno>().optional(),
+  valorInput2: z.number().optional(),
+  valorActualInput2: z.number().optional(),
+  consumoInput2: z.number().optional(),
+  factorAplicadoInput2: z.number().optional(),
+  valorInicialAplicadoInput2: z.number().optional(),
+  consumoParcialInput2: z.number().optional(),
+});
 export interface IReporteInputsNuc {
   timestamp?: string;
-  // Input 1
   tipoInput1?: TipoInputDispositivoExterno;
   valorInput1?: number;
-  valorActualInput1?: number; // Valor actual del input 1 es el valor actual cuando esta en modo flag
-  consumoInput1?: number; // Aplica cuando el tipo es "Contador" | Consumo real calculado para input 1 * factor de correccion + valor inicial in 1
-  factorAplicadoInput1?: number; // Factor de corrección aplicado a input 1 (multiplicador para convertir pulsos en consumo o valor real, aplica cuando el tipo es "Contador")
-  valorInicialAplicadoInput1?: number; // Valor inicial aplicado a input 1 (ej: lectura del contador al momento de asignar el dispositivo, aplica cuando el tipo es "Contador")
-  consumoParcialInput1?: number; // Consumo parcial calculado para input 1 desde el ultimo reporte (consumo real calculado para input 1 en este reporte - consumo real calculado para input 1 en el ultimo reporte)
-  // Input 2
+  valorActualInput1?: number;
+  consumoInput1?: number;
+  factorAplicadoInput1?: number;
+  valorInicialAplicadoInput1?: number;
+  consumoParcialInput1?: number;
   tipoInput2?: TipoInputDispositivoExterno;
   valorInput2?: number;
-  valorActualInput2?: number; // Valor actual del input 2 es el valor actual cuando esta en modo flag
-  consumoInput2?: number; // Aplica cuando el tipo es "Contador" | Consumo real calculado para input 2 * factor de correccion + valor inicial in 2
-  factorAplicadoInput2?: number; // Factor de corrección aplicado a input 2 (multiplicador para convertir pulsos en consumo o valor real, aplica cuando el tipo es "Contador")
-  valorInicialAplicadoInput2?: number; // Valor inicial aplicado a input 2 (ej: lectura del contador al momento de asignar el dispositivo, aplica cuando el tipo es "Contador")
-  consumoParcialInput2?: number; // Consumo parcial calculado para input 2 desde el ultimo reporte (consumo real calculado para input 2 en este reporte - consumo real calculado para input 2 en el ultimo reporte)
+  valorActualInput2?: number;
+  consumoInput2?: number;
+  factorAplicadoInput2?: number;
+  valorInicialAplicadoInput2?: number;
+  consumoParcialInput2?: number;
 }

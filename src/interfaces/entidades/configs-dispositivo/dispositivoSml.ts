@@ -1,24 +1,27 @@
-export interface IDispositivoSml {
+import { z } from "zod";
+
+export const DispositivoSmlSchema = z.object({
   // Comunicacion
-  serialNumber?: string;
-  imei?: string;
-  ip?: string; // IP desde la cual se comunica el dispositivo
-  port?: number;
+  serialNumber: z.string().optional(),
+  imei: z.string().optional(),
+  ip: z.string().optional(), // IP desde la cual se comunica el dispositivo
+  port: z.number().optional(),
 
   // Info de la sim
-  iccid?: number;
-  operadora?: string;
-  telefono?: string;
+  iccid: z.number().optional(),
+  operadora: z.string().optional(),
+  telefono: z.string().optional(),
 
-  valorAlarmaBateria?: number;
+  valorAlarmaBateria: z.number().optional(),
 
   // Configuracion del SML
   // valveControl?: boolean;
-  calibrationDeviceNodeReading?: number;
-  reportingCycleInterval?: number; // Segundos
-  timezone?: string; // UTC+2 | UTC-3 | etc.
-  ipReporte?: string; // La IP de a donde va a reportar -> 47.92.222.233 :1822
-  pn?: number; // Pulse number
-  maximunMeterReading?: number; // Valor maximo del medidor
-  reportingRange?: number; // 321: 0321 3--3+21/2 ,Means to report randomly in the range of 3-13:30
-}
+  calibrationDeviceNodeReading: z.number().optional(),
+  reportingCycleInterval: z.number().optional(), // Segundos
+  timezone: z.string().optional(), // UTC+2 | UTC-3 | etc.
+  ipReporte: z.string().optional(), // La IP de a donde va a reportar -> 47.92.222.233 :1822
+  pn: z.number().optional(), // Pulse number
+  maximunMeterReading: z.number().optional(), // Valor maximo del medidor
+  reportingRange: z.number().optional(), // 321: 0321 3--3+21/2 ,Means to report randomly in the range of 3-13:30
+});
+export type IDispositivoSml = z.infer<typeof DispositivoSmlSchema>;

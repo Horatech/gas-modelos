@@ -1,6 +1,7 @@
-import { ICentroOperativo } from "../../gas/centroOperativo";
-import { IUnidadNegocio } from "../../gas/unidadNegocio";
-import { Nivel } from "./permiso";
+import { z } from "zod";
+import { CentroOperativoSchema } from "../../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../../gas/unidadNegocio/schema";
+import { NivelSchema } from "./permiso";
 
 export enum ICodigoNotificacion {
   "Correctora sin Reportar" = 0,
@@ -8,13 +9,14 @@ export enum ICodigoNotificacion {
   "Cromatografía Próxima a Vencer" = 2,
 }
 
-export interface INotificaciones {
-  nivel: Nivel;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
-  habilitados?: ICodigoNotificacion[];
+export const NotificacionesSchema = z.object({
+  nivel: NivelSchema,
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  habilitados: z.array(z.custom<ICodigoNotificacion>()).optional(),
 
   // Populate
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-}
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+});
+export type INotificaciones = z.infer<typeof NotificacionesSchema>;

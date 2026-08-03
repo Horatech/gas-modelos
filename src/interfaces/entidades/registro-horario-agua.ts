@@ -1,12 +1,13 @@
-import { ICliente } from '../tenant';
-import { ICentroOperativo } from '../gas/centroOperativo';
-import { IUnidadNegocio } from '../gas/unidadNegocio';
-import { IPuntoMedicion } from './punto-medicion';
-import { ILocalidad } from './localidad';
-import { IGrupo } from './grupo';
-import { ICuenca } from './cuenca';
-import { IAgrupacion } from '../gas';
-import { IMedidorResidencialAgua } from './medidor-residencial-agua';
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { AgrupacionSchema } from "../gas/agrupacion/schema";
+import { PuntoMedicionSchema } from "./punto-medicion";
+import { LocalidadSchema } from "./localidad";
+import { GrupoSchema } from "./grupo";
+import { CuencaSchema } from "./cuenca";
+import { MedidorResidencialAguaSchema } from "./medidor-residencial-agua";
 
 /**
  * Registro horario de un medidor de agua residencial (serie temporal).
@@ -27,72 +28,73 @@ import { IMedidorResidencialAgua } from './medidor-residencial-agua';
  * Colección genérica de agua (no atada a UWM-NB): cualquier device de agua residencial
  * con buffer horario puede escribir acá; el vínculo es por `deveui` + `idMedidorResidencialAgua`.
  */
-export interface IRegistroHorarioAgua {
-  _id?: string;
-  timestamp?: string; // ISO, hora en punto (cierre de la hora)
+export const RegistroHorarioAguaSchema = z.object({
+  _id: z.string().optional(),
+  timestamp: z.string().optional(), // ISO, hora en punto (cierre de la hora)
   //
-  volumenM3?: number; // odómetro TOTAL de esa hora (m³)
-  consumoParcial?: number; // delta respecto del registro previo (m³)
+  volumenM3: z.number().optional(), // odómetro TOTAL de esa hora (m³)
+  consumoParcial: z.number().optional(), // delta respecto del registro previo (m³)
   //
-  deveui?: string;
-  deviceName?: string;
-  meterId?: string;
+  deveui: z.string().optional(),
+  deviceName: z.string().optional(),
+  meterId: z.string().optional(),
   //
-  idMedidorResidencialAgua?: string;
-  idPuntoMedicion?: string;
+  idMedidorResidencialAgua: z.string().optional(),
+  idPuntoMedicion: z.string().optional(),
   //
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
-  idLocalidad?: string;
-  idCuenca?: string;
-  idsGrupos?: string[];
-  idsAgrupaciones?: string[];
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  idCuenca: z.string().optional(),
+  idsGrupos: z.array(z.string()).optional(),
+  idsAgrupaciones: z.array(z.string()).optional(),
   //
-  fechaCreacion?: string;
+  fechaCreacion: z.string().optional(),
 
   // Virtuals
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
-  cuenca?: ICuenca;
-  puntoMedicion?: IPuntoMedicion;
-  medidorResidencialAgua?: IMedidorResidencialAgua;
-  grupos?: IGrupo[];
-  agrupaciones?: IAgrupacion[];
-}
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+  cuenca: CuencaSchema.optional(),
+  puntoMedicion: PuntoMedicionSchema.optional(),
+  medidorResidencialAgua: MedidorResidencialAguaSchema.optional(),
+  grupos: z.array(GrupoSchema).optional(),
+  agrupaciones: z.array(AgrupacionSchema).optional(),
+});
+export type IRegistroHorarioAgua = z.infer<typeof RegistroHorarioAguaSchema>;
 
 ////// CREATE
-type OmitirCreate =
-  | '_id'
-  | 'cliente'
-  | 'unidadNegocio'
-  | 'centroOperativo'
-  | 'localidad'
-  | 'cuenca'
-  | 'puntoMedicion'
-  | 'medidorResidencialAgua'
-  | 'grupos'
-  | 'agrupaciones';
-export interface ICreateRegistroHorarioAgua extends Omit<
-  Partial<IRegistroHorarioAgua>,
-  OmitirCreate
-> {}
+export const CreateRegistroHorarioAguaSchema = RegistroHorarioAguaSchema.omit({
+  _id: true,
+  cliente: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+  localidad: true,
+  cuenca: true,
+  puntoMedicion: true,
+  medidorResidencialAgua: true,
+  grupos: true,
+  agrupaciones: true,
+});
+export type ICreateRegistroHorarioAgua = z.infer<
+  typeof CreateRegistroHorarioAguaSchema
+>;
 
 ////// UPDATE
-type OmitirUpdate =
-  | '_id'
-  | 'cliente'
-  | 'unidadNegocio'
-  | 'centroOperativo'
-  | 'localidad'
-  | 'cuenca'
-  | 'puntoMedicion'
-  | 'medidorResidencialAgua'
-  | 'grupos'
-  | 'agrupaciones';
-export interface IUpdateRegistroHorarioAgua extends Omit<
-  Partial<IRegistroHorarioAgua>,
-  OmitirUpdate
-> {}
+export const UpdateRegistroHorarioAguaSchema = RegistroHorarioAguaSchema.omit({
+  _id: true,
+  cliente: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+  localidad: true,
+  cuenca: true,
+  puntoMedicion: true,
+  medidorResidencialAgua: true,
+  grupos: true,
+  agrupaciones: true,
+});
+export type IUpdateRegistroHorarioAgua = z.infer<
+  typeof UpdateRegistroHorarioAguaSchema
+>;

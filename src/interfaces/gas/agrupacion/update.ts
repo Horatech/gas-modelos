@@ -1,5 +1,7 @@
-import { IAgrupacion } from "./schema";
+import { z } from "zod";
+import { AgrupacionSchema } from "./schema";
 
-type Omitir = "_id";
-
-export interface IUpdateAgrupacion extends Omit<Partial<IAgrupacion>, Omitir> {}
+export const UpdateAgrupacionSchema = AgrupacionSchema.omit({
+  _id: true,
+});
+export type IUpdateAgrupacion = z.infer<typeof UpdateAgrupacionSchema>;

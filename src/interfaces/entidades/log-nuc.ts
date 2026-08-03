@@ -1,20 +1,22 @@
-import { TipoMensaje } from "./mensajes-nuc";
+import { z } from "zod";
+import { TipoMensajeNucSchema } from "./mensajes-nuc/mensajes-nuc";
 
-export interface ILogNuc {
-  _id?: string;
-  deveui?: string;
-  tipo?: TipoMensaje;
-  body?: object;
-  fecha?: string;
-  tiempoRespuesta?: number;
-  codigoRespuesta?: number;
-  respuesta?: object;
-}
+export const LogNucSchema = z.object({
+  _id: z.string().optional(),
+  deveui: z.string().optional(),
+  tipo: TipoMensajeNucSchema.optional(),
+  body: z.record(z.string(), z.any()).optional(),
+  fecha: z.string().optional(),
+  tiempoRespuesta: z.number().optional(),
+  codigoRespuesta: z.number().optional(),
+  respuesta: z.record(z.string(), z.any()).optional(),
+});
+export type ILogNuc = z.infer<typeof LogNucSchema>;
 
 ////// CREATE
-type OmitirCreate = "_id";
-export interface ICreateLogNuc extends Omit<Partial<ILogNuc>, OmitirCreate> {}
+export const CreateLogNucSchema = LogNucSchema.omit({ _id: true });
+export type ICreateLogNuc = z.infer<typeof CreateLogNucSchema>;
 
 ////// UPDATE
-type OmitirUpdate = "_id";
-export interface IUpdateLogNuc extends Omit<Partial<ILogNuc>, OmitirUpdate> {}
+export const UpdateLogNucSchema = LogNucSchema.omit({ _id: true });
+export type IUpdateLogNuc = z.infer<typeof UpdateLogNucSchema>;

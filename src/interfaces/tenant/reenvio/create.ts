@@ -1,8 +1,5 @@
-export interface ICreateReenvio {
-  fechaCreacion?: string;
-  // Info
-  url?: string;
-  body?: string;
-  headers?: string;
-  params?: string;
-}
+import { z } from "zod";
+import { ReenvioSchema } from "./schema";
+
+export const CreateReenvioSchema = ReenvioSchema.omit({ _id: true });
+export type ICreateReenvio = z.infer<typeof CreateReenvioSchema>;

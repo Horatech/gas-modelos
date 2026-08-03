@@ -15,52 +15,56 @@
  * fabricante); el delta por hora lo calcula el backend (`consumoParcial`).
  */
 
-import { ITipoAlerta } from "../alerta";
+import { z } from "zod";
+import { TipoAlertaSchema } from "../alerta";
 
 /** Lectura puntual (realtime o congelada diaria) — 11 B BCD del frame. */
-export interface ILecturaUWMNB {
-  timestamp: string; // ISO — RTC del device (Year/Month/Day/Hour/Minute BCD)
-  volumenM3: number; // odómetro TOTAL, m³ (BCD 8 díg / 1000)
-  alarmas: ITipoAlerta[]; // mapeadas desde el bitmask de 8 bits (ver plan §3.3)
-  alarmBitsRaw?: number; // BYTE2 crudo del campo Alarm (BYTE1 REVERSE se ignora)
-}
+export const LecturaUWMNBSchema = z.object({
+  timestamp: z.string(), // ISO — RTC del device (Year/Month/Day/Hour/Minute BCD)
+  volumenM3: z.number(), // odómetro TOTAL, m³ (BCD 8 díg / 1000)
+  alarmas: z.array(TipoAlertaSchema), // mapeadas desde el bitmask de 8 bits (ver plan §3.3)
+  alarmBitsRaw: z.number().optional(), // BYTE2 crudo del campo Alarm (BYTE1 REVERSE se ignora)
+});
+export type ILecturaUWMNB = z.infer<typeof LecturaUWMNBSchema>;
 
 /** Muestra horaria del buffer (72 registros) — volumen TOTAL, no incremento. */
-export interface ILecturaHorariaUWMNB {
-  timestamp: string; // ISO, anclado a la hora en punto
-  volumenM3: number; // odómetro TOTAL, m³
-  consumoParcial?: number; // delta vs. hora previa (lo calcula el backend)
-}
+export const LecturaHorariaUWMNBSchema = z.object({
+  timestamp: z.string(), // ISO, anclado a la hora en punto
+  volumenM3: z.number(), // odómetro TOTAL, m³
+  consumoParcial: z.number().optional(), // delta vs. hora previa (lo calcula el backend)
+});
+export type ILecturaHorariaUWMNB = z.infer<typeof LecturaHorariaUWMNBSchema>;
 
-export interface IReporteUWMNB {
+export const ReporteUWMNBSchema = z.object({
   // --- Identidad / radio (crudos del frame) ---
-  meterId: string; // METER_ID, 12 díg ASCII
-  ip?: string; // Local_IP del device
-  imsi?: string; // IMSI de la SIM (payload V1 plano; ausente en V4)
-  imei?: string; // IMEI del módulo (payload V4 cifrado: en claro, reemplaza al IMSI)
-  ciclosTx?: number; // CYCLES_TX (transmisiones totales)
-  ciclosTxBad?: number; // CYCLES_TX_BAD (transmisiones fallidas)
-  rssi?: number; // RSSI_SNR[0] (unidad sin confirmar; ver R4 del plan)
-  snr?: number; // RSSI_SNR[1]
-  valveStatusRaw?: number; // VALVE_STATUS (reservado; se persiste crudo)
+  meterId: z.string(), // METER_ID, 12 díg ASCII
+  ip: z.string().optional(), // Local_IP del device
+  imsi: z.string().optional(), // IMSI de la SIM (payload V1 plano; ausente en V4)
+  imei: z.string().optional(), // IMEI del módulo (payload V4 cifrado: en claro, reemplaza al IMSI)
+  ciclosTx: z.number().optional(), // CYCLES_TX (transmisiones totales)
+  ciclosTxBad: z.number().optional(), // CYCLES_TX_BAD (transmisiones fallidas)
+  rssi: z.number().optional(), // RSSI_SNR[0] (unidad sin confirmar; ver R4 del plan)
+  snr: z.number().optional(), // RSSI_SNR[1]
+  valveStatusRaw: z.number().optional(), // VALVE_STATUS (reservado; se persiste crudo)
 
   // --- Batería / firmware ---
-  vbatMedicionMv?: number; // uint16 mV (batería de medición)
-  vbatComunicacionMv?: number; // uint16 mV (batería de comunicación)
-  bateria?: number; // % estimado desde vbatMedicion
-  fwVersion?: number; // BCD (el CRC de programa se descarta)
+  vbatMedicionMv: z.number().optional(), // uint16 mV (batería de medición)
+  vbatComunicacionMv: z.number().optional(), // uint16 mV (batería de comunicación)
+  bateria: z.number().optional(), // % estimado desde vbatMedicion
+  fwVersion: z.number().optional(), // BCD (el CRC de programa se descarta)
 
   // --- Lecturas ---
-  lecturaTiempoReal?: ILecturaUWMNB; // REALTIME_DATA
-  lecturaCongeladaDiaria?: ILecturaUWMNB; // FROZEN_DATA_DAILY
-  lecturasHorarias?: ILecturaHorariaUWMNB[]; // 0..72 (usar LENGTH, no asumir 72)
+  lecturaTiempoReal: LecturaUWMNBSchema.optional(), // REALTIME_DATA
+  lecturaCongeladaDiaria: LecturaUWMNBSchema.optional(), // FROZEN_DATA_DAILY
+  lecturasHorarias: z.array(LecturaHorariaUWMNBSchema).optional(), // 0..72 (usar LENGTH, no asumir 72)
 
   // --- Convención común de reportes (espejo WRC/SML) ---
-  timestamp?: string; // = lecturaTiempoReal.timestamp; lo usa el write-path
-  consumo?: number; // = lecturaTiempoReal.volumenM3 (odómetro total)
-  consumoCorregido?: number; // consumo ± offset (consumoInicial cargado en plataforma)
-  consumoParcial?: number; // consumo - consumo del último reporte
+  timestamp: z.string().optional(), // = lecturaTiempoReal.timestamp; lo usa el write-path
+  consumo: z.number().optional(), // = lecturaTiempoReal.volumenM3 (odómetro total)
+  consumoCorregido: z.number().optional(), // consumo ± offset (consumoInicial cargado en plataforma)
+  consumoParcial: z.number().optional(), // consumo - consumo del último reporte
 
-  frameLen?: number; // LENGTH declarado en la trama (detecta frames degradados)
-  crcOk?: boolean; // resultado de la validación de checksum (suma mod 256)
-}
+  frameLen: z.number().optional(), // LENGTH declarado en la trama (detecta frames degradados)
+  crcOk: z.boolean().optional(), // resultado de la validación de checksum (suma mod 256)
+});
+export type IReporteUWMNB = z.infer<typeof ReporteUWMNBSchema>;

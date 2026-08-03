@@ -1,216 +1,47 @@
-/// SETS
-
-export interface ISetAlerta {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  codigo: number;
-}
-
-export interface ISetAlertaV2 {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  codigo?: number;
-  alarmasMercury?: string;
-}
-export interface ISetConfiguracion {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  frecuenciaComunicacion: number;
-  horaInicio: number;
-  modoOperacion: string;
-  redPreferida: string;
-}
-
-export interface ISetConfiguracionV2 {
-  deveui?: string;
-  appkey?: string;
-  firmwareNuc?: string;
-  apiVersion?: string;
-  horaInicio?: number;
-  modoOperacion?: "REG1_DIARIO" | "REG24_DIARIO" | "REG8_8HORAS";
-  modoEnv?: "TEST" | "PROD";
-  claveMercury?: string;
-  modoRegistros?: "REG_TOTALIZADOS" | "REG_PARCIALES";
-  nsa?: number; // Numero de serie de american meter
-  // Teléfonos para alertas SMS (NUC v2.0)
-  telefono1?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
-  telefono2?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
-  telefono3?: string; // Formato: +54XXXXXXXXXXX (13 caracteres)
-  // Configuración GPIO (NUC v2.0)
-  tipo_input_1?: number;
-  tipo_edge_input_1?: number; // Tipo de detección de flanco (0-5)
-  tipo_input_2?: number;
-  tipo_edge_input_2?: number; // Tipo de detección de flanco (0-5)
-}
-
-export interface ISetCorrectora {
-  deveui: string;
-  appkey: string;
-  numeroSerieCorrectora: number;
-  firmwareCorrectora?: string;
-  numeroCorrectora?: number;
-}
-export interface ISetCorrectoraV3 {
-  deveui: string;
-  appkey: string;
-  numeroSerieCorrectora: number;
-  firmwareCorrectora?: string;
-  numeroCorrectora?: number;
-  bateria?: string;
-}
-
-export interface ISetCromatografia {
-  idCromatografia: string;
-  aplicada: boolean;
-  numeroSerieCorrectora: number;
-  // Tambien llega esto
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-}
-export interface ISetRegistro {
-  deveui: string;
-  timestamp: number;
-  corrected?: number;
-  uncorrected?: number;
-  presion?: number;
-  temperatura?: number;
-  contador?: number;
-  bateria?: number;
-}
-export interface ISetRegistroV3 {
-  deveui: string;
-  timestamp: number;
-  correctedTotalizado?: number;
-  uncorrectedTotalizado?: number;
-  correctedParcializado?: number;
-  uncorrectedParcializado?: number;
-  caudalCorregido?: number;
-  caudalNoCorregido?: number;
-  presionPromedio?: number;
-  temperaturaPromedio?: number;
-  bateria?: number;
-}
-
-export interface ISetReporte {
-  registros: ISetRegistro[];
-  recuperado: boolean;
-  deveui: string;
-  deviceName: string;
-  appkey: string;
-  bateria: string;
-  numeroCorrectora: ucv;
-  numeroSerieCorrectora: number;
-  firmwareNuc: string;
-  firmwareCorrectora: string;
-  apiVersion: string;
-}
-
-export interface ISetReporteV3 {
-  registros: ISetRegistroV3[];
-  recuperado: boolean;
-  deveui: string;
-  deviceName: string;
-  appkey: string;
-  bateria: string;
-  numeroCorrectora: ucv;
-  numeroSerieCorrectora: number;
-  firmwareNuc: string;
-  firmwareCorrectora: string;
-  apiVersion: string;
-}
-
-/// GETS
-export interface IGetConfiguracionV2 {
-  deveui?: string;
-  appkey?: string;
-  numeroSerieCorrectora: number;
-  firmwareNuc: string;
-  apiVersion: string;
-}
-
-export interface IGetCromatografia {
-  deveui?: string;
-  appkey?: string;
-  numeroSerieCorrectora: number;
-  firmwareNuc: string;
-  apiVersion: string;
-}
-
-export interface IResponseGetCromatografia {
-  _id: string;
-  oxigeno?: number;
-  densidad?: number;
-  dioxidoCarbono?: number;
-  nitrogeno?: number;
-  metano?: number;
-  etano?: number;
-  propano?: number;
-  isoButano?: number;
-  nButano?: number;
-  isoPentano?: number;
-  nPentano?: number;
-  nHexano?: number;
-  nHeptano?: number;
-  nOctano?: number;
-}
-
-export interface IGetRegistro {
-  deveui?: string;
-  appkey?: string;
-  numeroSerieCorrectora: number;
-  numeroCorrectora: number;
-  firmwareNuc: string;
-  apiVersion: string;
-}
-
-export interface IResponseGetRegistro {
-  registros: number[];
-}
-
-export interface ISyncHora {
-  deveui?: string;
-  appkey?: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  timestamp?: number;
-  forzarSync?: boolean; // Fuerza respuesta del servidor independiente de configuración
-}
+import { z } from "zod";
 
 /// EXTRAS
+//
+// (definidos primero: SetReporte/SetReporteV3 dependen de UcvSchema como valor
+// runtime, y en Zod —a diferencia de los tipos, que TS resuelve por adelantado—
+// el orden de declaración de los `const` importa)
 
-export enum ucv {
-  Nada = 0,
-  Corus,
-  Dresser1,
-  Dresser2,
-  Proser,
-  Mercury,
-  Minicor,
-  AmericanMeter,
-  Elcor,
-}
+/**
+ * Reemplazo del enum numérico nativo `ucv` (TypeScript `enum ucv {...}`). Un
+ * enum numérico real emite un objeto en runtime; acá se modela como unión de
+ * literales + Schema, sin dejar ningún valor gratis en el build.
+ */
+export const UcvSchema = z.union([
+  z.literal(0),
+  z.literal(1),
+  z.literal(2),
+  z.literal(3),
+  z.literal(4),
+  z.literal(5),
+  z.literal(6),
+  z.literal(7),
+  z.literal(8),
+]);
+export type ucv = z.infer<typeof UcvSchema>;
 
-export type ModeloCorrectora =
-  | "Nada"
-  | "Corus"
-  | "Dresser1"
-  | "Dresser2"
-  | "Proser"
-  | "Mercury"
-  | "Minicor"
-  | "AmericanMeter"
-  | "Elcor"
-  | "Instromet";
+/**
+ * Nombres simbólicos del enum numérico original (`ucv.Corus`, etc.). Ningún
+ * consumidor de este repo los usa hoy (solo se usa `ucv` como type), pero se
+ * deja el mapa por si hace falta legibilidad en el futuro.
+ */
+export const UCV = {
+  Nada: 0,
+  Corus: 1,
+  Dresser1: 2,
+  Dresser2: 3,
+  Proser: 4,
+  Mercury: 5,
+  Minicor: 6,
+  AmericanMeter: 7,
+  Elcor: 8,
+} as const;
 
-export const modelosCorrectoras: ModeloCorrectora[] = [
+export const ModeloCorrectoraSchema = z.enum([
   "Nada",
   "Corus",
   "Dresser1",
@@ -221,85 +52,307 @@ export const modelosCorrectoras: ModeloCorrectora[] = [
   "AmericanMeter",
   "Elcor",
   "Instromet",
-];
+]);
+export type ModeloCorrectora = z.infer<typeof ModeloCorrectoraSchema>;
+
+/// SETS
+
+export const SetAlertaSchema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+  codigo: z.number(),
+});
+export type ISetAlerta = z.infer<typeof SetAlertaSchema>;
+
+export const SetAlertaV2Schema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+  codigo: z.number().optional(),
+  alarmasMercury: z.string().optional(),
+});
+export type ISetAlertaV2 = z.infer<typeof SetAlertaV2Schema>;
+
+export const SetConfiguracionSchema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+  frecuenciaComunicacion: z.number(),
+  horaInicio: z.number(),
+  modoOperacion: z.string(),
+  redPreferida: z.string(),
+});
+export type ISetConfiguracion = z.infer<typeof SetConfiguracionSchema>;
+
+export const SetConfiguracionV2Schema = z.object({
+  deveui: z.string().optional(),
+  appkey: z.string().optional(),
+  firmwareNuc: z.string().optional(),
+  apiVersion: z.string().optional(),
+  horaInicio: z.number().optional(),
+  modoOperacion: z.enum(["REG1_DIARIO", "REG24_DIARIO", "REG8_8HORAS"]).optional(),
+  modoEnv: z.enum(["TEST", "PROD"]).optional(),
+  claveMercury: z.string().optional(),
+  modoRegistros: z.enum(["REG_TOTALIZADOS", "REG_PARCIALES"]).optional(),
+  nsa: z.number().optional(), // Numero de serie de american meter
+  // Teléfonos para alertas SMS (NUC v2.0)
+  telefono1: z.string().optional(), // Formato: +54XXXXXXXXXXX (13 caracteres)
+  telefono2: z.string().optional(), // Formato: +54XXXXXXXXXXX (13 caracteres)
+  telefono3: z.string().optional(), // Formato: +54XXXXXXXXXXX (13 caracteres)
+  // Configuración GPIO (NUC v2.0)
+  tipo_input_1: z.number().optional(),
+  tipo_edge_input_1: z.number().optional(), // Tipo de detección de flanco (0-5)
+  tipo_input_2: z.number().optional(),
+  tipo_edge_input_2: z.number().optional(), // Tipo de detección de flanco (0-5)
+});
+export type ISetConfiguracionV2 = z.infer<typeof SetConfiguracionV2Schema>;
+
+export const SetCorrectoraSchema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  numeroSerieCorrectora: z.number(),
+  firmwareCorrectora: z.string().optional(),
+  numeroCorrectora: z.number().optional(),
+});
+export type ISetCorrectora = z.infer<typeof SetCorrectoraSchema>;
+
+export const SetCorrectoraV3Schema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  numeroSerieCorrectora: z.number(),
+  firmwareCorrectora: z.string().optional(),
+  numeroCorrectora: z.number().optional(),
+  bateria: z.string().optional(),
+});
+export type ISetCorrectoraV3 = z.infer<typeof SetCorrectoraV3Schema>;
+
+export const SetCromatografiaSchema = z.object({
+  idCromatografia: z.string(),
+  aplicada: z.boolean(),
+  numeroSerieCorrectora: z.number(),
+  // Tambien llega esto
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+});
+export type ISetCromatografia = z.infer<typeof SetCromatografiaSchema>;
+
+export const SetRegistroSchema = z.object({
+  deveui: z.string(),
+  timestamp: z.number(),
+  corrected: z.number().optional(),
+  uncorrected: z.number().optional(),
+  presion: z.number().optional(),
+  temperatura: z.number().optional(),
+  contador: z.number().optional(),
+  bateria: z.number().optional(),
+});
+export type ISetRegistro = z.infer<typeof SetRegistroSchema>;
+
+export const SetRegistroV3Schema = z.object({
+  deveui: z.string(),
+  timestamp: z.number(),
+  correctedTotalizado: z.number().optional(),
+  uncorrectedTotalizado: z.number().optional(),
+  correctedParcializado: z.number().optional(),
+  uncorrectedParcializado: z.number().optional(),
+  caudalCorregido: z.number().optional(),
+  caudalNoCorregido: z.number().optional(),
+  presionPromedio: z.number().optional(),
+  temperaturaPromedio: z.number().optional(),
+  bateria: z.number().optional(),
+});
+export type ISetRegistroV3 = z.infer<typeof SetRegistroV3Schema>;
+
+export const SetReporteSchema = z.object({
+  registros: z.array(SetRegistroSchema),
+  recuperado: z.boolean(),
+  deveui: z.string(),
+  deviceName: z.string(),
+  appkey: z.string(),
+  bateria: z.string(),
+  numeroCorrectora: UcvSchema,
+  numeroSerieCorrectora: z.number(),
+  firmwareNuc: z.string(),
+  firmwareCorrectora: z.string(),
+  apiVersion: z.string(),
+});
+export type ISetReporte = z.infer<typeof SetReporteSchema>;
+
+export const SetReporteV3Schema = z.object({
+  registros: z.array(SetRegistroV3Schema),
+  recuperado: z.boolean(),
+  deveui: z.string(),
+  deviceName: z.string(),
+  appkey: z.string(),
+  bateria: z.string(),
+  numeroCorrectora: UcvSchema,
+  numeroSerieCorrectora: z.number(),
+  firmwareNuc: z.string(),
+  firmwareCorrectora: z.string(),
+  apiVersion: z.string(),
+});
+export type ISetReporteV3 = z.infer<typeof SetReporteV3Schema>;
+
+/// GETS
+export const GetConfiguracionV2Schema = z.object({
+  deveui: z.string().optional(),
+  appkey: z.string().optional(),
+  numeroSerieCorrectora: z.number(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+});
+export type IGetConfiguracionV2 = z.infer<typeof GetConfiguracionV2Schema>;
+
+export const GetCromatografiaSchema = z.object({
+  deveui: z.string().optional(),
+  appkey: z.string().optional(),
+  numeroSerieCorrectora: z.number(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+});
+export type IGetCromatografia = z.infer<typeof GetCromatografiaSchema>;
+
+export const ResponseGetCromatografiaSchema = z.object({
+  _id: z.string(),
+  oxigeno: z.number().optional(),
+  densidad: z.number().optional(),
+  dioxidoCarbono: z.number().optional(),
+  nitrogeno: z.number().optional(),
+  metano: z.number().optional(),
+  etano: z.number().optional(),
+  propano: z.number().optional(),
+  isoButano: z.number().optional(),
+  nButano: z.number().optional(),
+  isoPentano: z.number().optional(),
+  nPentano: z.number().optional(),
+  nHexano: z.number().optional(),
+  nHeptano: z.number().optional(),
+  nOctano: z.number().optional(),
+});
+export type IResponseGetCromatografia = z.infer<
+  typeof ResponseGetCromatografiaSchema
+>;
+
+export const GetRegistroSchema = z.object({
+  deveui: z.string().optional(),
+  appkey: z.string().optional(),
+  numeroSerieCorrectora: z.number(),
+  numeroCorrectora: z.number(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+});
+export type IGetRegistro = z.infer<typeof GetRegistroSchema>;
+
+export const ResponseGetRegistroSchema = z.object({
+  registros: z.array(z.number()),
+});
+export type IResponseGetRegistro = z.infer<typeof ResponseGetRegistroSchema>;
+
+export const SyncHoraSchema = z.object({
+  deveui: z.string().optional(),
+  appkey: z.string().optional(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+  timestamp: z.number().optional(),
+  forzarSync: z.boolean().optional(), // Fuerza respuesta del servidor independiente de configuración
+});
+export type ISyncHora = z.infer<typeof SyncHoraSchema>;
 
 /// GPIO - NUC v2.0
 // - Testigos de inputs
-export interface ISetReporteGpio {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  data_ios: {
-    contador_1?: number;
-    contador_2?: number;
-    testigo_1?: number; // 0 o 1 según firmware
-    testigo_2?: number; // 0 o 1 según firmware
-  };
-}
+export const SetReporteGpioSchema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+  data_ios: z.object({
+    contador_1: z.number().optional(),
+    contador_2: z.number().optional(),
+    testigo_1: z.number().optional(), // 0 o 1 según firmware
+    testigo_2: z.number().optional(), // 0 o 1 según firmware
+  }),
+});
+export type ISetReporteGpio = z.infer<typeof SetReporteGpioSchema>;
 
-export interface ISetAlertaGpio {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  alerta: {
-    input: 1 | 2;
-  };
-}
+export const SetAlertaGpioSchema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+  alerta: z.object({
+    input: z.union([z.literal(1), z.literal(2)]),
+  }),
+});
+export type ISetAlertaGpio = z.infer<typeof SetAlertaGpioSchema>;
 
-export interface ISetRegistrosInputs {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  reg_ios: [number, number, number][]; // Array of [timestamp, contador_input_1, contador_input_2]
-  recuperado?: boolean; // Indica si los registros son recuperados o no
-}
+export const SetRegistrosInputsSchema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+  reg_ios: z.array(z.tuple([z.number(), z.number(), z.number()])), // Array of [timestamp, contador_input_1, contador_input_2]
+  recuperado: z.boolean().optional(), // Indica si los registros son recuperados o no
+});
+export type ISetRegistrosInputs = z.infer<typeof SetRegistrosInputsSchema>;
 
-export interface IGetRegistrosInputs {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-}
+export const GetRegistrosInputsSchema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+});
+export type IGetRegistrosInputs = z.infer<typeof GetRegistrosInputsSchema>;
 
-export interface IResponseGetRegistrosInputs {
-  registros: number[]; // Array of [timestamps, timestamps...]
-}
+export const ResponseGetRegistrosInputsSchema = z.object({
+  registros: z.array(z.number()), // Array of [timestamps, timestamps...]
+});
+export type IResponseGetRegistrosInputs = z.infer<
+  typeof ResponseGetRegistrosInputsSchema
+>;
 
-export interface IInputsFlag {
-  deveui: string;
-  appkey: string;
-  firmwareNuc: string;
-  apiVersion: string;
-  flag_ios: {
+export const InputsFlagSchema = z.object({
+  deveui: z.string(),
+  appkey: z.string(),
+  firmwareNuc: z.string(),
+  apiVersion: z.string(),
+  flag_ios: z.object({
     // Siempre llega como 1 si hay mensaje sino no hay mensaje de testigo.
-    testigo_1?: number;
-    estado_actual_1?: number;
-    testigo_2?: number;
-    estado_actual_2?: number;
-  };
-}
+    testigo_1: z.number().optional(),
+    estado_actual_1: z.number().optional(),
+    testigo_2: z.number().optional(),
+    estado_actual_2: z.number().optional(),
+  }),
+});
+export type IInputsFlag = z.infer<typeof InputsFlagSchema>;
 
-export type TipoMensaje =
-  | "ISetAlerta"
-  | "ISetAlertaV2"
-  | "ISetConfiguracion"
-  | "ISetConfiguracionV2"
-  | "ISetCorrectora"
-  | "ISetCorrectoraV3"
-  | "ISetCromatografia"
-  | "ISetRegistro"
-  | "ISetRegistroV3"
-  | "ISetReporte"
-  | "ISetReporteV3"
-  | "IGetConfiguracionV2"
-  | "IGetCromatografia"
-  | "IGetRegistro"
-  | "ISyncHora"
-  | "ISetReporteGpio"
-  | "ISetAlertaGpio"
-  | "ISetRegistrosInputs"
-  | "IGetRegistrosInputs"
-  | "IInputsFlag";
+// Nombre distinto de TipoMensajeSchema (LLM/chat-tipos.ts): tipo de mensaje
+// del protocolo NUC, no el rol de un mensaje de chat LLM.
+export const TipoMensajeNucSchema = z.enum([
+  "ISetAlerta",
+  "ISetAlertaV2",
+  "ISetConfiguracion",
+  "ISetConfiguracionV2",
+  "ISetCorrectora",
+  "ISetCorrectoraV3",
+  "ISetCromatografia",
+  "ISetRegistro",
+  "ISetRegistroV3",
+  "ISetReporte",
+  "ISetReporteV3",
+  "IGetConfiguracionV2",
+  "IGetCromatografia",
+  "IGetRegistro",
+  "ISyncHora",
+  "ISetReporteGpio",
+  "ISetAlertaGpio",
+  "ISetRegistrosInputs",
+  "IGetRegistrosInputs",
+  "IInputsFlag",
+]);
+export type TipoMensajeNuc = z.infer<typeof TipoMensajeNucSchema>;

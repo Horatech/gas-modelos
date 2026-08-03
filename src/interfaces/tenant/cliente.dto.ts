@@ -1,28 +1,17 @@
-import { TipoDispositivo } from "../auxiliares";
-import { IConfigCliente } from "./cliente.model";
-import { IIntegracion } from "./integraciones";
+import { z } from "zod";
 
-export interface IImagenesCliente {
-  icono?: string;
-  logo?: string;
-  [key: string]: string | undefined;
-}
+// ImagenesClienteSchema es un valor real que importa `cliente.model.ts`
+// (`ClienteSchema.imagenes`). Para no cerrar un ciclo de `require()` en
+// runtime, este archivo NO importa ningún valor de `cliente.model.ts` — ver
+// CLAUDE.md, "De solo tipos a schemas Zod". `ICreateCliente`/`IUpdateCliente`
+// viven en `cliente.model.ts` (donde sí está disponible `ClienteSchema` real)
+// y acá solo se re-exportan como tipos.
+export const ImagenesClienteSchema = z
+  .object({
+    icono: z.string().optional(),
+    logo: z.string().optional(),
+  })
+  .catchall(z.string().optional());
+export type IImagenesCliente = z.infer<typeof ImagenesClienteSchema>;
 
-export interface ICreateCliente {
-  nombre: string;
-  admin?: boolean;
-  imagenes?: IImagenesCliente;
-  tiposDispositivo?: TipoDispositivo[];
-  integraciones?: IIntegracion[];
-  config?: IConfigCliente;
-}
-
-export interface IUpdateCliente {
-  activo?: boolean;
-  nombre?: string;
-  admin?: boolean;
-  imagenes?: IImagenesCliente;
-  tiposDispositivo?: TipoDispositivo[];
-  integraciones?: IIntegracion[];
-  config?: IConfigCliente;
-}
+export type { ICreateCliente, IUpdateCliente } from "./cliente.model";

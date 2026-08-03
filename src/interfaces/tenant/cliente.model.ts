@@ -1,282 +1,209 @@
-import { TipoDispositivo } from "../auxiliares";
-import { ModeloCorrectora, modelosCorrectoras } from "../entidades";
-import { IImagenesCliente } from "./cliente.dto";
-import { IIntegracion } from "./integraciones";
-import { Division } from "./usuario/permiso";
+import { z } from "zod";
+import { TipoDispositivoSchema } from "../auxiliares/tipoDispositivo";
+import { ModeloCorrectoraSchema } from "../entidades/mensajes-nuc/mensajes-nuc";
+import { ImagenesClienteSchema } from "./cliente.dto";
+import { IntegracionSchema } from "./integraciones";
+import { DivisionSchema } from "./usuario/permiso";
+import type { Division } from "./usuario/permiso";
 
-export type TemplatesWhatsapp =
-  | "Alerta de presión"
-  | "Punto de medición en mantenimiento"
-  | "Sensor de presión desconectado"
-  | "Error de comunicación de alarma"
-  | "Scada valor fuera de límite"
-  | "Scada valor fuera de límite genérico"
-  | "Scada valor reestablecido"
-  | "Scada booleano alarma"
-  | "Scada booleano reestablecido"
-  | "Scada error de comunicación con servidor"
-  | "Scada cambio de límites por fuera"
-  | "Equipos fuera de línea"
-  | "Batería baja";
+export const TemplatesWhatsappSchema = z.enum([
+  "Alerta de presión",
+  "Punto de medición en mantenimiento",
+  "Sensor de presión desconectado",
+  "Error de comunicación de alarma",
+  "Scada valor fuera de límite",
+  "Scada valor fuera de límite genérico",
+  "Scada valor reestablecido",
+  "Scada booleano alarma",
+  "Scada booleano reestablecido",
+  "Scada error de comunicación con servidor",
+  "Scada cambio de límites por fuera",
+  "Equipos fuera de línea",
+  "Batería baja",
+]);
+export type TemplatesWhatsapp = z.infer<typeof TemplatesWhatsappSchema>;
 
-export type TemplatesMail =
-  | TemplatesWhatsapp
-  | "Nuevo usuario"
-  | "Reset de contraseña"
-  | "Cambio de contraseña";
+export const TemplatesMailSchema = z.union([
+  TemplatesWhatsappSchema,
+  z.enum(["Nuevo usuario", "Reset de contraseña", "Cambio de contraseña"]),
+]);
+export type TemplatesMail = z.infer<typeof TemplatesMailSchema>;
 
-export interface IApn {
-  apn?: string;
-  usuario?: string;
-  password?: string;
-}
+export const ApnSchema = z.object({
+  apn: z.string().optional(),
+  usuario: z.string().optional(),
+  password: z.string().optional(),
+});
+export type IApn = z.infer<typeof ApnSchema>;
 
-export interface IConfigTwilio {
+export const ConfigTwilioSchema = z.object({
   //Mensajes y llamadas
-  accSid?: string;
-  authToken?: string;
-  msgServiceSid?: string;
-  statusCallback?: string;
-  phoneSms?: string;
-  phoneWhatsapp?: string;
-  phoneLlamada?: string;
-  templatesWhatsapp?: {
-    [K in TemplatesWhatsapp]?: string;
-  };
-
+  accSid: z.string().optional(),
+  authToken: z.string().optional(),
+  msgServiceSid: z.string().optional(),
+  statusCallback: z.string().optional(),
+  phoneSms: z.string().optional(),
+  phoneWhatsapp: z.string().optional(),
+  phoneLlamada: z.string().optional(),
+  templatesWhatsapp: z.partialRecord(TemplatesWhatsappSchema, z.string()).optional(),
   //Email
-  senderEmail?: string;
-  senderName?: string;
-  senderAddress?: string;
-  senderCity?: string;
-  senderState?: string;
-  senderZip?: number;
-  sendGridApiKey?: string;
-  templatesMail?: {
-    [K in TemplatesMail]?: string;
-  };
-}
+  senderEmail: z.string().optional(),
+  senderName: z.string().optional(),
+  senderAddress: z.string().optional(),
+  senderCity: z.string().optional(),
+  senderState: z.string().optional(),
+  senderZip: z.number().optional(),
+  sendGridApiKey: z.string().optional(),
+  templatesMail: z.partialRecord(TemplatesMailSchema, z.string()).optional(),
+});
+export type IConfigTwilio = z.infer<typeof ConfigTwilioSchema>;
 
-export interface IConfigSincHoraria {
-  activo?: boolean;
-  desfaseMinimo?: number;
-  desfaseMaximo?: number;
-}
+export const ConfigSincHorariaSchema = z.object({
+  activo: z.boolean().optional(),
+  desfaseMinimo: z.number().optional(),
+  desfaseMaximo: z.number().optional(),
+});
+export type IConfigSincHoraria = z.infer<typeof ConfigSincHorariaSchema>;
 
-export type ColumnaVistaPersonalizadaCorrectoras =
-  | "temperatura"
-  | "presion"
-  | "volumenBaseTotalizado"
-  | "volumenCorregidoTotalizado"
-  | "volumenBaseHorario"
-  | "volumenCorregidoHorario"
-  | "caudalPico"
-  | "caudalPromedio"
-  | "fpv";
+export const ColumnaVistaPersonalizadaCorrectorasSchema = z.enum([
+  "temperatura",
+  "presion",
+  "volumenBaseTotalizado",
+  "volumenCorregidoTotalizado",
+  "volumenBaseHorario",
+  "volumenCorregidoHorario",
+  "caudalPico",
+  "caudalPromedio",
+  "fpv",
+]);
+export type ColumnaVistaPersonalizadaCorrectoras = z.infer<typeof ColumnaVistaPersonalizadaCorrectorasSchema>;
 
-export type ColumnaVistaPersonalizadaResidencial =
-  | "consumoInstantaneo" // Consumo Parcial
-  | "consumo" // Consumo Acumulado Dispositivo
-  | "consumoCorregido" // Consumo Acumulado Medidor
-  | "bateria"; // Batería
+export const ColumnaVistaPersonalizadaResidencialSchema = z.enum([
+  "consumoInstantaneo", // Consumo Parcial
+  "consumo", // Consumo Acumulado Dispositivo
+  "consumoCorregido", // Consumo Acumulado Medidor
+  "bateria", // Batería
+]);
+export type ColumnaVistaPersonalizadaResidencial = z.infer<typeof ColumnaVistaPersonalizadaResidencialSchema>;
 
-export type ColumnaVistaPersonalizada =
-  | ColumnaVistaPersonalizadaCorrectoras
-  | ColumnaVistaPersonalizadaResidencial;
+export const ColumnaVistaPersonalizadaSchema = z.union([
+  ColumnaVistaPersonalizadaCorrectorasSchema,
+  ColumnaVistaPersonalizadaResidencialSchema,
+]);
+export type ColumnaVistaPersonalizada = z.infer<typeof ColumnaVistaPersonalizadaSchema>;
 
-export type StatVistaPersonalizada = "min" | "max" | "avg";
+export const StatVistaPersonalizadaSchema = z.enum(["min", "max", "avg"]);
+export type StatVistaPersonalizada = z.infer<typeof StatVistaPersonalizadaSchema>;
 
-export interface IVistaPersonalizadaColumna {
-  key: ColumnaVistaPersonalizada;
-  /** Nombre custom de la columna; si no se define usa el label por defecto */
-  label?: string;
-  /**
-   * Sólo aplica a columnas independientes (temperatura, presión, caudales, fpv)
-   * en agrupación por día. Define cuáles de min/max/avg mostrar.
-   * Si no se define o queda vacío, se muestran los tres.
-   */
-  stats?: StatVistaPersonalizada[];
-  /**
-   * Sólo aplica a columnas de volumen totalizado (acumulativas) en agrupación
-   * por día. Si es false, no se muestra la columna de consumo del período
-   * calculado a partir del totalizado (sólo el acumulado total). Default true.
-   */
-  mostrarConsumo?: boolean;
-}
+export const VistaPersonalizadaColumnaSchema = z.object({
+  key: ColumnaVistaPersonalizadaSchema,
+  label: z.string().optional(),
+  stats: z.array(StatVistaPersonalizadaSchema).optional(),
+  mostrarConsumo: z.boolean().optional(),
+});
+export type IVistaPersonalizadaColumna = z.infer<typeof VistaPersonalizadaColumnaSchema>;
 
 /**
  * El orden de los elementos en el array `columnas` define el orden de
  * visualización y exportación de las columnas.
  */
+export const VistaPersonalizadaFechaSchema = z.object({
+  separar: z.boolean().optional(),
+  formato: z.string().optional(),
+  formatoFecha: z.string().optional(),
+  formatoHora: z.string().optional(),
+  label: z.string().optional(),
+  labelFecha: z.string().optional(),
+  labelHora: z.string().optional(),
+});
+export type IVistaPersonalizadaFecha = z.infer<typeof VistaPersonalizadaFechaSchema>;
 
-export interface IVistaPersonalizadaFecha {
-  /** true: fecha y hora en 2 columnas; false (default): una sola columna combinada */
-  separar?: boolean;
-  /** Formato de la columna combinada (separar=false). Ej: "YYYY-MM-DD HH:mm:ss" */
-  formato?: string;
-  /** Formato de la columna fecha (separar=true). Ej: "YYYY-MM-DD" */
-  formatoFecha?: string;
-  /** Formato de la columna hora (separar=true). Ej: "HH:mm:ss" */
-  formatoHora?: string;
-  /** Nombre custom de la columna combinada */
-  label?: string;
-  /** Nombre custom de la columna fecha (separar=true) */
-  labelFecha?: string;
-  /** Nombre custom de la columna hora (separar=true) */
-  labelHora?: string;
-}
+export const VistaPersonalizadaCorrectorasSchema = z.object({
+  activo: z.boolean(),
+  columnas: z.array(VistaPersonalizadaColumnaSchema),
+  agrupacion: z.enum(["hora", "dia"]),
+  tipoDia: z.enum(["gas", "calendario"]).optional(),
+  fecha: VistaPersonalizadaFechaSchema.optional(),
+});
+export type IVistaPersonalizadaCorrectoras = z.infer<typeof VistaPersonalizadaCorrectorasSchema>;
 
-export interface IVistaPersonalizadaCorrectoras {
-  activo: boolean;
-  columnas: IVistaPersonalizadaColumna[];
-  agrupacion: "hora" | "dia";
-  tipoDia?: "gas" | "calendario";
-  fecha?: IVistaPersonalizadaFecha;
-}
+export const VistasPersonalizadasPorDivisionSchema = z.object({
+  Correctoras: VistaPersonalizadaCorrectorasSchema.optional(),
+  Residencial: VistaPersonalizadaCorrectorasSchema.optional(),
+});
+export type IVistasPersonalizadasPorDivision = z.infer<typeof VistasPersonalizadasPorDivisionSchema>;
 
-export interface IVistasPersonalizadasPorDivision {
-  Correctoras?: IVistaPersonalizadaCorrectoras;
-  Residencial?: IVistaPersonalizadaCorrectoras;
-}
+export const ModuloCoberturaLorawanSchema = z.object({
+  activo: z.boolean().optional(),
+  verMetricas: z.boolean().optional(),
+});
+export type IModuloCoberturaLorawan = z.infer<typeof ModuloCoberturaLorawanSchema>;
 
-export interface IModuloCoberturaLorawan {
-  /**
-   * Habilita la vista "Cobertura LoRaWAN" en gas-web-cliente y los endpoints
-   * asociados de gas-api-cliente. Si no está o es false, la feature está oculta.
-   */
-  activo?: boolean;
-  /**
-   * Si es true, el cliente ve métricas de gateway (proxy a ChirpStack).
-   * Default: false.
-   */
-  verMetricas?: boolean;
-}
+export const ModuloClimaSchema = z.object({
+  activo: z.boolean().optional(),
+});
+export type IModuloClima = z.infer<typeof ModuloClimaSchema>;
 
-export interface IModuloClima {
-  /**
-   * Habilita la sección "Clima" (vistas resumen de INSIDEht 2.0) en
-   * gas-web-cliente. Si no está o es false, la feature está oculta: no aparece
-   * en el menú y la ruta redirige al inicio. Pensado como módulo activable por
-   * cliente mientras la funcionalidad se termina de pulir, para poder desplegar
-   * el frontend sin exponerla.
-   */
-  activo?: boolean;
-}
-
-export interface IParametrosObis {
-  /**
-   * reporte_mask de 24 bits que el cliente quiere en todos sus NME.
-   *
-   * Solo bits soportados por el firmware (0x00303F = bits 0-5, 12, 13). Los bits
-   * sin soporte los limpia el equipo al aplicar, así que un mask con bits de más
-   * nunca llegaría a confirmarse: gas-api-cliente los rechaza al guardar.
-   */
-  reporteMask?: number;
-}
+export const ParametrosObisSchema = z.object({
+  reporteMask: z.number().optional(),
+});
+export type IParametrosObis = z.infer<typeof ParametrosObisSchema>;
 
 export type DivisionConVistaPersonalizada = Extract<
   Division,
   "Correctoras" | "Residencial"
 >;
 
-export interface IConfigCliente {
-  apns?: IApn[];
-  usaLlm?: boolean;
-  tokensMensualesDisponibles?: number;
-  maximoUsuariosUsanLlm?: number;
-  twilio?: IConfigTwilio;
-  sincHoraria?: Partial<Record<ModeloCorrectora, IConfigSincHoraria>>;
-  nucV3?: boolean;
-  /**
-   * Si es true, los registros se insertan con upsert, es decir, si ya existe un registro con el mismo
-   * identificador, se sobreescribe. Si es false o no está definido, los registros duplicados se ignoran.
-   */
-  sobreEscribirRegistrosNuc?: boolean;
+export const ConfigClienteSchema = z.object({
+  apns: z.array(ApnSchema).optional(),
+  usaLlm: z.boolean().optional(),
+  tokensMensualesDisponibles: z.number().optional(),
+  maximoUsuariosUsanLlm: z.number().optional(),
+  twilio: ConfigTwilioSchema.optional(),
+  sincHoraria: z.partialRecord(ModeloCorrectoraSchema, ConfigSincHorariaSchema).optional(),
+  nucV3: z.boolean().optional(),
+  sobreEscribirRegistrosNuc: z.boolean().optional(),
+  valorAlarmaBateriaSml: z.number().optional(),
+  puedeCrearDispositivos: z.boolean().optional(),
+  vistasPersonalizadas: VistasPersonalizadasPorDivisionSchema.optional(),
+  moduloCoberturaLorawan: ModuloCoberturaLorawanSchema.optional(),
+  moduloClima: ModuloClimaSchema.optional(),
+  parametrosObis: ParametrosObisSchema.optional(),
+  permitirEditarUnNcoAsignado: z.boolean().optional(),
+  crearMedidorResidencialAutomatico: z.boolean().optional(),
+  gestionCuentas: z.boolean().optional(),
+});
+export type IConfigCliente = z.infer<typeof ConfigClienteSchema>;
 
-  /**
-   * A nivel global genera alertas de batería baja para los dispositivos SML con bateria menor al valor definido
-   */
-  valorAlarmaBateriaSml?: number;
+// Populate intra-SCC (IImagenesCliente vive en cliente.dto.ts, que a su vez
+// importa IConfigCliente de acá solo como tipo — ver cliente.dto.ts): esto no
+// es un ciclo runtime porque cliente.dto.ts usa `import type` para lo que
+// toma de este archivo. Ver CLAUDE.md, "De solo tipos a schemas Zod".
+export const ClienteSchema = z.object({
+  _id: z.string().optional(),
+  fechaCreacion: z.string().optional(),
+  activo: z.boolean().optional(),
+  nombre: z.string().optional(),
+  admin: z.boolean().optional(),
+  imagenes: ImagenesClienteSchema.optional(),
+  tiposDispositivo: z.array(TipoDispositivoSchema).optional(),
+  integraciones: z.array(IntegracionSchema).optional(),
+  config: ConfigClienteSchema.optional(),
+});
+export type ICliente = z.infer<typeof ClienteSchema>;
 
-  /**
-   * Si es true, los usuarios del cliente con rol TecnicoCampo o Administrador pueden crear dispositivos
-   * vía el flujo de la app móvil (POST /dispositivos en gas-api-cliente). Default: false.
-   * Pensado para habilitar la alta de medidores ML107A en campo, leyendo las keys LoRaWAN por NFC.
-   */
-  puedeCrearDispositivos?: boolean;
+// Create/Update viven acá (no en cliente.dto.ts) para no necesitar el valor
+// real de ClienteSchema desde cliente.dto.ts, que rompería el ciclo que se
+// evita justo arriba. cliente.dto.ts re-exporta estos tipos (type-only) para
+// mantener los paths de import de siempre.
+export const CreateClienteSchema = ClienteSchema.omit({
+  _id: true,
+  fechaCreacion: true,
+}).required({ nombre: true });
+export type ICreateCliente = z.infer<typeof CreateClienteSchema>;
 
-  /**
-   * Vista personalizada del tab de registros, por división. Si activo, agrega un tab al inicio del
-   * detalle del punto que muestra los mismos registros con columnas/agrupación configuradas.
-   */
-  vistasPersonalizadas?: IVistasPersonalizadasPorDivision;
-
-  /**
-   * Visualización de cobertura LoRaWAN. Habilita la vista de mapa de cobertura
-   * y la sección "LoRaWAN" de configuración para el cliente. Los gateways
-   * visibles se definen vía la colección AsignacionGatewayCliente.
-   */
-  moduloCoberturaLorawan?: IModuloCoberturaLorawan;
-
-  /**
-   * Sección "Clima" (vistas resumen por UN / Centro Operativo / Localidad).
-   * Módulo activable por cliente: mientras esté apagado, el frontend no muestra
-   * la sección aunque la versión desplegada la incluya.
-   */
-  moduloClima?: IModuloClima;
-
-  /**
-   * Configuración Global «Parámetros OBIS»: qué métricas reportan los NME del
-   * cliente. Al guardarla, gas-api-cliente hace fan-out de un SET_CONFIG por
-   * equipo (ver IConfigDownlinkNme).
-   *
-   * Es de un solo tiro, NO reconciliación: si después un técnico cambia el mask
-   * de un equipo por BLE, la plataforma no lo pisa.
-   */
-  parametrosObis?: IParametrosObis;
-
-  /**
-   * Si es true, un Admin Global puede editar la Unidad de Negocio y el Centro
-   * Operativo de un dispositivo AUNQUE esté asignado a una entidad intermedia
-   * (correctora / medidor residencial / unidad de presión / medidor de agua /
-   * medidor eléctrico). El backend propaga el cambio a la entidad asignada y a
-   * su punto de medición. Default false: comportamiento actual, en el que la
-   * UN/CO quedan bloqueadas mientras el dispositivo está asignado y para
-   * cambiarlas hay que desasignar. No afecta a la localidad, que se edita y
-   * propaga independientemente de este flag.
-   */
-  permitirEditarUnNcoAsignado?: boolean;
-
-  /**
-   * Controla la creación automática de la entidad medidor en gas-sml cuando un
-   * dispositivo SML / WRC (medidor residencial de gas) o MRA (medidor
-   * residencial de agua) reporta y no tiene un medidor asignado por deveui.
-   * undefined o true (default): se crea el medidor automáticamente
-   * (comportamiento actual). false: NO se crea; el reporte se guarda igual pero
-   * sin quedar asignado a ningún medidor (idsAsignados sin el medidor) y sin
-   * actualizar punto. Chequear con `!== false` para preservar el default.
-   */
-  crearMedidorResidencialAutomatico?: boolean;
-
-  /**
-   * Habilita la UI de Cuentas (agrupador de facturación, ver ICuentaCliente) en
-   * los frontends. Capability de solo-visualización: la lógica de backend es
-   * transparente (campos nullable) y la ingesta se activa por presencia de
-   * config en `integraciones`. El backend AUTO-SETEA este flag al configurar una
-   * integración que puebla cuentas (p. ej. Manantial); no hay toggle en admin.
-   * Default undefined/false: el cliente no ve nada de cuentas.
-   */
-  gestionCuentas?: boolean;
-}
-
-export interface ICliente {
-  _id?: string;
-  fechaCreacion?: string;
-  activo?: boolean;
-  nombre?: string;
-  admin?: boolean;
-  imagenes?: IImagenesCliente;
-  tiposDispositivo?: TipoDispositivo[];
-  integraciones?: IIntegracion[];
-  config?: IConfigCliente;
-}
+export const UpdateClienteSchema = ClienteSchema.omit({
+  _id: true,
+  fechaCreacion: true,
+});
+export type IUpdateCliente = z.infer<typeof UpdateClienteSchema>;

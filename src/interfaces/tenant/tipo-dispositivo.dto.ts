@@ -1,21 +1,31 @@
-import { TipoDispositivo } from "../auxiliares";
-import { ILoraServer } from "./lora-server.model";
+import { z } from "zod";
+import { TipoDispositivoSchema } from "../auxiliares/tipoDispositivo";
+import { LoraServerSchema } from "./lora-server.model";
 
-export interface ILoraServerConfigPorApp {
-  idLoraServer: string;
-  deviceProfileID?: string;
+export const LoraServerConfigPorAppSchema = z.object({
+  idLoraServer: z.string(),
+  deviceProfileID: z.string().optional(),
   //
-  loraServer?: ILoraServer;
-}
+  loraServer: LoraServerSchema.optional(),
+});
+export type ILoraServerConfigPorApp = z.infer<
+  typeof LoraServerConfigPorAppSchema
+>;
 
-export interface ICreateTipoDispositivo {
-  nombre: TipoDispositivo;
-  integrationUrl?: string;
-  loraServers?: ILoraServerConfigPorApp[];
-}
+export const CreateTipoDispositivoSchema = z.object({
+  nombre: TipoDispositivoSchema,
+  integrationUrl: z.string().optional(),
+  loraServers: z.array(LoraServerConfigPorAppSchema).optional(),
+});
+export type ICreateTipoDispositivo = z.infer<
+  typeof CreateTipoDispositivoSchema
+>;
 
-export interface IUpdateTipoDispositivo {
-  nombre?: TipoDispositivo;
-  integrationUrl?: string;
-  loraServers?: ILoraServerConfigPorApp[];
-}
+export const UpdateTipoDispositivoSchema = z.object({
+  nombre: TipoDispositivoSchema.optional(),
+  integrationUrl: z.string().optional(),
+  loraServers: z.array(LoraServerConfigPorAppSchema).optional(),
+});
+export type IUpdateTipoDispositivo = z.infer<
+  typeof UpdateTipoDispositivoSchema
+>;

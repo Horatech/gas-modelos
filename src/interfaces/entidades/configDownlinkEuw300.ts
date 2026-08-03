@@ -1,6 +1,7 @@
-import { ICliente } from "../tenant/cliente.model";
-import { ILoraServer } from "../tenant/lora-server.model";
-import { IDispositivo } from "./dispositivo";
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { LoraServerSchema } from "../tenant/lora-server.model";
+import { DispositivoSchema } from "./dispositivo";
 
 /**
  * Control y auditoría del downlink de configuración de un medidor de agua EUW300.
@@ -18,60 +19,74 @@ import { IDispositivo } from "./dispositivo";
  * Sirve a la vez como control anti-loop (tope de `intentos`) y como auditoría
  * consultable (qué se pidió, cuándo y con qué resultado).
  */
-export type EstadoConfigDownlinkEuw300 =
-  | "pendiente" // config guardada desde la web, aún no encolada
-  | "encolado" // job creado en la cola de downlinks
-  | "enviado" // downlink SET_CONFIG encolado en ChirpStack (a la espera de ack)
-  | "confirmado" // el device confirmó (ack=true) la recepción del downlink
-  | "agotado" // se alcanzó el tope de intentos sin éxito
-  | "error"; // último enqueue falló
+export const EstadoConfigDownlinkEuw300Schema = z.enum([
+  "pendiente", // config guardada desde la web, aún no encolada
+  "encolado", // job creado en la cola de downlinks
+  "enviado", // downlink SET_CONFIG encolado en ChirpStack (a la espera de ack)
+  "confirmado", // el device confirmó (ack=true) la recepción del downlink
+  "agotado", // se alcanzó el tope de intentos sin éxito
+  "error", // último enqueue falló
+]);
+export type EstadoConfigDownlinkEuw300 = z.infer<typeof EstadoConfigDownlinkEuw300Schema>;
 
-export interface IIntentoConfigDownlinkEuw300 {
-  fecha?: string; // ISO del intento
-  resultado?: "ok" | "error";
-  error?: string; // mensaje si resultado = 'error'
-}
+export const IntentoConfigDownlinkEuw300Schema = z.object({
+  fecha: z.string().optional(), // ISO del intento
+  resultado: z.enum(["ok", "error"]).optional(),
+  error: z.string().optional(), // mensaje si resultado = 'error'
+});
+export type IIntentoConfigDownlinkEuw300 = z.infer<
+  typeof IntentoConfigDownlinkEuw300Schema
+>;
 
-export interface IConfigDownlinkEuw300 {
-  _id?: string;
+export const ConfigDownlinkEuw300Schema = z.object({
+  _id: z.string().optional(),
   //
-  deveui?: string;
-  deviceName?: string;
-  deviceMeterNumber?: string; // S/N (14 dígitos BCD) usado para armar la trama
+  deveui: z.string().optional(),
+  deviceName: z.string().optional(),
+  deviceMeterNumber: z.string().optional(), // S/N (14 dígitos BCD) usado para armar la trama
   //
   // Config solicitada (la que viaja en el downlink)
-  horaReporteDiario?: string; // formato "HH:mm"
-  intervaloComunicacion?: number; // minutos entre reportes
+  horaReporteDiario: z.string().optional(), // formato "HH:mm"
+  intervaloComunicacion: z.number().optional(), // minutos entre reportes
   //
-  estado?: EstadoConfigDownlinkEuw300;
-  intentos?: number; // contador de downlinks enviados (tope configurable)
-  ultimoIntento?: string; // ISO del último envío
-  historialIntentos?: IIntentoConfigDownlinkEuw300[]; // acotado al tope de intentos
+  estado: EstadoConfigDownlinkEuw300Schema.optional(),
+  intentos: z.number().optional(), // contador de downlinks enviados (tope configurable)
+  ultimoIntento: z.string().optional(), // ISO del último envío
+  historialIntentos: z.array(IntentoConfigDownlinkEuw300Schema).optional(), // acotado al tope de intentos
   //
-  fechaSolicitud?: string; // ISO en que el usuario guardó la config
-  fechaEnviado?: string; // ISO en que se encoló el downlink en ChirpStack
-  fechaConfirmado?: string; // ISO del ack=true del device (Clase A)
+  fechaSolicitud: z.string().optional(), // ISO en que el usuario guardó la config
+  fechaEnviado: z.string().optional(), // ISO en que se encoló el downlink en ChirpStack
+  fechaConfirmado: z.string().optional(), // ISO del ack=true del device (Clase A)
   //
-  idLoraServer?: string;
+  idLoraServer: z.string().optional(),
   //
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
   //
-  fechaCreacion?: string;
-  fechaActualizacion?: string;
+  fechaCreacion: z.string().optional(),
+  fechaActualizacion: z.string().optional(),
   // Populate
-  cliente?: ICliente;
-  dispositivo?: IDispositivo;
-  loraServer?: ILoraServer;
-}
+  cliente: ClienteSchema.optional(),
+  dispositivo: DispositivoSchema.optional(),
+  loraServer: LoraServerSchema.optional(),
+});
+export type IConfigDownlinkEuw300 = z.infer<typeof ConfigDownlinkEuw300Schema>;
 
-////// CREATE
-type OmitirCreate = "_id" | "cliente" | "dispositivo" | "loraServer";
-export interface ICreateConfigDownlinkEuw300
-  extends Omit<Partial<IConfigDownlinkEuw300>, OmitirCreate> {}
+////// CREATE / UPDATE
+const omitir = {
+  _id: true,
+  cliente: true,
+  dispositivo: true,
+  loraServer: true,
+} as const;
 
-////// UPDATE
-type OmitirUpdate = "_id" | "cliente" | "dispositivo" | "loraServer";
-export interface IUpdateConfigDownlinkEuw300
-  extends Omit<Partial<IConfigDownlinkEuw300>, OmitirUpdate> {}
+export const CreateConfigDownlinkEuw300Schema = ConfigDownlinkEuw300Schema.omit(omitir);
+export type ICreateConfigDownlinkEuw300 = z.infer<
+  typeof CreateConfigDownlinkEuw300Schema
+>;
+
+export const UpdateConfigDownlinkEuw300Schema = ConfigDownlinkEuw300Schema.omit(omitir);
+export type IUpdateConfigDownlinkEuw300 = z.infer<
+  typeof UpdateConfigDownlinkEuw300Schema
+>;

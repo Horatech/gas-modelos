@@ -1,6 +1,7 @@
-import { ICliente } from "../tenant/cliente.model";
-import { ILoraServer } from "../tenant/lora-server.model";
-import { IDispositivo } from "./dispositivo";
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { LoraServerSchema } from "../tenant/lora-server.model";
+import { DispositivoSchema } from "./dispositivo";
 
 /**
  * Control y auditoría del downlink de configuración de un NME.
@@ -17,65 +18,73 @@ import { IDispositivo } from "./dispositivo";
  * La pasada de alta solo toma equipos que NUNCA tuvieron control: si un técnico
  * cambió el mask por BLE, el control ya existe y no se lo vuelve a pisar.
  */
-export type EstadoConfigDownlinkNme =
-  | "pendiente" // fan-out hecho, aún no encolado
-  | "esperando_equipo" // sin tz conocida; NO consume intentos
-  | "encolado" // job creado en la cola de downlinks
-  | "enviado" // downlink en ChirpStack, esperando el fPort 100 de respuesta
-  | "confirmado" // TERMINAL: el reporteMask observado iguala al solicitado
-  | "agotado" // TERMINAL: se alcanzó el tope de intentos
-  | "error"; // falló el último enqueue; se reintenta
+export const EstadoConfigDownlinkNmeSchema = z.enum([
+  "pendiente", // fan-out hecho, aún no encolado
+  "esperando_equipo", // sin tz conocida; NO consume intentos
+  "encolado", // job creado en la cola de downlinks
+  "enviado", // downlink en ChirpStack, esperando el fPort 100 de respuesta
+  "confirmado", // TERMINAL: el reporteMask observado iguala al solicitado
+  "agotado", // TERMINAL: se alcanzó el tope de intentos
+  "error", // falló el último enqueue; se reintenta
+]);
+export type EstadoConfigDownlinkNme = z.infer<typeof EstadoConfigDownlinkNmeSchema>;
 
-export interface IIntentoConfigDownlinkNme {
-  fecha?: string; // ISO del intento
-  resultado?: "ok" | "error";
-  error?: string; // mensaje si resultado = 'error'
-}
+export const IntentoConfigDownlinkNmeSchema = z.object({
+  fecha: z.string().optional(), // ISO del intento
+  resultado: z.enum(["ok", "error"]).optional(),
+  error: z.string().optional(), // mensaje si resultado = 'error'
+});
+export type IIntentoConfigDownlinkNme = z.infer<typeof IntentoConfigDownlinkNmeSchema>;
 
-export interface IConfigDownlinkNme {
-  _id?: string;
+export const ConfigDownlinkNmeSchema = z.object({
+  _id: z.string().optional(),
   //
-  deveui?: string;
-  deviceName?: string;
+  deveui: z.string().optional(),
+  deviceName: z.string().optional(),
   //
   // Config solicitada (la que viaja en el downlink)
-  reporteMask?: number;
+  reporteMask: z.number().optional(),
   /**
    * tz con la que se armó el downlink. El SET_CONFIG de 4 B lleva tz + mask
    * juntos: no hay forma de mandar solo el mask. Se reenvía la que el propio
    * equipo reportó por fPort 100.
    */
-  tz?: number;
+  tz: z.number().optional(),
   //
-  estado?: EstadoConfigDownlinkNme;
-  intentos?: number;
-  ultimoIntento?: string;
-  historialIntentos?: IIntentoConfigDownlinkNme[];
+  estado: EstadoConfigDownlinkNmeSchema.optional(),
+  intentos: z.number().optional(),
+  ultimoIntento: z.string().optional(),
+  historialIntentos: z.array(IntentoConfigDownlinkNmeSchema).optional(),
   //
-  fechaSolicitud?: string;
-  fechaEnviado?: string;
-  fechaConfirmado?: string;
+  fechaSolicitud: z.string().optional(),
+  fechaEnviado: z.string().optional(),
+  fechaConfirmado: z.string().optional(),
   //
-  idLoraServer?: string;
+  idLoraServer: z.string().optional(),
   //
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
   //
-  fechaCreacion?: string;
-  fechaActualizacion?: string;
+  fechaCreacion: z.string().optional(),
+  fechaActualizacion: z.string().optional(),
   // Populate
-  cliente?: ICliente;
-  dispositivo?: IDispositivo;
-  loraServer?: ILoraServer;
-}
+  cliente: ClienteSchema.optional(),
+  dispositivo: DispositivoSchema.optional(),
+  loraServer: LoraServerSchema.optional(),
+});
+export type IConfigDownlinkNme = z.infer<typeof ConfigDownlinkNmeSchema>;
 
-////// CREATE
-type OmitirCreate = "_id" | "cliente" | "dispositivo" | "loraServer";
-export interface ICreateConfigDownlinkNme
-  extends Omit<Partial<IConfigDownlinkNme>, OmitirCreate> {}
+////// CREATE / UPDATE
+const omitir = {
+  _id: true,
+  cliente: true,
+  dispositivo: true,
+  loraServer: true,
+} as const;
 
-////// UPDATE
-type OmitirUpdate = "_id" | "cliente" | "dispositivo" | "loraServer";
-export interface IUpdateConfigDownlinkNme
-  extends Omit<Partial<IConfigDownlinkNme>, OmitirUpdate> {}
+export const CreateConfigDownlinkNmeSchema = ConfigDownlinkNmeSchema.omit(omitir);
+export type ICreateConfigDownlinkNme = z.infer<typeof CreateConfigDownlinkNmeSchema>;
+
+export const UpdateConfigDownlinkNmeSchema = ConfigDownlinkNmeSchema.omit(omitir);
+export type IUpdateConfigDownlinkNme = z.infer<typeof UpdateConfigDownlinkNmeSchema>;

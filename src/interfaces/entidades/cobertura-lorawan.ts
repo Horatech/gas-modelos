@@ -1,67 +1,71 @@
-import { GeoJSON, ICoordenadas } from "../auxiliares";
+import { z } from "zod";
+import { CoordenadasSchema, GeoJSONSchema } from "../auxiliares/coordenadas";
 
 /**
  * Recepción de un uplink de cobertura por un gateway individual.
  */
-export interface IGatewayCobertura {
-  gatewayId?: string;
-  rssi?: number;
-  snr?: number;
-  ubicacion?: ICoordenadas;
+export const GatewayCoberturaSchema = z.object({
+  gatewayId: z.string().optional(),
+  rssi: z.number().optional(),
+  snr: z.number().optional(),
+  ubicacion: CoordenadasSchema.optional(),
   /** Altitud del gateway en metros (de rxInfo[].location.altitude) */
-  altitud?: number;
+  altitud: z.number().optional(),
   /** Distancia great-circle dispositivo-gateway en metros (si el gateway tiene ubicación) */
-  distancia?: number;
-}
+  distancia: z.number().optional(),
+});
+export type IGatewayCobertura = z.infer<typeof GatewayCoberturaSchema>;
 
 /**
  * Medición de cobertura LoRaWAN georeferenciada.
  * Generada por gas-field-tester a partir de uplinks del RAK10701
  * (field tester) u otros dispositivos con GPS.
  */
-export interface ICoberturaLorawan {
-  _id?: string;
+export const CoberturaLorawanSchema = z.object({
+  _id: z.string().optional(),
   /** DevEUI del dispositivo que midió */
-  deveui?: string;
-  deviceName?: string;
-  fecha?: string;
+  deveui: z.string().optional(),
+  deviceName: z.string().optional(),
+  fecha: z.string().optional(),
   /** Posición del dispositivo al momento de la medición */
-  ubicacion?: ICoordenadas;
+  ubicacion: CoordenadasSchema.optional(),
   /** Punto GeoJSON para queries geoespaciales (índice 2dsphere) */
-  geojson?: GeoJSON;
-  altitud?: number;
-  hdop?: number;
-  satelites?: number;
+  geojson: GeoJSONSchema.optional(),
+  altitud: z.number().optional(),
+  hdop: z.number().optional(),
+  satelites: z.number().optional(),
   /** Precisión estimada del fix GPS en metros: (hdop*5+5)/10 */
-  accuracy?: number;
+  accuracy: z.number().optional(),
   /** Medición sin fix GPS válido: conserva RSSI/SNR/diversidad pero no se ubica en el mapa */
-  sinFix?: boolean;
+  sinFix: z.boolean().optional(),
   /** fPort del uplink (1 = corto, 11 = extendido) */
-  fPort?: number;
-  fCnt?: number;
+  fPort: z.number().optional(),
+  fCnt: z.number().optional(),
   /** Data rate del uplink */
-  dr?: number;
+  dr: z.number().optional(),
   /** Spreading factor */
-  sf?: number;
+  sf: z.number().optional(),
   /** Frecuencia en Hz */
-  frecuencia?: number;
+  frecuencia: z.number().optional(),
   /** Ancho de banda en Hz (de txInfo) */
-  bandwidth?: number;
+  bandwidth: z.number().optional(),
   /** Code rate (de txInfo, ej. "4/5") */
-  codeRate?: string;
+  codeRate: z.string().optional(),
   /** Gateways que recibieron el uplink */
-  gateways?: IGatewayCobertura[];
-  cantidadGateways?: number;
-  minRssi?: number;
-  maxRssi?: number;
-  minSnr?: number;
-  maxSnr?: number;
+  gateways: z.array(GatewayCoberturaSchema).optional(),
+  cantidadGateways: z.number().optional(),
+  minRssi: z.number().optional(),
+  maxRssi: z.number().optional(),
+  minSnr: z.number().optional(),
+  maxSnr: z.number().optional(),
   /** Distancias en metros (solo gateways con ubicación) */
-  minDistancia?: number;
-  maxDistancia?: number;
-}
+  minDistancia: z.number().optional(),
+  maxDistancia: z.number().optional(),
+});
+export type ICoberturaLorawan = z.infer<typeof CoberturaLorawanSchema>;
 
 // CREATE
-type OmitirCreate = "_id";
-export interface ICreateCoberturaLorawan
-  extends Omit<Partial<ICoberturaLorawan>, OmitirCreate> {}
+export const CreateCoberturaLorawanSchema = CoberturaLorawanSchema.omit({
+  _id: true,
+});
+export type ICreateCoberturaLorawan = z.infer<typeof CreateCoberturaLorawanSchema>;

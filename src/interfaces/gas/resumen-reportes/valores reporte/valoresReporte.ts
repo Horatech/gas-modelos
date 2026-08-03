@@ -1,8 +1,13 @@
-import { IResumenReporteNSP } from "./nsp";
-import { IResumenReporteVeribox } from "./veribox";
-import { IResumenReporteResidencial } from "./residencial";
+import { z } from "zod";
+import { ResumenReporteNSPSchema } from "./nsp";
+import { ResumenReporteVeriboxSchema } from "./veribox";
+import { ResumenReporteResidencialSchema } from "./residencial";
 
-export type IValoresResumenReporte =
-  | IResumenReporteNSP
-  | IResumenReporteVeribox
-  | IResumenReporteResidencial;
+export const ValoresResumenReporteSchema = z.union([
+  ResumenReporteNSPSchema,
+  ResumenReporteVeriboxSchema,
+  ResumenReporteResidencialSchema,
+]);
+export type IValoresResumenReporte = z.infer<
+  typeof ValoresResumenReporteSchema
+>;

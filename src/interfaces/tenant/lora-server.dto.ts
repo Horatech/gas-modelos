@@ -1,43 +1,14 @@
-import { TipoLoraServer } from "./lora-server.model";
+import { z } from "zod";
+import { LoraServerSchema } from "./lora-server.model";
 
-export interface ICreateLoraServer {
-  nombre: string;
-  url: string;
-  tipo: TipoLoraServer;
-  // ChirpStack v3
-  token?: string;
-  organizationID?: string;
-  serviceProfileID?: string;
-  integrationUrl?: string;
-  // ChirpStack v4 (NS externo)
-  apiToken?: string;
-  tenantId?: string;
-  applicationId?: string;
-  deviceProfileId?: string;
-  integrationApikey?: string;
-  // Orbiwise
-  user?: string;
-  pass?: string;
-  serviceProfileUUID?: string;
-}
+export const CreateLoraServerSchema = LoraServerSchema.omit({
+  _id: true,
+}).required({
+  nombre: true,
+  url: true,
+  tipo: true,
+});
+export type ICreateLoraServer = z.infer<typeof CreateLoraServerSchema>;
 
-export interface IUpdateLoraServer {
-  nombre?: string;
-  url?: string;
-  tipo?: TipoLoraServer;
-  // ChirpStack v3
-  token?: string;
-  organizationID?: string;
-  serviceProfileID?: string;
-  integrationUrl?: string;
-  // ChirpStack v4 (NS externo)
-  apiToken?: string;
-  tenantId?: string;
-  applicationId?: string;
-  deviceProfileId?: string;
-  integrationApikey?: string;
-  // Orbiwise
-  user?: string;
-  pass?: string;
-  serviceProfileUUID?: string;
-}
+export const UpdateLoraServerSchema = LoraServerSchema.omit({ _id: true });
+export type IUpdateLoraServer = z.infer<typeof UpdateLoraServerSchema>;

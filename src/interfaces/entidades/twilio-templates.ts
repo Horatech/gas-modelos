@@ -1,4 +1,5 @@
-import { IConfigTwilio } from "../tenant";
+import { z } from "zod";
+import { ConfigTwilioSchema } from "../tenant/cliente.model";
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -11,12 +12,13 @@ import { IConfigTwilio } from "../tenant";
  * @param valor Valor de la presión {{3}}
  * @param sid HXfb4194701ce4baf115447c6b0baad06c
  */
-export interface ITwilioPresionTemplate {
-  1: string;
-  2: string;
-  3: string;
-  sid: string;
-}
+export const TwilioPresionTemplateSchema = z.object({
+  1: z.string(),
+  2: z.string(),
+  3: z.string(),
+  sid: z.string(),
+});
+export type ITwilioPresionTemplate = z.infer<typeof TwilioPresionTemplateSchema>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -27,10 +29,13 @@ export interface ITwilioPresionTemplate {
  * @param punto Punto de medición {{1}}
  * @param sid HX36663f2a4ef4b29455df5cc6c6eb00a8
  */
-export interface ITwilioMantenimientoTemplate {
-  1: string;
-  sid: string;
-}
+export const TwilioMantenimientoTemplateSchema = z.object({
+  1: z.string(),
+  sid: z.string(),
+});
+export type ITwilioMantenimientoTemplate = z.infer<
+  typeof TwilioMantenimientoTemplateSchema
+>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -41,10 +46,13 @@ export interface ITwilioMantenimientoTemplate {
  * @param punto Punto de medición {{1}}
  * @param sid HXa73924c271c567499fc61c8e3c629909
  */
-export interface ITwilioSensorDesconectadoTemplate {
-  1: string;
-  sid: string;
-}
+export const TwilioSensorDesconectadoTemplateSchema = z.object({
+  1: z.string(),
+  sid: z.string(),
+});
+export type ITwilioSensorDesconectadoTemplate = z.infer<
+  typeof TwilioSensorDesconectadoTemplateSchema
+>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -58,13 +66,16 @@ export interface ITwilioSensorDesconectadoTemplate {
  * @param fecha Fecha del error {{4}}
  * @param sid HX30c8f98ac067a102c2ec970482b393ba
  */
-export interface ITwilioErrorComunicacionAlarmaTemplate {
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-  sid: string;
-}
+export const TwilioErrorComunicacionAlarmaTemplateSchema = z.object({
+  1: z.string(),
+  2: z.string(),
+  3: z.string(),
+  4: z.string(),
+  sid: z.string(),
+});
+export type ITwilioErrorComunicacionAlarmaTemplate = z.infer<
+  typeof TwilioErrorComunicacionAlarmaTemplateSchema
+>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -75,10 +86,13 @@ export interface ITwilioErrorComunicacionAlarmaTemplate {
  * @param punto Punto de medición {{1}}
  * @param sid HX79264e34254ed1f65121644a3f4d8979
  */
-export interface ITwilioScadaBooleanoReestablecidoTemplate {
-  1: string;
-  sid: string;
-}
+export const TwilioScadaBooleanoReestablecidoTemplateSchema = z.object({
+  1: z.string(),
+  sid: z.string(),
+});
+export type ITwilioScadaBooleanoReestablecidoTemplate = z.infer<
+  typeof TwilioScadaBooleanoReestablecidoTemplateSchema
+>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -90,11 +104,14 @@ export interface ITwilioScadaBooleanoReestablecidoTemplate {
  * @param punto Punto de medición {{2}}
  * @param sid HX9bb2b5180e4d9a25b67423bc2e5eb43f
  */
-export interface ITwilioScadaValorReestablecidoTemplate {
-  1: string;
-  2: string;
-  sid: string;
-}
+export const TwilioScadaValorReestablecidoTemplateSchema = z.object({
+  1: z.string(),
+  2: z.string(),
+  sid: z.string(),
+});
+export type ITwilioScadaValorReestablecidoTemplate = z.infer<
+  typeof TwilioScadaValorReestablecidoTemplateSchema
+>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -107,12 +124,15 @@ export interface ITwilioScadaValorReestablecidoTemplate {
  * @param valor Valor {{3}}
  * @param sid HX062696564a7a45eb649751fb6bb98220
  */
-export interface ITwilioScadaCambioLimiteTemplate {
-  1: string;
-  2: string;
-  3: string;
-  sid: string;
-}
+export const TwilioScadaCambioLimiteTemplateSchema = z.object({
+  1: z.string(),
+  2: z.string(),
+  3: z.string(),
+  sid: z.string(),
+});
+export type ITwilioScadaCambioLimiteTemplate = z.infer<
+  typeof TwilioScadaCambioLimiteTemplateSchema
+>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -125,12 +145,15 @@ export interface ITwilioScadaCambioLimiteTemplate {
  * @param alarma Valor de alarma {{3}}
  * @param sid HXe87e6d98251d55a6a6ddf000c3146b75
  */
-export interface ITwilioScadaBooleanoAlertaTemplate {
-  1: string;
-  2: string;
-  3: string;
-  sid: string;
-}
+export const TwilioScadaBooleanoAlertaTemplateSchema = z.object({
+  1: z.string(),
+  2: z.string(),
+  3: z.string(),
+  sid: z.string(),
+});
+export type ITwilioScadaBooleanoAlertaTemplate = z.infer<
+  typeof TwilioScadaBooleanoAlertaTemplateSchema
+>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -143,12 +166,15 @@ export interface ITwilioScadaBooleanoAlertaTemplate {
  * @param punto Punto de medición {{3}}
  * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
  */
-export interface ITwilioFueraDeLimiteTemplate {
-  1: string;
-  2: string;
-  3: string;
-  sid: string;
-}
+export const TwilioFueraDeLimiteTemplateSchema = z.object({
+  1: z.string(),
+  2: z.string(),
+  3: z.string(),
+  sid: z.string(),
+});
+export type ITwilioFueraDeLimiteTemplate = z.infer<
+  typeof TwilioFueraDeLimiteTemplateSchema
+>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -162,69 +188,84 @@ export interface ITwilioFueraDeLimiteTemplate {
  * @param punto Punto de medición {{4}}
  * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
  */
-export interface ITwilioScadaFueraDeLimiteTemplate {
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-  sid: string;
-}
+export const TwilioScadaFueraDeLimiteTemplateSchema = z.object({
+  1: z.string(),
+  2: z.string(),
+  3: z.string(),
+  4: z.string(),
+  sid: z.string(),
+});
+export type ITwilioScadaFueraDeLimiteTemplate = z.infer<
+  typeof TwilioScadaFueraDeLimiteTemplateSchema
+>;
 
-export interface ITwilioMsgGenericTemplate {
-  [key: number]: string;
-  sid: string;
-}
+// `{ [key: number]: string; sid: string }`: el índice numérico se modela con
+// `.catchall()` (mismo patrón que IEmailGenerico/EmailGenericoSchema más abajo).
+export const TwilioMsgGenericTemplateSchema = z
+  .object({ sid: z.string() })
+  .catchall(z.string());
+export type ITwilioMsgGenericTemplate = z.infer<
+  typeof TwilioMsgGenericTemplateSchema
+>;
 
-export interface IMensajeTwilio {
-  datos?:
-    | ITwilioMsgGenericTemplate
-    | ITwilioErrorComunicacionAlarmaTemplate
-    | ITwilioMantenimientoTemplate
-    | ITwilioPresionTemplate
-    | ITwilioScadaBooleanoAlertaTemplate
-    | ITwilioScadaBooleanoReestablecidoTemplate
-    | ITwilioScadaCambioLimiteTemplate
-    | ITwilioScadaValorReestablecidoTemplate
-    | ITwilioSensorDesconectadoTemplate
-    | ITwilioFueraDeLimiteTemplate
-    | ITwilioScadaFueraDeLimiteTemplate;
-  pais?: string;
-  telefono?: string;
-  idCliente?: string;
-  usuario?: string;
-  twilio?: IConfigTwilio;
-  extra?: Record<string, any>;
-}
+export const MensajeTwilioSchema = z.object({
+  datos: z
+    .union([
+      TwilioMsgGenericTemplateSchema,
+      TwilioErrorComunicacionAlarmaTemplateSchema,
+      TwilioMantenimientoTemplateSchema,
+      TwilioPresionTemplateSchema,
+      TwilioScadaBooleanoAlertaTemplateSchema,
+      TwilioScadaBooleanoReestablecidoTemplateSchema,
+      TwilioScadaCambioLimiteTemplateSchema,
+      TwilioScadaValorReestablecidoTemplateSchema,
+      TwilioSensorDesconectadoTemplateSchema,
+      TwilioFueraDeLimiteTemplateSchema,
+      TwilioScadaFueraDeLimiteTemplateSchema,
+    ])
+    .optional(),
+  pais: z.string().optional(),
+  telefono: z.string().optional(),
+  idCliente: z.string().optional(),
+  usuario: z.string().optional(),
+  twilio: ConfigTwilioSchema.optional(),
+  extra: z.record(z.string(), z.any()).optional(),
+});
+export type IMensajeTwilio = z.infer<typeof MensajeTwilioSchema>;
 
-export interface ISMSTwilio {
-  pais?: string;
-  telefono?: string;
-  mensaje?: string;
-  idCliente?: string;
-  usuario?: string;
-  twilio?: IConfigTwilio;
-  extra?: Record<string, any>;
-}
+export const SMSTwilioSchema = z.object({
+  pais: z.string().optional(),
+  telefono: z.string().optional(),
+  mensaje: z.string().optional(),
+  idCliente: z.string().optional(),
+  usuario: z.string().optional(),
+  twilio: ConfigTwilioSchema.optional(),
+  extra: z.record(z.string(), z.any()).optional(),
+});
+export type ISMSTwilio = z.infer<typeof SMSTwilioSchema>;
 
-export interface ILlamadaTwilio {
-  telefono?: string;
-  mensaje?: string;
-  idCliente?: string;
-  usuario?: string;
-  twilio?: IConfigTwilio;
-  extra?: Record<string, any>;
-}
+export const LlamadaTwilioSchema = z.object({
+  telefono: z.string().optional(),
+  mensaje: z.string().optional(),
+  idCliente: z.string().optional(),
+  usuario: z.string().optional(),
+  twilio: ConfigTwilioSchema.optional(),
+  extra: z.record(z.string(), z.any()).optional(),
+});
+export type ILlamadaTwilio = z.infer<typeof LlamadaTwilioSchema>;
 
 // EMAIL
 
-export interface IEmailDataBase {
-  sid: string;
-  subject?: string;
-}
+export const EmailDataBaseSchema = z.object({
+  sid: z.string(),
+  subject: z.string().optional(),
+});
+export type IEmailDataBase = z.infer<typeof EmailDataBaseSchema>;
 
-export interface IEmailGenerico extends IEmailDataBase {
-  [key: string]: string | undefined;
-}
+export const EmailGenericoSchema = EmailDataBaseSchema.catchall(
+  z.string().optional(),
+);
+export type IEmailGenerico = z.infer<typeof EmailGenericoSchema>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -240,14 +281,15 @@ export interface IEmailGenerico extends IEmailDataBase {
  * @param fecha Fecha {{6}}
  * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
  */
-export interface IEmailFueraDeLimite extends IEmailDataBase {
-  presion: string;
-  variable: string;
-  nombreLimite: string;
-  valorLimite: string;
-  puntoMedicion: string;
-  fecha: string;
-}
+export const EmailFueraDeLimiteSchema = EmailDataBaseSchema.extend({
+  presion: z.string(),
+  variable: z.string(),
+  nombreLimite: z.string(),
+  valorLimite: z.string(),
+  puntoMedicion: z.string(),
+  fecha: z.string(),
+});
+export type IEmailFueraDeLimite = z.infer<typeof EmailFueraDeLimiteSchema>;
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -261,37 +303,47 @@ export interface IEmailFueraDeLimite extends IEmailDataBase {
  * @param fecha Fecha {{4}}
  * @param sid HX77a6e9216b71d1ab0a0f7ecb479956c4
  */
-export interface IEmailLimiteReestablecido extends IEmailDataBase {
-  presion: string;
-  variable: string;
-  puntoMedicion: string;
-  fecha: string;
-}
+export const EmailLimiteReestablecidoSchema = EmailDataBaseSchema.extend({
+  presion: z.string(),
+  variable: z.string(),
+  puntoMedicion: z.string(),
+  fecha: z.string(),
+});
+export type IEmailLimiteReestablecido = z.infer<
+  typeof EmailLimiteReestablecidoSchema
+>;
 
-export interface IEmailResetPassword extends IEmailDataBase {
-  token: string;
-}
+export const EmailResetPasswordSchema = EmailDataBaseSchema.extend({
+  token: z.string(),
+});
+export type IEmailResetPassword = z.infer<typeof EmailResetPasswordSchema>;
 
-export interface IEmailNuevoUsuario extends IEmailDataBase {
-  usuario: string;
-  password: string;
-}
+export const EmailNuevoUsuarioSchema = EmailDataBaseSchema.extend({
+  usuario: z.string(),
+  password: z.string(),
+});
+export type IEmailNuevoUsuario = z.infer<typeof EmailNuevoUsuarioSchema>;
 
-export interface IEmailCambioPassword extends IEmailDataBase {
-  codigo: string;
-}
+export const EmailCambioPasswordSchema = EmailDataBaseSchema.extend({
+  codigo: z.string(),
+});
+export type IEmailCambioPassword = z.infer<typeof EmailCambioPasswordSchema>;
 
-export interface IEmailTwilio {
-  email?: string;
-  datos?:
-    | IEmailGenerico
-    | IEmailFueraDeLimite
-    | IEmailLimiteReestablecido
-    | IEmailResetPassword
-    | IEmailNuevoUsuario
-    | IEmailCambioPassword;
-  idCliente?: string;
-  usuario?: string;
-  twilio?: IConfigTwilio;
-  extra?: Record<string, any>;
-}
+export const EmailTwilioSchema = z.object({
+  email: z.string().optional(),
+  datos: z
+    .union([
+      EmailGenericoSchema,
+      EmailFueraDeLimiteSchema,
+      EmailLimiteReestablecidoSchema,
+      EmailResetPasswordSchema,
+      EmailNuevoUsuarioSchema,
+      EmailCambioPasswordSchema,
+    ])
+    .optional(),
+  idCliente: z.string().optional(),
+  usuario: z.string().optional(),
+  twilio: ConfigTwilioSchema.optional(),
+  extra: z.record(z.string(), z.any()).optional(),
+});
+export type IEmailTwilio = z.infer<typeof EmailTwilioSchema>;

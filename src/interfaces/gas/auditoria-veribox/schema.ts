@@ -1,22 +1,32 @@
-export interface IAuditoriaVeribox {
-  _id?: string;
-  deveui?: string;
-  fechaCreacion?: string;
-  fecha?: string;
-  comando?: string;
-  valorOriginal?: string | null;
-  valorNuevo?: string | null;
+import { z } from "zod";
+
+export const AuditoriaVeriboxSchema = z.object({
+  _id: z.string().optional(),
+  deveui: z.string().optional(),
+  fechaCreacion: z.string().optional(),
+  fecha: z.string().optional(),
+  comando: z.string().optional(),
+  valorOriginal: z.string().nullable().optional(),
+  valorNuevo: z.string().nullable().optional(),
   // Tenancy
-  idCliente?: string;
-}
+  idCliente: z.string().optional(),
+});
+export type IAuditoriaVeribox = z.infer<typeof AuditoriaVeriboxSchema>;
 
 /////////////////////////////////////////
 // CREATE
-type OmitirCreate = '_id';
-export interface ICreateAuditoriaVeribox
-  extends Omit<Partial<IAuditoriaVeribox>, OmitirCreate> {}
+export const CreateAuditoriaVeriboxSchema = AuditoriaVeriboxSchema.omit({
+  _id: true,
+});
+export type ICreateAuditoriaVeribox = z.infer<
+  typeof CreateAuditoriaVeriboxSchema
+>;
 // UPDATE
-type OmitirUpdate = '_id' | 'fechaCreacion';
-export interface IUpdateAuditoriaVeribox
-  extends Omit<Partial<IAuditoriaVeribox>, OmitirUpdate> {}
+export const UpdateAuditoriaVeriboxSchema = AuditoriaVeriboxSchema.omit({
+  _id: true,
+  fechaCreacion: true,
+});
+export type IUpdateAuditoriaVeribox = z.infer<
+  typeof UpdateAuditoriaVeriboxSchema
+>;
 /////////////////////////////////////////

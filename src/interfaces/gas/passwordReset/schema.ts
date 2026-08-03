@@ -1,21 +1,26 @@
-import { IUsuario } from "../../tenant";
+import { z } from "zod";
+import type { IUsuario } from "../../tenant/usuario/schema";
 
-export interface IPasswordReset {
-  _id?: string;
-  idUsuario?: string;
-  token?: string;
-  vencimiento?: string;
-  utilizado?: boolean;
+export const PasswordResetSchema = z.object({
+  _id: z.string().optional(),
+  idUsuario: z.string().optional(),
+  token: z.string().optional(),
+  vencimiento: z.string().optional(),
+  utilizado: z.boolean().optional(),
 
   // virtuals
-  usuario?: IUsuario;
-}
+  usuario: z.custom<IUsuario>().optional(),
+});
+export type IPasswordReset = z.infer<typeof PasswordResetSchema>;
 
-type OmitirCreate = "_id" | "usuario";
-export interface ICreatePasswordReset
-  extends Omit<Partial<IPasswordReset>, OmitirCreate> {}
+export const CreatePasswordResetSchema = PasswordResetSchema.omit({
+  _id: true,
+  usuario: true,
+});
+export type ICreatePasswordReset = z.infer<typeof CreatePasswordResetSchema>;
 
-type OmitirUpdate = "_id" | "usuario";
-
-export interface IUpdatePasswordReset
-  extends Omit<Partial<IPasswordReset>, OmitirUpdate> {}
+export const UpdatePasswordResetSchema = PasswordResetSchema.omit({
+  _id: true,
+  usuario: true,
+});
+export type IUpdatePasswordReset = z.infer<typeof UpdatePasswordResetSchema>;

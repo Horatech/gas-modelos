@@ -1,3 +1,5 @@
-import { ILogReporteVeribox } from "./veribox";
+import { z } from "zod";
+import { LogReporteVeriboxSchema } from "./veribox";
 
-export type IValoresLogReporte = ILogReporteVeribox;
+export const ValoresLogReporteSchema = LogReporteVeriboxSchema;
+export type IValoresLogReporte = z.infer<typeof ValoresLogReporteSchema>;

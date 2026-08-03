@@ -32,36 +32,83 @@ Los proyectos que lo consumen lo importan directamente:
 
 ## Importante para Claude Code
 
-⚠️ **NO intentar compilar este paquete**. No tiene script de build ni es necesario.
+Este paquete **tiene build**: los schemas Zod son la fuente de verdad y los tipos TS se
+infieren (`z.infer`). `dist/` no se versiona (`.gitignore`); se genera con
+`npm run build` (`tsc`) — el hook `prepare` lo corre automático cuando un consumidor hace
+`npm install`/`npm ci` sobre esta git-dependency.
 
-Los cambios en las interfaces se reflejan automáticamente en los proyectos que las consumen mediante el sistema de módulos de TypeScript.
+### De "solo tipos" a schemas Zod (jul 2026)
 
-### ⛔ Este paquete es de SOLO TIPOS: no exportar valores runtime
+Hasta jul 2026 este paquete era interfaces TS puras sin build ni runtime deps, y la
+regla de oro era "nunca exportar un valor runtime" — ver el incidente de `windChillC`
+más abajo. Esa regla **ya no aplica tal cual**: ahora el paquete SÍ compila a JS real y
+SÍ tiene una dependencia runtime (`zod`), y exportar valores (`XSchema`, arrays como
+`TIPOS_DISPOSITIVOS`) es intencional y seguro — `dist/index.js` existe y es resoluble
+por `require`/`import` en los consumidores (verificado: `require('./dist/index.js')`
+expone 445 exports reales sin `MODULE_NOT_FOUND`).
 
-Sólo hay archivos `.ts` y **no se emite JS**. Consecuencia:
+⚠️ **Regla más estricta que en el repo hermano `gestion-modelos`**: cualquier uso
+runtime de un `*Schema` (`.parse()`, `.safeParse()`, `.shape`, `.options`,
+`createZodDto(...)`) en un backend NestJS debe importarse desde el entrypoint
+compilado **`'modelos'`** (dist), **nunca desde `'modelos/src'`**. `modelos/src` queda
+reservado para imports que son y seguirán siendo solo-tipo. Motivo: este paquete ya
+tuvo el incidente real de `windChillC` con exactamente ese patrón, y la infraestructura
+de build de los ~30 consumidores de `gas` es esencialmente idéntica a la de
+`gestion-modelos` (mismo `nest build`, mismo `tsconfig`) — no hay motivo para asumir que
+acá `modelos/src` se comporte mejor para valores runtime.
 
-- Importar **tipos** (`interface`, `type`) es gratis: TypeScript los borra al compilar y no queda nada en el `dist`.
-- Importar un **valor** (una función, una constante, un `enum` real) deja un
-  `require('modelos/src')` en el JS compilado, y **Node no lo puede resolver**: en
-  `node_modules/modelos/src` no hay ningún `index.js`. El servicio arranca y muere con
-  `MODULE_NOT_FOUND`.
+Lo que sigue siendo delicado, y cambia de forma:
 
-**`npm run lint && npm run build` NO lo detectan** — para TypeScript la resolución es
-correcta. El fallo aparece sólo al ejecutar. Ya ocurrió (jul 2026): un helper de wind
-chill exportado desde acá dejó `gas-api-clima v1.1.2` y `gas-api-cliente v3.7.4` en
-CrashLoopBackOff en producción.
+- **Imports de barrel (`from "."`, `from "../entidades"`, `from "../gas"`, etc.) que
+  solo necesitan un tipo deben ser `import type`.** Antes esto era irrelevante porque TS
+  borraba todo; ahora un import de valor sin `type` hacia un barrel fuerza la
+  evaluación de TODO ese barrel en runtime, incluidos los archivos del SCC de
+  `IDispositivo` (ver abajo), lo que puede generar `require` circulares reales. Todos
+  los imports de barrel se reemplazaron por imports directos al archivo específico
+  durante la migración de jul 2026 — mantener esa disciplina en cambios nuevos.
+- **El cluster de `IDispositivo`** — `dispositivo.ts`, `registro.ts`,
+  `punto-medicion.ts`, `dispositivo-externo-nuc.ts`, `correctora.ts`,
+  `cuenta-cliente.ts`, `reporte.ts`, `medidor-residencial.ts`,
+  `medidor-residencial-agua.ts`, `medidor-electrico.ts`, `registro-medidor-electrico.ts`,
+  `unidad-presion.ts`, `valores-reporte/valoresReporte.ts`,
+  `valores-reporte/reporte-inputs-nuc.ts`, `alerta.ts`, `scada.ts`,
+  `config-dispositivo.ts`, `tenant/cliente.model.ts`, `tenant/cliente.dto.ts` (19
+  archivos) — NO usan el schema real del otro lado cuando se referencian ENTRE SÍ:
+  usan una interface hand-written en paralelo al schema (`IX`, mismo shape que
+  `XSchema`, sin `z.infer` para no arrastrar el ciclo al declaration emit) y, en el
+  campo populate, `z.custom<IOtraEntidad>().optional()` (solo type-level, sin
+  validación runtime de ese campo). Si el populate apunta a algo FUERA del cluster (ej.
+  `ICliente` si no formara parte, `IUnidadNegocio`, `ILocalidad`, `IGrupo`, `ICuenca`),
+  usa el schema real. Antes de agregar un campo populate nuevo a cualquiera de estos 19
+  archivos, confirmar con `npx madge --circular --extensions ts src/interfaces` (o,
+  mejor, contra `dist/` compilado: `npx madge --circular --extensions js dist/interfaces`
+  — el único chequeo 100% confiable, porque madge no distingue `import type` de imports
+  reales y sobre el `.ts` fuente reporta falsos positivos) si el destino cierra un
+  ciclo real; si lo hace, seguir el patrón `z.custom`, si no, usar el schema real.
+- Al agregar/tocar un schema: mantener el nombre del tipo (`IX`) igual al de siempre vía
+  `z.infer<typeof XSchema>`, no castear tipos a mano.
+- `npm run build && npm run gen:json-schema` deben pasar sin error antes de mergear.
+  `npm run gen:json-schema -- --verbose` avisa si algún schema nuevo no serializa
+  (agregarlo a `SKIP_SCHEMAS` en `scripts/gen-json-schema.mjs` documentando el motivo,
+  no ignorar el error).
+- Convenciones Zod v4: `z.object`/`z.union`/`z.enum` (API canónica; no hay
+  `z.discriminatedUnion` en este repo, las uniones son heterogéneas sin discriminante
+  limpio). NO usar `z.nativeEnum` ni `.passthrough()/.strict()/.strip()` deprecados.
+  Modo `strip` por defecto (interop Mongoose). Ids/fechas como `z.string()` plano.
+- `TIPOS_DISPOSITIVOS` (`auxiliares/tipoDispositivo.ts`) ahora es
+  `TipoDispositivoGasSchema.options` — fuente única de verdad, ya sin la restricción
+  histórica de "no puede tener consumidores".
+- Tipos genéricos (`auxiliares/exactly.ts`, `listado.ts`, `queryParams.ts`,
+  `responses.ts`) quedan como interfaces TS puras, sin schema asociado — no forzar un
+  `z.object` genérico para "cualquier T".
 
-Por eso `TIPOS_DISPOSITIVOS` (`auxiliares/tipoDispositivo.ts`) no tiene ningún
-consumidor de código en los servicios: **no puede tenerlo**.
-
-**Si hace falta lógica compartida** entre servicios: duplicarla en cada uno con un
-comentario que lo explique, o crear un paquete aparte que sí compile a JS. Los frontends
-Angular sí podrían importar valores (bundlean el TS), pero los backends NestJS no.
-
-Chequeo rápido antes de dar por buena una importación nueva:
+Verificación previa a un PR (todas deben pasar):
 
 ```bash
-npm run build && node -e "require('./dist/<archivo-que-importa>.js')"
+npm run build
+node -e "const m = require('./dist/index.js'); if (!Object.keys(m).length) throw new Error('barrel vacío')"
+npm run gen:json-schema -- --verbose
+npx madge --circular --extensions js dist/interfaces   # 0 esperado
 ```
 
 ## Dispositivos soportados
@@ -132,6 +179,35 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 - En firmware: `SIZE_TEL_STANDARD = 13`
 
 ## Cambios recientes
+
+### 2026-07-31 - Migración a schemas Zod v4
+
+- Todas las interfaces pasaron a `XSchema` (Zod) + `IX = z.infer<typeof XSchema>`,
+  mismo patrón que `gestion-modelos`. `package.json` agrega `zod`, `main`/`types`
+  apuntan a `dist/`, hook `prepare` compila en el install del consumidor.
+  `scripts/gen-json-schema.mjs` genera JSON Schema/OpenAPI desde los schemas.
+- Ningún nombre de tipo (`IX`) existente se eliminó (verificado antes/después).
+  Consumidores actuales (100% imports de tipos, 0 de valores, relevado antes de
+  mergear) no se rompen por el merge en sí — el trabajo de actualizar los ~30
+  consumidores para usar los schemas queda para otra sesión (ver `CONSUMIDORES.md`).
+- Todos los imports de barrel (`from "."`, `from "../entidades"`, etc.) se
+  reemplazaron por imports directos al archivo específico.
+- El cluster de 19 archivos de `IDispositivo` (ver sección "De solo tipos a schemas
+  Zod" arriba) usa `z.custom<T>()` entre sí. Verificado con
+  `npx madge --circular --extensions js dist/interfaces`: **0 ciclos** en el JS
+  compilado (el único chequeo confiable — sobre el `.ts` fuente madge da falsos
+  positivos porque no distingue `import type`).
+- `ModeloCorrectora`/`modelosCorrectoras` (modelo/marca de correctora) se mantuvo en
+  `entidades/mensajes-nuc/mensajes-nuc.ts`, su ubicación original — no se dupliques
+  en otro archivo (`correctora.ts` los reimportaba desde ahí antes de la migración;
+  sigue haciéndolo, sin redefinirlos, para no chocar con el barrel de
+  `entidades/index.ts`).
+- Colisiones de nombre resueltas al promover types locales a `XSchema` (dos archivos
+  distintos tenían un type con el mismo nombre, invisible antes porque nunca se había
+  compilado el barrel completo como un solo programa): `envio-sms.ts` renombró su
+  `TipoAlerta`/`Agrupacion` locales a `TipoAlertaEnvio`/`AgrupacionEnvio` (distintos de
+  `alerta.ts`/`gas/agrupacion`); `mensajes-nuc.ts` renombró su `TipoMensaje` a
+  `TipoMensajeNuc` (distinto del de `LLM/chat-tipos.ts`).
 
 ### 2026-07-31 - Configuración Global «Parámetros OBIS» (ciclo C)
 

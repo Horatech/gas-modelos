@@ -1,9 +1,12 @@
-export interface IServiceProfileChirpstack {
-  createdAt: string;
-  id: string;
-  name: string;
-  networkServerID: string;
-  networkServerName: string;
-  organizationID: string;
-  updatedAt: string;
-}
+import { z } from "zod";
+
+export const ServiceProfileChirpstackSchema = z.object({
+  createdAt: z.string(),
+  id: z.string(),
+  name: z.string(),
+  networkServerID: z.string(),
+  networkServerName: z.string(),
+  organizationID: z.string(),
+  updatedAt: z.string(),
+});
+export type IServiceProfileChirpstack = z.infer<typeof ServiceProfileChirpstackSchema>;

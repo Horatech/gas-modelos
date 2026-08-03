@@ -1,80 +1,70 @@
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import {
-  ICorrectora,
-  IDispositivo,
-  ILocalidad,
-  IMedidorResidencial,
-  IScada,
-  IUnidadPresion,
-} from ".";
-import { IUsuario } from "../tenant";
+import { z } from "zod";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { UsuarioSchema } from "../tenant/usuario/schema";
+import { CorrectoraSchema } from "./correctora";
+import { DispositivoSchema } from "./dispositivo";
+import { LocalidadSchema } from "./localidad";
+import { MedidorResidencialSchema } from "./medidor-residencial";
+import { ScadaSchema } from "./scada";
+import { UnidadPresionSchema } from "./unidad-presion";
 
-export type IEntidades =
-  | "Dispositivo"
-  | "Correctora"
-  | "Unidad de Presión"
-  | "Scada"
-  | "Medidor Residencial"
-  | "Unidad de Negocio"
-  | "Centro Operativo"
-  | "Localidad";
+export const EntidadesSchema = z.enum([
+  "Dispositivo",
+  "Correctora",
+  "Unidad de Presión",
+  "Scada",
+  "Medidor Residencial",
+  "Unidad de Negocio",
+  "Centro Operativo",
+  "Localidad",
+]);
+export type IEntidades = z.infer<typeof EntidadesSchema>;
 
-export interface IAsignacion {
-  _id?: string;
+export const AsignacionSchema = z.object({
+  _id: z.string().optional(),
   //
-  idCliente?: string;
-  fechaCreacion?: string;
-  idUsuario?: string;
+  idCliente: z.string().optional(),
+  fechaCreacion: z.string().optional(),
+  idUsuario: z.string().optional(),
   // Entidad Modificada
-  tipoEntidadModificada?: IEntidades;
-  idEntidadModificada?: string;
-  nombreEntidadModificada?: string;
+  tipoEntidadModificada: EntidadesSchema.optional(),
+  idEntidadModificada: z.string().optional(),
+  nombreEntidadModificada: z.string().optional(),
   // Entidad que se le asigna
-  tipoEntidadAsignada?: IEntidades;
-  idEntidadAsignada?: string;
-  nombreEntidadAsignada?: string;
+  tipoEntidadAsignada: EntidadesSchema.optional(),
+  idEntidadAsignada: z.string().optional(),
+  nombreEntidadAsignada: z.string().optional(),
 
   // Populate
-  dispositivoAsignado?: IDispositivo;
-  correctoraAsignada?: ICorrectora;
-  unidadPresionAsignada?: IUnidadPresion;
-  scadaAsignado?: IScada;
-  medidorResidencialAsignado?: IMedidorResidencial;
-  unidadNegocioAsignado?: IUnidadNegocio;
-  centroOperativoAsignado?: ICentroOperativo;
-  localidadAsignada?: ILocalidad;
-  usuario?: IUsuario;
-}
+  dispositivoAsignado: DispositivoSchema.optional(),
+  correctoraAsignada: CorrectoraSchema.optional(),
+  unidadPresionAsignada: UnidadPresionSchema.optional(),
+  scadaAsignado: ScadaSchema.optional(),
+  medidorResidencialAsignado: MedidorResidencialSchema.optional(),
+  unidadNegocioAsignado: UnidadNegocioSchema.optional(),
+  centroOperativoAsignado: CentroOperativoSchema.optional(),
+  localidadAsignada: LocalidadSchema.optional(),
+  usuario: UsuarioSchema.optional(),
+});
+export type IAsignacion = z.infer<typeof AsignacionSchema>;
 
-////// CREATE
-type OmitirCreate =
-  | "_id"
-  | "dispositivoAsignado"
-  | "correctoraAsignada"
-  | "unidadPresionAsignada"
-  | "scadaAsignado"
-  | "medidorResidencialAsignado"
-  | "unidadNegocioAsignado"
-  | "centroOperativoAsignado"
-  | "localidadAsignada"
-  | "usuario";
+////// CREATE / UPDATE (mismo set de campos omitidos)
+const omitir = {
+  _id: true,
+  dispositivoAsignado: true,
+  correctoraAsignada: true,
+  unidadPresionAsignada: true,
+  scadaAsignado: true,
+  medidorResidencialAsignado: true,
+  unidadNegocioAsignado: true,
+  centroOperativoAsignado: true,
+  localidadAsignada: true,
+  usuario: true,
+} as const;
 
-export interface ICreateAsignacion
-  extends Omit<Partial<IAsignacion>, OmitirCreate> {}
+export const CreateAsignacionSchema = AsignacionSchema.omit(omitir);
+export type ICreateAsignacion = z.infer<typeof CreateAsignacionSchema>;
 
-////// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "dispositivoAsignado"
-  | "correctoraAsignada"
-  | "unidadPresionAsignada"
-  | "scadaAsignado"
-  | "medidorResidencialAsignado"
-  | "unidadNegocioAsignado"
-  | "centroOperativoAsignado"
-  | "localidadAsignada"
-  | "usuario";
-
-export interface IUpdateAsignacion
-  extends Omit<Partial<IAsignacion>, OmitirUpdate> {}
+export const UpdateAsignacionSchema = AsignacionSchema.omit(omitir);
+export type IUpdateAsignacion = z.infer<typeof UpdateAsignacionSchema>;

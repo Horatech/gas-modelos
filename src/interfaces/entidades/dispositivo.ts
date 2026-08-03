@@ -1,74 +1,117 @@
-import { ICoordenadas, TipoDispositivo } from "../auxiliares";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ICliente } from "../tenant/cliente.model";
-import { ILoraServer } from "../tenant/lora-server.model";
-import { ILoteDispositivo } from "../tenant/loteDispositivo.model";
-import { IAlerta } from "./alerta";
-import { ILocalidad } from "./localidad";
-import { IRegistro } from "./registro";
+import { z } from "zod";
+import { CoordenadasSchema, ICoordenadas } from "../auxiliares/coordenadas";
+import { TipoDispositivoGasSchema, TipoDispositivoGas } from "../auxiliares/tipoDispositivo";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { LoraServerSchema } from "../tenant/lora-server.model";
+import { LoteDispositivoSchema } from "../tenant/loteDispositivo.model";
+import { LocalidadSchema } from "./localidad";
+import type { IAlerta } from "./alerta";
+import type { IRegistro } from "./registro";
 
-export type TipoConectividad = "4G" | "LORA";
+export const TipoConectividadSchema = z.enum(["4G", "LORA"]);
+export type TipoConectividad = z.infer<typeof TipoConectividadSchema>;
 
-export interface IDispositivo {
+// Populates intra-SCC (IAlerta, IRegistro) como z.custom (import type-only):
+// un schema real acá arrastra el shape completo del ciclo Dispositivo <->
+// Registro/Correctora/PuntoMedicion/... y revienta la resolución en runtime
+// (ver CLAUDE.md, "De solo tipos a schemas Zod").
+export const DispositivoSchema = z.object({
   // Info autogenerada
+  _id: z.string().optional(),
+  fechaCreacion: z.string().optional(),
+  // Tenant
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  // Info de carga
+  deveui: z.string().optional(),
+  deviceName: z.string().optional(),
+  appkey: z.string().optional(),
+  conectividad: TipoConectividadSchema.optional(),
+  idLote: z.string().optional(),
+  tipoDispositivo: TipoDispositivoGasSchema.optional(),
+  // Solo con conectividad Lora
+  idLoraServer: z.string().optional(),
+  // Info de comunicacion
+  snr: z.number().optional(),
+  rssi: z.number().optional(),
+  adr: z.boolean().optional(),
+  dr: z.number().optional(),
+  fechaUltimaComunicacion: z.string().optional(),
+  // Otra info
+  firmware: z.string().optional(),
+  versionHardware: z.string().optional(), // Versión de hardware (ej: "v1", "v3" para NUC con/sin GPIO)
+  serieTransmisor: z.string().optional(), // serie del transmisor (integración externa, p. ej. TNS_NRO_SERIE)
+  codigoExternoTransmisor: z.string().optional(), // TNS_ID del sistema externo (idempotencia de la ingesta)
+  ubicacion: CoordenadasSchema.optional(),
+  // Info especifica de cada tipo de dispositivo
+  config: z.record(z.string(), z.any()).optional(),
+  ultimoReporte: z.custom<IRegistro>().optional(),
+  ultimaAlerta: z.custom<IAlerta>().optional(),
+  // Virtuals
+  cliente: ClienteSchema.optional(),
+  lote: LoteDispositivoSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+  loraServer: LoraServerSchema.optional(),
+});
+
+/**
+ * Interface hand-written (mismo shape que el schema): al ser parte del SCC de
+ * IDispositivo no usa z.infer, para no arrastrar el ciclo al declaration emit.
+ */
+export interface IDispositivo {
   _id?: string;
   fechaCreacion?: string;
-  // Tenant
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idLocalidad?: string;
-  // Info de carga
   deveui?: string;
   deviceName?: string;
   appkey?: string;
   conectividad?: TipoConectividad;
   idLote?: string;
-  tipoDispositivo?: TipoDispositivo;
-  // Solo con conectividad Lora
+  tipoDispositivo?: TipoDispositivoGas;
   idLoraServer?: string;
-  // Info de comunicacion
   snr?: number;
   rssi?: number;
   adr?: boolean;
   dr?: number;
   fechaUltimaComunicacion?: string;
-  // Otra info
   firmware?: string;
-  versionHardware?: string; // Versión de hardware (ej: "v1", "v3" para NUC con/sin GPIO)
-  serieTransmisor?: string; // serie del transmisor (integración externa, p. ej. TNS_NRO_SERIE)
-  codigoExternoTransmisor?: string; // TNS_ID del sistema externo (idempotencia de la ingesta)
+  versionHardware?: string;
+  serieTransmisor?: string;
+  codigoExternoTransmisor?: string;
   ubicacion?: ICoordenadas;
-  // Info especifica de cada tipo de dispositivo
   config?: Record<string, any>;
   ultimoReporte?: IRegistro;
   ultimaAlerta?: IAlerta;
-  // Virtuals
-  cliente?: ICliente;
-  lote?: ILoteDispositivo;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
-  loraServer?: ILoraServer;
+  cliente?: import("../tenant/cliente.model").ICliente;
+  lote?: import("../tenant/loteDispositivo.model").ILoteDispositivo;
+  unidadNegocio?: import("../gas/unidadNegocio/schema").IUnidadNegocio;
+  centroOperativo?: import("../gas/centroOperativo/schema").ICentroOperativo;
+  localidad?: import("./localidad").ILocalidad;
+  loraServer?: import("../tenant/lora-server.model").ILoraServer;
 }
 
 ////// CREATE
-type OmitirCreate =
-  | "_id"
-  | "unidadDeNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "cliente";
+export const CreateDispositivoSchema = DispositivoSchema.omit({
+  _id: true,
+  centroOperativo: true,
+  localidad: true,
+  cliente: true,
+});
+type OmitirCreate = "_id" | "unidadDeNegocio" | "centroOperativo" | "localidad" | "cliente";
 export interface ICreateDispositivo
   extends Omit<Partial<IDispositivo>, OmitirCreate> {}
 
 ////// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "unidadDeNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "cliente";
+export const UpdateDispositivoSchema = CreateDispositivoSchema;
+type OmitirUpdate = "_id" | "unidadDeNegocio" | "centroOperativo" | "localidad" | "cliente";
 export interface IUpdateDispositivo
   extends Omit<Partial<IDispositivo>, OmitirUpdate> {}

@@ -1,23 +1,32 @@
-import { GeoJSON, ICoordenadas } from "../auxiliares";
-import { Division, ICliente } from "../tenant";
-import { IAgrupacion } from "../gas/agrupacion";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ICorrectora, IEstado } from "./correctora";
-import { ITipoAlerta } from "./alerta";
-import { IUnidadPresion } from "./unidad-presion";
-import { ILocalidad } from "./localidad";
-import { IGrupo } from "./grupo";
-import { ISubzonaTarifaria } from "./subzona-tarifaria";
-import { IMedidorResidencial } from "./medidor-residencial";
-import { IMedidorResidencialAgua } from "./medidor-residencial-agua";
-import { IMedidorElectrico } from "./medidor-electrico";
-import { IScada } from "./scada";
-import { ICuenca } from "./cuenca";
-import { ICuentaCliente } from "./cuenta-cliente";
-import { IDispositivoEUW300 } from "./configs-dispositivo";
-import { IDispositivoExternoNuc } from "./dispositivo-externo-nuc";
+import { z } from "zod";
+import { GeoJSONSchema, GeoJSON, CoordenadasSchema, ICoordenadas } from "../auxiliares/coordenadas";
+import { DivisionSchema } from "../tenant/usuario/permiso";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { AgrupacionSchema } from "../gas/agrupacion/schema";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { EstadoCorrectoraSchema } from "./correctora";
+import { TipoAlertaSchema } from "./alerta";
+import { LocalidadSchema } from "./localidad";
+import { GrupoSchema } from "./grupo";
+import { SubzonaTarifariaSchema } from "./subzona-tarifaria";
+import { CuencaSchema } from "./cuenca";
+import type { ICorrectora } from "./correctora";
+import type { IUnidadPresion } from "./unidad-presion";
+import type { IMedidorResidencial } from "./medidor-residencial";
+import type { IMedidorResidencialAgua } from "./medidor-residencial-agua";
+import type { IMedidorElectrico } from "./medidor-electrico";
+import type { IScada } from "./scada";
+import type { ICuentaCliente } from "./cuenta-cliente";
+import type { IDispositivoExternoNuc } from "./dispositivo-externo-nuc";
 
+export const LimitesNotificacionSchema = z.object({
+  sms: z.number().optional(),
+  whatsapp: z.number().optional(),
+  llamada: z.number().optional(),
+  email: z.number().optional(),
+  push: z.number().optional(),
+});
 export interface ILimitesNotificacion {
   sms?: number;
   whatsapp?: number;
@@ -28,81 +37,147 @@ export interface ILimitesNotificacion {
 
 // Estado del Factor de Carga: "Parcial" si el punto tiene menos de 365 días de
 // reportes; "Completo" si tiene 365 días o más.
-export type FactorCargaEstado = "Parcial" | "Completo";
+export const FactorCargaEstadoSchema = z.enum(["Parcial", "Completo"]);
+export type FactorCargaEstado = z.infer<typeof FactorCargaEstadoSchema>;
 
+// Populates intra-SCC (ICorrectora, IUnidadPresion, IMedidorResidencial,
+// IMedidorResidencialAgua, IMedidorElectrico, IScada, ICuentaCliente,
+// IDispositivoExternoNuc) como z.custom: ver CLAUDE.md, "De solo tipos a
+// schemas Zod".
+export const PuntoMedicionSchema = z.object({
+  _id: z.string().optional(),
+  // GPS
+  geojson: GeoJSONSchema.optional(),
+  ubicacion: CoordenadasSchema.optional(),
+  direccion: z.string().optional(),
+  localidad: z.string().optional(),
+  // Detalles
+  nombre: z.string().optional(),
+  descripcion: z.string().optional(),
+  codigoSimec: z.string().optional(), // Para exportacion de datos a Simec
+  numeroSuministro: z.string().optional(), // Identificador Numero de Suministro para facturacion
+  // Cuenta / agrupador de facturación (integración externa, p. ej. Manantial).
+  idCuenta: z.string().nullable().optional(),
+  codigoExternoConexion: z.string().optional(),
+  codigoExternoInmueble: z.string().optional(),
+  diametroConexion: z.number().optional(),
+  materialConexion: z.string().optional(),
+  facturable: z.boolean().optional(),
+  // Dispositivo externo NUC
+  idsDipositivosExternosNuc: z.array(z.string()).nullable().optional(),
+  fechaAsignacionDispositivoExternoNuc: z.string().nullable().optional(),
+  // Correctora
+  idCorrectora: z.string().nullable().optional(),
+  fechaAsignacionCorrectora: z.string().nullable().optional(),
+  desfaseHorario: z.number().nullable().optional(),
+  // Unidad de Presion
+  idUnidadPresion: z.string().nullable().optional(),
+  fechaAsignacionUnidadPresion: z.string().nullable().optional(),
+  // Medidor Residencial
+  idMedidorResidencial: z.string().nullable().optional(),
+  fechaAsignacionMedidorResidencial: z.string().nullable().optional(),
+  // Medidor Residencial Agua
+  idMedidorResidencialAgua: z.string().nullable().optional(),
+  fechaAsignacionMedidorResidencialAgua: z.string().nullable().optional(),
+  // Medidor Electrico
+  idMedidorElectrico: z.string().nullable().optional(),
+  fechaAsignacionMedidorElectrico: z.string().nullable().optional(),
+  // SCADA
+  idsScada: z.array(z.string()).nullable().optional(),
+  fechaAsignacionScada: z.string().nullable().optional(),
+  posicion: z.number().optional(),
+  // Calculado por el backend
+  estado: EstadoCorrectoraSchema.optional(),
+  timestampUltimoReporte: z.string().nullable().optional(),
+  tiposAlertaActivos: z.array(TipoAlertaSchema).optional(),
+  // Factor de Carga
+  factorCarga: z.number().nullable().optional(),
+  factorCargaEstado: FactorCargaEstadoSchema.nullable().optional(),
+  fechaConsumoMaximo: z.string().nullable().optional(),
+  fechaCalculoFactorCarga: z.string().nullable().optional(),
+  // Tenancy
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  idSubzonaTarifaria: z.string().optional(),
+  idsGrupos: z.array(z.string()).optional(),
+  idsAgrupaciones: z.array(z.string()).optional(),
+  idCuenca: z.string().optional(),
+  division: DivisionSchema.optional(),
+  // Notificaciones
+  limitesNotificacion: LimitesNotificacionSchema.optional(),
+  // Virtuals
+  correctora: z.custom<ICorrectora>().optional(),
+  unidadPresion: z.custom<IUnidadPresion>().optional(),
+  medidorResidencial: z.custom<IMedidorResidencial>().optional(),
+  medidorResidencialAgua: z.custom<IMedidorResidencialAgua>().optional(),
+  medidorElectrico: z.custom<IMedidorElectrico>().optional(),
+  scadas: z.array(z.custom<IScada>()).optional(),
+  dispositivosExternosNuc: z.array(z.custom<IDispositivoExternoNuc>()).optional(),
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad2: LocalidadSchema.optional(),
+  subzonaTarifaria: SubzonaTarifariaSchema.optional(),
+  grupos: z.array(GrupoSchema).optional(),
+  agrupaciones: z.array(AgrupacionSchema).optional(),
+  cuenca: CuencaSchema.optional(),
+  cuenta: z.custom<ICuentaCliente>().optional(),
+});
+
+/**
+ * Interface hand-written (mismo shape que el schema): parte del SCC de
+ * IDispositivo, no usa z.infer.
+ */
 export interface IPuntoMedicion {
   _id?: string;
-  // GPS
   geojson?: GeoJSON;
   ubicacion?: ICoordenadas;
   direccion?: string;
   localidad?: string;
-  // Detalles
   nombre?: string;
   descripcion?: string;
-  codigoSimec?: string; // Para exportacion de datos a Simec
-  numeroSuministro?: string; // Identificador Numero de Suministro para facturacion
-  // Cuenta / agrupador de facturación (integración externa, p. ej. Manantial).
-  // Opcional: solo lo usan clientes con la integración activa. El PM equivale a
-  // una "conexión"; la cuenta agrupa varias conexiones (ver ICuentaCliente).
+  codigoSimec?: string;
+  numeroSuministro?: string;
   idCuenta?: string | null;
-  codigoExternoConexion?: string; // con_id del sistema externo
-  codigoExternoInmueble?: string; // inm_id (parte de la PK compuesta externa)
+  codigoExternoConexion?: string;
+  codigoExternoInmueble?: string;
   diametroConexion?: number;
   materialConexion?: string;
   facturable?: boolean;
-  // La "ruta" del sistema externo (nivel conexión) se modela como IAgrupacion y
-  // se vincula vía `idsAgrupaciones` (más abajo); la ingesta hace find-or-create
-  // de la agrupación por nombre. No se guarda como string suelto.
-  // Dispositivo externo NUC
   idsDipositivosExternosNuc?: string[] | null;
   fechaAsignacionDispositivoExternoNuc?: string | null;
-  // Correctora
   idCorrectora?: string | null;
   fechaAsignacionCorrectora?: string | null;
   desfaseHorario?: number | null;
-  // Unidad de Presion
   idUnidadPresion?: string | null;
   fechaAsignacionUnidadPresion?: string | null;
-  // Medidor Residencial
   idMedidorResidencial?: string | null;
   fechaAsignacionMedidorResidencial?: string | null;
-  // Medidor Residencial Agua
   idMedidorResidencialAgua?: string | null;
   fechaAsignacionMedidorResidencialAgua?: string | null;
-  // Medidor Electrico
   idMedidorElectrico?: string | null;
   fechaAsignacionMedidorElectrico?: string | null;
-  // SCADA
   idsScada?: string[] | null;
   fechaAsignacionScada?: string | null;
-  posicion?: number; // Orden en el listado
-  // Calculado por el backend
-  estado?: IEstado;
+  posicion?: number;
+  estado?: import("./correctora").IEstado;
   timestampUltimoReporte?: string | null;
-  // Tipos de alerta activos (denormalizado para subfiltrar el listado por tipo
-  // de alerta cuando estado === "Alerta"). Espeja la señal de estado en los
-  // write-paths de cada división; SCADA lo recomputa desde alertas activas.
-  tiposAlertaActivos?: ITipoAlerta[];
-  // Factor de Carga (FC) — solo división Residencial. Denormalizado por el cron
-  // de gas-cron (recalcularFactorCargaResidencial en gas-datos) a partir de la
-  // serie de consumos diarios del punto (sus reportes, vía idsAsignados).
-  // FC = (Σ consumos diarios / días con consumo) / consumo diario máximo. ≤ 1.
+  tiposAlertaActivos?: import("./alerta").ITipoAlerta[];
   factorCarga?: number | null;
   factorCargaEstado?: FactorCargaEstado | null;
-  fechaConsumoMaximo?: string | null; // fecha del día de mayor consumo del período
-  fechaCalculoFactorCarga?: string | null; // última vez que se computó
-  // Tenancy
+  fechaConsumoMaximo?: string | null;
+  fechaCalculoFactorCarga?: string | null;
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idLocalidad?: string;
-  idSubzonaTarifaria?: string; // solo división Residencial
+  idSubzonaTarifaria?: string;
   idsGrupos?: string[];
   idsAgrupaciones?: string[];
   idCuenca?: string;
-  division?: Division;
-  // Notificaciones
+  division?: import("../tenant/usuario/permiso").Division;
   limitesNotificacion?: ILimitesNotificacion;
   // Virtuals
   correctora?: ICorrectora;
@@ -112,18 +187,37 @@ export interface IPuntoMedicion {
   medidorElectrico?: IMedidorElectrico;
   scadas?: IScada[];
   dispositivosExternosNuc?: IDispositivoExternoNuc[];
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad2?: ILocalidad;
-  subzonaTarifaria?: ISubzonaTarifaria;
-  grupos?: IGrupo[];
-  agrupaciones?: IAgrupacion[];
-  cuenca?: ICuenca;
+  cliente?: import("../tenant/cliente.model").ICliente;
+  unidadNegocio?: import("../gas/unidadNegocio/schema").IUnidadNegocio;
+  centroOperativo?: import("../gas/centroOperativo/schema").ICentroOperativo;
+  localidad2?: import("./localidad").ILocalidad;
+  subzonaTarifaria?: import("./subzona-tarifaria").ISubzonaTarifaria;
+  grupos?: import("./grupo").IGrupo[];
+  agrupaciones?: import("../gas/agrupacion/schema").IAgrupacion[];
+  cuenca?: import("./cuenca").ICuenca;
   cuenta?: ICuentaCliente;
 }
 
 ////// CREATE/UPDATE
+export const CreatePuntoMedicionSchema = PuntoMedicionSchema.omit({
+  _id: true,
+  correctora: true,
+  unidadPresion: true,
+  medidorResidencial: true,
+  medidorResidencialAgua: true,
+  medidorElectrico: true,
+  scadas: true,
+  cliente: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+  localidad2: true,
+  subzonaTarifaria: true,
+  grupos: true,
+  agrupaciones: true,
+  cuenca: true,
+  cuenta: true,
+});
+export const UpdatePuntoMedicionSchema = CreatePuntoMedicionSchema;
 type Omitir =
   | "_id"
   | "correctora"

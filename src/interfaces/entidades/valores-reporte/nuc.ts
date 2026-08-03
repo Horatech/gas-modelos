@@ -1,16 +1,19 @@
-export interface IReporteNUC {
-  timestamp?: string;
-  corrected?: number;
-  uncorrected?: number;
-  presion?: number;
-  temperatura?: number;
-  bateria?: number;
+import { z } from "zod";
+
+export const ReporteNUCSchema = z.object({
+  timestamp: z.string().optional(),
+  corrected: z.number().optional(),
+  uncorrected: z.number().optional(),
+  presion: z.number().optional(),
+  temperatura: z.number().optional(),
+  bateria: z.number().optional(),
   // Valores firmware nuevo
-  correctedTotalizado?: number;
-  uncorrectedTotalizado?: number;
-  correctedParcializado?: number;
-  uncorrectedParcializado?: number;
-  caudalPico?: number;
-  caudalPromedio?: number;
-  fpv?: number; // Factor de compresibilidad
-}
+  correctedTotalizado: z.number().optional(),
+  uncorrectedTotalizado: z.number().optional(),
+  correctedParcializado: z.number().optional(),
+  uncorrectedParcializado: z.number().optional(),
+  caudalPico: z.number().optional(),
+  caudalPromedio: z.number().optional(),
+  fpv: z.number().optional(), // Factor de compresibilidad
+});
+export type IReporteNUC = z.infer<typeof ReporteNUCSchema>;

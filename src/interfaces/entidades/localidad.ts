@@ -1,7 +1,8 @@
-import { ICliente } from "../tenant";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ICoordenadas, GeoJSON } from "../auxiliares/coordenadas";
+import { z } from "zod";
+import { CoordenadasSchema, GeoJSONSchema } from "../auxiliares/coordenadas";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { ClienteSchema } from "../tenant/cliente.model";
 
 /**
  * Origen de la geometria de una Localidad.
@@ -11,15 +12,16 @@ import { ICoordenadas, GeoJSON } from "../auxiliares/coordenadas";
  *   Localidad (sin poligono). Se usa cuando OSM no tiene un limite propio de la localidad
  *   (p. ej. pueblos dentro de un partido). Solo setea `ubicacion`, no `geojson`.
  */
-export type OrigenGeometriaLocalidad = "OSM" | "Manual" | "Puntos";
+export const OrigenGeometriaLocalidadSchema = z.enum(["OSM", "Manual", "Puntos"]);
+export type OrigenGeometriaLocalidad = z.infer<typeof OrigenGeometriaLocalidadSchema>;
 
-export interface ILocalidad {
-  _id?: string;
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
+export const LocalidadSchema = z.object({
+  _id: z.string().optional(),
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
 
-  nombre?: string;
+  nombre: z.string().optional(),
 
   /**
    * Geografia de la Localidad (INSIDEht 2.0). La jerarquia UN/CO NO tiene geometria
@@ -27,36 +29,34 @@ export interface ILocalidad {
    * Todos los campos son opcionales (aditivos): una Localidad sin geo se excluye de
    * las metricas/clima por zona.
    */
-  ubicacion?: ICoordenadas; // centroide (siempre que haya geo) — usado para consultar clima y centrar mapa
-  geojson?: GeoJSON; // poligono opcional de la zona (Polygon / MultiPolygon) — indice 2dsphere en gas-datos
-  origenGeometria?: OrigenGeometriaLocalidad;
-  osmRelationId?: number; // referencia a la relacion OSM cuando origenGeometria === "OSM"
+  ubicacion: CoordenadasSchema.optional(), // centroide (siempre que haya geo) — usado para consultar clima y centrar mapa
+  geojson: GeoJSONSchema.optional(), // poligono opcional de la zona (Polygon / MultiPolygon) — indice 2dsphere en gas-datos
+  origenGeometria: OrigenGeometriaLocalidadSchema.optional(),
+  osmRelationId: z.number().optional(), // referencia a la relacion OSM cuando origenGeometria === "OSM"
 
   // Virtuals
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-}
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+});
+export type ILocalidad = z.infer<typeof LocalidadSchema>;
 
 /**
  * Candidato de geometria para una Localidad, obtenido del import asistido desde
  * OpenStreetMap (Nominatim). El operador elige uno y confirma; la geometria se
  * guarda en la Localidad con origenGeometria = "OSM". Atribucion: datos © OSM (ODbL).
  */
-export interface ICandidatoGeoOsm {
-  nombre: string; // display_name de OSM
-  osmId: number;
-  osmType: string; // "relation" | "way" | "node"
-  ubicacion: ICoordenadas; // centroide (lat/lon de OSM)
-  geojson?: GeoJSON; // poligono, si OSM lo provee
-}
+export const CandidatoGeoOsmSchema = z.object({
+  nombre: z.string(), // display_name de OSM
+  osmId: z.number(),
+  osmType: z.string(), // "relation" | "way" | "node"
+  ubicacion: CoordenadasSchema, // centroide (lat/lon de OSM)
+  geojson: GeoJSONSchema.optional(), // poligono, si OSM lo provee
+});
+export type ICandidatoGeoOsm = z.infer<typeof CandidatoGeoOsmSchema>;
 
-// CREATE
-type OmitirCreate = "_id";
-export interface ICreateLocalidad
-  extends Omit<Partial<ILocalidad>, OmitirCreate> {}
+export const CreateLocalidadSchema = LocalidadSchema.omit({ _id: true });
+export type ICreateLocalidad = z.infer<typeof CreateLocalidadSchema>;
 
-// UPDATE
-type OmitirUpdate = "_id";
-export interface IUpdateLocalidad
-  extends Omit<Partial<ILocalidad>, OmitirUpdate> {}
+export const UpdateLocalidadSchema = LocalidadSchema.omit({ _id: true });
+export type IUpdateLocalidad = z.infer<typeof UpdateLocalidadSchema>;
