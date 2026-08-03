@@ -16,9 +16,22 @@ import { ICoordenadas } from "../auxiliares/coordenadas";
  * solo de tipos (no se compila a JS), por eso las unidades se documentan aca.
  */
 
-/** Proveedor del dato climatico. OpenWeatherMap es el primario del MVP. */
+/**
+ * Proveedor del dato climatico.
+ *
+ * Hay DOS fuentes en produccion y cubren cosas distintas:
+ * - **OpenWeatherMap** — el PRESENTE: `ACTUAL`, `PRONOSTICO` y los tiles del mapa.
+ * - **ERA5-Land** — el PASADO: reanalisis de 9 km del Copernicus CDS, base de los
+ *   grados-dia y de la normal climatica. No vive en esta coleccion sino en el store
+ *   propio de `gas-api-clima` (ver `clima-historico.ts`).
+ *
+ * Se mantienen deliberadamente separadas: son series con sesgos distintos y **mezclarlas
+ * en un mismo calculo mete un escalon**. Un modelo entrenado contra ERA5-Land y evaluado
+ * contra OWM arrastra un offset sistematico que se lee como "el consumo viene raro".
+ */
 export type FuenteClima =
   | "OpenWeatherMap"
+  | "ERA5-Land" // reanalisis Copernicus CDS — serie historica (grados-dia, normal)
   | "Open-Meteo"
   | "SMN"
   | "Estacion"; // estacion meteorologica propia (futuro, fuera de alcance MVP)

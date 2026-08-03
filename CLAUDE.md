@@ -133,6 +133,49 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-03 - Serie climática histórica por celda (grados-día) — Modelos A
+
+Primer PR de `PLAN-GRADOS-DIA.md`. Sólo la superficie que **cruza el borde de la API**;
+el esquema del store histórico vive en las migraciones de `gas-api-clima`.
+
+- Nuevo `clima-historico.ts`: `IGridEra5` (celda de la grilla ERA5-Land 0,1° ≈ 9 km a la
+  que cae una Localidad) e `IClimaDiarioCelda` (DTO de lectura del día histórico:
+  agregados, vector de grados-día, temperatura efectiva, helada consecutiva).
+- `ILocalidad`: nuevo `gridEra5?: IGridEra5`. Lo escribe `gas-api-clima` al resolver la
+  celda. Deriva de `ubicacion`: **Localidad sin centroide = sin celda = sin histórico**,
+  hasta que cargue su geografía.
+- `FuenteClima`: nuevo `"ERA5-Land"`.
+
+**Por qué el histórico NO es una colección de Mongo.** Vive en un **PostgreSQL propio de
+`gas-api-clima`**, fuera de `gas-datos`. El motivo no es performance: **el dataset no
+tiene tenant** — es geodato público de referencia (reanálisis del Copernicus CDS), sin
+`idCliente`, sin permisos, sin ciclo de vida ligado a un cliente. La regla "todo acceso a
+DB pasa por gas-datos" gobierna datos de tenant. Es además lo que le da a `gas-api-clima`
+el módulo de **lectura** que le faltaba para ser de verdad la "API única de clima".
+
+**Se indexa por CELDA, no por Localidad**, y por eso el store crece sublinealmente: varias
+Localidades comparten celda y la serie se guarda una sola vez. Medido en PROD: las 395
+Localidades con centroide dan **353 celdas únicas** (10,6% de dedup).
+
+**`esFallback` no es un detalle interno.** ERA5-Land es *sólo tierra*: 11 de esas 353
+celdas (3,1%) caen en mar — Mar del Plata, Comodoro Rivadavia, Ushuaia, Necochea y otras
+— y se resuelven con la celda contigua (6,4 a 11,1 km). Quien lee ese dato tiene que poder
+saber que viene de un punto desplazado.
+
+**`gradosDia` es un vector por base, no un escalar.** 18,3 °C es sólo la conversión de los
+65 °F del default estadounidense; IRAM 11603 usa 18/20/22 y la base óptima real varía por
+segmento. Guardar el vector permite recalibrar sin releer el histórico. Se calculan por
+**integración horaria**, no por `(Tmax+Tmin)/2`, que subestima cuando la temperatura cruza
+la base durante el día. Y **no se promedian entre Localidades**: `max(0, base − T)` es
+convexa, así que por Jensen el HDD de una temperatura promediada queda sistemáticamente
+por debajo del promedio de los HDD.
+
+Lo que **no** entra en este PR, por no tener productor todavía: los campos de HDD en
+`IResumenDiarioLocalidad`, la extensión de `IResumenOperativoNivel` y el DTO de la normal
+climática. Van en Modelos B, cuando exista el código que los escribe.
+También se descartó agregar `"HISTORICO"` a `TipoDatoClima`: la serie histórica no se
+persiste en `registroclimas`, así que sería un valor sin productor.
+
 ### 2026-07-31 - Configuración Global «Parámetros OBIS» (ciclo C)
 
 - `IConfigCliente`: nuevo `parametrosObis?: IParametrosObis` — el `reporte_mask` de

@@ -2,6 +2,7 @@ import { ICliente } from "../tenant";
 import { ICentroOperativo } from "../gas/centroOperativo";
 import { IUnidadNegocio } from "../gas/unidadNegocio";
 import { ICoordenadas, GeoJSON } from "../auxiliares/coordenadas";
+import { IGridEra5 } from "./clima-historico";
 
 /**
  * Origen de la geometria de una Localidad.
@@ -31,6 +32,14 @@ export interface ILocalidad {
   geojson?: GeoJSON; // poligono opcional de la zona (Polygon / MultiPolygon) — indice 2dsphere en gas-datos
   origenGeometria?: OrigenGeometriaLocalidad;
   osmRelationId?: number; // referencia a la relacion OSM cuando origenGeometria === "OSM"
+
+  /**
+   * Celda de la grilla ERA5-Land a la que cae el centroide. La resuelve y la escribe
+   * `gas-api-clima`; es la clave con la que se busca la serie climatica HISTORICA
+   * (grados-dia) de la Localidad. Deriva de `ubicacion`: una Localidad sin centroide
+   * no tiene celda y queda fuera del historico hasta que cargue su geografia.
+   */
+  gridEra5?: IGridEra5;
 
   // Virtuals
   cliente?: ICliente;
