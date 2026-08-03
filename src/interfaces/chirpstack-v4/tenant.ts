@@ -1,15 +1,19 @@
-export interface ITenantV4 {
-  id: string;
-  name: string;
-  description?: string;
-  canHaveGateways?: boolean;
-  maxGatewayCount?: number;
-  maxDeviceCount?: number;
-  privateGatewaysUp?: boolean;
-  privateGatewaysDown?: boolean;
-}
+import { z } from "zod";
 
-export interface IListTenantsV4Response {
-  totalCount?: number;
-  result?: ITenantV4[];
-}
+export const TenantV4Schema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().optional(),
+  canHaveGateways: z.boolean().optional(),
+  maxGatewayCount: z.number().optional(),
+  maxDeviceCount: z.number().optional(),
+  privateGatewaysUp: z.boolean().optional(),
+  privateGatewaysDown: z.boolean().optional(),
+});
+export type ITenantV4 = z.infer<typeof TenantV4Schema>;
+
+export const ListTenantsV4ResponseSchema = z.object({
+  totalCount: z.number().optional(),
+  result: z.array(TenantV4Schema).optional(),
+});
+export type IListTenantsV4Response = z.infer<typeof ListTenantsV4ResponseSchema>;

@@ -1,42 +1,44 @@
-import { ITipoMensaje } from "./chat-tipos";
-import { IMetadataModelo } from "./metadata-modelo";
+import { z } from "zod";
+import { TipoMensajeSchema } from "./chat-tipos";
+import { MetadataModeloSchema } from "./metadata-modelo";
 
 /**
  * DTO para creat un mensaje de respuesta del modelo LLM
  */
-export interface ICrearChatModeloDto {
+export const CrearChatModeloDtoSchema = z.object({
   /**
    * ID del usuario
    */
-  idUsuario?: string;
+  idUsuario: z.string().optional(),
 
   /**
    * ID del cliente
    */
-  idCliente?: string;
+  idCliente: z.string().optional(),
 
   /**
    * Contenido del mensaje en inglés
    */
-  texto?: string;
+  texto: z.string().optional(),
 
   /**
    * Contenido del mensaje en el idioma original
    */
-  textoOriginal?: string;
+  textoOriginal: z.string().optional(),
 
   /**
    * Razonamiento de la respuesta
    */
-  razonamiento?: string;
+  razonamiento: z.string().optional(),
 
   /**
    * Metadata del modelo de LLM que generó la respuesta
    */
-  metadataModelo?: IMetadataModelo;
+  metadataModelo: MetadataModeloSchema.optional(),
 
   /**
    * Tipo de mensaje
    */
-  tipoMensaje?: ITipoMensaje;
-}
+  tipoMensaje: TipoMensajeSchema.optional(),
+});
+export type ICrearChatModeloDto = z.infer<typeof CrearChatModeloDtoSchema>;

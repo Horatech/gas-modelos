@@ -1,34 +1,77 @@
-import { ICoordenadas } from '../auxiliares';
-import { ICentroOperativo, IUnidadNegocio } from '../gas';
-import { IEstado } from './correctora';
-import { ICuenca } from './cuenca';
-import { IDispositivo } from './dispositivo';
-import { IGrupo } from './grupo';
-import { ILocalidad } from './localidad';
-import { IReporte } from './reporte';
+import { z } from 'zod';
+import { CoordenadasSchema, ICoordenadas } from '../auxiliares/coordenadas';
+import { CentroOperativoSchema } from '../gas/centroOperativo/schema';
+import { UnidadNegocioSchema } from '../gas/unidadNegocio/schema';
+import { EstadoCorrectoraSchema, IEstado } from './correctora';
+import { CuencaSchema } from './cuenca';
+import { GrupoSchema } from './grupo';
+import { LocalidadSchema } from './localidad';
+import type { IDispositivo } from './dispositivo';
+import type { IReporte } from './reporte';
 
-export interface ITitularMedidorResidencialAgua {
-  nombre?: string;
-  tipo: 'persona' | 'empresa';
-  documento?: string; // DNI o CUIT
-  tipoDocumento?: 'DNI' | 'CUIT';
-  telefono?: string;
-  email?: string;
-  // Estado
-  activo?: boolean;
-}
+export const TitularMedidorResidencialAguaSchema = z.object({
+  nombre: z.string().optional(),
+  tipo: z.enum(['persona', 'empresa']),
+  documento: z.string().optional(),
+  tipoDocumento: z.enum(['DNI', 'CUIT']).optional(),
+  telefono: z.string().optional(),
+  email: z.string().optional(),
+  activo: z.boolean().optional(),
+});
+export type ITitularMedidorResidencialAgua = z.infer<typeof TitularMedidorResidencialAguaSchema>;
 
+// Populates intra-SCC (IDispositivo, IReporte) como z.custom: ver CLAUDE.md,
+// "De solo tipos a schemas Zod".
+export const MedidorResidencialAguaSchema = z.object({
+  _id: z.string().optional(),
+  deviceMeterNumber: z.string().optional(),
+  deveui: z.string().optional(),
+  deviceName: z.string().optional(),
+  fechaCreacion: z.string().optional(),
+  ultimoReporte: z.custom<IReporte>().optional(),
+  estadoActual: EstadoCorrectoraSchema.optional(),
+  consumoInicial: z.number().optional(),
+  ubicacionGps: CoordenadasSchema.optional(),
+  direccion: z.string().optional(),
+  nombre: z.string().optional(),
+  descripcion: z.string().optional(),
+  titular: TitularMedidorResidencialAguaSchema.optional(),
+  corregido: z.boolean().optional(),
+  modelo: z.string().optional(),
+  letra: z.string().optional(),
+  serieAlfa: z.string().optional(),
+  medIdExterno: z.string().optional(),
+  diametro: z.number().optional(),
+  caudalMaximo: z.number().optional(),
+  claseMetrologica: z.string().optional(),
+  fechaAsignacionDispositivo: z.string().nullable().optional(),
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  idCuenca: z.string().optional(),
+  idsGrupos: z.array(z.string()).optional(),
+  // Populate
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+  cuenca: CuencaSchema.optional(),
+  grupos: z.array(GrupoSchema).optional(),
+  dispositivo: z.custom<IDispositivo>().optional(),
+});
+
+/**
+ * Interface hand-written (mismo shape que el schema): parte del SCC de
+ * IDispositivo, no usa z.infer.
+ */
 export interface IMedidorResidencialAgua {
   _id?: string;
-  //
   deviceMeterNumber?: string;
   deveui?: string;
   deviceName?: string;
   fechaCreacion?: string;
-  //
   ultimoReporte?: IReporte;
   estadoActual?: IEstado;
-  //
   consumoInicial?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
@@ -36,37 +79,38 @@ export interface IMedidorResidencialAgua {
   descripcion?: string;
   titular?: ITitularMedidorResidencialAgua;
   corregido?: boolean;
-  modelo?: string; /// Accell, Actaris, Itron, Gallus, Elster + lo que escriba el usuario.
-  // Metadatos / identidad externa (integración de facturación, p. ej. Manantial).
-  // La UK externa del medidor es serie+letra; `serieAlfa` aloja la serie
-  // alfanumérica externa cuando difiere del `deviceMeterNumber`.
-  letra?: string; // MED_LETRA (parte de la UK externa serie+letra)
-  serieAlfa?: string; // serie alfanumérica externa (si difiere de deviceMeterNumber)
-  medIdExterno?: string; // MED_ID del sistema externo (idempotencia)
+  modelo?: string;
+  letra?: string;
+  serieAlfa?: string;
+  medIdExterno?: string;
   diametro?: number;
   caudalMaximo?: number;
   claseMetrologica?: string;
-  // Inicio de la asignación vigente medidor↔dispositivo (puntero abierto; el
-  // vínculo de facto es `deveui`). Sin fecha de fin: la atribución histórica de
-  // cada lectura la da el reporte (device.deveui + idsAsignados, inmutable).
   fechaAsignacionDispositivo?: string | null;
-  //
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
   idLocalidad?: string;
   idCuenca?: string;
   idsGrupos?: string[];
-  // Populate
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
-  cuenca?: ICuenca;
-  grupos?: IGrupo[];
+  unidadNegocio?: import('../gas/unidadNegocio/schema').IUnidadNegocio;
+  centroOperativo?: import('../gas/centroOperativo/schema').ICentroOperativo;
+  localidad?: import('./localidad').ILocalidad;
+  cuenca?: import('./cuenca').ICuenca;
+  grupos?: import('./grupo').IGrupo[];
   dispositivo?: IDispositivo;
 }
 
 ////// CREATE
+export const CreateMedidorResidencialAguaSchema = MedidorResidencialAguaSchema.omit({
+  _id: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+  localidad: true,
+  cuenca: true,
+  grupos: true,
+  dispositivo: true,
+});
 type OmitirCreate =
   | '_id'
   | 'unidadNegocio'
@@ -81,6 +125,7 @@ export interface ICreateMedidorResidencialAgua extends Omit<
 > {}
 
 ////// UPDATE
+export const UpdateMedidorResidencialAguaSchema = CreateMedidorResidencialAguaSchema;
 type OmitirUpdate =
   | '_id'
   | 'unidadNegocio'

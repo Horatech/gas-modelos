@@ -1,13 +1,15 @@
-import { IMetadatos } from "./metadatos";
+import { z } from "zod";
+import { MetadatosSchema } from "./metadatos";
 
-export interface IUplink {
-  deveui: string;
-  deviceName?: string;
-  puerto: number;
-  payload: string;
-  metadatos?: IMetadatos[];
-  adr?: boolean;
-  dr?: number;
-  fCnt: string;
-  tags?: { [key: string]: string };
-}
+export const UplinkSchema = z.object({
+  deveui: z.string(),
+  deviceName: z.string().optional(),
+  puerto: z.number(),
+  payload: z.string(),
+  metadatos: z.array(MetadatosSchema).optional(),
+  adr: z.boolean().optional(),
+  dr: z.number().optional(),
+  fCnt: z.string(),
+  tags: z.record(z.string(), z.string()).optional(),
+});
+export type IUplink = z.infer<typeof UplinkSchema>;

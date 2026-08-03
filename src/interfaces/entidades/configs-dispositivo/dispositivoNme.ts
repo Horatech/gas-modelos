@@ -2,32 +2,35 @@
  * Configuracion del dispositivo NME (medidor electrico LoRaWAN, ESP32-S3 + HEXING HXE34K-S).
  * Ver INTEGRACION_LORAWAN_NUBE.md. Alta OTAA con JoinEUI = DevEUI, AU915, Clase C.
  */
-export interface IDispositivoNme {
+
+import { z } from "zod";
+
+export const DispositivoNmeSchema = z.object({
   // Alta LoRaWAN (OTAA)
-  joinEui?: string; // IGUAL al DevEUI
-  appkey?: string;
+  joinEui: z.string().optional(), // IGUAL al DevEUI
+  appkey: z.string().optional(),
 
   // Datos del medidor HEXING (fPort 104)
-  serial?: string;
-  identificacion?: string;
+  serial: z.string().optional(),
+  identificacion: z.string().optional(),
 
   // Config del device (fPort 100 / SET_CONFIG)
-  tz?: number; // Zona horaria en horas (i8, Argentina = -3)
+  tz: z.number().optional(), // Zona horaria en horas (i8, Argentina = -3)
   /**
    * @deprecated El firmware dejó de reportar este campo en junio 2026. Se
    * mantiene declarado por compatibilidad; el decoder ya no lo escribe, así que
    * los valores guardados quedan como estaban.
    */
-  intervaloRegistroMin?: number;
-  horaReporteDiario?: number; // Hora local del reporte diario (0-23)
-  versionFw?: number;
-  resetReason?: number; // enum esp_reset_reason_t
+  intervaloRegistroMin: z.number().optional(),
+  horaReporteDiario: z.number().optional(), // Hora local del reporte diario (0-23)
+  versionFw: z.number().optional(),
+  resetReason: z.number().optional(), // enum esp_reset_reason_t
 
   // byte_estado (fPort 100)
-  energiaExterna?: boolean; // hay 220 VAC presente
-  medidorOk?: boolean; // ultima lectura OK
-  modoBajoConsumo?: boolean; // light sleep activo
-  modoEmergencia?: boolean; // SPIFFS en fallo
+  energiaExterna: z.boolean().optional(), // hay 220 VAC presente
+  medidorOk: z.boolean().optional(), // ultima lectura OK
+  modoBajoConsumo: z.boolean().optional(), // light sleep activo
+  modoEmergencia: z.boolean().optional(), // SPIFFS en fallo
 
   /**
    * Métricas que el equipo reporta por LoRaWAN (`reporte_mask` del fPort 100).
@@ -40,7 +43,7 @@ export interface IDispositivoNme {
    *
    * Solo lo mandan los equipos con el fPort 100 de 11 bytes.
    */
-  reporteMask?: number;
+  reporteMask: z.number().optional(),
 
   /**
    * OBIS que el medidor lista realmente en su readout (`disponible_mask` del
@@ -50,5 +53,6 @@ export interface IDispositivoNme {
    * El equipo emite un fPort 100 espontáneo (máx. 1/hora) cuando este mask
    * cambia — p.ej. al reconfigurar el medidor para exponer el 2.6.0.
    */
-  disponibleMask?: number;
-}
+  disponibleMask: z.number().optional(),
+});
+export type IDispositivoNme = z.infer<typeof DispositivoNmeSchema>;

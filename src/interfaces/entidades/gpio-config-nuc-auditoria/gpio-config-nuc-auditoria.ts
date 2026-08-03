@@ -1,56 +1,69 @@
-import { TipoDispositivo } from "../../auxiliares";
-import { ICliente } from "../../tenant";
+import { z } from "zod";
+import { TipoDispositivoSchema } from "../../auxiliares/tipoDispositivo";
+import { ClienteSchema } from "../../tenant/cliente.model";
 import {
-  IConfigDispositivo,
-  TipoEdgeDeteccion,
-  TipoEntradaDigital,
+  ConfigDispositivoSchema,
+  TipoEdgeDeteccionSchema,
+  TipoEntradaDigitalSchema,
 } from "../config-dispositivo";
-import { IDispositivo } from "../dispositivo";
+import { DispositivoSchema } from "../dispositivo";
 
 // Metadatos de auditoría (sin cambios)
-export interface IAuditoriaConfigGpio {
-  usuarioId: string;
-  nombreUsuario: string;
-}
+export const AuditoriaConfigGpioSchema = z.object({
+  usuarioId: z.string(),
+  nombreUsuario: z.string(),
+});
+export type IAuditoriaConfigGpio = z.infer<typeof AuditoriaConfigGpioSchema>;
 
-// Nueva interfaz: Cada documento es una entrada individual de timeline
-export interface IGpioConfigNucAuditoria {
-  _id?: string; // ObjectId generado por MongoDB
-  fechaCreacion?: string; // Fecha de creación de esta entrada (opcional)
+// Cada documento es una entrada individual de timeline
+export const GpioConfigNucAuditoriaSchema = z.object({
+  _id: z.string().optional(), // ObjectId generado por MongoDB
+  fechaCreacion: z.string().optional(), // Fecha de creación de esta entrada (opcional)
 
   // Campos de timeline (de ITimelineEntry)
-  fechaInicio: string; // Fecha del inicio del cambio (ISO 8601) - NO opcional
-  fechaFin?: string; // Si es null/undefined, esta configuración sigue activa
-  activo: boolean; // true si es la configuración actual activa (fechaFin == null)
-  type: TipoEntradaDigital; // El tipo asignado
-  edgeType?: TipoEdgeDeteccion; // Tipo de detección
-  auditoria?: IAuditoriaConfigGpio; // Metadatos de auditoría
+  fechaInicio: z.string(), // Fecha del inicio del cambio (ISO 8601) - NO opcional
+  fechaFin: z.string().optional(), // Si es null/undefined, esta configuración sigue activa
+  activo: z.boolean(), // true si es la configuración actual activa (fechaFin == null)
+  type: TipoEntradaDigitalSchema, // El tipo asignado
+  edgeType: TipoEdgeDeteccionSchema.optional(), // Tipo de detección
+  auditoria: AuditoriaConfigGpioSchema.optional(), // Metadatos de auditoría
 
-  // Nuevo campo para distinguir canal
-  canal: "IN1" | "IN2"; // Indica el canal GPIO
+  // Distingue canal
+  canal: z.enum(["IN1", "IN2"]), // Indica el canal GPIO
 
-  // Tenant y referencias (sin cambios)
-  idCliente?: string;
-  idDispositivo: string;
-  idConfigDispositivo?: string; // El _id de IConfigDispositivo que disparó este cambio
-  tipoDispositivo?: TipoDispositivo;
+  // Tenant y referencias
+  idCliente: z.string().optional(),
+  idDispositivo: z.string(),
+  idConfigDispositivo: z.string().optional(), // El _id de IConfigDispositivo que disparó este cambio
+  tipoDispositivo: TipoDispositivoSchema.optional(),
 
-  // Populate (sin cambios)
-  cliente?: ICliente;
-  dispositivo?: IDispositivo;
-  configDispositivo?: IConfigDispositivo;
-}
+  // Populate
+  cliente: ClienteSchema.optional(),
+  dispositivo: DispositivoSchema.optional(),
+  configDispositivo: ConfigDispositivoSchema.optional(),
+});
+export type IGpioConfigNucAuditoria = z.infer<typeof GpioConfigNucAuditoriaSchema>;
 
 // CREATE: Omitir campos autogenerados
-type OmitirCreate = "_id" | "dispositivo" | "cliente" | "configDispositivo";
-export interface ICreateGpioConfigNucAuditoria extends Omit<
-  Partial<IGpioConfigNucAuditoria>,
-  OmitirCreate
-> {}
+// Nota: el original envolvía con `Partial<...>` antes del Omit, por eso acá
+// se encadena `.partial()`: todos los campos quedan opcionales en Create/Update.
+export const CreateGpioConfigNucAuditoriaSchema = GpioConfigNucAuditoriaSchema.omit({
+  _id: true,
+  dispositivo: true,
+  cliente: true,
+  configDispositivo: true,
+}).partial();
+export type ICreateGpioConfigNucAuditoria = z.infer<
+  typeof CreateGpioConfigNucAuditoriaSchema
+>;
 
 // UPDATE: Similar, pero parcial
-type OmitirUpdate = "_id" | "dispositivo" | "cliente" | "configDispositivo";
-export interface IUpdateGpioConfigNucAuditoria extends Omit<
-  Partial<IGpioConfigNucAuditoria>,
-  OmitirUpdate
-> {}
+export const UpdateGpioConfigNucAuditoriaSchema = GpioConfigNucAuditoriaSchema.omit({
+  _id: true,
+  dispositivo: true,
+  cliente: true,
+  configDispositivo: true,
+}).partial();
+export type IUpdateGpioConfigNucAuditoria = z.infer<
+  typeof UpdateGpioConfigNucAuditoriaSchema
+>;

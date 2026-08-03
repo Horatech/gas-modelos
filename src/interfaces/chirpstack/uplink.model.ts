@@ -1,44 +1,47 @@
-export interface IUplinkChirpstack {
-  applicationID: string;
-  applicationName: string;
-  deviceName: string;
-  devEUI: string;
-  rxInfo: {
-    gatewayID: string;
-    time: string;
-    timeSinceGPSEpoch: null;
-    rssi: number;
-    loRaSNR: number;
-    channel: number;
-    rfChain: number;
-    board: number;
-    antenna: number;
-    location: {
-      latitude: number;
-      longitude: number;
-      altitude: number;
-    };
-    fineTimestampType: string;
-    context: string;
-    uplinkID: string;
-  }[];
-  txInfo: {
-    frequency: number;
-    modulation: string;
-    loRaModulationInfo: {
-      bandwidth: number;
-      spreadingFactor: number;
-      codeRate: string;
-      polarizationInversion: boolean;
-    };
-  };
-  adr: boolean;
-  dr: number;
-  fCnt: number;
-  fPort: number;
-  data: string;
-  objectJSON: string;
-  tags: {
-    [key: string]: string;
-  };
-}
+import { z } from "zod";
+
+export const UplinkChirpstackSchema = z.object({
+  applicationID: z.string(),
+  applicationName: z.string(),
+  deviceName: z.string(),
+  devEUI: z.string(),
+  rxInfo: z.array(
+    z.object({
+      gatewayID: z.string(),
+      time: z.string(),
+      timeSinceGPSEpoch: z.null(),
+      rssi: z.number(),
+      loRaSNR: z.number(),
+      channel: z.number(),
+      rfChain: z.number(),
+      board: z.number(),
+      antenna: z.number(),
+      location: z.object({
+        latitude: z.number(),
+        longitude: z.number(),
+        altitude: z.number(),
+      }),
+      fineTimestampType: z.string(),
+      context: z.string(),
+      uplinkID: z.string(),
+    })
+  ),
+  txInfo: z.object({
+    frequency: z.number(),
+    modulation: z.string(),
+    loRaModulationInfo: z.object({
+      bandwidth: z.number(),
+      spreadingFactor: z.number(),
+      codeRate: z.string(),
+      polarizationInversion: z.boolean(),
+    }),
+  }),
+  adr: z.boolean(),
+  dr: z.number(),
+  fCnt: z.number(),
+  fPort: z.number(),
+  data: z.string(),
+  objectJSON: z.string(),
+  tags: z.record(z.string(), z.string()),
+});
+export type IUplinkChirpstack = z.infer<typeof UplinkChirpstackSchema>;

@@ -1,8 +1,9 @@
-import { ICliente } from "../tenant";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ILocalidad } from "./localidad";
-import { ICoordenadas } from "../auxiliares/coordenadas";
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { LocalidadSchema } from "./localidad";
+import { CoordenadasSchema } from "../auxiliares/coordenadas";
 
 /**
  * Registro climatico de una Localidad (INSIDEht 2.0).
@@ -29,12 +30,14 @@ import { ICoordenadas } from "../auxiliares/coordenadas";
  * en un mismo calculo mete un escalon**. Un modelo entrenado contra ERA5-Land y evaluado
  * contra OWM arrastra un offset sistematico que se lee como "el consumo viene raro".
  */
-export type FuenteClima =
-  | "OpenWeatherMap"
-  | "ERA5-Land" // reanalisis Copernicus CDS — serie historica (grados-dia, normal)
-  | "Open-Meteo"
-  | "SMN"
-  | "Estacion"; // estacion meteorologica propia (futuro, fuera de alcance MVP)
+export const FuenteClimaSchema = z.enum([
+  "OpenWeatherMap",
+  "ERA5-Land", // reanalisis Copernicus CDS — serie historica (grados-dia, normal)
+  "Open-Meteo",
+  "SMN",
+  "Estacion", // estacion meteorologica propia (futuro, fuera de alcance MVP)
+]);
+export type FuenteClima = z.infer<typeof FuenteClimaSchema>;
 
 /**
  * Tipo de dato climatico.
@@ -43,7 +46,12 @@ export type FuenteClima =
  * - "CLIMATOLOGIA": normal esperada derivada del historico de la ubicacion
  *   (fuente 2 — "el historico de la ubicacion geografica"), por dia del año.
  */
-export type TipoDatoClima = "ACTUAL" | "PRONOSTICO" | "CLIMATOLOGIA";
+export const TipoDatoClimaSchema = z.enum([
+  "ACTUAL",
+  "PRONOSTICO",
+  "CLIMATOLOGIA",
+]);
+export type TipoDatoClima = z.infer<typeof TipoDatoClimaSchema>;
 
 /**
  * Resolucion temporal del dato. Discrimina la serie HORARIA de la DIARIA:
@@ -60,65 +68,68 @@ export type TipoDatoClima = "ACTUAL" | "PRONOSTICO" | "CLIMATOLOGIA";
  * historicos (poleo horario y backfill Open-Meteo) se tratan como horarios, y
  * los `PRONOSTICO` sin granularidad se excluyen de los calculos diarios.
  */
-export type GranularidadClima = "horaria" | "diaria";
+export const GranularidadClimaSchema = z.enum(["horaria", "diaria"]);
+export type GranularidadClima = z.infer<typeof GranularidadClimaSchema>;
 
-export interface IViento {
-  velocidad?: number; // m/s
-  direccion?: number; // grados 0-360 (de donde viene)
-  rafaga?: number; // m/s
-}
+export const VientoSchema = z.object({
+  velocidad: z.number().optional(), // m/s
+  direccion: z.number().optional(), // grados 0-360 (de donde viene)
+  rafaga: z.number().optional(), // m/s
+});
+export type IViento = z.infer<typeof VientoSchema>;
 
-export interface IRegistroClima {
-  _id?: string;
+export const RegistroClimaSchema = z.object({
+  _id: z.string().optional(),
 
-  timestamp?: string; // ISO UTC — instante del dato (o dia objetivo para PRONOSTICO/CLIMATOLOGIA)
-  tipo?: TipoDatoClima;
-  granularidad?: GranularidadClima; // resolucion temporal (ver type)
-  fuente?: FuenteClima;
+  timestamp: z.string().optional(), // ISO UTC — instante del dato (o dia objetivo para PRONOSTICO/CLIMATOLOGIA)
+  tipo: TipoDatoClimaSchema.optional(),
+  granularidad: GranularidadClimaSchema.optional(), // resolucion temporal (ver type)
+  fuente: FuenteClimaSchema.optional(),
 
   // Variables canonicas (normalizadas por gas-api-clima)
-  temperatura?: number; // °C
-  temperaturaMin?: number; // °C — agregados diarios / pronostico
-  temperaturaMax?: number; // °C
-  sensacionTermica?: number; // °C — temperatura aparente (viento/humedad); driver de consumo
-  viento?: IViento;
-  radiacion?: number; // W/m2 — relevante para agua
-  humedad?: number; // % — opcional
-  presionAtmosferica?: number; // hPa — opcional
+  temperatura: z.number().optional(), // °C
+  temperaturaMin: z.number().optional(), // °C — agregados diarios / pronostico
+  temperaturaMax: z.number().optional(), // °C
+  sensacionTermica: z.number().optional(), // °C — temperatura aparente (viento/humedad); driver de consumo
+  viento: VientoSchema.optional(),
+  radiacion: z.number().optional(), // W/m2 — relevante para agua
+  humedad: z.number().optional(), // % — opcional
+  presionAtmosferica: z.number().optional(), // hPa — opcional
 
-  ubicacion?: ICoordenadas; // centroide consultado (el de la Localidad)
+  ubicacion: CoordenadasSchema.optional(), // centroide consultado (el de la Localidad)
 
   //
-  idLocalidad?: string;
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
+  idLocalidad: z.string().optional(),
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
   //
-  fechaCreacion?: string;
+  fechaCreacion: z.string().optional(),
 
   // Virtuals
-  localidad?: ILocalidad;
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-}
+  localidad: LocalidadSchema.optional(),
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+});
+export type IRegistroClima = z.infer<typeof RegistroClimaSchema>;
 
 ////// CREATE
-type OmitirCreate =
-  | "_id"
-  | "localidad"
-  | "cliente"
-  | "unidadNegocio"
-  | "centroOperativo";
-export interface ICreateRegistroClima
-  extends Omit<Partial<IRegistroClima>, OmitirCreate> {}
+export const CreateRegistroClimaSchema = RegistroClimaSchema.omit({
+  _id: true,
+  localidad: true,
+  cliente: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+});
+export type ICreateRegistroClima = z.infer<typeof CreateRegistroClimaSchema>;
 
 ////// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "localidad"
-  | "cliente"
-  | "unidadNegocio"
-  | "centroOperativo";
-export interface IUpdateRegistroClima
-  extends Omit<Partial<IRegistroClima>, OmitirUpdate> {}
+export const UpdateRegistroClimaSchema = RegistroClimaSchema.omit({
+  _id: true,
+  localidad: true,
+  cliente: true,
+  unidadNegocio: true,
+  centroOperativo: true,
+});
+export type IUpdateRegistroClima = z.infer<typeof UpdateRegistroClimaSchema>;

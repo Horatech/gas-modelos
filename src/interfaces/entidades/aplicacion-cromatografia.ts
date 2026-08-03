@@ -1,43 +1,45 @@
-import { ICorrectora, ICromatografia } from ".";
-import { IUnidadNegocio } from "../gas";
-import { ICuenca } from "./cuenca";
+import { z } from "zod";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { CorrectoraSchema } from "./correctora";
+import { CromatografiaSchema } from "./cromatografia";
+import { CuencaSchema } from "./cuenca";
 
-export interface IAplicacionCromatografia {
-  _id?: string;
-  aplicada?: boolean;
-  idCromatografia?: string;
-  idCorrectora?: string;
-  numeroSerieCorrectora?: string | null;
-  fechaCreacion?: string;
+export const AplicacionCromatografiaSchema = z.object({
+  _id: z.string().optional(),
+  aplicada: z.boolean().optional(),
+  idCromatografia: z.string().optional(),
+  idCorrectora: z.string().optional(),
+  numeroSerieCorrectora: z.string().nullable().optional(),
+  fechaCreacion: z.string().optional(),
   //
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCuenca?: string;
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCuenca: z.string().optional(),
   // Virtual
-  correctora?: ICorrectora;
-  cromatografia?: ICromatografia;
-  unidadNegocio?: IUnidadNegocio;
-  cuenca?: ICuenca;
-}
+  correctora: CorrectoraSchema.optional(),
+  cromatografia: CromatografiaSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  cuenca: CuencaSchema.optional(),
+});
+export type IAplicacionCromatografia = z.infer<typeof AplicacionCromatografiaSchema>;
 
-// CREATE
-type OmitirCreate =
-  | "_id"
-  | "fechaCreacion"
-  | "correctora"
-  | "cromatografia"
-  | "unidadNegocio"
-  | "cuenca";
-export interface ICreateAplicacionCromatografia
-  extends Omit<Partial<IAplicacionCromatografia>, OmitirCreate> {}
+const omitir = {
+  _id: true,
+  fechaCreacion: true,
+  correctora: true,
+  cromatografia: true,
+  unidadNegocio: true,
+  cuenca: true,
+} as const;
 
-// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "fechaCreacion"
-  | "correctora"
-  | "cromatografia"
-  | "unidadNegocio"
-  | "cuenca";
-export interface IUpdateAplicacionCromatografia
-  extends Omit<Partial<IAplicacionCromatografia>, OmitirUpdate> {}
+export const CreateAplicacionCromatografiaSchema =
+  AplicacionCromatografiaSchema.omit(omitir);
+export type ICreateAplicacionCromatografia = z.infer<
+  typeof CreateAplicacionCromatografiaSchema
+>;
+
+export const UpdateAplicacionCromatografiaSchema =
+  AplicacionCromatografiaSchema.omit(omitir);
+export type IUpdateAplicacionCromatografia = z.infer<
+  typeof UpdateAplicacionCromatografiaSchema
+>;

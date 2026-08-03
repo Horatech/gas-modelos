@@ -1,69 +1,87 @@
-import { ICentroOperativo, IUnidadNegocio } from "../../gas";
-import { IDispositivo } from "../dispositivo";
-import { ILocalidad } from "../localidad";
-import { IPuntoMedicion } from "../punto-medicion";
+import { z } from "zod";
+import { CentroOperativoSchema } from "../../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../../gas/unidadNegocio/schema";
+import { DispositivoSchema } from "../dispositivo";
+import { LocalidadSchema } from "../localidad";
+import { PuntoMedicionSchema } from "../punto-medicion";
 
-// Interface para el volumen acumulado del mes
-export interface IVolumenAcumuladoMes {
-  volumenBaseAcumulado: number;
-  volumenCorregidoAcumulado: number;
-}
+// Schema para el volumen acumulado del mes
+export const VolumenAcumuladoMesSchema = z.object({
+  volumenBaseAcumulado: z.number(),
+  volumenCorregidoAcumulado: z.number(),
+});
+export type IVolumenAcumuladoMes = z.infer<typeof VolumenAcumuladoMesSchema>;
 
-// Interface principal del estado general de correctoras
-export interface IEstadoGeneralCorrectoras {
-  _id?: string;
+// Schema principal del estado general de correctoras
+export const EstadoGeneralCorrectorasSchema = z.object({
+  _id: z.string().optional(),
 
   // Metadata
-  fechaCreacion: string;
-  mes: number;
-  anio: number;
+  fechaCreacion: z.string(),
+  mes: z.number(),
+  anio: z.number(),
 
   // Filtros aplicados (referencia a entidades)
-  idCliente?: string;
-  idDispositivo?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
-  idLocalidad?: string;
-  idPuntoMedicion?: string;
+  idCliente: z.string().optional(),
+  idDispositivo: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  idPuntoMedicion: z.string().optional(),
 
   // Datos calculados
-  fechaDesdeMes: string;
-  fechaHastaMes: string;
-  volumenAcumuladoMes: IVolumenAcumuladoMes;
-  promedioPresionRedMes: number;
-  promedioTemperaturaRedMes: number;
-  cantidadCorrectoras: number;
+  fechaDesdeMes: z.string(),
+  fechaHastaMes: z.string(),
+  volumenAcumuladoMes: VolumenAcumuladoMesSchema,
+  promedioPresionRedMes: z.number(),
+  promedioTemperaturaRedMes: z.number(),
+  cantidadCorrectoras: z.number(),
 
   // Hash del query para identificar búsquedas duplicadas
-  queryHash?: string;
+  queryHash: z.string().optional(),
   // Fecha de última actualización del registro
-  fechaActualizacion?: string;
-  estado?: "Recalcular" | "Activo" | "Error";
-  fechaRecalculo?: string;
+  fechaActualizacion: z.string().optional(),
+  estado: z.enum(["Recalcular", "Activo", "Error"]).optional(),
+  fechaRecalculo: z.string().optional(),
 
   // Populate
-  puntoMedicion?: IPuntoMedicion;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
-  dispositivo?: IDispositivo;
-}
+  puntoMedicion: PuntoMedicionSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+  dispositivo: DispositivoSchema.optional(),
+});
+export type IEstadoGeneralCorrectoras = z.infer<
+  typeof EstadoGeneralCorrectorasSchema
+>;
 
-type Omitir =
-  | "_id"
-  | "fechaCreacion"
-  | "puntoMedicion"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "dispositivos";
+// Nota: el `Omit` original incluía la clave "dispositivos" (typo, el campo
+// real es "dispositivo") que no existe en IEstadoGeneralCorrectoras, por lo
+// que nunca tuvo efecto — "dispositivo" nunca se omitió realmente. También
+// envolvía con `Partial<...>` antes del Omit, por eso acá se encadena
+// `.partial()`: todos los campos quedan opcionales en Create/Update.
+export const CreateEstadoGeneralCorrectorasSchema =
+  EstadoGeneralCorrectorasSchema.omit({
+    _id: true,
+    fechaCreacion: true,
+    puntoMedicion: true,
+    unidadNegocio: true,
+    centroOperativo: true,
+    localidad: true,
+  }).partial();
+export type ICreateEstadoGeneralCorrectoras = z.infer<
+  typeof CreateEstadoGeneralCorrectorasSchema
+>;
 
-export interface ICreateEstadoGeneralCorrectoras extends Omit<
-  Partial<IEstadoGeneralCorrectoras>,
-  Omitir
-> {}
-
-export interface IUpdateEstadoGeneralCorrectoras extends Omit<
-  Partial<IEstadoGeneralCorrectoras>,
-  Omitir
-> {}
+export const UpdateEstadoGeneralCorrectorasSchema =
+  EstadoGeneralCorrectorasSchema.omit({
+    _id: true,
+    fechaCreacion: true,
+    puntoMedicion: true,
+    unidadNegocio: true,
+    centroOperativo: true,
+    localidad: true,
+  }).partial();
+export type IUpdateEstadoGeneralCorrectoras = z.infer<
+  typeof UpdateEstadoGeneralCorrectorasSchema
+>;

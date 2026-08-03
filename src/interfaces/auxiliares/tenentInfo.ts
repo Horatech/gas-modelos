@@ -1,12 +1,11 @@
-import { ICuenca, IGrupo, ILocalidad } from "../entidades";
-import { IAgrupacion } from "../gas";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ICliente } from "../tenant";
-
-export type ITenantInfo =
-  //ITenantInfoAgro |
-  ITenantInfoGas;
+import { z } from "zod";
+import { CuencaSchema } from "../entidades/cuenca";
+import { GrupoSchema } from "../entidades/grupo";
+import { LocalidadSchema } from "../entidades/localidad";
+import { AgrupacionSchema } from "../gas/agrupacion/schema";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { ClienteSchema } from "../tenant/cliente.model";
 
 // export interface ITenantInfoAgro {
 //   idCliente?: string;
@@ -16,20 +15,25 @@ export type ITenantInfo =
 //   establecimiento?: IEstablecimiento;
 // }
 
-export interface ITenantInfoGas {
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
-  idLocalidad?: string;
-  idCuenca?: string;
-  idsAgrupaciones?: string[];
-  idsGrupos?: string[];
+export const TenantInfoGasSchema = z.object({
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  idCuenca: z.string().optional(),
+  idsAgrupaciones: z.array(z.string()).optional(),
+  idsGrupos: z.array(z.string()).optional(),
   // Virtual
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
-  cuenca?: ICuenca;
-  agrupaciones?: IAgrupacion[];
-  grupos?: IGrupo[];
-}
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+  cuenca: CuencaSchema.optional(),
+  agrupaciones: z.array(AgrupacionSchema).optional(),
+  grupos: z.array(GrupoSchema).optional(),
+});
+export type ITenantInfoGas = z.infer<typeof TenantInfoGasSchema>;
+
+export type ITenantInfo =
+  // ITenantInfoAgro |
+  ITenantInfoGas;

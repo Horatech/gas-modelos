@@ -1,7 +1,15 @@
-import { ICliente } from "../tenant";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ILocalidad } from "./localidad";
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { LocalidadSchema } from "./localidad";
+
+export const EstadoResumenDiarioSchema = z.enum([
+  "Activo",
+  "Recalcular",
+  "Error",
+]);
+export type EstadoResumenDiario = z.infer<typeof EstadoResumenDiarioSchema>;
 
 /**
  * Rollup DIARIO por Localidad (INSIDEht 2.0) para las vistas resumen.
@@ -19,67 +27,74 @@ import { ILocalidad } from "./localidad";
  *
  * "Dia gas" arranca 07:00 AR (10:00 UTC), igual que el resto del dominio gas.
  */
-export interface IResumenDiarioLocalidad {
-  _id?: string;
+export const ResumenDiarioLocalidadSchema = z.object({
+  _id: z.string().optional(),
 
-  fecha?: string; // ISO UTC — inicio del dia gas
+  fecha: z.string().optional(), // ISO UTC — inicio del dia gas
 
   // Jerarquia (denormalizada)
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  idCentroOperativo?: string;
-  idLocalidad?: string;
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
 
   // Consumo / volumen de gas del dia (m3)
-  volumenBaseCorrectoras?: number; // suma uncorrectedParcializado
-  volumenCorregidoCorrectoras?: number; // suma correctedParcializado
-  consumoResidencial?: number; // delta del acumulado valores.consumo de los medidores del dia
-  volumenGasTotal?: number; // corregido correctoras + residencial
-  cantidadCorrectoras?: number;
-  cantidadMedidoresResidenciales?: number;
+  volumenBaseCorrectoras: z.number().optional(), // suma uncorrectedParcializado
+  volumenCorregidoCorrectoras: z.number().optional(), // suma correctedParcializado
+  consumoResidencial: z.number().optional(), // delta del acumulado valores.consumo de los medidores del dia
+  volumenGasTotal: z.number().optional(), // corregido correctoras + residencial
+  cantidadCorrectoras: z.number().optional(),
+  cantidadMedidoresResidenciales: z.number().optional(),
 
   // Clima del dia (canonico). Se calcula sobre la serie HORARIA del dia
   // (granularidad "horaria", cualquier tipo), agrupando primero por hora para
   // que cada hora pese igual y no se cuente dos veces. La serie diaria de
   // pronostico (granularidad "diaria") NO entra: describe el dia entero, no un
   // instante, y duplicaria el peso de ese dia.
-  temperaturaMedia?: number; // °C — media de las horas del dia
-  temperaturaMin?: number; // °C — minima horaria del dia
-  temperaturaMax?: number; // °C — maxima horaria del dia
-  sensacionTermicaMedia?: number; // °C
-  vientoVelocidadMedia?: number; // m/s
-  horasClima?: number; // horas distintas con dato (calidad de la media: 24 = dia completo)
+  temperaturaMedia: z.number().optional(), // °C — media de las horas del dia
+  temperaturaMin: z.number().optional(), // °C — minima horaria del dia
+  temperaturaMax: z.number().optional(), // °C — maxima horaria del dia
+  sensacionTermicaMedia: z.number().optional(), // °C
+  vientoVelocidadMedia: z.number().optional(), // m/s
+  horasClima: z.number().optional(), // horas distintas con dato (calidad de la media: 24 = dia completo)
 
   // Idempotencia / control (patron estadogeneralcorrectoras)
-  queryHash?: string;
-  estado?: EstadoResumenDiario;
-  fechaCreacion?: string;
+  queryHash: z.string().optional(),
+  estado: EstadoResumenDiarioSchema.optional(),
+  fechaCreacion: z.string().optional(),
 
   // Virtuals
-  cliente?: ICliente;
-  unidadNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
-}
-
-export type EstadoResumenDiario = "Activo" | "Recalcular" | "Error";
+  cliente: ClienteSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+});
+export type IResumenDiarioLocalidad = z.infer<
+  typeof ResumenDiarioLocalidadSchema
+>;
 
 ////// CREATE
-type OmitirCreate =
-  | "_id"
-  | "cliente"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad";
-export interface ICreateResumenDiarioLocalidad
-  extends Omit<Partial<IResumenDiarioLocalidad>, OmitirCreate> {}
+export const CreateResumenDiarioLocalidadSchema =
+  ResumenDiarioLocalidadSchema.omit({
+    _id: true,
+    cliente: true,
+    unidadNegocio: true,
+    centroOperativo: true,
+    localidad: true,
+  });
+export type ICreateResumenDiarioLocalidad = z.infer<
+  typeof CreateResumenDiarioLocalidadSchema
+>;
 
 ////// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "cliente"
-  | "unidadNegocio"
-  | "centroOperativo"
-  | "localidad";
-export interface IUpdateResumenDiarioLocalidad
-  extends Omit<Partial<IResumenDiarioLocalidad>, OmitirUpdate> {}
+export const UpdateResumenDiarioLocalidadSchema =
+  ResumenDiarioLocalidadSchema.omit({
+    _id: true,
+    cliente: true,
+    unidadNegocio: true,
+    centroOperativo: true,
+    localidad: true,
+  });
+export type IUpdateResumenDiarioLocalidad = z.infer<
+  typeof UpdateResumenDiarioLocalidadSchema
+>;

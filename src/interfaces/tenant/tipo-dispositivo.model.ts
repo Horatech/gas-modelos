@@ -1,9 +1,13 @@
-import { TipoDispositivo } from "../auxiliares";
-import { ILoraServerConfigPorApp } from "./tipo-dispositivo.dto";
+import { z } from "zod";
+import { TipoDispositivoSchema } from "../auxiliares/tipoDispositivo";
+import { LoraServerConfigPorAppSchema } from "./tipo-dispositivo.dto";
 
-export interface ITipoDispositivo {
-  _id?: string;
-  nombre?: TipoDispositivo;
-  integrationUrl?: string;
-  loraServers?: ILoraServerConfigPorApp[];
-}
+// Nombrado "...ModelSchema" (no "TipoDispositivoSchema") para no chocar con el
+// schema del type TipoDispositivo (union de auxiliares/tipoDispositivo.ts).
+export const TipoDispositivoModelSchema = z.object({
+  _id: z.string().optional(),
+  nombre: TipoDispositivoSchema.optional(),
+  integrationUrl: z.string().optional(),
+  loraServers: z.array(LoraServerConfigPorAppSchema).optional(),
+});
+export type ITipoDispositivo = z.infer<typeof TipoDispositivoModelSchema>;

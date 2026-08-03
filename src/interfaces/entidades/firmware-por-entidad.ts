@@ -1,46 +1,39 @@
-import { ICliente } from "../tenant/cliente.model";
-import { IDispositivo } from "./dispositivo";
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { DispositivoSchema } from "./dispositivo";
 import {
-  IFirmware,
-  TipoDispositivoFirmware,
-  VersionHardware,
+  FirmwareSchema,
+  TipoDispositivoFirmwareSchema,
+  VersionHardwareSchema,
 } from "./firmware";
 
-export interface IFirmwarePorEntidad {
-  _id?: string;
-  idCliente?: string;
-  idDispositivo?: string;
-  idFirmware?: string;
-  tipo?: TipoDispositivoFirmware;
-  versionHardware?: VersionHardware;
-  fechaCreacion?: string;
-  version?: string;
+export const FirmwarePorEntidadSchema = z.object({
+  _id: z.string().optional(),
+  idCliente: z.string().optional(),
+  idDispositivo: z.string().optional(),
+  idFirmware: z.string().optional(),
+  tipo: TipoDispositivoFirmwareSchema.optional(),
+  versionHardware: VersionHardwareSchema.optional(),
+  fechaCreacion: z.string().optional(),
+  version: z.string().optional(),
   // Populate
-  cliente?: ICliente;
-  dispositivo?: IDispositivo;
-  firmware?: IFirmware;
-}
+  cliente: ClienteSchema.optional(),
+  dispositivo: DispositivoSchema.optional(),
+  firmware: FirmwareSchema.optional(),
+});
+export type IFirmwarePorEntidad = z.infer<typeof FirmwarePorEntidadSchema>;
 
-// CREATE
-type OmitirCreate =
-  | "_id"
-  | "cliente"
-  | "dispositivo"
-  | "firmware"
-  | "fechaCreacion";
-export interface ICreateFirmwarePorEntidad extends Omit<
-  Partial<IFirmwarePorEntidad>,
-  OmitirCreate
-> {}
+// CREATE / UPDATE
+const omitir = {
+  _id: true,
+  cliente: true,
+  dispositivo: true,
+  firmware: true,
+  fechaCreacion: true,
+} as const;
 
-// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "cliente"
-  | "dispositivo"
-  | "firmware"
-  | "fechaCreacion";
-export interface IUpdateFirmwarePorEntidad extends Omit<
-  Partial<IFirmwarePorEntidad>,
-  OmitirUpdate
-> {}
+export const CreateFirmwarePorEntidadSchema = FirmwarePorEntidadSchema.omit(omitir);
+export type ICreateFirmwarePorEntidad = z.infer<typeof CreateFirmwarePorEntidadSchema>;
+
+export const UpdateFirmwarePorEntidadSchema = FirmwarePorEntidadSchema.omit(omitir);
+export type IUpdateFirmwarePorEntidad = z.infer<typeof UpdateFirmwarePorEntidadSchema>;

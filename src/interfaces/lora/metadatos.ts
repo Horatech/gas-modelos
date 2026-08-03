@@ -1,11 +1,16 @@
-export interface IMetadatos {
-  gatewayID?: string;
-  timestamp?: string;
-  rssi?: number;
-  loRaSNR?: number;
-  location?: {
-    altitude?: number;
-    latitude: number;
-    longitude: number;
-  };
-}
+import { z } from "zod";
+
+export const MetadatosSchema = z.object({
+  gatewayID: z.string().optional(),
+  timestamp: z.string().optional(),
+  rssi: z.number().optional(),
+  loRaSNR: z.number().optional(),
+  location: z
+    .object({
+      altitude: z.number().optional(),
+      latitude: z.number(),
+      longitude: z.number(),
+    })
+    .optional(),
+});
+export type IMetadatos = z.infer<typeof MetadatosSchema>;

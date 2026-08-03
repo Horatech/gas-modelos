@@ -1,6 +1,4 @@
-export type TipoDispositivo =
-  // TipoDispositivoAgro |
-  TipoDispositivoGas;
+import { z } from "zod";
 
 // export type TipoDispositivoAgro =
 //   | "Bomba de Cisterna"
@@ -35,24 +33,7 @@ export type TipoDispositivo =
 //   "Tracker",
 // ];
 
-export type TipoDispositivoGas =
-  | "NUC"
-  | "SML"
-  | "MRA"
-  | "NSP"
-  | "VERIBOX MICRO"
-  | "WRC"
-  | "SCADA Unifilares"
-  | "SCADA Mediciones"
-  | "ML107A"
-  | "EUW300"
-  | "BOVE"
-  | "ML107GH"
-  | "NME"
-  | "OCR"
-  | "UWM-NB";
-
-export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
+export const TipoDispositivoGasSchema = z.enum([
   "NUC",
   "SML",
   "MRA",
@@ -68,4 +49,12 @@ export const TIPOS_DISPOSITIVOS: TipoDispositivoGas[] = [
   "NME",
   "OCR",
   "UWM-NB",
-];
+]);
+export type TipoDispositivoGas = z.infer<typeof TipoDispositivoGasSchema>;
+
+export const TipoDispositivoSchema =
+  // TipoDispositivoAgroSchema |
+  TipoDispositivoGasSchema;
+export type TipoDispositivo = TipoDispositivoGas;
+
+export const TIPOS_DISPOSITIVOS = TipoDispositivoGasSchema.options;

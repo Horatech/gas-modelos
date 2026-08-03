@@ -1,4 +1,11 @@
-import { FuenteClima } from "./registro-clima";
+import { z } from "zod";
+// import type (no z.custom real): registro-clima.ts tiene su propio populate
+// `localidad?: ILocalidad` real, y localidad.ts importa este archivo (para
+// GridEra5Schema) — importar el valor real de FuenteClimaSchema acá cerraría
+// el ciclo localidad -> clima-historico -> registro-clima -> localidad. Ver
+// CLAUDE.md, "De solo tipos a schemas Zod" (mismo patrón que el cluster de
+// IDispositivo, aplicado acá puntualmente).
+import type { FuenteClima } from "./registro-clima";
 
 /**
  * Serie climatica HISTORICA por celda de grilla (INSIDEht 2.0 — grados-dia).
@@ -31,13 +38,13 @@ import { FuenteClima } from "./registro-clima";
  *
  * Lo escribe `gas-api-clima` al resolver la celda de cada Localidad.
  */
-export interface IGridEra5 {
+export const GridEra5Schema = z.object({
   /** Identificador de la celda efectivamente usada. Formato: `S3450_W05880`. */
-  clave: string;
+  clave: z.string(),
 
   /** Centro de la celda usada, en grados. */
-  lat: number;
-  lon: number;
+  lat: z.number(),
+  lon: z.number(),
 
   /**
    * `true` si la celda del centroide cayo en MAR y hubo que caer a una vecina.
@@ -51,14 +58,15 @@ export interface IGridEra5 {
    * **No es un detalle interno: se muestra.** El dato de esas Localidades viene de un
    * punto desplazado y quien lo lee tiene que poder saberlo.
    */
-  esFallback?: boolean;
+  esFallback: z.boolean().optional(),
 
   /** Celda originalmente pedida, cuando `esFallback` es `true`. */
-  claveOriginal?: string;
+  claveOriginal: z.string().optional(),
 
   /** Distancia entre el centroide de la Localidad y el centro de la celda usada (km). */
-  distanciaKm?: number;
-}
+  distanciaKm: z.number().optional(),
+});
+export type IGridEra5 = z.infer<typeof GridEra5Schema>;
 
 /**
  * Un dia de la serie historica de una celda, tal como lo devuelve `gas-api-clima`.
@@ -70,25 +78,25 @@ export interface IGridEra5 {
  * Efecto colateral asumido: estos grados-dia **no coinciden exactamente** con los que
  * publican ENARGAS o el SMN, que usan dia calendario.
  */
-export interface IClimaDiarioCelda {
-  clave: string;
-  fecha: string; // ISO UTC — inicio del dia-gas
+export const ClimaDiarioCeldaSchema = z.object({
+  clave: z.string(),
+  fecha: z.string(), // ISO UTC — inicio del dia-gas
 
   // Agregados del dia, calculados sobre la serie HORARIA (unidades canonicas)
-  temperaturaMedia?: number; // °C
-  temperaturaMin?: number; // °C
-  temperaturaMax?: number; // °C
-  sensacionTermicaMedia?: number; // °C — wind chill
-  vientoVelocidadMedia?: number; // m/s
-  humedadMedia?: number; // %
-  radiacionMedia?: number; // W/m2
+  temperaturaMedia: z.number().optional(), // °C
+  temperaturaMin: z.number().optional(), // °C
+  temperaturaMax: z.number().optional(), // °C
+  sensacionTermicaMedia: z.number().optional(), // °C — wind chill
+  vientoVelocidadMedia: z.number().optional(), // m/s
+  humedadMedia: z.number().optional(), // %
+  radiacionMedia: z.number().optional(), // W/m2
 
   /**
    * Horas del dia con dato (24 = dia completo). **Es el gate de calidad**: por debajo
    * de 20 horas el dia queda fuera de la regresion y de la normal. Un dia con 6 muestras
    * produce un HDD que parece un numero y no lo es.
    */
-  horas?: number;
+  horas: z.number().optional(),
 
   /**
    * Grados-dia de calefaccion, indexados por temperatura BASE en °C: `{ "18": 9.4 }`.
@@ -110,10 +118,10 @@ export interface IClimaDiarioCelda {
    * (cantidad de medidores), nunca de forma aritmetica. Sumar sobre el TIEMPO (acumulado
    * de la temporada) si es valido; sumar sobre el ESPACIO no significa nada.
    */
-  gradosDia?: Record<string, number>;
+  gradosDia: z.record(z.string(), z.number()).optional(),
 
   /** Idem `gradosDia` pero sobre la sensacion termica. Relevante en Patagonia ventosa. */
-  gradosDiaEfectivos?: Record<string, number>;
+  gradosDiaEfectivos: z.record(z.string(), z.number()).optional(),
 
   /**
    * Temperatura efectiva: `0,5·T(d) + 0,5·T_ef(d−1)`. Modela la inercia termica de los
@@ -122,14 +130,14 @@ export interface IClimaDiarioCelda {
    * Los coeficientes son los del mercado britanico y **hay que recalibrarlos** con datos
    * locales; el principio fisico es universal, los numeros no.
    */
-  temperaturaEfectiva?: number; // °C
+  temperaturaEfectiva: z.number().optional(), // °C
 
   /**
    * Dias consecutivos de helada (`temperaturaMin <= 0`) hasta este dia, inclusive.
    * Insumo de integridad de cañeria: el daño por congelamiento depende del frio
    * SOSTENIDO, no de la minima de un dia suelto.
    */
-  heladaConsecutivos?: number;
+  heladaConsecutivos: z.number().optional(),
 
   /**
    * `false` mientras el dato provenga de ERA5-Land-T (near-real-time, ~5 dias de atraso,
@@ -137,7 +145,8 @@ export interface IClimaDiarioCelda {
    * cambian**: hay un job que re-ingesta la ventana movil de los ultimos 3 meses.
    * Sin este flag, el HDD reciente discreparia en silencio del historico.
    */
-  consolidado?: boolean;
+  consolidado: z.boolean().optional(),
 
-  fuente?: FuenteClima;
-}
+  fuente: z.custom<FuenteClima>().optional(),
+});
+export type IClimaDiarioCelda = z.infer<typeof ClimaDiarioCeldaSchema>;

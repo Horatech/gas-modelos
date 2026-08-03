@@ -1,18 +1,20 @@
-import { IUnidadNegocio } from "../gas";
+import { z } from "zod";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
 
-export interface ICuenca {
-  _id?: string;
-  nombre?: string;
-  idUnidadNegocio?: string;
-  idCliente?: string;
+export const CuencaSchema = z.object({
+  _id: z.string().optional(),
+  nombre: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  idCliente: z.string().optional(),
   // Virtual
-  unidadNegocio?: IUnidadNegocio;
-}
+  unidadNegocio: UnidadNegocioSchema.optional(),
+});
+export type ICuenca = z.infer<typeof CuencaSchema>;
 
-// CREATE
-type OmitirCreate = "_id" | "unidadNegocio";
-export interface ICreateCuenca extends Omit<Partial<ICuenca>, OmitirCreate> {}
+const omitir = { _id: true, unidadNegocio: true } as const;
 
-// UPDATE
-type OmitirUpdate = "_id" | "unidadNegocio";
-export interface IUpdateCuenca extends Omit<Partial<ICuenca>, OmitirUpdate> {}
+export const CreateCuencaSchema = CuencaSchema.omit(omitir);
+export type ICreateCuenca = z.infer<typeof CreateCuencaSchema>;
+
+export const UpdateCuencaSchema = CuencaSchema.omit(omitir);
+export type IUpdateCuenca = z.infer<typeof UpdateCuencaSchema>;

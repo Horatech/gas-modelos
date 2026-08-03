@@ -1,69 +1,72 @@
-import { ICliente, IUsuario } from "../tenant";
-import { IAgrupacion } from "../gas/agrupacion";
-import { ICentroOperativo } from "../gas/centroOperativo";
-import { IUnidadNegocio } from "../gas/unidadNegocio";
-import { ICorrectora } from "./correctora";
-import { IDispositivo } from "./dispositivo";
-import { ILocalidad } from "./localidad";
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { UsuarioSchema } from "../tenant/usuario/schema";
+import { AgrupacionSchema } from "../gas/agrupacion/schema";
+import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { CorrectoraSchema } from "./correctora";
+import { DispositivoSchema } from "./dispositivo";
+import { LocalidadSchema } from "./localidad";
 
-export interface IMantenimiento {
-  _id?: string;
+export const MantenimientoSchema = z.object({
+  _id: z.string().optional(),
   // Generado
-  fechaCreacion?: string;
+  fechaCreacion: z.string().optional(),
   // Input
-  fecha?: string;
-  descripcion?: string;
-  tipo?: string;
-  idAsignado?: string;
+  fecha: z.string().optional(),
+  descripcion: z.string().optional(),
+  tipo: z.string().optional(),
+  idAsignado: z.string().optional(),
   // Tenancy
-  idCliente?: string;
-  idUsuario?: string;
-  idUnidadDeNegocio?: string;
-  idCentroOperativo?: string;
-  idLocalidad?: string;
-  idAgrupacion?: string;
+  idCliente: z.string().optional(),
+  idUsuario: z.string().optional(),
+  idUnidadDeNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+  idLocalidad: z.string().optional(),
+  idAgrupacion: z.string().optional(),
 
   // Virtuals
-  correctora?: ICorrectora;
-  dispositivo?: IDispositivo;
-  cliente?: ICliente;
-  usuario?: IUsuario;
-  unidadDeNegocio?: IUnidadNegocio;
-  centroOperativo?: ICentroOperativo;
-  localidad?: ILocalidad;
-  agrupacion?: IAgrupacion;
-}
+  correctora: CorrectoraSchema.optional(),
+  dispositivo: DispositivoSchema.optional(),
+  cliente: ClienteSchema.optional(),
+  usuario: UsuarioSchema.optional(),
+  unidadDeNegocio: UnidadNegocioSchema.optional(),
+  centroOperativo: CentroOperativoSchema.optional(),
+  localidad: LocalidadSchema.optional(),
+  agrupacion: AgrupacionSchema.optional(),
+});
+export type IMantenimiento = z.infer<typeof MantenimientoSchema>;
 
 // CREATE
-type OmitirCreate =
-  | "_id"
-  | "correctora"
-  | "dispositivo"
-  | "cliente"
-  | "usuario"
-  | "unidadDeNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "agrupacion"
-  | "fechaCreacion";
-export interface ICreateMantenimiento
-  extends Omit<Partial<IMantenimiento>, OmitirCreate> {
-  tipoAsignado?: "Correctora" | "Dispositivo";
-}
+export const CreateMantenimientoSchema = MantenimientoSchema.omit({
+  _id: true,
+  correctora: true,
+  dispositivo: true,
+  cliente: true,
+  usuario: true,
+  unidadDeNegocio: true,
+  centroOperativo: true,
+  localidad: true,
+  agrupacion: true,
+  fechaCreacion: true,
+}).extend({
+  tipoAsignado: z.enum(["Correctora", "Dispositivo"]).optional(),
+});
+export type ICreateMantenimiento = z.infer<typeof CreateMantenimientoSchema>;
 
 // UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "fechaCreacion"
-  | "correctora"
-  | "dispositivo"
-  | "cliente"
-  | "usuario"
-  | "unidadDeNegocio"
-  | "centroOperativo"
-  | "localidad"
-  | "agrupacion";
-export interface IUpdateMantenimiento
-  extends Omit<Partial<IMantenimiento>, OmitirUpdate> {
-  tipoAsignado?: "Correctora" | "Dispositivo";
-}
+export const UpdateMantenimientoSchema = MantenimientoSchema.omit({
+  _id: true,
+  fechaCreacion: true,
+  correctora: true,
+  dispositivo: true,
+  cliente: true,
+  usuario: true,
+  unidadDeNegocio: true,
+  centroOperativo: true,
+  localidad: true,
+  agrupacion: true,
+}).extend({
+  tipoAsignado: z.enum(["Correctora", "Dispositivo"]).optional(),
+});
+export type IUpdateMantenimiento = z.infer<typeof UpdateMantenimientoSchema>;

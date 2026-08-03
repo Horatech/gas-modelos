@@ -1,5 +1,6 @@
-import { ICliente } from "../tenant";
-import { IGatewayLorawan } from "./gateway-lorawan";
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { GatewayLorawanSchema } from "./gateway-lorawan";
 
 /**
  * Asigna un gateway LoRaWAN a un cliente que tiene
@@ -10,26 +11,32 @@ import { IGatewayLorawan } from "./gateway-lorawan";
  * asignados, ya que `ICoberturaLorawan.gateways[]` referencia a los gateways
  * de forma embebida por `gatewayId` (no por `_id`).
  */
-export interface IAsignacionGatewayCliente {
-  _id?: string;
-  idCliente?: string;
+export const AsignacionGatewayClienteSchema = z.object({
+  _id: z.string().optional(),
+  idCliente: z.string().optional(),
   /** `_id` del documento GatewayLorawan en gas-datos */
-  idGatewayLorawan?: string;
+  idGatewayLorawan: z.string().optional(),
   /** EUI64 denormalizado del gateway, para filtrar coberturas sin populate */
-  gatewayId?: string;
-  fechaCreacion?: string;
+  gatewayId: z.string().optional(),
+  fechaCreacion: z.string().optional(),
 
   // Virtuals
-  cliente?: ICliente;
-  gateway?: IGatewayLorawan;
-}
+  cliente: ClienteSchema.optional(),
+  gateway: GatewayLorawanSchema.optional(),
+});
+export type IAsignacionGatewayCliente = z.infer<typeof AsignacionGatewayClienteSchema>;
 
-// CREATE
-type OmitirCreate = "_id" | "cliente" | "gateway" | "fechaCreacion";
-export interface ICreateAsignacionGatewayCliente
-  extends Omit<Partial<IAsignacionGatewayCliente>, OmitirCreate> {}
+// CREATE / UPDATE
+const omitir = { _id: true, cliente: true, gateway: true, fechaCreacion: true } as const;
 
-// UPDATE
-type OmitirUpdate = "_id" | "cliente" | "gateway" | "fechaCreacion";
-export interface IUpdateAsignacionGatewayCliente
-  extends Omit<Partial<IAsignacionGatewayCliente>, OmitirUpdate> {}
+export const CreateAsignacionGatewayClienteSchema =
+  AsignacionGatewayClienteSchema.omit(omitir);
+export type ICreateAsignacionGatewayCliente = z.infer<
+  typeof CreateAsignacionGatewayClienteSchema
+>;
+
+export const UpdateAsignacionGatewayClienteSchema =
+  AsignacionGatewayClienteSchema.omit(omitir);
+export type IUpdateAsignacionGatewayCliente = z.infer<
+  typeof UpdateAsignacionGatewayClienteSchema
+>;

@@ -1,18 +1,22 @@
-import { ICliente } from '../tenant';
+import { z } from "zod";
+import { ClienteSchema } from "../tenant/cliente.model";
 
-export interface IApikey {
-  _id?: string;
+export const ApikeySchema = z.object({
+  _id: z.string().optional(),
   //
-  fechaCreacion?: string;
-  identificacion?: string;
-  key?: string;
-  idCliente?: string;
+  fechaCreacion: z.string().optional(),
+  identificacion: z.string().optional(),
+  key: z.string().optional(),
+  idCliente: z.string().optional(),
   // Populate
-  cliente?: ICliente;
-}
+  cliente: ClienteSchema.optional(),
+});
+export type IApikey = z.infer<typeof ApikeySchema>;
 
-type Omitir = '_id' | 'fechaCreacion' | 'cliente';
+const omitir = { _id: true, fechaCreacion: true, cliente: true } as const;
 
-export interface ICreateApikey extends Omit<Partial<IApikey>, Omitir> {}
+export const CreateApikeySchema = ApikeySchema.omit(omitir);
+export type ICreateApikey = z.infer<typeof CreateApikeySchema>;
 
-export interface IUpdateApikey extends Omit<Partial<IApikey>, Omitir> {}
+export const UpdateApikeySchema = ApikeySchema.omit(omitir);
+export type IUpdateApikey = z.infer<typeof UpdateApikeySchema>;

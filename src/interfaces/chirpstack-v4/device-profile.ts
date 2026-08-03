@@ -1,16 +1,22 @@
-export interface IDeviceProfileV4 {
-  id: string;
-  name: string;
-  region?: string;
-  macVersion?: string;
-  regParamsRevision?: string;
-  supportsOtaa?: boolean;
-  supportsClassB?: boolean;
-  supportsClassC?: boolean;
-  tenantId?: string;
-}
+import { z } from "zod";
 
-export interface IListDeviceProfilesV4Response {
-  totalCount?: number;
-  result?: IDeviceProfileV4[];
-}
+export const DeviceProfileV4Schema = z.object({
+  id: z.string(),
+  name: z.string(),
+  region: z.string().optional(),
+  macVersion: z.string().optional(),
+  regParamsRevision: z.string().optional(),
+  supportsOtaa: z.boolean().optional(),
+  supportsClassB: z.boolean().optional(),
+  supportsClassC: z.boolean().optional(),
+  tenantId: z.string().optional(),
+});
+export type IDeviceProfileV4 = z.infer<typeof DeviceProfileV4Schema>;
+
+export const ListDeviceProfilesV4ResponseSchema = z.object({
+  totalCount: z.number().optional(),
+  result: z.array(DeviceProfileV4Schema).optional(),
+});
+export type IListDeviceProfilesV4Response = z.infer<
+  typeof ListDeviceProfilesV4ResponseSchema
+>;

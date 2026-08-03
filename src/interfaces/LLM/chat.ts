@@ -1,63 +1,65 @@
-import { IFuenteMensaje, ITipoMensaje } from "./chat-tipos";
-import { IMetadataModelo } from "./metadata-modelo";
-import { ICliente } from "../tenant/cliente.model";
-import { IUsuario } from "../tenant/usuario/schema";
+import { z } from "zod";
+import { FuenteMensajeSchema, TipoMensajeSchema } from "./chat-tipos";
+import { MetadataModeloSchema } from "./metadata-modelo";
+import { ClienteSchema } from "../tenant/cliente.model";
+import { UsuarioSchema } from "../tenant/usuario/schema";
 
 /**
  * Interfaz para el historial de mensajes de un usuario. Esto representa sólo los mensajes de interacción directa entre el usuario y el LLM
  */
-export interface IChat {
-  _id?: string;
+export const ChatSchema = z.object({
+  _id: z.string().optional(),
 
   /**
    * Fecha de creación del mensaje
    */
-  fechaCreacion?: string;
+  fechaCreacion: z.string().optional(),
 
   /**
    * Tipo de mensaje: Usuario o Asistente (si lo escribió el usuario o si es una respuesta del LLM)
    */
-  tipoMensaje?: ITipoMensaje;
+  tipoMensaje: TipoMensajeSchema.optional(),
 
   /**
    * Contenido del mensaje traducido al inglés
    */
-  texto?: string;
+  texto: z.string().optional(),
 
   /**
    * Contenido del mensaje en el idioma original
    */
-  textoOriginal?: string;
+  textoOriginal: z.string().optional(),
 
   /**
    * Si es una respuesta de DeepSeek se puede incluir o mostrar el proceso de razonamiento del LLM
    */
-  razonamiento?: string;
+  razonamiento: z.string().optional(),
 
   /**
    * ID del usuario
    */
-  idUsuario?: string;
+  idUsuario: z.string().optional(),
 
   /**
    * ID del cliente
    */
-  idCliente?: string;
+  idCliente: z.string().optional(),
 
   /**
    * Origen del mensaje (en caso del usuario, puede venir de la App, Web, Whatsapp, etc)
    */
-  fuenteMensaje?: IFuenteMensaje;
+  fuenteMensaje: FuenteMensajeSchema.optional(),
 
   /**
    * Metadata del modelo de LLM que generó la respuesta
    */
-  metadataModelo?: IMetadataModelo;
+  metadataModelo: MetadataModeloSchema.optional(),
 
   // Definir conversación como entidad?
   // Este historial no debería ser infinito, analizar vectorizar los mensajes "viejos"
 
   //Virtuals:
-  usuario?: IUsuario;
-  cliente?: ICliente;
-}
+  usuario: UsuarioSchema.optional(),
+  cliente: ClienteSchema.optional(),
+});
+export type IChat = z.infer<typeof ChatSchema>;

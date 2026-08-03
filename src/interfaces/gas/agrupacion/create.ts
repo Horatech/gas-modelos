@@ -1,5 +1,7 @@
-import { IAgrupacion } from "./schema";
+import { z } from "zod";
+import { AgrupacionSchema } from "./schema";
 
-type Omitir = "_id";
-
-export interface ICreateAgrupacion extends Omit<Partial<IAgrupacion>, Omitir> {}
+export const CreateAgrupacionSchema = AgrupacionSchema.omit({
+  _id: true,
+});
+export type ICreateAgrupacion = z.infer<typeof CreateAgrupacionSchema>;

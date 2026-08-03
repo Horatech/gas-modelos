@@ -1,15 +1,24 @@
-export interface IRegistroFaltante {
-  _id?: string;
-  timestamp?: string;
-  deveui?: string;
-}
+import { z } from "zod";
+
+export const RegistroFaltanteSchema = z.object({
+  _id: z.string().optional(),
+  timestamp: z.string().optional(),
+  deveui: z.string().optional(),
+});
+export type IRegistroFaltante = z.infer<typeof RegistroFaltanteSchema>;
 
 ////// CREATE
-type OmitirCreate = "_id";
-export interface ICreateRegistroFaltante
-  extends Omit<Partial<IRegistroFaltante>, OmitirCreate> {}
+export const CreateRegistroFaltanteSchema = RegistroFaltanteSchema.omit({
+  _id: true,
+});
+export type ICreateRegistroFaltante = z.infer<
+  typeof CreateRegistroFaltanteSchema
+>;
 
 ////// UPDATE
-type OmitirUpdate = "_id";
-export interface IUpdateRegistroFaltante
-  extends Omit<Partial<IRegistroFaltante>, OmitirUpdate> {}
+export const UpdateRegistroFaltanteSchema = RegistroFaltanteSchema.omit({
+  _id: true,
+});
+export type IUpdateRegistroFaltante = z.infer<
+  typeof UpdateRegistroFaltanteSchema
+>;

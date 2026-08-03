@@ -1,57 +1,54 @@
-import { IUnidadNegocio } from "../gas";
-import { IUsuario } from "../tenant";
-import { ICuenca } from "./cuenca";
+import { z } from "zod";
+import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { UsuarioSchema } from "../tenant/usuario/schema";
+import { CuencaSchema } from "./cuenca";
 
-export interface IElementos {
-  oxigeno?: number;
-  densidad?: number;
-  dioxidoCarbono?: number;
-  nitrogeno?: number;
-  metano?: number;
-  etano?: number;
-  propano?: number;
-  isoButano?: number;
-  nButano?: number;
-  isoPentano?: number;
-  nPentano?: number;
-  nHexano?: number;
-  nHeptano?: number;
-  nOctano?: number;
-}
+export const ElementosSchema = z.object({
+  oxigeno: z.number().optional(),
+  densidad: z.number().optional(),
+  dioxidoCarbono: z.number().optional(),
+  nitrogeno: z.number().optional(),
+  metano: z.number().optional(),
+  etano: z.number().optional(),
+  propano: z.number().optional(),
+  isoButano: z.number().optional(),
+  nButano: z.number().optional(),
+  isoPentano: z.number().optional(),
+  nPentano: z.number().optional(),
+  nHexano: z.number().optional(),
+  nHeptano: z.number().optional(),
+  nOctano: z.number().optional(),
+});
+export type IElementos = z.infer<typeof ElementosSchema>;
 
-export interface ICromatografia {
-  _id?: string;
-  idUsuario?: string;
-  idCuenca?: string;
-  idCliente?: string;
-  idUnidadNegocio?: string;
-  fechaAplicacion?: string;
-  fechaVencimiento?: string;
-  elementos?: IElementos;
+export const CromatografiaSchema = z.object({
+  _id: z.string().optional(),
+  idUsuario: z.string().optional(),
+  idCuenca: z.string().optional(),
+  idCliente: z.string().optional(),
+  idUnidadNegocio: z.string().optional(),
+  fechaAplicacion: z.string().optional(),
+  fechaVencimiento: z.string().optional(),
+  elementos: ElementosSchema.optional(),
   //
-  fechaCreacion?: string;
+  fechaCreacion: z.string().optional(),
   // Virtual
-  cuenca?: ICuenca;
-  unidadNegocio?: IUnidadNegocio;
-  usuario?: IUsuario;
-}
+  cuenca: CuencaSchema.optional(),
+  unidadNegocio: UnidadNegocioSchema.optional(),
+  usuario: UsuarioSchema.optional(),
+});
+export type ICromatografia = z.infer<typeof CromatografiaSchema>;
 
-// CREATE
-type OmitirCreate =
-  | "_id"
-  | "fechaCreacion"
-  | "cuenca"
-  | "unidadNegocio"
-  | "usuario";
-export interface ICreateCromatografia
-  extends Omit<Partial<ICromatografia>, OmitirCreate> {}
+const omitir = {
+  _id: true,
+  fechaCreacion: true,
+  cuenca: true,
+  unidadNegocio: true,
+  usuario: true,
+} as const;
 
-// UPDATE
-type OmitirUpdate =
-  | "_id"
-  | "fechaCreacion"
-  | "cuenca"
-  | "unidadNegocio"
-  | "usuario";
-export interface IUpdateCromatografia
-  extends Omit<Partial<ICromatografia>, OmitirUpdate> {}
+export const CreateCromatografiaSchema = CromatografiaSchema.omit(omitir);
+export type ICreateCromatografia = z.infer<typeof CreateCromatografiaSchema>;
+
+export const UpdateCromatografiaSchema = CromatografiaSchema.omit(omitir);
+export type IUpdateCromatografia = z.infer<typeof UpdateCromatografiaSchema>;
