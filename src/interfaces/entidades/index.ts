@@ -18,6 +18,7 @@ export * from "./grupo";
 export * from "./kmz";
 export * from "./localidad";
 export * from "./registro-clima";
+export * from "./clima-historico";
 export * from "./resumen-diario-localidad";
 export * from "./resumen-operativo-nivel";
 export * from "./log-nuc";

@@ -3,6 +3,7 @@ import { CoordenadasSchema, GeoJSONSchema } from "../auxiliares/coordenadas";
 import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
 import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
 import { ClienteSchema } from "../tenant/cliente.model";
+import { GridEra5Schema } from "./clima-historico";
 
 /**
  * Origen de la geometria de una Localidad.
@@ -33,6 +34,14 @@ export const LocalidadSchema = z.object({
   geojson: GeoJSONSchema.optional(), // poligono opcional de la zona (Polygon / MultiPolygon) — indice 2dsphere en gas-datos
   origenGeometria: OrigenGeometriaLocalidadSchema.optional(),
   osmRelationId: z.number().optional(), // referencia a la relacion OSM cuando origenGeometria === "OSM"
+
+  /**
+   * Celda de la grilla ERA5-Land a la que cae el centroide. La resuelve y la escribe
+   * `gas-api-clima`; es la clave con la que se busca la serie climatica HISTORICA
+   * (grados-dia) de la Localidad. Deriva de `ubicacion`: una Localidad sin centroide
+   * no tiene celda y queda fuera del historico hasta que cargue su geografia.
+   */
+  gridEra5: GridEra5Schema.optional(),
 
   // Virtuals
   cliente: ClienteSchema.optional(),

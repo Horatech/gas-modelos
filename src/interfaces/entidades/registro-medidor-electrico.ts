@@ -53,6 +53,47 @@ export const RegistroMedidorElectricoSchema = z.object({
   demandaMaxExportadaW: z.number().optional(),
   demandaMaxImportadaT1W: z.number().optional(),
   demandaMaxExportadaT1W: z.number().optional(),
+  // ===== Tarifas 1 y 2: declarados antes de tener productor =====
+  //
+  // Las 18 métricas del protocolo son 6 bases × 3 tarifas (`bit = base + 8×tarifa`,
+  // fPort de reporte = `110 + bit`). Arriba están las 8 que el firmware conocido
+  // reporta; lo que sigue son las 10 que el protocolo define y todavía nadie manda
+  // (`INTEGRACION_LORAWAN_NUBE_NME.md` §4: "Definido, sin soporte aún").
+  //
+  // Están declarados a propósito, sin productor: el día que un firmware empiece a
+  // reportarlas, el cambio caro es justamente éste (PR acá + bump en cada consumidor
+  // + `@Prop()` en gas-datos); mapear el fPort en cada servicio es una línea.
+  //
+  // Tarifa 1 — energías (bits 8-11, fPorts 118-121)
+  whImportadaT1Acum: z.number().optional(), // OBIS 1.8.0.1
+  whExportadaT1Acum: z.number().optional(), // OBIS 2.8.0.1
+  varhImportadaT1Acum: z.number().optional(), // OBIS 3.8.0.1
+  varhExportadaT1Acum: z.number().optional(), // OBIS 4.8.0.1
+  whImportadaT1: z.number().optional(),
+  whExportadaT1: z.number().optional(),
+  varhImportadaT1: z.number().optional(),
+  varhExportadaT1: z.number().optional(),
+  kwhImportadaT1: z.number().optional(),
+  kwhExportadaT1: z.number().optional(),
+  kvarhImportadaT1: z.number().optional(),
+  kvarhExportadaT1: z.number().optional(),
+  // Tarifa 2 — energías (bits 16-19, fPorts 126-129)
+  whImportadaT2Acum: z.number().optional(), // OBIS 1.8.0.2
+  whExportadaT2Acum: z.number().optional(), // OBIS 2.8.0.2
+  varhImportadaT2Acum: z.number().optional(), // OBIS 3.8.0.2
+  varhExportadaT2Acum: z.number().optional(), // OBIS 4.8.0.2
+  whImportadaT2: z.number().optional(),
+  whExportadaT2: z.number().optional(),
+  varhImportadaT2: z.number().optional(),
+  varhExportadaT2: z.number().optional(),
+  kwhImportadaT2: z.number().optional(),
+  kwhExportadaT2: z.number().optional(),
+  kvarhImportadaT2: z.number().optional(),
+  kvarhExportadaT2: z.number().optional(),
+  // Tarifa 2 — demandas máximas (bits 20-21, fPorts 130-131). Snapshots en W,
+  // mismas reglas que las de arriba: no se suman ni se promedian.
+  demandaMaxImportadaT2W: z.number().optional(), // OBIS 1.6.0.2
+  demandaMaxExportadaT2W: z.number().optional(), // OBIS 2.6.0.2
   periodoIncompleto: z.boolean().optional(),
   regresionAcumulado: z.boolean().optional(),
   deveui: z.string().optional(),
@@ -102,6 +143,32 @@ export interface IRegistroMedidorElectrico {
   demandaMaxExportadaW?: number;
   demandaMaxImportadaT1W?: number;
   demandaMaxExportadaT1W?: number;
+  whImportadaT1Acum?: number;
+  whExportadaT1Acum?: number;
+  varhImportadaT1Acum?: number;
+  varhExportadaT1Acum?: number;
+  whImportadaT1?: number;
+  whExportadaT1?: number;
+  varhImportadaT1?: number;
+  varhExportadaT1?: number;
+  kwhImportadaT1?: number;
+  kwhExportadaT1?: number;
+  kvarhImportadaT1?: number;
+  kvarhExportadaT1?: number;
+  whImportadaT2Acum?: number;
+  whExportadaT2Acum?: number;
+  varhImportadaT2Acum?: number;
+  varhExportadaT2Acum?: number;
+  whImportadaT2?: number;
+  whExportadaT2?: number;
+  varhImportadaT2?: number;
+  varhExportadaT2?: number;
+  kwhImportadaT2?: number;
+  kwhExportadaT2?: number;
+  kvarhImportadaT2?: number;
+  kvarhExportadaT2?: number;
+  demandaMaxImportadaT2W?: number;
+  demandaMaxExportadaT2W?: number;
   periodoIncompleto?: boolean;
   regresionAcumulado?: boolean;
   deveui?: string;
