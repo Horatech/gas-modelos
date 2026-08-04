@@ -5,7 +5,7 @@ import { ClienteSchema } from "../tenant/cliente.model";
 import { AgrupacionSchema } from "../gas/agrupacion/schema";
 import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
 import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
-import { EstadoCorrectoraSchema } from "./correctora";
+import { EstadoCorrectoraSchema } from "./estado";
 import { TipoAlertaSchema } from "./alerta";
 import { LocalidadSchema } from "./localidad";
 import { GrupoSchema } from "./grupo";
@@ -162,7 +162,7 @@ export interface IPuntoMedicion {
   idsScada?: string[] | null;
   fechaAsignacionScada?: string | null;
   posicion?: number;
-  estado?: import("./correctora").IEstado;
+  estado?: import("./estado").IEstado;
   timestampUltimoReporte?: string | null;
   tiposAlertaActivos?: import("./alerta").ITipoAlerta[];
   factorCarga?: number | null;

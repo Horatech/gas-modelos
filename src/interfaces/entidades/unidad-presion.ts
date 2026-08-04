@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { EstadoCorrectoraSchema, IEstado } from "./correctora";
+import { EstadoCorrectoraSchema } from "./estado";
+import type { IEstado } from "./estado";
 import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
 import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
 import { LocalidadSchema } from "./localidad";
