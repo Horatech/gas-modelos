@@ -5,6 +5,8 @@ import { LocalidadSchema } from "./localidad";
 import { CromatografiaSchema } from "./cromatografia";
 import { ModeloCorrectoraSchema } from "./mensajes-nuc/mensajes-nuc";
 import type { ModeloCorrectora } from "./mensajes-nuc/mensajes-nuc";
+import { EstadoCorrectoraSchema } from "./estado";
+import type { IEstado } from "./estado";
 import type { IAlerta } from "./alerta";
 import type { IDispositivo } from "./dispositivo";
 import type { IRegistro } from "./registro";
@@ -14,18 +16,11 @@ import type { IRegistro } from "./registro";
 // de entidades/index.ts (export * de dos módulos con el mismo nombre). Para
 // consumir el schema/array de valores, importar directo de mensajes-nuc.ts.
 
-export const EstadoCorrectoraSchema = z.enum([
-  "Sin Asignar",
-  "En Mantenimiento",
-  "Resolver",
-  "Sin Reportar",
-  "Operativa",
-  "Alerta",
-  "Sin Comunicación",
-  "Dado de Baja",
-  "Incompleto",
-]);
-export type IEstado = z.infer<typeof EstadoCorrectoraSchema>;
+// EstadoCorrectoraSchema / IEstado se movieron a `./estado` (archivo hoja) para
+// que `tenant/cliente.model.ts` los pueda consumir sin cerrar el ciclo runtime
+// correctora → localidad → ClienteSchema → correctora. No se re-exportan desde
+// acá: el barrel de entidades ya exporta `./estado` y un `export *` duplicado
+// haría ambigua la exportación.
 
 // Populates intra-SCC (IAlerta, IDispositivo, IRegistro) como z.custom: ver
 // CLAUDE.md, "De solo tipos a schemas Zod".
