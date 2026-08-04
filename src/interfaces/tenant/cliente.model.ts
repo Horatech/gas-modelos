@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { TipoDispositivoSchema } from "../auxiliares/tipoDispositivo";
 import { ModeloCorrectoraSchema } from "../entidades/mensajes-nuc/mensajes-nuc";
+// Import directo al archivo HOJA `entidades/estado.ts`, no a `entidades/correctora`
+// ni al barrel: correctora → localidad → ClienteSchema cerraría un ciclo runtime.
+import { EstadoCorrectoraSchema } from "../entidades/estado";
 import { ImagenesClienteSchema } from "./cliente.dto";
 import { IntegracionSchema } from "./integraciones";
 import { DivisionSchema } from "./usuario/permiso";
@@ -149,6 +152,31 @@ export const ParametrosObisSchema = z.object({
 });
 export type IParametrosObis = z.infer<typeof ParametrosObisSchema>;
 
+/**
+ * Catálogo FIJO de íconos de estado de punto de medición. Cada slug corresponde a
+ * un asset existente en los frontends (`assets/estados/<slug>.png`) y trae su color
+ * horneado: elegir el ícono elige también el color.
+ *
+ * El catálogo con asset + hex + variantes de card es un VALOR que sólo consumen los
+ * frontends Angular, así que vive duplicado en gas-web-cliente y gas-web-admin; acá
+ * sólo se declaran los slugs válidos.
+ *
+ * Ojo: `sin-reportar`, `resolver` y `sin-asignar` comparten exactamente el mismo
+ * glifo (signo de admiración blanco) y se distinguen SÓLO por el color del círculo.
+ */
+export const IconoEstadoSchema = z.enum([
+  "ok", // verde brillante  #02DA3D  check
+  "incompleto", // verde oscuro     #168526  check + documento
+  "sin-reportar", // rojo            #FF0000  !
+  "resolver", // naranja         #F7931D  !
+  "sin-asignar", // violeta         #7A1996  !
+  "alerta", // amarillo        #FDED22  triángulo con !
+  "mantenimiento", // celeste         #00B2D0  llave + destornillador
+  "dado-de-baja", // casi negro      #2C2C2C  círculo tachado
+  "sin-informacion", // rojo oscuro     #D0091D  X negra
+]);
+export type IconoEstado = z.infer<typeof IconoEstadoSchema>;
+
 export type DivisionConVistaPersonalizada = Extract<
   Division,
   "Correctoras" | "Residencial"
@@ -172,6 +200,23 @@ export const ConfigClienteSchema = z.object({
   permitirEditarUnNcoAsignado: z.boolean().optional(),
   crearMedidorResidencialAutomatico: z.boolean().optional(),
   gestionCuentas: z.boolean().optional(),
+  /**
+   * Ícono (y por lo tanto color) con el que el frontend muestra cada estado de punto
+   * de medición: listados, detalle, popups del mapa, pines, clusters y cards de
+   * Estado General.
+   *
+   * Opcional y parcial: los estados no definidos usan la asignación por defecto del
+   * frontend (la actual, que es también el fallback). "Sin Comunicación", si no está
+   * definido, hereda lo que resuelva "Sin Reportar" (es su alias visual en todo el
+   * front).
+   *
+   * OJO: el merge de `config` en gas-admin (`clientes.service.ts updateCliente`) es
+   * SHALLOW, así que el admin tiene que enviar el objeto `iconosEstado` COMPLETO en
+   * cada PUT o pisa la config previa.
+   */
+  iconosEstado: z
+    .partialRecord(EstadoCorrectoraSchema, IconoEstadoSchema)
+    .optional(),
 });
 export type IConfigCliente = z.infer<typeof ConfigClienteSchema>;
 

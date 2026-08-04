@@ -180,6 +180,30 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-04 - Ícono/color por estado configurable por cliente
+
+`IConfigCliente.iconosEstado?: Partial<Record<IEstado, IconoEstado>>` — el cliente puede
+reasignar qué ícono del catálogo fijo usa cada estado de punto de medición. El ícono trae
+el color horneado (los assets son círculo de color + glifo blanco), así que elegir ícono
+elige color. Caso de uso: Camuzzi invierte `Alerta` ↔ `Sin Reportar`.
+Plan completo en `/PLAN-COLORES-ESTADO-POR-CLIENTE.md` (raíz del sistema).
+
+`IconoEstadoSchema` es un `z.enum` de 9 slugs, uno por asset existente en los frontends.
+Acá van **sólo los slugs**: el catálogo con asset + hex + variantes de card es un valor
+que sólo consumen los frontends Angular y vive duplicado en gas-web-cliente y
+gas-web-admin.
+
+**`EstadoCorrectoraSchema` / `IEstado` se movieron de `entidades/correctora.ts` a
+`entidades/estado.ts`** (archivo hoja, sólo depende de zod). Motivo: `cliente.model.ts`
+necesita el schema como VALOR para el `z.partialRecord`, y tomarlo de `correctora.ts`
+cerraba un ciclo runtime real — `correctora → localidad.ts → ClienteSchema → correctora`
+(`localidad.ts` importa `ClienteSchema` como valor). `correctora.ts` **no** lo re-exporta:
+el barrel de `entidades` exporta `./estado` y un `export *` duplicado haría ambigua la
+exportación. Los 6 archivos que lo importaban (`correctora`, `punto-medicion`, `scada`,
+`unidad-presion`, `medidor-residencial`, `medidor-residencial-agua`, `medidor-electrico`)
+apuntan a `./estado`. Para los consumidores no cambia nada: importan de `'modelos'` y el
+barrel sigue exportando `IEstado` una sola vez.
+
 ### 2026-08-03 - Registro NME: las 18 métricas del protocolo declaradas
 
 `IRegistroMedidorElectrico` suma los 26 campos de las tarifas 1 y 2 (energías T1/T2 con
