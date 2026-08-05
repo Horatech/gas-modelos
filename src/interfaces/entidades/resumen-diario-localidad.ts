@@ -58,6 +58,50 @@ export const ResumenDiarioLocalidadSchema = z.object({
   vientoVelocidadMedia: z.number().optional(), // m/s
   horasClima: z.number().optional(), // horas distintas con dato (calidad de la media: 24 = dia completo)
 
+  // ── Grados-dia (ERA5-Land) ────────────────────────────────────────────
+  // Los escribe gas-api-clima copiando el dia ya calculado de su store propio.
+  // Se COPIAN y no se leen al vuelo para que el camino de servicio de las vistas
+  // siga siendo una sola consulta a Mongo, sin cruzar a otra base.
+  //
+  // OJO: estos campos NO son la temperatura de arriba. Esa viene de la serie de
+  // OpenWeatherMap, que en PROD tiene ~1 muestra por dia en la mayoria de las
+  // filas; los grados-dia salen del reanalisis ERA5-Land, con las 24 horas.
+
+  /** Celda de la grilla que abastece a esta Localidad. Trazabilidad del dato. */
+  claveGridEra5: z.string().optional(),
+
+  /**
+   * Grados-dia de calefaccion del dia, indexados por temperatura BASE en °C:
+   * `{ "18": 9.4, "20": 11.4 }`.
+   *
+   * Se guarda el VECTOR entero y no un escalar porque la base todavia no esta
+   * decidida: se calibra con consenso de cada tenant (ver PLAN-GRADOS-DIA.md
+   * §F5-bis). Con el vector, cambiar la base es una decision de LECTURA y no
+   * obliga a recalcular el rollup de todas las Localidades.
+   */
+  gradosDia: z.record(z.string(), z.number()).optional(),
+
+  /** Idem sobre sensacion termica (wind chill). Relevante en Patagonia ventosa. */
+  gradosDiaEfectivos: z.record(z.string(), z.number()).optional(),
+
+  /**
+   * Normal 1991-2020 de ESE dia del año, mismo indexado por base. Es contra esto
+   * que se mide el desvio: sin la normal, un grado-dia suelto no dice nada.
+   */
+  gradosDiaNormal: z.record(z.string(), z.number()).optional(),
+
+  /** Temperatura efectiva: `0,5·T(d) + 0,5·T_ef(d−1)`. Inercia termica del parque. */
+  temperaturaEfectiva: z.number().optional(), // °C
+
+  /** Dias consecutivos de helada hasta este dia. Insumo de integridad de cañeria. */
+  heladaConsecutivos: z.number().optional(),
+
+  /**
+   * `false` mientras el dia provenga de ERA5-Land-T (near-real-time, sin control
+   * de calidad). El consolidado sale 2-3 meses despues y los valores CAMBIAN.
+   */
+  climaConsolidado: z.boolean().optional(),
+
   // Idempotencia / control (patron estadogeneralcorrectoras)
   queryHash: z.string().optional(),
   estado: EstadoResumenDiarioSchema.optional(),
