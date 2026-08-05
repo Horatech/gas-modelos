@@ -33,6 +33,17 @@ export const PuntoSerieResumenSchema = z.object({
   // Horas del dia con dato climatico (24 = dia completo). Deja ver si un punto
   // de la correlacion se apoya en una media horaria completa o en pocas muestras.
   horasClima: z.number().optional(),
+
+  // ── Grados-dia, ya resueltos a la base vigente ────────────────────────
+  // El rollup guarda el vector de 15 bases; aca viaja el ESCALAR de la base que
+  // se esta usando, porque el frontend dibuja una serie, no quince. Cual es esa
+  // base la dice `baseHdd` del nivel.
+
+  /** Grados-dia del dia. Es el eje X natural de la correlacion con el consumo. */
+  gradosDia: z.number().optional(),
+
+  /** Grados-dia normales de ese dia del año. La referencia contra la que se mide. */
+  gradosDiaNormal: z.number().optional(),
 });
 export type IPuntoSerieResumen = z.infer<typeof PuntoSerieResumenSchema>;
 
@@ -67,6 +78,30 @@ export const ResumenOperativoNivelSchema = z.object({
 
   // Serie diaria (consumo + temperatura) para tendencia y correlacion clima-demanda
   serie: z.array(PuntoSerieResumenSchema).optional(),
+
+  // ── Grados-dia acumulados del periodo ─────────────────────────────────
+
+  /**
+   * Base en °C con la que se resolvieron los escalares de `serie` y de los
+   * acumulados. Viaja explicita porque el numero no se interpreta sin ella:
+   * 600 grados-dia base 18 y 600 base 22 describen inviernos muy distintos.
+   */
+  baseHdd: z.number().optional(),
+
+  /** Suma de los grados-dia del periodo. Acumular sobre el TIEMPO si es valido. */
+  gradosDiaAcumulado: z.number().optional(),
+
+  /** Suma de la normal del mismo periodo. */
+  gradosDiaNormalAcumulado: z.number().optional(),
+
+  /**
+   * Desvio del periodo respecto de lo normal, en %.
+   *
+   * Es el numero que un operador lee de un vistazo: "+10,5%" dice que el invierno
+   * viene mas duro que lo habitual, y por lo tanto cuanto del aumento de consumo
+   * es clima y no otra cosa. El grado-dia absoluto, solo, no dice nada.
+   */
+  desvioClimaticoPct: z.number().optional(),
 
   // Clima
   climaActual: ClimaResumenSchema.optional(), // punto horario mas cercano a ahora, promediado al nivel

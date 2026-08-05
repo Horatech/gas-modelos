@@ -180,6 +180,38 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-05 - Grados-día en el rollup diario y en el DTO de resumen
+
+Cierra el puente entre el histórico ERA5-Land —que vive en el PostgreSQL propio de
+`gas-api-clima`— y las vistas, que leen Mongo. Los grados-día se **copian** al rollup en
+vez de leerse al vuelo, para que el camino de servicio siga siendo una sola consulta.
+
+`ResumenDiarioLocalidadSchema` suma `gradosDia`, `gradosDiaEfectivos` y `gradosDiaNormal`
+(los tres como `z.record(z.string(), z.number())`, indexados por temperatura base),
+`temperaturaEfectiva`, `heladaConsecutivos`, `climaConsolidado` y `claveGridEra5`.
+
+**Se guarda el VECTOR de bases, no un escalar.** La base de grados-día todavía no está
+decidida: se calibra con consenso de cada tenant (`PLAN-GRADOS-DIA.md` §F5-bis), porque un
+ajuste puramente estadístico confundiría un shock tarifario con un cambio de comportamiento
+térmico. Con el vector guardado, cambiar la base es una decisión de **lectura** y no obliga
+a recalcular el rollup de las 395 Localidades.
+
+⚠️ **`gradosDia` NO se deriva de `temperaturaMedia` del mismo documento.** Esa temperatura
+viene de OpenWeatherMap y en PROD tiene ~1 muestra por día en la mayoría de las filas; los
+grados-día salen de ERA5-Land, con las 24 horas y por integración horaria. Son dos series
+distintas conviviendo en la misma fila.
+
+`PuntoSerieResumenSchema` suma `gradosDia` y `gradosDiaNormal` como **escalares** ya
+resueltos a la base vigente: el frontend dibuja una serie, no quince.
+`ResumenOperativoNivelSchema` suma `baseHdd`, `gradosDiaAcumulado`,
+`gradosDiaNormalAcumulado` y `desvioClimaticoPct`. `baseHdd` viaja explícita porque el
+número no se interpreta sin ella — 600 grados-día base 18 y 600 base 22 describen inviernos
+muy distintos.
+
+Se dejó afuera `baseHddAplicada` a nivel de fila del rollup: su productor es el mecanismo de
+calibración, que todavía no existe.
+
+
 ### 2026-08-04 - Ícono/color por estado configurable por cliente
 
 `IConfigCliente.iconosEstado?: Partial<Record<IEstado, IconoEstado>>` — el cliente puede
