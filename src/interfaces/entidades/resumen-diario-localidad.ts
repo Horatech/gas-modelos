@@ -110,6 +110,31 @@ export const ResumenDiarioLocalidadSchema = z.object({
   gradosDiaNormalP10: z.record(z.string(), z.number()).optional(),
   gradosDiaNormalP90: z.record(z.string(), z.number()).optional(),
 
+  /**
+   * Grados-dia calculados desde la serie horaria de **OpenWeatherMap**, mismo indexado
+   * por base. Es el RELLENO de la punta, no un reemplazo de `gradosDia`.
+   *
+   * Existe porque ERA5-Land publica con ~5 dias de atraso y el ultimo tramo del rango
+   * —el que se mira para saber como viene el invierno— queda vacio. La serie horaria de
+   * OWM cubre las 24 h de cada Localidad desde el 27-jul-2026, asi que permite el MISMO
+   * calculo por integracion horaria y encima con resolucion por Localidad, no por celda
+   * de 9 km.
+   *
+   * **No cuesta requests**: el dato ya esta en `registroclimas`, lo trae la ingesta
+   * horaria que corre igual. Se calcula en el pipeline del rollup, que ya agrupa por hora.
+   *
+   * ⚠️ **No es intercambiable con `gradosDia`.** Medido sobre 158 pares Localidad-dia con
+   * ambas series completas: OWM corre **+0,48 °C de media** (mediana +0,25) mas calido que
+   * ERA5, con p90 en +1,90 y un 31% de los dias por encima de 1 °C. En base 18 son
+   * ~0,3-0,5 grados-dia por dia. Como la normal sale de ERA5, ese sesgo entra directo en
+   * el desvio. Quien lo lea tiene que saber de donde viene: ver
+   * `IPuntoSerieResumen.gradosDiaProvisorio`.
+   *
+   * Mismo gate de calidad que ERA5: solo se calcula con **>= 20 horas** del dia. Con menos
+   * muestras el promedio no describe el dia y produciria un numero que parece un dato.
+   */
+  gradosDiaOwm: z.record(z.string(), z.number()).optional(),
+
   /** Temperatura efectiva: `0,5·T(d) + 0,5·T_ef(d−1)`. Inercia termica del parque. */
   temperaturaEfectiva: z.number().optional(), // °C
 
