@@ -46,6 +46,20 @@ export const PuntoSerieResumenSchema = z.object({
   gradosDiaNormal: z.number().optional(),
 
   /**
+   * El grado-dia del dia **no** salio de ERA5-Land sino de la serie horaria de
+   * OpenWeatherMap, porque ERA5 todavia no publico ese dia (~5 dias de atraso).
+   *
+   * Viaja como bandera y no como texto de fuente porque lo que el lector necesita saber
+   * es una sola cosa: **este punto se va a mover** cuando llegue el dato definitivo. El
+   * sesgo medido entre las dos series es de +0,25 a +0,48 °C, o sea ~0,3-0,5 grados-dia
+   * por dia, y la normal contra la que se compara sigue siendo la de ERA5.
+   *
+   * En un nivel que agrega varias Localidades alcanza con que UNA aporte dato provisorio
+   * para que el punto lo sea: el agregado ya quedo contaminado.
+   */
+  gradosDiaProvisorio: z.boolean().optional(),
+
+  /**
    * Banda p10-p90 de la normal de ese dia del año: el rango de lo habitual.
    *
    * Es lo que convierte el punto diario en una lectura: un dia por encima de la

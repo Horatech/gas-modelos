@@ -180,6 +180,30 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-06 - Grados-día de relleno desde OpenWeatherMap
+
+ERA5-Land publica con ~5 días de atraso, así que el último tramo del rango —el que se mira
+para saber cómo viene el invierno— queda vacío. Desde el **27-jul-2026** la serie horaria de
+OWM cubre las **24 h** de cada Localidad (antes eran 1 a 4 muestras por día), así que permite
+el mismo cálculo por integración horaria, y con resolución por Localidad en vez de por celda
+de 9 km.
+
+`ResumenDiarioLocalidad` suma `gradosDiaOwm` (record por base, igual que el de ERA5) y
+`PuntoSerieResumen` suma `gradosDiaProvisorio`. **Campo aparte, no reemplazo**: cuando llega
+ERA5 gana solo, sin borrar nada.
+
+**No cuesta requests**: el dato ya está en `registroclimas`. Se calcula en el `$group` por
+hora que el rollup ya ejecuta.
+
+⚠️ **Las dos series no son intercambiables.** Medido sobre 158 pares Localidad-día con ambas
+completas: OWM corre **+0,48 °C de media** (mediana +0,25, p90 +1,90; 31% por encima de 1 °C)
+más cálido que ERA5 — en base 18, ~0,3-0,5 grados-día por día. Como la normal sale de ERA5,
+ese sesgo entra directo en el desvío. De ahí la bandera: lo que el lector necesita saber es
+que **ese punto se va a mover**.
+
+Mismo gate de calidad que ERA5: sólo con **≥ 20 horas** del día.
+
+
 ### 2026-08-05 - Banda p10-p90 del día y desvío por hijo
 
 Lo que le faltaba al DTO para que la vista Resumen pueda dibujar los grados-día.
