@@ -180,6 +180,33 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-05 - Banda p10-p90 del día y desvío por hijo
+
+Lo que le faltaba al DTO para que la vista Resumen pueda dibujar los grados-día.
+
+`ResumenDiarioLocalidadSchema` suma `gradosDiaNormalP10` y `gradosDiaNormalP90` (records
+por base, igual que `gradosDiaNormal`, que es la mediana). `PuntoSerieResumenSchema` suma
+los dos escalares equivalentes.
+
+⚠️ **Los percentiles no son aditivos.** Sumar los p10 diarios NO da el p10 del acumulado:
+los desvíos diarios se cancelan a lo largo de la temporada, así que la suma da una banda
+mucho más ancha que la real y nada cae nunca afuera. La banda del acumulado se percentila
+sobre acumulados de temporada — y eso necesita antes una definición de temporada, que es
+un pendiente por cliente. Por eso estos campos son **sólo del día** y no hay acumulados
+p10/p90 en el nivel.
+
+`ResumenOperativoNivelSchema` suma `cantidadLocalidadesTotal` y
+`cantidadLocalidadesConGeografia`: sin centroide no hay celda ERA5-Land y por lo tanto no
+hay grados-día, y eso hay que poder decirlo. Son 175 Localidades de Naturgy BAN y todas
+las de Metrogas, Ecogas y Naturgy NOA; mostrarlas como `0%` sería mentir sobre miles de
+puntos. "Sin geografía cargada" pide una acción, "sin dato climático todavía" se resuelve
+solo.
+
+Nuevo `IResumenDesvioHijo` (`GET /resumen/desvio-hijos/:nivel` en gas-api-cliente),
+separado de `IResumenClimaHijo` a propósito: depende del rango de fechas (la tarjeta
+climática no, y se cachea por nivel+padre) y sale del rollup diario (la tarjeta sale de
+`registroclimas`).
+
 ### 2026-08-05 - Grados-día en el rollup diario y en el DTO de resumen
 
 Cierra el puente entre el histórico ERA5-Land —que vive en el PostgreSQL propio de

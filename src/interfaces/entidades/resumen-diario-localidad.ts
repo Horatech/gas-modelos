@@ -90,6 +90,26 @@ export const ResumenDiarioLocalidadSchema = z.object({
    */
   gradosDiaNormal: z.record(z.string(), z.number()).optional(),
 
+  /**
+   * Percentiles 10 y 90 de la MISMA normal (`gradosDiaNormal` es la mediana),
+   * mismo indexado por base.
+   *
+   * Son la banda de lo habitual para ese dia del año: dicen si el desvio del dia
+   * entra en la variabilidad normal o se sale de ella. Sin la banda, un +30%
+   * sobre la mediana es indistinguible de un dia raro y de un dia frio de
+   * verdad — en pleno invierno la dispersion interanual de un dia suelto es
+   * enorme.
+   *
+   * ⚠️ **No son aditivos.** Sumar los p10 diarios NO da el p10 del acumulado:
+   * los desvios diarios se cancelan entre si a lo largo de la temporada, asi que
+   * la suma produce una banda mucho mas ancha que la real y nada cae nunca
+   * afuera. La banda del ACUMULADO se percentila sobre acumulados de temporada,
+   * y eso necesita primero una definicion de temporada (pendiente por cliente).
+   * Estos dos campos son para el grafico DIARIO.
+   */
+  gradosDiaNormalP10: z.record(z.string(), z.number()).optional(),
+  gradosDiaNormalP90: z.record(z.string(), z.number()).optional(),
+
   /** Temperatura efectiva: `0,5·T(d) + 0,5·T_ef(d−1)`. Inercia termica del parque. */
   temperaturaEfectiva: z.number().optional(), // °C
 
