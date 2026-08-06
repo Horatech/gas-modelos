@@ -180,6 +180,38 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-06 - Cinco tipos de alerta para las alarmas del SML/WRC
+
+`TipoAlertaSchema` suma `"Flujo inverso"`, `"Falla de medición"`, `"Medidor detenido"`,
+`"Fuga"` y `"Sobrecaudal"`. Son alarmas que el firmware **ya reporta en cada uplink** y que
+`gas-api-wrc` **ya decodifica** (`/82/0`, 25 keys) y gas-sml **ya persiste** en cada reporte
+horario — pero que no tenían ningún tipo de alerta donde expresarse, así que nadie las lee.
+Análisis completo en `/ANALISIS-ALARMAS-SML-WRC.md` (raíz del sistema).
+
+Medido en PROD sobre 3.052 equipos: 254 con `metering fault`, 321 con `meter_stop_alarm`,
+236 con `leakage_alarm`, 90 con `reverse_flow_alarm`, 9 con `over_flow_alarm`. Ninguno
+generó una sola alerta.
+
+⚠️ **`metering_error_status` es un bitfield, no un enum** (`/80/0` key 6: bit 1 = metering
+data error, bit 4 = metering fault). Se lee `(err & 16) !== 0`. En PROD hoy sólo toma los
+valores 0 y 16, pero compararlo con `=== 16` se rompe el día que el firmware prenda bit 1.
+
+⚠️ **`meter_stop_alarm` y `leakage_alarm` no son alertables tal cual.** Su criterio lo fija
+la configuración del propio equipo (`/82/0` key 14 caudal mínimo de fuga, key 15 duración de
+fuga, key 16 duración de consumo cero), así que el mismo flag no significa lo mismo en dos
+equipos con distinta config. Verificado en PROD: `SML-4G-2601270290` tiene
+`meter_stop_alarm=1` con consumo 0 y acumulado 0,08 m³ — es una casa deshabitada, no una
+falla. Hay que relevar los umbrales del parque antes de conectarlas.
+
+**El enum es único para todo el sistema y tiene tres listas divergentes** (hallazgo A7 de
+`/ANALISIS-RECLAMO-SML-CAMUZZI.md`): el modelo Mongoose de puntos en gas-datos, el filtro del
+listado en gas-web-cliente y el catálogo de export en gas-datos. Un tipo nuevo que no se dé
+de alta en las tres queda invisible en los filtros.
+
+No se tocó `TipoAlertaEnvioSchema` (`envio-sms.ts`): son las categorías que disparan canal
+externo (SMS/push), no tiene ninguna categoría residencial, y qué alertas ameritan
+notificación externa es una decisión de producto que todavía no se tomó.
+
 ### 2026-08-06 - Grados-día de relleno desde OpenWeatherMap
 
 ERA5-Land publica con ~5 días de atraso, así que el último tramo del rango —el que se mira
