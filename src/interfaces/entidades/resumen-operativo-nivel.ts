@@ -112,6 +112,16 @@ export const PuntoGradosDiaPronosticoSchema = z.object({
    * los dos tramos no se midieron igual.
    */
   integracionHoraria: z.boolean().optional(),
+
+  /**
+   * Normal 1991-2020 de ese dia del año, misma base.
+   *
+   * Viaja tambien en los dias futuros porque la normal **no es un dato del dia**: es la
+   * climatologia del dia del AÑO, y existe para el 12 de agosto de cualquier año, haya
+   * pasado o no. Sin ella el pronostico queda a medias — "vienen 18 grados-dia" no dice
+   * si es mucho o poco—, que es justamente la lectura que se busca al mirar adelante.
+   */
+  gradosDiaNormal: z.number().optional(),
 });
 export type IPuntoGradosDiaPronostico = z.infer<
   typeof PuntoGradosDiaPronosticoSchema
