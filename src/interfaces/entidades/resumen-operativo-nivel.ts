@@ -44,6 +44,20 @@ export const PuntoSerieResumenSchema = z.object({
 
   /** Grados-dia normales de ese dia del año. La referencia contra la que se mide. */
   gradosDiaNormal: z.number().optional(),
+
+  /**
+   * Banda p10-p90 de la normal de ese dia del año: el rango de lo habitual.
+   *
+   * Es lo que convierte el punto diario en una lectura: un dia por encima de la
+   * mediana puede seguir siendo un dia normal, y solo salirse de la banda lo
+   * hace anomalo. Sin ella el grafico diario sugiere anomalias donde solo hay
+   * variabilidad interanual.
+   *
+   * ⚠️ Es del DIA. No acumular: los percentiles no son aditivos (ver
+   * `IResumenDiarioLocalidad.gradosDiaNormalP10`).
+   */
+  gradosDiaNormalP10: z.number().optional(),
+  gradosDiaNormalP90: z.number().optional(),
 });
 export type IPuntoSerieResumen = z.infer<typeof PuntoSerieResumenSchema>;
 
@@ -75,6 +89,25 @@ export const ResumenOperativoNivelSchema = z.object({
   cantidadCorrectoras: z.number().optional(),
   cantidadMedidoresResidenciales: z.number().optional(),
   cantidadLocalidades: z.number().optional(), // localidades con dato en el periodo
+
+  /**
+   * Localidades del nivel visibles para el usuario, tengan dato o no.
+   * Con `cantidadLocalidadesConGeografia` es lo que permite distinguir los dos
+   * "sin numero" que hoy se verian iguales y son opuestos.
+   */
+  cantidadLocalidadesTotal: z.number().optional(),
+
+  /**
+   * Cuantas de esas Localidades tienen centroide cargado.
+   *
+   * **Sin centroide no hay celda ERA5-Land y por lo tanto no hay grados-dia**, ni
+   * los va a haber hasta que alguien cargue la geografia. No es un caso de borde:
+   * son 175 Localidades de Naturgy BAN y todas las de Metrogas, Ecogas y Naturgy
+   * NOA. Mostrar `0%` de desvio ahi seria mentir sobre miles de puntos; la vista
+   * tiene que poder decir "sin geografia cargada" y distinguirlo de "todavia no
+   * llego el dato climatico", que se resuelve solo.
+   */
+  cantidadLocalidadesConGeografia: z.number().optional(),
 
   // Serie diaria (consumo + temperatura) para tendencia y correlacion clima-demanda
   serie: z.array(PuntoSerieResumenSchema).optional(),
@@ -166,3 +199,41 @@ export const ResumenClimaHijoSchema = z.object({
   tieneLocalidades: z.boolean().optional(),
 });
 export type IResumenClimaHijo = z.infer<typeof ResumenClimaHijoSchema>;
+
+/**
+ * Desvio climatico de un hijo del nivel actual, para la barra comparativa.
+ *
+ * Va SEPARADO de `IResumenClimaHijo` por dos razones, y las dos importan:
+ *
+ * 1. **Depende del rango de fechas y la tarjeta no.** La grilla de tarjetas es
+ *    climatica y se cachea por (nivel, padre); si el desvio viajara adentro, cada
+ *    cambio de rango invalidaria esa cache y volveria a pedir clima horario,
+ *    pronostico y sparklines que no cambiaron.
+ * 2. **Sale de otra fuente.** La tarjeta se arma con `registroclimas`; esto sale
+ *    del rollup diario, con la misma agregacion ponderada del nivel.
+ *
+ * Es el gráfico que responde "¿a que UN le esta pegando el frio?": el grado-dia
+ * ABSOLUTO no sirve para eso —entre celdas de una misma UN la amplitud llega al
+ * 68%, asi que ordenar por absoluto ordena por geografia, no por anomalia—, pero
+ * el desvio si, porque cada celda se compara contra SU propia normal y eso cancela
+ * la heterogeneidad geografica.
+ */
+export const ResumenDesvioHijoSchema = z.object({
+  nivel: NivelResumenSchema,
+  id: z.string(),
+
+  /** Base en °C con la que se resolvieron los acumulados. Ver `baseHdd` del nivel. */
+  baseHdd: z.number().optional(),
+
+  gradosDiaAcumulado: z.number().optional(),
+  gradosDiaNormalAcumulado: z.number().optional(),
+  desvioClimaticoPct: z.number().optional(),
+
+  /**
+   * Ninguna Localidad del hijo tiene centroide: no va a tener grados-dia hasta que
+   * se cargue la geografia. Se distingue del hijo que si tiene celda pero todavia
+   * no tiene dato — el primero necesita una accion, el segundo se resuelve solo.
+   */
+  sinGeografia: z.boolean().optional(),
+});
+export type IResumenDesvioHijo = z.infer<typeof ResumenDesvioHijoSchema>;
