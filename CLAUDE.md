@@ -180,6 +180,26 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-06 - Grados-día proyectados desde el pronóstico
+
+`IResumenOperativoNivel.pronosticoGradosDia` (nuevo `IPuntoGradosDiaPronostico`): los
+próximos ~8 días de grados-día, para extender la curva.
+
+**Va aparte de `serie` y NO entra en `gradosDiaAcumulado` ni en `desvioClimaticoPct`**: un
+desvío que mezcla medición con pronóstico deja de ser una medición, y es el número con el
+que se decide.
+
+**Se calcula por Localidad y se agrega ponderado**, igual que la serie real. Hacerlo sobre
+la temperatura ya promediada del nivel —que es lo que haría el frontend con `pronostico`—
+subestima entre **9% y 24%** (medido sobre 29 días de una UN: −9,1% desde la media, −23,6%
+desde `(Tmax+Tmin)/2`). Mismo Jensen que gobierna el resto del diseño.
+
+`integracionHoraria` distingue los dos tramos: el pronóstico horario cubre ~48 h y permite
+el método exacto; de ahí en adelante sólo hay máxima y mínima, y `(Tmax+Tmin)/2` subestima
+−2,5% (medido sobre 790 pares Localidad-día). A partir del día 3 ese sesgo queda tapado por
+la incertidumbre del pronóstico en sí, pero los dos tramos no se midieron igual y eso se dice.
+
+
 ### 2026-08-06 - Cinco tipos de alerta para las alarmas del SML/WRC
 
 `TipoAlertaSchema` suma `"Flujo inverso"`, `"Falla de medición"`, `"Medidor detenido"`,
