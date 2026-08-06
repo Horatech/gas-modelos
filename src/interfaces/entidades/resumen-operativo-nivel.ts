@@ -89,6 +89,34 @@ export const ClimaResumenSchema = z.object({
 });
 export type IClimaResumen = z.infer<typeof ClimaResumenSchema>;
 
+/**
+ * Un dia de grados-dia PROYECTADOS desde el pronostico.
+ *
+ * Es una proyeccion, no una medicion, y por eso viaja aparte de `serie` y no entra en
+ * los acumulados ni en el desvio del nivel: el desvio mide lo que paso.
+ */
+export const PuntoGradosDiaPronosticoSchema = z.object({
+  fecha: z.string(), // inicio del dia gas
+
+  /** Ya resuelto a la base vigente (`baseHdd`), como el resto de la serie. */
+  gradosDia: z.number(),
+
+  /**
+   * El dia se calculo por **integracion horaria** y no desde `(Tmax+Tmin)/2`.
+   *
+   * El pronostico horario cubre ~48 h; de ahi en adelante solo hay maxima y minima. El
+   * metodo de la media subestima —medido sobre 790 pares Localidad-dia reales: −0,12
+   * grados-dia, −2,5%— porque ignora cuanto tiempo estuvo la temperatura bajo la base.
+   * A partir del dia 3 ese sesgo igual queda tapado por la incertidumbre del pronostico
+   * en si (±2-3 °C son ±2-3 grados-dia), pero el consumidor tiene derecho a saber que
+   * los dos tramos no se midieron igual.
+   */
+  integracionHoraria: z.boolean().optional(),
+});
+export type IPuntoGradosDiaPronostico = z.infer<
+  typeof PuntoGradosDiaPronosticoSchema
+>;
+
 export const ResumenOperativoNivelSchema = z.object({
   nivel: NivelResumenSchema,
   id: z.string(),
@@ -149,6 +177,21 @@ export const ResumenOperativoNivelSchema = z.object({
    * es clima y no otra cosa. El grado-dia absoluto, solo, no dice nada.
    */
   desvioClimaticoPct: z.number().optional(),
+
+  /**
+   * Grados-dia PROYECTADOS de los proximos dias, para extender la curva.
+   *
+   * Separado de `serie` a proposito: es una proyeccion y no entra en
+   * `gradosDiaAcumulado` ni en `desvioClimaticoPct`. Un desvio que mezcla medicion con
+   * pronostico deja de ser una medicion, y es el numero que el operador usa para decidir.
+   *
+   * Se calcula **por Localidad y se agrega ponderado por carga**, igual que la serie
+   * real. Hacerlo sobre la temperatura ya promediada del nivel —que es lo que haria el
+   * frontend con `pronostico`— subestima entre 9% y 24%: medido sobre 29 dias de una UN,
+   * −9,1% partiendo de la media y −23,6% partiendo de `(Tmax+Tmin)/2`. Es el mismo
+   * Jensen que gobierna el resto del diseño.
+   */
+  pronosticoGradosDia: z.array(PuntoGradosDiaPronosticoSchema).optional(),
 
   // Clima
   climaActual: ClimaResumenSchema.optional(), // punto horario mas cercano a ahora, promediado al nivel
