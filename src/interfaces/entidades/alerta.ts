@@ -15,6 +15,18 @@ import type { IMedidorElectrico } from "./medidor-electrico";
 export const EstadoAlertaSchema = z.enum(["Cerrado", "Activo"]);
 export type IEstadoAlerta = z.infer<typeof EstadoAlertaSchema>;
 
+// Los cinco últimos son alarmas que el firmware del SML/WRC ya reporta en cada
+// uplink y que hasta ahora no tenían dónde expresarse:
+//   Flujo inverso     <- alarm.reverse_flow_alarm
+//   Falla de medición <- meter_info.metering_error_status (bitfield: bit 1 =
+//                        metering data error, bit 4 = metering fault). Se lee por
+//                        máscara, NUNCA comparando el entero.
+//   Medidor detenido  <- alarm.meter_stop_alarm
+//   Fuga              <- alarm.leakage_alarm
+//   Sobrecaudal       <- alarm.over_flow_alarm
+// El criterio de "medidor detenido" y "fuga" lo fija la configuración del equipo
+// (/82/0 keys 14/15/16), así que el mismo flag no significa lo mismo en dos equipos
+// con distinta configuración.
 export const TipoAlertaSchema = z.enum([
   "Sin Reportar",
   "Valor Alto",
@@ -26,6 +38,11 @@ export const TipoAlertaSchema = z.enum([
   "Ataque magnético",
   "Alerta de Entrada Digital",
   "Alarma Correctora",
+  "Flujo inverso",
+  "Falla de medición",
+  "Medidor detenido",
+  "Fuga",
+  "Sobrecaudal",
 ]);
 export type ITipoAlerta = z.infer<typeof TipoAlertaSchema>;
 
