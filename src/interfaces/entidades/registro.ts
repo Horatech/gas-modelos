@@ -95,6 +95,8 @@ export interface IRegistro {
   caudalPico?: number;
   fpv?: number; // Factor de compresibilidad
   horaTruncada?: boolean;
+  /** Ver `RegistroSchema.tsCorrido`. */
+  tsCorrido?: boolean;
   //
   numeroSerieCorrectora?: string | null;
   deveui?: string;
