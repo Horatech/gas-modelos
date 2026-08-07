@@ -30,6 +30,18 @@ export const RegistroSchema = z.object({
   caudalPico: z.number().optional(),
   fpv: z.number().optional(), // Factor de compresibilidad
   horaTruncada: z.boolean().optional(),
+  /**
+   * El `timestamp` de este registro está corrido +1 h respecto de la etiqueta que
+   * reportó el equipo. Sólo lo llevan los registros de correctoras American Meter,
+   * que etiquetan la lectura con el INICIO de la hora mientras el resto de los
+   * modelos la etiqueta con el CIERRE (por eso el día gas 7:00-6:00 les daba mal).
+   *
+   * Es el discriminante de convención: un registro sin la marca está en la
+   * convención vieja (histórico previo al backfill). Lo usa `/externo` de
+   * gas-api-cliente para devolver la etiqueta original en los datos anteriores a
+   * la fecha de implementación.
+   */
+  tsCorrido: z.boolean().optional(),
   //
   numeroSerieCorrectora: z.string().nullable().optional(),
   deveui: z.string().optional(),

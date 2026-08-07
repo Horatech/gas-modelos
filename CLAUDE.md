@@ -180,6 +180,27 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-06 - `tsCorrido` en el registro de correctora
+
+`IRegistro` suma `tsCorrido?: boolean`: el `timestamp` de ese registro está corrido +1 h
+respecto de la etiqueta que reportó el equipo. Sólo lo llevan los registros de correctoras
+**American Meter**, que etiquetan la lectura horaria con el **inicio** de la hora mientras
+el resto de los modelos la etiqueta con el **cierre** — y como el día gas corre de 7:00 a
+6:00 ARG, sin corregir cada hora caía en el día gas equivocado. Plan completo en
+`/PLAN-CORRIMIENTO-AMERICAN-METER.md` (raíz del sistema).
+
+**No es un campo informativo: es el discriminante de convención.** Un registro sin la marca
+está en la convención vieja. Eso es lo que permite que `/externo` de gas-api-cliente
+devuelva la etiqueta original en los datos anteriores a la fecha de implementación —y que la
+regla siga siendo correcta durante la ventana mixta entre el deploy y el backfill del
+histórico, cuando la colección tiene documentos de las dos convenciones. También hace el
+backfill idempotente y resumible.
+
+⚠️ Necesita su `@Prop()` en `gas-datos/src/entidades/registros/registro.model.ts`. El
+schema es estricto y sin el `@Prop()` Mongoose descarta el valor **en silencio**: le pasa
+hoy a `horaTruncada`, que está en esta interfaz, lo setea gas-nuc4g y no tiene `@Prop()` —
+en PROD hay 0 documentos con ese campo.
+
 ### 2026-08-06 - Grados-día proyectados desde el pronóstico
 
 `IResumenOperativoNivel.pronosticoGradosDia` (nuevo `IPuntoGradosDiaPronostico`): los
