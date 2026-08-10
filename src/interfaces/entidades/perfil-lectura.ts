@@ -373,9 +373,11 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
  *
  * Los tres puntos que hacen falta acá y en ningún otro perfil:
  * - `whImportada` y `whExportada` **no son neteables**: mismo todo, distinto
- *   sentido, y la distribuidora paga la inyección a su precio de compra.
- * - `demandaMax*W` es `extremoIntervalo`: se agrega con `max`, y **es la variable
- *   de facturación**.
+ *   sentido. Sumarlas es legítimo (energía que cruzó el medidor); restarlas borra
+ *   cuánto se inyectó, que es el dato operativo.
+ * - `demandaMax*W` es `extremoIntervalo`: se agrega con `max`, nunca con `sum`.
+ *   Es el pico de carga del intervalo, y contra el límite del activo es lo que
+ *   define si hay margen.
  * - `kwh*` son alias de `wh*`: elegir mal es un factor 1000.
  */
 const PERFIL_NME: IPerfilLectura = {
@@ -403,7 +405,6 @@ const PERFIL_NME: IPerfilLectura = {
       origen: "calculado-en-backend",
       divisionRequerida: "Medidores Eléctricos",
       estado: "prod",
-      valorEconomicoDependeDe: ["direccion", "banda", "categoriaUsuario"],
       descripcion: "OBIS 1.8.0 — delta de la hora",
     },
     whExportada: {
@@ -425,9 +426,8 @@ const PERFIL_NME: IPerfilLectura = {
       origen: "calculado-en-backend",
       divisionRequerida: "Medidores Eléctricos",
       estado: "prod",
-      valorEconomicoDependeDe: ["direccion", "banda", "categoriaUsuario"],
       descripcion:
-        "OBIS 2.8.0 — inyección del usuario-generador. Se paga a precio de compra, no a tarifa",
+        "OBIS 2.8.0 — inyección del usuario-generador. NO netear con la importada: cuánto se inyectó determina el alivio de carga del transformador de la zona",
     },
     whImportadaAcum: {
       dominio: "proceso",
@@ -513,9 +513,8 @@ const PERFIL_NME: IPerfilLectura = {
       origen: "medido-por-equipo",
       divisionRequerida: "Medidores Eléctricos",
       estado: "prod",
-      valorEconomicoDependeDe: ["direccion", "banda", "categoriaUsuario"],
       descripcion:
-        "OBIS 1.6.0 — snapshot al cierre de la hora. Variable de facturación: se agrega con max, nunca sum",
+        "OBIS 1.6.0 — snapshot al cierre de la hora. Extremo del intervalo: se agrega con max, nunca sum",
     },
     demandaMaxExportadaW: {
       dominio: "proceso",
@@ -535,7 +534,6 @@ const PERFIL_NME: IPerfilLectura = {
       origen: "medido-por-equipo",
       divisionRequerida: "Medidores Eléctricos",
       estado: "prod",
-      valorEconomicoDependeDe: ["direccion", "banda", "categoriaUsuario"],
       descripcion:
         "OBIS 2.6.0 — pico de inyección. Con generación distribuida el límite del activo es bidireccional",
     },
@@ -553,8 +551,8 @@ const PERFIL_NME: IPerfilLectura = {
       rol: "medida",
       naturaleza: "calculado",
       agregableEntreDispositivos: false,
-      // Las bandas suman al total para lo FÍSICO. Para lo económico no se
-      // agregan, porque cada una tiene precio distinto.
+      // Las bandas suman al total, así que mezclar una banda CON el total es
+      // doble conteo. Sirven para perfilar demanda por franja horaria.
       particion: {
         esParteDe: "registromedidorelectricos/NME#whImportada",
         sumanAlTotal: true,
@@ -563,8 +561,7 @@ const PERFIL_NME: IPerfilLectura = {
       origen: "calculado-en-backend",
       divisionRequerida: "Medidores Eléctricos",
       estado: "prod",
-      valorEconomicoDependeDe: ["direccion", "banda", "categoriaUsuario"],
-      descripcion: "OBIS 1.8.0.1 — banda tarifaria 1",
+      descripcion: "OBIS 1.8.0.1 — banda horaria 1",
     },
   },
 };

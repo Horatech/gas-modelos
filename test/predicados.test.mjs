@@ -31,9 +31,10 @@ const NME = CATALOGO_CANALES.find((p) => p.clave === "NME").campos;
 
 // ── Caso 1 — energía importada vs exportada ────────────────────────────────
 // Tienen TODOS los ejes idénticos salvo el sentido. Son físicamente sumables
-// (energía que cruzó el medidor) y NO neteables: la distribuidora paga la
-// inyección a su precio de compra y la vende a tarifa, así que restar un sentido
-// del otro destruye la información económica de forma irreversible.
+// (energía que cruzó el medidor) y NO neteables: restar un sentido del otro borra
+// cuánto se inyectó, que es el dato con el que se evalúa el alivio de carga del
+// transformador de la zona. El motivo es operativo, no de facturación: la
+// plataforma no valoriza.
 test("1. whImportada y whExportada: sumables, NO neteables", () => {
   assert.equal(
     sumable(NME.whImportada, NME.whExportada),
@@ -43,8 +44,23 @@ test("1. whImportada y whExportada: sumables, NO neteables", () => {
   assert.equal(
     neteable(NME.whImportada, NME.whExportada),
     false,
-    "netear importada con exportada destruye la asimetría de precio",
+    "netear importada con exportada borra la inyección",
   );
+});
+
+// Sentidos opuestos NO se netean, y no hay forma de declarar una excepción: el
+// predicado no consulta ningún campo que un perfil pueda usar para opt-in.
+test("1b. la prohibición de netear sentidos opuestos no es declarable", () => {
+  const conSentidoInvertido = { ...NME.whImportada, flowDirection: "saliente" };
+  assert.equal(neteable(NME.whImportada, conSentidoInvertido), false);
+  // Mismo sentido y misma banda: netear es sumar, y eso sí se permite.
+  assert.equal(neteable(NME.whImportada, { ...NME.whImportada }), true);
+});
+
+// Bandas distintas tampoco: T1 contra T2 no se restan.
+test("1c. bandas distintas no se netean", () => {
+  const t2 = { ...NME.whImportadaT1, tou: "T2" };
+  assert.equal(neteable(NME.whImportadaT1, t2), false);
 });
 
 // ── Caso 2 — volumen corregido vs sin corregir ─────────────────────────────
@@ -93,7 +109,7 @@ test("5. una banda tarifaria no se suma con su total (doble conteo)", () => {
   assert.equal(
     NME.whImportadaT1.particion.sumanAlTotal,
     true,
-    "las bandas SÍ suman al total para lo físico; lo que no se puede es mezclarlas con el total",
+    "las bandas SÍ suman al total; lo que no se puede es mezclar una banda con el total",
   );
 });
 

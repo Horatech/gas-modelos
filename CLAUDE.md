@@ -194,6 +194,44 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-10 - `categoriaTarifaria` -> `segmentoUsuario`, y fuera el eje económico
+
+**Decisión de alcance**: la plataforma **no hace facturación ni valorización**, y en
+principio no va a hacerlo. Todo lo que se había modelado como gancho económico era
+especulativo — sin productor y sin plan de tenerlo — así que se saca. Vale la regla de
+siempre: no hay campos en este paquete sin alguien que los escriba.
+
+**Sacado** de `canal-descriptor.ts` y del catálogo:
+
+- `DimensionEconomica` y `ICanalDescriptor.valorEconomicoDependeDe`, más los cinco usos
+  en los canales NME.
+- `neteable()` **se simplifica y se endurece**: antes consultaba
+  `valorEconomicoDependeDe` para permitir excepciones; ahora **sentidos opuestos o
+  bandas distintas nunca se netean**, y no hay forma de declarar un opt-in.
+
+**La regla sobrevive, cambia el motivo.** No netear `whImportada` con `whExportada` no
+se justificaba por el precio: se justifica porque **cuánto se inyectó** es el dato que
+determina el alivio de carga del transformador de la zona y si se cruzó el umbral por
+encima del cual el flujo se invierte. Eso es operación, y sí está en alcance. Sumarlas
+sigue permitido (energía que cruzó el medidor es una magnitud real); restarlas, no.
+
+**Renombrado**: `IClasificacionPunto.categoriaTarifaria` -> **`segmentoUsuario`**.
+
+El eje sigue sirviendo —comparar un comercio con un comercio y no con un yacimiento, que
+es justamente lo que hoy produce promedios sin significado— pero eso es **segmentación**,
+no categoría de tarifa. Se renombra ahora porque no tiene ningún consumidor: en tres
+fases más habría sido un bump en 34 repos.
+
+Efecto secundario útil: **deja de depender del cuadro tarifario de ENARGAS**. Los ~247
+puntos del padrón cuyo nombre no da ninguna pista se pueden segmentar por bandas de
+consumo propias, sin pretender que sean las oficiales. Ese documento pasa de bloqueante
+a innecesario, igual que el marco de generación distribuida.
+
+`tou` se mantiene (perfilar demanda por franja horaria es operativo) pero se le quita la
+lectura tarifaria: las bandas suman al total, y mezclar una banda con el total es doble
+conteo — eso ya lo cubre `particion`.
+
+
 ### 2026-08-10 - Modelo canónico multi-vertical: descriptor de canal, clasificación y zona de balance
 
 Fase F1 de `/PLAN-MODELO-CANONICO-MULTIVERTICAL.md`. **Todo aditivo, todo opcional, sin
