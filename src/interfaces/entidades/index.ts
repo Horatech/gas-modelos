@@ -42,6 +42,7 @@ export * from "./registro-medidor-electrico";
 export * from "./registro-horario-agua";
 export * from "./reporte";
 export * from "./unidad-presion";
+export * from "./metadata-vinculacion";
 export * from "./vinculacion";
 export * from "./firmware";
 export * from "./firmware-por-entidad";

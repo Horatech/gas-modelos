@@ -1,4 +1,14 @@
 import { z } from "zod";
+import {
+  ACCIONES_ASIGNACION,
+  MOTIVOS_ASIGNACION,
+  ORIGENES_ASIGNACION,
+} from "./metadata-vinculacion";
+import type {
+  IAccionAsignacion,
+  IMotivoAsignacion,
+  IOrigenAsignacion,
+} from "./metadata-vinculacion";
 import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
 import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
 import { DivisionSchema } from "../tenant/usuario/permiso";
@@ -32,19 +42,19 @@ export const EntidadesSchema = z.enum([
 export type IEntidades = z.infer<typeof EntidadesSchema>;
 
 /**
- * Qué clase de movimiento describe el documento.
+ * Los tres enums se construyen a partir de las listas de `metadata-vinculacion.ts`,
+ * que es un archivo hoja sin Zod: así el frontend puede leer el catálogo sin
+ * arrastrar zod ni el resto de los schemas al bundle. Los tipos (`IAccionAsignacion`,
+ * `IOrigenAsignacion`, `IMotivoAsignacion`) también se exportan desde ahí; acá sólo
+ * viven los `*Schema`.
+ *
+ * Qué clase de movimiento describe el documento:
  * - `asignar`: el vínculo no existía y se creó.
  * - `desasignar`: el vínculo existía y se dio de baja (no hay entidad asignada).
  * - `reemplazar`: había un vínculo y se cambió por otro (`idEntidadAsignadaAnterior`).
  * - `cambio-fecha`: mismo vínculo, se corrigió la fecha de vigencia. Mueve histórico.
  */
-export const AccionAsignacionSchema = z.enum([
-  "asignar",
-  "desasignar",
-  "reemplazar",
-  "cambio-fecha",
-]);
-export type IAccionAsignacion = z.infer<typeof AccionAsignacionSchema>;
+export const AccionAsignacionSchema = z.enum(ACCIONES_ASIGNACION);
 
 /**
  * Quién originó el movimiento. `USUARIO` es el único con `idUsuario`; el resto son
@@ -53,24 +63,10 @@ export type IAccionAsignacion = z.infer<typeof AccionAsignacionSchema>;
  * - `MOVIL`: alta compuesta medidor+punto de la app (`/puntosDeMedicion/residencial-agua-con-medidor`).
  * - `IMPORT`: importador masivo de puntos / bulkCreate.
  */
-export const OrigenAsignacionSchema = z.enum([
-  "USUARIO",
-  "SISTEMA",
-  "MOVIL",
-  "IMPORT",
-]);
-export type IOrigenAsignacion = z.infer<typeof OrigenAsignacionSchema>;
+export const OrigenAsignacionSchema = z.enum(ORIGENES_ASIGNACION);
 
 /** Catálogo cerrado para que el historial se pueda filtrar y contar por causa. */
-export const MotivoAsignacionSchema = z.enum([
-  "Instalación inicial",
-  "Recambio por falla",
-  "Recambio programado",
-  "Retiro por baja de servicio",
-  "Corrección de carga errónea",
-  "Automático",
-]);
-export type IMotivoAsignacion = z.infer<typeof MotivoAsignacionSchema>;
+export const MotivoAsignacionSchema = z.enum(MOTIVOS_ASIGNACION);
 
 export const AsignacionSchema = z.object({
   _id: z.string().optional(),
