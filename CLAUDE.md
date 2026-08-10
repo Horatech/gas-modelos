@@ -180,6 +180,69 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-10 - Asignación como proceso auditable (fase 1)
+
+Primer PR de `PLAN-ASIGNACION-VINCULACION.md`. Sólo el modelo; los productores van en
+gas-api-cliente.
+
+**`fechaAsignacionDispositivo?: string | null` en las 5 entidades que no lo tenían** —
+`correctora.ts`, `unidad-presion.ts`, `medidor-residencial.ts`, `medidor-electrico.ts`,
+`dispositivo-externo-nuc.ts`. `medidor-residencial-agua.ts` ya lo declaraba desde antes,
+**sin un solo escritor ni lector en todo el sistema** (relevado en gas-api-cliente,
+gas-web-cliente, gas-sml, gas-api-integraciones): era el único campo de fecha del vínculo
+dispositivo→entidad y estaba muerto.
+
+**Por qué hace falta.** La fecha de asignación existía sólo del lado del punto
+(`punto.fechaAsignacionXxx`, 7 campos). El vínculo dispositivo→entidad —que es el que se
+escribe pisando `entidad.deveui`— no tenía fecha, así que un recambio de equipo era
+destructivo y silencioso: no quedaba ni cuándo pasó. `scada.ts` **no** lleva el campo: se
+vincula por `tag`, no por `deveui`, y no tiene un dispositivo asignable.
+
+⚠️ Necesita su `@Prop({ type: Date })` en los 5 modelos de gas-datos. Los schemas son
+estrictos y sin el `@Prop()` Mongoose descarta el valor **en silencio** — el mismo problema
+documentado para `horaTruncada` y `tsCorrido`.
+
+**`asignacion.ts` pasa de registro de UN/CO a evento de asignación.** La colección existía
+con service, controller, índice `{idCliente, idEntidadModificada}`, 8 virtuals de populate y
+un listado en gas-web-cliente (`standalone/listado-asignaciones/`), pero sus **únicos dos
+escritores** eran `createAsignacionUnidadNegocio()` y `createAsignacionCentroOperativa()` de
+`gas-api-cliente/src/entidades/dispositivos/dispositivos.service.ts`: sólo cambios de UN/CO
+de un dispositivo. Ninguna asignación de equipo se registraba en ninguna parte.
+
+- `EntidadesSchema` suma `"Medidor Residencial Agua"`, `"Medidor Eléctrico"`,
+  `"Dispositivo Externo NUC"` y `"Punto de Medición"` — los 4 que faltaban para poder
+  describir los vínculos reales.
+- Nuevos `AccionAsignacionSchema` (`asignar` / `desasignar` / `reemplazar` / `cambio-fecha`),
+  `OrigenAsignacionSchema` (`USUARIO` / `SISTEMA` / `MOVIL` / `IMPORT`) y
+  `MotivoAsignacionSchema` (catálogo cerrado de 6).
+- `AsignacionSchema` suma `accion`, `origen`, `motivo`, `observaciones`, `fechaVigencia`,
+  `division`, `idEntidadAsignadaAnterior`, `nombreEntidadAsignadaAnterior`, y los 4
+  populates nuevos.
+
+**`fechaVigencia` no es `fechaCreacion`.** La primera es la fecha real de instalación o
+retiro que declara quien opera; la segunda, cuándo se cargó. La distinción no es cosmética:
+`fechaVigencia` es la que gobierna `buildPlanVinculacion`
+(`gas-api-cliente/src/entidades/puntos-medicion/puntos-medicion.service.ts:1397`), o sea qué
+reportes, registros y alertas cambian de punto. Un movimiento cargado con tres días de atraso
+mueve el histórico de esos tres días.
+
+**`origen` existe porque hay 4 caminos que asignan sin formulario** y se decidió mantenerlos:
+la autocreación del medidor en el ingest (gas-sml / gas-api-mra-beta-ml107a, gateada por
+`crearMedidorResidencialAutomatico`), el alta compuesta de la app móvil
+(`POST /puntosDeMedicion/residencial-agua-con-medidor`), el importador de puntos y
+`bulkCreate`. Sin la marca, el historial mezclaría actos de un operador con efectos del
+sistema, y `idUsuario` quedaría vacío sin explicación.
+
+**`idEntidadAsignada` pasa a aceptar `null`** (una desasignación no tiene destino) y la
+entidad anterior se guarda **denormalizada, sin populate**: puede haberse borrado y el
+historial tiene que seguir legible. ⚠️ En gas-datos `idEntidadAsignada` e `idUsuario` están
+declarados `required` — hay que sacarlo, o toda desasignación y todo movimiento de origen
+`SISTEMA` falla al escribir.
+
+Los 4 populates nuevos usan los **schemas reales**, no `z.custom`, igual que los 8 que ya
+estaban: `asignacion.ts` no es importado por ningún archivo del SCC de `IDispositivo`, así
+que no cierra ciclo. Verificado: `npx madge --circular --extensions js dist/interfaces` da 0.
+
 ### 2026-08-06 - `tsCorrido` en el registro de correctora
 
 `IRegistro` suma `tsCorrido?: boolean`: el `timestamp` de ese registro está corrido +1 h

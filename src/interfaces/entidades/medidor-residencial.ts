@@ -16,6 +16,7 @@ export const MedidorResidencialSchema = z.object({
   _id: z.string().optional(),
   deviceMeterNumber: z.string().optional(),
   deveui: z.string().optional(),
+  fechaAsignacionDispositivo: z.string().nullable().optional(),
   deviceName: z.string().optional(),
   fechaCreacion: z.string().optional(),
   ultimoReporte: z.custom<IReporte>().optional(),
@@ -50,6 +51,7 @@ export interface IMedidorResidencial {
   _id?: string;
   deviceMeterNumber?: string;
   deveui?: string;
+  fechaAsignacionDispositivo?: string | null;
   deviceName?: string;
   fechaCreacion?: string;
   ultimoReporte?: IReporte;

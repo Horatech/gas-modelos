@@ -29,6 +29,7 @@ export const DispositivoExternoNucSchema = z.object({
   modelo: z.string().optional(),
   numeroSerie: z.string().optional(),
   deveui: z.string().optional(),
+  fechaAsignacionDispositivo: z.string().nullable().optional(),
   usaInput1: z.boolean().optional(),
   nombreInput1: z.string().optional(),
   factorCorreccionInput1: z.number().optional(),
@@ -68,6 +69,7 @@ export interface IDispositivoExternoNuc {
   modelo?: string;
   numeroSerie?: string;
   deveui?: string; // deveui del nuc asignado al dispositivo externo
+  fechaAsignacionDispositivo?: string | null; // Fecha real de instalación del nuc en este dispositivo externo
   // Input 1
   usaInput1?: boolean; // Si el dispositivo externo reporta un valor de input1
   // tipoInput1?: TipoInput; // Esto se define en el dispositivo

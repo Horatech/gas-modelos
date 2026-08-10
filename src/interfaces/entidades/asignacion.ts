@@ -1,11 +1,16 @@
 import { z } from "zod";
 import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
 import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
+import { DivisionSchema } from "../tenant/usuario/permiso";
 import { UsuarioSchema } from "../tenant/usuario/schema";
 import { CorrectoraSchema } from "./correctora";
 import { DispositivoSchema } from "./dispositivo";
+import { DispositivoExternoNucSchema } from "./dispositivo-externo-nuc";
 import { LocalidadSchema } from "./localidad";
+import { MedidorElectricoSchema } from "./medidor-electrico";
 import { MedidorResidencialSchema } from "./medidor-residencial";
+import { MedidorResidencialAguaSchema } from "./medidor-residencial-agua";
+import { PuntoMedicionSchema } from "./punto-medicion";
 import { ScadaSchema } from "./scada";
 import { UnidadPresionSchema } from "./unidad-presion";
 
@@ -18,8 +23,54 @@ export const EntidadesSchema = z.enum([
   "Unidad de Negocio",
   "Centro Operativo",
   "Localidad",
+  // Sumados con la formalización del proceso de asignación (ago 2026)
+  "Medidor Residencial Agua",
+  "Medidor Eléctrico",
+  "Dispositivo Externo NUC",
+  "Punto de Medición",
 ]);
 export type IEntidades = z.infer<typeof EntidadesSchema>;
+
+/**
+ * Qué clase de movimiento describe el documento.
+ * - `asignar`: el vínculo no existía y se creó.
+ * - `desasignar`: el vínculo existía y se dio de baja (no hay entidad asignada).
+ * - `reemplazar`: había un vínculo y se cambió por otro (`idEntidadAsignadaAnterior`).
+ * - `cambio-fecha`: mismo vínculo, se corrigió la fecha de vigencia. Mueve histórico.
+ */
+export const AccionAsignacionSchema = z.enum([
+  "asignar",
+  "desasignar",
+  "reemplazar",
+  "cambio-fecha",
+]);
+export type IAccionAsignacion = z.infer<typeof AccionAsignacionSchema>;
+
+/**
+ * Quién originó el movimiento. `USUARIO` es el único con `idUsuario`; el resto son
+ * los caminos que asignan sin pasar por un formulario:
+ * - `SISTEMA`: autocreación del medidor en el ingest (gas-sml, gas-api-mra-beta-ml107a).
+ * - `MOVIL`: alta compuesta medidor+punto de la app (`/puntosDeMedicion/residencial-agua-con-medidor`).
+ * - `IMPORT`: importador masivo de puntos / bulkCreate.
+ */
+export const OrigenAsignacionSchema = z.enum([
+  "USUARIO",
+  "SISTEMA",
+  "MOVIL",
+  "IMPORT",
+]);
+export type IOrigenAsignacion = z.infer<typeof OrigenAsignacionSchema>;
+
+/** Catálogo cerrado para que el historial se pueda filtrar y contar por causa. */
+export const MotivoAsignacionSchema = z.enum([
+  "Instalación inicial",
+  "Recambio por falla",
+  "Recambio programado",
+  "Retiro por baja de servicio",
+  "Corrección de carga errónea",
+  "Automático",
+]);
+export type IMotivoAsignacion = z.infer<typeof MotivoAsignacionSchema>;
 
 export const AsignacionSchema = z.object({
   _id: z.string().optional(),
@@ -27,14 +78,29 @@ export const AsignacionSchema = z.object({
   idCliente: z.string().optional(),
   fechaCreacion: z.string().optional(),
   idUsuario: z.string().optional(),
+  // Qué movimiento fue
+  accion: AccionAsignacionSchema.optional(),
+  origen: OrigenAsignacionSchema.optional(),
+  motivo: MotivoAsignacionSchema.optional(),
+  observaciones: z.string().optional(),
+  // Fecha REAL de instalación / retiro declarada por quien opera. Distinta de
+  // `fechaCreacion` (cuándo se cargó) y es la que gobierna la re-vinculación del
+  // histórico: los reportes/registros/alertas posteriores a ella cambian de dueño.
+  fechaVigencia: z.string().nullable().optional(),
+  // División a la que pertenece el movimiento, para filtrar el historial global.
+  division: DivisionSchema.optional(),
   // Entidad Modificada
   tipoEntidadModificada: EntidadesSchema.optional(),
   idEntidadModificada: z.string().optional(),
   nombreEntidadModificada: z.string().optional(),
-  // Entidad que se le asigna
+  // Entidad que se le asigna. Ausente cuando `accion === 'desasignar'`.
   tipoEntidadAsignada: EntidadesSchema.optional(),
-  idEntidadAsignada: z.string().optional(),
+  idEntidadAsignada: z.string().nullable().optional(),
   nombreEntidadAsignada: z.string().optional(),
+  // Lo que estaba antes. Se guarda denormalizado (no hay populate) porque la
+  // entidad anterior puede haberse borrado y el historial tiene que seguir legible.
+  idEntidadAsignadaAnterior: z.string().nullable().optional(),
+  nombreEntidadAsignadaAnterior: z.string().optional(),
 
   // Populate
   dispositivoAsignado: DispositivoSchema.optional(),
@@ -42,6 +108,10 @@ export const AsignacionSchema = z.object({
   unidadPresionAsignada: UnidadPresionSchema.optional(),
   scadaAsignado: ScadaSchema.optional(),
   medidorResidencialAsignado: MedidorResidencialSchema.optional(),
+  medidorResidencialAguaAsignado: MedidorResidencialAguaSchema.optional(),
+  medidorElectricoAsignado: MedidorElectricoSchema.optional(),
+  dispositivoExternoNucAsignado: DispositivoExternoNucSchema.optional(),
+  puntoMedicionAsignado: PuntoMedicionSchema.optional(),
   unidadNegocioAsignado: UnidadNegocioSchema.optional(),
   centroOperativoAsignado: CentroOperativoSchema.optional(),
   localidadAsignada: LocalidadSchema.optional(),
@@ -57,6 +127,10 @@ const omitir = {
   unidadPresionAsignada: true,
   scadaAsignado: true,
   medidorResidencialAsignado: true,
+  medidorResidencialAguaAsignado: true,
+  medidorElectricoAsignado: true,
+  dispositivoExternoNucAsignado: true,
+  puntoMedicionAsignado: true,
   unidadNegocioAsignado: true,
   centroOperativoAsignado: true,
   localidadAsignada: true,

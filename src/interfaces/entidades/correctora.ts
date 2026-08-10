@@ -29,6 +29,7 @@ export const CorrectoraSchema = z.object({
   firmware: z.string().optional(),
   numeroSerie: z.string().nullable().optional(),
   deveui: z.string().nullable().optional(),
+  fechaAsignacionDispositivo: z.string().nullable().optional(),
   modelo: ModeloCorrectoraSchema.optional(),
   fechaCreacion: z.string().optional(),
   bateria: z.number().optional(),
@@ -57,6 +58,7 @@ export interface ICorrectora {
   firmware?: string;
   numeroSerie?: string | null;
   deveui?: string | null;
+  fechaAsignacionDispositivo?: string | null;
   modelo?: ModeloCorrectora;
   fechaCreacion?: string;
   bateria?: number;

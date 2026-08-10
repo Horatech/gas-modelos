@@ -16,6 +16,7 @@ export const UnidadPresionSchema = z.object({
   modelo: z.string().optional(),
   numeroSerie: z.string().nullable().optional(),
   deveui: z.string().nullable().optional(),
+  fechaAsignacionDispositivo: z.string().nullable().optional(),
   ultimoRegistro: z.custom<IReporte>().optional(),
   ultimaAlerta: z.custom<IAlerta>().optional(),
   estadoActual: EstadoCorrectoraSchema.optional(),
@@ -40,6 +41,7 @@ export interface IUnidadPresion {
   modelo?: string;
   numeroSerie?: string | null;
   deveui?: string | null;
+  fechaAsignacionDispositivo?: string | null;
   ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   estadoActual?: IEstado;

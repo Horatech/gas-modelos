@@ -15,6 +15,7 @@ import type { IRegistroMedidorElectrico } from './registro-medidor-electrico';
 export const MedidorElectricoSchema = z.object({
   _id: z.string().optional(),
   deveui: z.string().optional(),
+  fechaAsignacionDispositivo: z.string().nullable().optional(),
   deviceName: z.string().optional(),
   fechaCreacion: z.string().optional(),
   serial: z.string().optional(),
@@ -51,6 +52,7 @@ export const MedidorElectricoSchema = z.object({
 export interface IMedidorElectrico {
   _id?: string;
   deveui?: string;
+  fechaAsignacionDispositivo?: string | null;
   deviceName?: string;
   fechaCreacion?: string;
   serial?: string;
