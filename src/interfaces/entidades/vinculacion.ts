@@ -31,6 +31,148 @@ export type ITipoEntidadVinculable = z.infer<
   typeof TipoEntidadVinculableSchema
 >;
 
+////// Metadatos de cada entidad vinculable
+
+/**
+ * Fuente única de verdad del mapeo entidad ↔ división ↔ tipo de dispositivo ↔
+ * campo del punto. La consumen gas-api-cliente (validaciones y sincronización de
+ * histórico) y gas-web-cliente (filtros de los selectores, etiquetas).
+ *
+ * Vive acá y no en cada consumidor porque el sistema ya tuvo el problema de tener
+ * el mismo mapa escrito tres veces con criterios distintos: en
+ * `dispositivos.service.ts` de gas-api-cliente, `BOVE` figuraba en uno solo y
+ * `OCR`/`MRA` clasificaban distinto entre dos de ellos.
+ *
+ * Es data pura (sin referencias a servicios), así que es seguro exportarla como
+ * valor runtime desde este paquete.
+ */
+export interface IMetadataEntidadVinculable {
+  tipoEntidad: ITipoEntidadVinculable;
+  /** Divisiones de punto en las que esta entidad puede participar. */
+  divisiones: string[];
+  /**
+   * Tipos de dispositivo compatibles. Vacío = la entidad no acepta dispositivo
+   * (Scada se vincula por `tag`).
+   */
+  tiposDispositivo: string[];
+  /** Campo del punto de medición que guarda el vínculo. */
+  campoIdPunto: string;
+  campoFechaPunto: string;
+  /** El campo del punto es un array (`idsScada`, `idsDipositivosExternosNuc`). */
+  multiple: boolean;
+  /** Campo por el que el histórico referencia a esta entidad. */
+  campoHistorico: string;
+  /** Campo por el que la alerta referencia a esta entidad. */
+  campoAlerta: string;
+  /** Nombre humano para mensajes de error y para el historial. */
+  etiqueta: string;
+  /** Colección de gas-datos donde vive el histórico de esta entidad. */
+  coleccionesHistoricas: Array<
+    "registros" | "reportes" | "registrosMedidorElectrico"
+  >;
+}
+
+export const METADATA_ENTIDADES_VINCULABLES: Record<
+  ITipoEntidadVinculable,
+  IMetadataEntidadVinculable
+> = {
+  Correctora: {
+    tipoEntidad: "Correctora",
+    divisiones: ["Correctoras"],
+    tiposDispositivo: ["NUC"],
+    campoIdPunto: "idCorrectora",
+    campoFechaPunto: "fechaAsignacionCorrectora",
+    multiple: false,
+    campoHistorico: "idCorrectora",
+    campoAlerta: "idCorrectora",
+    etiqueta: "correctora",
+    coleccionesHistoricas: ["registros"],
+  },
+  "Unidad de Presión": {
+    tipoEntidad: "Unidad de Presión",
+    divisiones: ["Presión"],
+    tiposDispositivo: ["NSP", "VERIBOX MICRO"],
+    campoIdPunto: "idUnidadPresion",
+    campoFechaPunto: "fechaAsignacionUnidadPresion",
+    multiple: false,
+    campoHistorico: "idsAsignados",
+    campoAlerta: "idUnidadPresion",
+    etiqueta: "unidad de presión",
+    coleccionesHistoricas: ["reportes"],
+  },
+  "Medidor Residencial": {
+    tipoEntidad: "Medidor Residencial",
+    divisiones: ["Residencial"],
+    tiposDispositivo: ["SML", "WRC", "OCR"],
+    campoIdPunto: "idMedidorResidencial",
+    campoFechaPunto: "fechaAsignacionMedidorResidencial",
+    multiple: false,
+    campoHistorico: "idsAsignados",
+    campoAlerta: "idMedidorResidencial",
+    etiqueta: "medidor residencial",
+    coleccionesHistoricas: ["reportes"],
+  },
+  "Medidor Residencial Agua": {
+    tipoEntidad: "Medidor Residencial Agua",
+    divisiones: ["Residencial Agua"],
+    tiposDispositivo: [
+      "ML107A",
+      "ML107GH",
+      "EUW300",
+      "BOVE",
+      "MRA",
+      "UWM-NB",
+    ],
+    campoIdPunto: "idMedidorResidencialAgua",
+    campoFechaPunto: "fechaAsignacionMedidorResidencialAgua",
+    multiple: false,
+    campoHistorico: "idsAsignados",
+    campoAlerta: "idMedidorResidencialAgua",
+    etiqueta: "medidor de agua",
+    coleccionesHistoricas: ["reportes"],
+  },
+  "Medidor Eléctrico": {
+    tipoEntidad: "Medidor Eléctrico",
+    divisiones: ["Medidores Eléctricos"],
+    tiposDispositivo: ["NME"],
+    campoIdPunto: "idMedidorElectrico",
+    campoFechaPunto: "fechaAsignacionMedidorElectrico",
+    multiple: false,
+    // gas-api-nme escribe en registrosmedidorelectrico, no en reportes.
+    campoHistorico: "idMedidorElectrico",
+    campoAlerta: "idMedidorElectrico",
+    etiqueta: "medidor eléctrico",
+    coleccionesHistoricas: ["registrosMedidorElectrico"],
+  },
+  "Dispositivo Externo NUC": {
+    tipoEntidad: "Dispositivo Externo NUC",
+    divisiones: ["Dispositivo Externo NUC"],
+    tiposDispositivo: ["NUC"],
+    // Typo histórico del modelo (falta la "s" de "Dispositivos"): está así en el
+    // schema, en gas-datos y en el front. No se corrige acá para no romperlos.
+    campoIdPunto: "idsDipositivosExternosNuc",
+    campoFechaPunto: "fechaAsignacionDispositivoExternoNuc",
+    multiple: true,
+    campoHistorico: "idsAsignados",
+    campoAlerta: "idDispositivoExternoNuc",
+    etiqueta: "dispositivo externo NUC",
+    coleccionesHistoricas: ["reportes"],
+  },
+  Scada: {
+    tipoEntidad: "Scada",
+    divisiones: ["SCADA Mediciones", "SCADA Unifilares"],
+    // Se vincula por `tag` desde la config del dispositivo, no por deveui.
+    tiposDispositivo: [],
+    campoIdPunto: "idsScada",
+    campoFechaPunto: "fechaAsignacionScada",
+    multiple: true,
+    campoHistorico: "idsAsignados",
+    campoAlerta: "idScada",
+    etiqueta: "tag SCADA",
+    coleccionesHistoricas: ["reportes"],
+  },
+};
+
 ////// Dispositivo -> Entidad intermedia
 
 export const AsignarDispositivoSchema = z.object({
