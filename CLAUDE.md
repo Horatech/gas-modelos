@@ -194,6 +194,25 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-10 - `IClasificacionPunto.commodity` como campo propio
+
+Bug de diseño encontrado al implementar el clasificador (F3): el `commodity` se
+derivaba de `nivelRed.commodity`, y los tres ejes de catálogo (`tipoInstalacion`,
+`subrol`, `segmentoUsuario`) se validan contra el catálogo de ese servicio. Pero
+`nivelRed` sale de la **presión medida**, y hay dato de presión para **1.228 de 4.473**
+puntos del padrón: una correctora con subrol conocido y sin presión **habría sido
+rechazada al escribir**.
+
+`commodity` pasa a ser campo propio y opcional. Cuando además hay `nivelRed`, los dos
+tienen que coincidir (lo valida el backend). Es lo correcto de todas formas: el servicio
+de un punto no es una propiedad de su nivel de red.
+
+`mismoGrupoDeAgregacion()` ahora compara `commodity` primero (con fallback a
+`nivelRed.commodity`) y **sigue exigiendo nivel de red en los dos**: sin nivel no se
+puede afirmar que dos puntos estén en el mismo, y agregar entre niveles distintos es
+justo lo que hay que impedir.
+
+
 ### 2026-08-10 - `categoriaTarifaria` -> `segmentoUsuario`, y fuera el eje económico
 
 **Decisión de alcance**: la plataforma **no hace facturación ni valorización**, y en

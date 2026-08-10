@@ -123,6 +123,20 @@ export type ConfianzaClasificacion = z.infer<
  *   `GRAN_DEMANDA`, `USUARIO_GENERADOR`, `DESCONOCIDO`.
  */
 export const ClasificacionPuntoSchema = z.object({
+  /**
+   * Servicio del punto. **Campo propio, no derivado de `nivelRed`.**
+   *
+   * Los tres ejes de catálogo (`tipoInstalacion`, `subrol`, `segmentoUsuario`) se
+   * validan contra el catálogo de ESTE servicio, así que hace falta saberlo para
+   * poder escribirlos. Derivarlo de `nivelRed.commodity` no alcanza: el nivel de
+   * red sale de la presión medida, y hay dato de presión para menos de un tercio
+   * del padrón — un punto con subrol conocido y sin presión no se podría clasificar.
+   *
+   * Además es lo correcto: el servicio de un punto no es una propiedad de su nivel
+   * de red. Cuando ambos están presentes tienen que coincidir (lo valida el backend).
+   */
+  commodity: CommoditySchema.optional(),
+
   /** Eje A — activo físico presente en el sitio. Catálogo por commodity. */
   tipoInstalacion: z.string().optional(),
 
@@ -199,8 +213,13 @@ export function mismoGrupoDeAgregacion(
   b: IClasificacionPunto | undefined,
 ): boolean {
   if (!a || !b) return false;
+  const commodityA = a.commodity ?? a.nivelRed?.commodity;
+  const commodityB = b.commodity ?? b.nivelRed?.commodity;
+  if (!commodityA || !commodityB) return false;
+  if (commodityA !== commodityB) return false;
+  // Sin nivel de red no se puede afirmar que dos puntos estén en el mismo nivel,
+  // y agregar entre niveles distintos es justamente lo que hay que impedir.
   if (!a.nivelRed || !b.nivelRed) return false;
-  if (a.nivelRed.commodity !== b.nivelRed.commodity) return false;
   if (a.nivelRed.codigo !== b.nivelRed.codigo) return false;
   const rolesA = a.rolesRed ?? [];
   const rolesB = b.rolesRed ?? [];
