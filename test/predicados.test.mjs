@@ -118,20 +118,47 @@ test("5. una banda tarifaria no se suma con su total (doble conteo)", () => {
 // 39.083 m³/día contra una mediana de 1.621.
 test("6. dos puntos con rol de red distinto no son agregables", () => {
   const cityGate = {
+    commodity: "gas",
     rolesRed: ["FUENTE"],
     nivelRed: { commodity: "gas", codigo: "ALTA", orden: 2 },
   };
   const comercio = {
+    commodity: "gas",
     rolesRed: ["CONSUMO"],
     nivelRed: { commodity: "gas", codigo: "ALTA", orden: 2 },
   };
   assert.equal(mismoGrupoDeAgregacion(cityGate, comercio), false);
 
   const otroComercio = {
+    commodity: "gas",
     rolesRed: ["CONSUMO"],
     nivelRed: { commodity: "gas", codigo: "ALTA", orden: 2 },
   };
   assert.equal(mismoGrupoDeAgregacion(comercio, otroComercio), true);
+});
+
+// Nunca se agrega entre servicios, ni siquiera con el mismo rol y el mismo código
+// de nivel: "MEDIA" de gas y "MEDIA" de otro servicio no son el mismo nivel.
+test("6b. servicios distintos nunca son agregables", () => {
+  const gas = {
+    commodity: "gas",
+    rolesRed: ["CONSUMO"],
+    nivelRed: { commodity: "gas", codigo: "MEDIA", orden: 3 },
+  };
+  const agua = {
+    commodity: "agua",
+    rolesRed: ["CONSUMO"],
+    nivelRed: { commodity: "agua", codigo: "DMA", orden: 3 },
+  };
+  assert.equal(mismoGrupoDeAgregacion(gas, agua), false);
+});
+
+// El commodity es campo propio: un punto clasificado SIN nivel de red (porque no
+// hay presión medida) sigue sin autorizar agregación, pero el servicio se conoce.
+test("6c. commodity sin nivelRed no autoriza agregar", () => {
+  const a = { commodity: "gas", rolesRed: ["CONSUMO"] };
+  const b = { commodity: "gas", rolesRed: ["CONSUMO"] };
+  assert.equal(mismoGrupoDeAgregacion(a, b), false);
 });
 
 // ── Retrocompatibilidad ────────────────────────────────────────────────────
