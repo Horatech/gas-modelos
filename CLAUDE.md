@@ -109,7 +109,21 @@ npm run build
 node -e "const m = require('./dist/index.js'); if (!Object.keys(m).length) throw new Error('barrel vacío')"
 npm run gen:json-schema -- --verbose
 npx madge --circular --extensions js dist/interfaces   # 0 esperado
+npm test                                               # runner nativo de Node, sin deps
 ```
+
+### Tests (`npm test`)
+
+Runner **nativo de Node** (`node --test test/*.test.mjs`), a propósito **sin jest ni
+ninguna dependencia nueva**. Corre contra `dist/`, que es el entrypoint que consumen
+los servicios NestJS — no contra `src/`, así que `npm run build` va primero (el script
+ya lo encadena).
+
+`test/predicados.test.mjs` fija los seis errores que la capa semántica existe para
+impedir (netear energía importada con exportada, sumar Vm con Vb, sumar un odómetro,
+sumar la demanda máxima, sumar una banda tarifaria con su total, agregar puntos con rol
+de red distinto) más los invariantes del catálogo de canales. Si se agrega un perfil al
+catálogo, los tests de invariantes lo validan solos.
 
 ## Dispositivos soportados
 
@@ -179,6 +193,59 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 - En firmware: `SIZE_TEL_STANDARD = 13`
 
 ## Cambios recientes
+
+### 2026-08-10 - Modelo canónico multi-vertical: descriptor de canal, clasificación y zona de balance
+
+Fase F1 de `/PLAN-MODELO-CANONICO-MULTIVERTICAL.md`. **Todo aditivo, todo opcional, sin
+migración y sin ningún consumidor todavía**: publicarlo no cambia el comportamiento de
+ningún servicio.
+
+Cinco archivos nuevos en `interfaces/entidades/`:
+
+- **`commodity.ts`** — `CommoditySchema` (`gas|agua|electricidad|otro|na`). Fuente única
+  de verdad, en archivo propio porque la necesitan tanto el catálogo (data pura) como las
+  entidades que se persisten.
+- **`canal-descriptor.ts`** — `ICanalDescriptor` + los ejes + `sumable()`, `neteable()`,
+  `aggDe()`. **No es Zod a propósito**: es catálogo, no entidad; no se persiste ni viaja en
+  un body. Mismo criterio que `METADATA_ENTIDADES_VINCULABLES`.
+- **`perfil-lectura.ts`** — `IPerfilLectura`, `canalRef()`/`parseCanalRef()` y
+  `CATALOGO_CANALES`, con un **slice deliberado de dos perfiles** (NUC correctora y NME
+  medidor eléctrico). Agregar una familia es agregar una entrada; no toca lo publicado.
+- **`clasificacion-punto.ts`** — `ClasificacionPuntoSchema` (Zod: se persiste) con los
+  cuatro ejes + `mismoGrupoDeAgregacion()`.
+- **`zona-balance.ts`** — `ZonaBalanceSchema`: jerarquía **de red** (la de UN → CO →
+  Localidad es organizativa y no sirve para el balance), con nodo frontera, anidamiento,
+  reversibilidad y observabilidad del almacenamiento.
+
+`punto-medicion.ts` suma `clasificacion` (objeto embebido), `idsZonasBalance` y el virtual
+`zonasBalance`.
+
+**Tres decisiones que no se pueden cambiar sin volver a pensarlas:**
+
+1. **`flowDirection` es parte de la IDENTIDAD del canal.** `whImportada` y `whExportada`
+   tienen todos los demás ejes idénticos y **no son neteables**, porque la distribuidora
+   paga la energía inyectada a su precio de compra y la vende a tarifa. De ahí que
+   `neteable()` sea un predicado **más estricto** que `sumable()`, no un alias.
+2. **`accumulation` incluye `extremoIntervalo`.** La demanda máxima del medidor eléctrico
+   no es acumulado ni instantáneo, y es **la variable de facturación** de electricidad: se
+   agrega con `max`, jamás con `sum`.
+3. **`rolesRed` es un CONJUNTO y describe capacidad estructural, no sentido instantáneo.**
+   Un usuario con paneles es consumo de noche y fuente al mediodía. El sentido de cada
+   lectura lo dice el canal.
+
+**Ciclos**: `IZonaBalance` está fuera del SCC de `IDispositivo` porque su
+`idPuntoFrontera` es un `string` **sin populate** — deliberado, para no cerrar el ciclo y
+poder usar el schema real en el populate `zonasBalance` del punto. Verificado con
+`madge --circular` sobre `dist/`: 0.
+
+`Rol` del descriptor se llama **`RolCanal`**: `Rol` ya existe en `tenant/usuario/permiso`
+(rol de usuario) y el barrel colisionaba.
+
+**Retrocompatibilidad**: `mismoGrupoDeAgregacion()` devuelve `false` cuando falta la
+clasificación — "no sé" nunca autoriza. Mientras los 4.467 puntos de producción sigan sin
+clasificar, ninguna agregación nueva se habilita. Es lo que permite ir desplegando esto
+detrás de bambalinas sin mover ningún número que el cliente ya ve.
+
 
 ### 2026-08-10 - Asignación como proceso auditable (fase 1)
 

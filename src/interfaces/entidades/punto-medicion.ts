@@ -19,6 +19,8 @@ import type { IMedidorElectrico } from "./medidor-electrico";
 import type { IScada } from "./scada";
 import type { ICuentaCliente } from "./cuenta-cliente";
 import type { IDispositivoExternoNuc } from "./dispositivo-externo-nuc";
+import { ClasificacionPuntoSchema } from "./clasificacion-punto";
+import { ZonaBalanceSchema } from "./zona-balance";
 
 export const LimitesNotificacionSchema = z.object({
   sms: z.number().optional(),
@@ -105,6 +107,14 @@ export const PuntoMedicionSchema = z.object({
   idsAgrupaciones: z.array(z.string()).optional(),
   idCuenca: z.string().optional(),
   division: DivisionSchema.optional(),
+  // Clasificación del punto — qué ES el punto (instalación, rol en la red, nivel,
+  // categoría tarifaria). Ortogonal a `division`, que sigue siendo tipo de equipo
+  // + permiso. Objeto embebido: no agrega ninguna referencia al SCC.
+  // Ver clasificacion-punto.ts y /PLAN-MODELO-CANONICO-MULTIVERTICAL.md.
+  clasificacion: ClasificacionPuntoSchema.optional(),
+  // Zonas de balance a las que pertenece el punto. N a N: un punto puede estar en
+  // la zona de su transformador y en la del alimentador que la alimenta.
+  idsZonasBalance: z.array(z.string()).optional(),
   // Notificaciones
   limitesNotificacion: LimitesNotificacionSchema.optional(),
   // Virtuals
@@ -124,6 +134,10 @@ export const PuntoMedicionSchema = z.object({
   agrupaciones: z.array(AgrupacionSchema).optional(),
   cuenca: CuencaSchema.optional(),
   cuenta: z.custom<ICuentaCliente>().optional(),
+  // `IZonaBalance` está FUERA del SCC de IDispositivo (no popula al punto: su
+  // `idPuntoFrontera` es un string sin populate, justamente para no cerrar el
+  // ciclo), así que acá se puede usar el schema real y no `z.custom`.
+  zonasBalance: z.array(ZonaBalanceSchema).optional(),
 });
 
 /**
@@ -178,6 +192,8 @@ export interface IPuntoMedicion {
   idsAgrupaciones?: string[];
   idCuenca?: string;
   division?: import("../tenant/usuario/permiso").Division;
+  clasificacion?: import("./clasificacion-punto").IClasificacionPunto;
+  idsZonasBalance?: string[];
   limitesNotificacion?: ILimitesNotificacion;
   // Virtuals
   correctora?: ICorrectora;
@@ -196,6 +212,7 @@ export interface IPuntoMedicion {
   agrupaciones?: import("../gas/agrupacion/schema").IAgrupacion[];
   cuenca?: import("./cuenca").ICuenca;
   cuenta?: ICuentaCliente;
+  zonasBalance?: import("./zona-balance").IZonaBalance[];
 }
 
 ////// CREATE/UPDATE
@@ -216,6 +233,7 @@ export const CreatePuntoMedicionSchema = PuntoMedicionSchema.omit({
   agrupaciones: true,
   cuenca: true,
   cuenta: true,
+  zonasBalance: true,
 });
 export const UpdatePuntoMedicionSchema = CreatePuntoMedicionSchema;
 type Omitir =
@@ -234,7 +252,8 @@ type Omitir =
   | "grupos"
   | "agrupaciones"
   | "cuenca"
-  | "cuenta";
+  | "cuenta"
+  | "zonasBalance";
 export interface ICreatePuntoMedicion extends Omit<
   Partial<IPuntoMedicion>,
   Omitir
