@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { TenantInfoGasSchema } from "../auxiliares/tenentInfo";
+import type { TipoDispositivoGas } from "../auxiliares/tipoDispositivo";
+import type { Division } from "../tenant/usuario/permiso";
 import { MotivoAsignacionSchema } from "./asignacion";
 
 /**
@@ -49,12 +51,12 @@ export type ITipoEntidadVinculable = z.infer<
 export interface IMetadataEntidadVinculable {
   tipoEntidad: ITipoEntidadVinculable;
   /** Divisiones de punto en las que esta entidad puede participar. */
-  divisiones: string[];
+  divisiones: Division[];
   /**
    * Tipos de dispositivo compatibles. Vacío = la entidad no acepta dispositivo
    * (Scada se vincula por `tag`).
    */
-  tiposDispositivo: string[];
+  tiposDispositivo: TipoDispositivoGas[];
   /** Campo del punto de medición que guarda el vínculo. */
   campoIdPunto: string;
   campoFechaPunto: string;
