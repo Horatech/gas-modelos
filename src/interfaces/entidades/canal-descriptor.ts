@@ -76,9 +76,8 @@ export type QuantityKind =
  * - `extremoIntervalo`: **el extremo alcanzado DENTRO del intervalo**, no un
  *   valor puntual ni un acumulado. Se agrega con `max` (o `min`), nunca con
  *   `sum`. Es el caso de la demanda máxima del medidor eléctrico —
- *   `demandaMaxImportadaW`, `demandaMaxExportadaT2W` —, que además es **la
- *   variable de facturación** de electricidad. Este valor no existía en el plan
- *   original; se agregó en la revisión multi-vertical.
+ *   `demandaMaxImportadaW`, `demandaMaxExportadaT2W` —. Este valor no existía en
+ *   el plan original; se agregó en la revisión multi-vertical.
  * - `none`: no aplica (flags, textos).
  */
 export type Accumulation =
@@ -128,10 +127,14 @@ export type Naturaleza =
  * Sentido del flujo. **Es parte de la IDENTIDAD del canal, no un atributo.**
  *
  * `whImportada` y `whExportada` son DOS canales, no uno con signo: tienen todos
- * los demás ejes idénticos y sin embargo no son neteables, porque la
- * distribuidora paga la energía inyectada a su precio de compra y la vende a
- * tarifa de usuario. 100 kWh netos pueden venir de 100 importados o de 600
- * importados y 500 exportados, con facturas completamente distintas.
+ * los demás ejes idénticos y sin embargo **no son neteables**. 100 kWh netos
+ * pueden venir de 100 importados o de 600 importados y 500 exportados, y el
+ * operador necesita distinguirlos: cuánto se **inyectó** es el dato que determina
+ * el alivio de carga del transformador de la zona y si se cruzó el umbral por
+ * encima del cual el flujo se invierte. Netear lo destruye.
+ *
+ * (La plataforma **no** hace facturación ni valorización, así que el motivo no es
+ * el precio: es operativo.)
  *
  * `neto` describe un canal que YA viene neteado por el productor (p. ej.
  * `IReporteSML.consumo`, neto de flujo inverso). Se declara para poder marcarlo
@@ -157,22 +160,14 @@ export type MeasuringPeriod =
   | "na";
 
 /**
- * Banda tarifaria (CIM `tou`). En electricidad las 18 métricas del protocolo son
- * 6 bases × 3 tarifas.
+ * Banda horaria (CIM `tou`). En electricidad las 18 métricas del protocolo son
+ * 6 bases × 3 bandas.
  *
- * Asimetría que hay que respetar: las bandas **se suman** para lo físico
- * (T1+T2+T3 = total) y **no se agregan** para lo económico, porque cada una
- * tiene precio distinto.
+ * Sirve para **perfilar la demanda por franja horaria**, que es un uso operativo.
+ * Las bandas suman al total (T1+T2+T3 = total), así que mezclar una banda con el
+ * total es doble conteo — eso lo cubre `particion`.
  */
 export type Tou = "total" | "T1" | "T2" | "T3" | "na";
-
-/**
- * De qué depende el valor económico del canal. **Gancho declarativo**: la
- * entidad de precio/tarifa no existe todavía y no es parte de este incremento,
- * pero el canal tiene que poder decirlo para que la primera liquidación no se
- * escriba a mano dentro de un servicio.
- */
-export type DimensionEconomica = "direccion" | "banda" | "categoriaUsuario";
 
 /** Referencia de la presión. Un tag reportando −1,01325 bar es un 0 absoluto. */
 export type ReferenciaPresion = "manometrica" | "absoluta" | "desconocida";
@@ -222,7 +217,7 @@ export interface IParticion {
   /** `CanalRef` del canal total del que este canal es una parte. */
   esParteDe: string;
   /**
-   * `true` si las partes suman exactamente el total (bandas tarifarias).
+   * `true` si las partes suman exactamente el total (bandas horarias).
    * `false` si son vistas alternativas del mismo hecho y **no** se suman entre
    * sí (Vm vs Vb).
    */
@@ -285,8 +280,6 @@ export interface ICanalDescriptor {
   estado: EstadoCanal;
   /** `CanalRef` del canal canónico, cuando este es un alias (kWh vs Wh). */
   aliasDe?: string;
-  /** Gancho económico: no hay entidad de precio todavía. */
-  valorEconomicoDependeDe?: DimensionEconomica[];
   descripcion?: string;
 }
 
@@ -353,25 +346,23 @@ export function sumable(a: ICanalDescriptor, b: ICanalDescriptor): boolean {
 }
 
 /**
- * ¿Se pueden **netear** (restar un sentido del otro) dos canales?
+ * ¿Se pueden **netear** (restar uno del otro) dos canales?
  *
  * Estrictamente más fuerte que `sumable`: dos canales pueden ser físicamente
- * sumables y económicamente no-neteables. Netear importada con exportada
- * destruye información de forma irreversible cuando los precios difieren.
+ * sumables y no-neteables. **Sentidos opuestos o bandas distintas nunca se
+ * netean**, sin excepción declarable.
+ *
+ * El caso que lo motiva: `whImportada` y `whExportada` tienen todos los demás
+ * ejes idénticos, así que `sumable` los acepta —sumarlas da "energía que cruzó el
+ * medidor", que es una magnitud real— pero **restarlas borra cuánto se inyectó**,
+ * que es el dato con el que se evalúa la carga del transformador de la zona.
+ *
+ * El neto se puede seguir calculando: lo que esta función impide es hacerlo **sin
+ * conservar los dos sentidos por separado**.
  */
 export function neteable(a: ICanalDescriptor, b: ICanalDescriptor): boolean {
   if (!sumable(a, b)) return false;
-  if (a.flowDirection !== b.flowDirection) {
-    // Sentidos distintos: sólo si ninguno declara dependencia económica de la
-    // dirección (es decir, si la valorización es simétrica).
-    const dependeA = a.valorEconomicoDependeDe?.includes("direccion") ?? false;
-    const dependeB = b.valorEconomicoDependeDe?.includes("direccion") ?? false;
-    if (dependeA || dependeB) return false;
-  }
-  if (a.tou !== b.tou) {
-    const dependeA = a.valorEconomicoDependeDe?.includes("banda") ?? false;
-    const dependeB = b.valorEconomicoDependeDe?.includes("banda") ?? false;
-    if (dependeA || dependeB) return false;
-  }
+  if (a.flowDirection !== b.flowDirection) return false;
+  if (a.tou !== b.tou) return false;
   return true;
 }

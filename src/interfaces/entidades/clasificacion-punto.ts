@@ -96,15 +96,14 @@ export type ConfianzaClasificacion = z.infer<
 >;
 
 /**
- * `tipoInstalacion`, `subrol` y `categoriaTarifaria` son `string` con catálogo
- * por commodity validado en el backend, **a propósito**, en lugar de un enum
- * unión de las tres verticales.
+ * `tipoInstalacion`, `subrol` y `segmentoUsuario` son `string` con catálogo por
+ * commodity validado en el backend, **a propósito**, en lugar de un enum unión de
+ * las tres verticales.
  *
  * Motivo: un enum que enumera `TRANSFORMADOR_MT_BT` y `ODORIZADOR` en la misma
  * lista invita a asignar el valor equivocado y el tipo no lo puede impedir. Con
  * catálogo por commodity, asignar un subrol eléctrico a un punto de gas devuelve
- * 400. El segundo motivo es práctico: el catálogo de `categoriaTarifaria` depende
- * de normativa que todavía no tenemos, y un `string` no bloquea el modelo.
+ * 400.
  *
  * Catálogos vigentes:
  * - `tipoInstalacion` gas — `ERP`, `LIMITADORA`, `ALIVIO`, `ODORIZADOR`,
@@ -118,6 +117,10 @@ export type ConfianzaClasificacion = z.infer<
  *   `ENTREGA_USUARIO`, `USUARIO_GENERADOR`, `ALMACENAMIENTO_BATERIA`.
  * - `subrol` agua — `CAPTACION`, `POTABILIZACION`, `TANQUE`, `BOMBEO`,
  *   `VALVULA_REDUCTORA`, `MACROMEDICION_DMA`, `ENTREGA_USUARIO`.
+ * - `segmentoUsuario` gas — `RESIDENCIAL`, `SERVICIO_GENERAL_P`,
+ *   `SERVICIO_GENERAL_G`, `GNC`, `SUBDISTRIBUIDOR`, `GRAN_USUARIO`, `DESCONOCIDO`.
+ * - `segmentoUsuario` electricidad — `RESIDENCIAL`, `COMERCIAL`, `INDUSTRIAL`,
+ *   `GRAN_DEMANDA`, `USUARIO_GENERADOR`, `DESCONOCIDO`.
  */
 export const ClasificacionPuntoSchema = z.object({
   /** Eje A — activo físico presente en el sitio. Catálogo por commodity. */
@@ -145,8 +148,20 @@ export const ClasificacionPuntoSchema = z.object({
   /** Eje C — nivel de red. */
   nivelRed: NivelRedSchema.optional(),
 
-  /** Eje D — categoría tarifaria. Catálogo pendiente de normativa. */
-  categoriaTarifaria: z.string().optional(),
+  /**
+   * Eje D — **segmento de usuario**: residencial, comercio, industria, GNC,
+   * subdistribuidor, usuario-generador. Catálogo por commodity.
+   *
+   * Se llama segmento y **no** "categoría tarifaria" porque la plataforma no hace
+   * facturación ni valorización: sirve para **comparar lo comparable** (un
+   * comercio con un comercio y no con un yacimiento), que es lo que hoy produce
+   * promedios sin significado.
+   *
+   * Consecuencia práctica: no depende del cuadro tarifario de ENARGAS. Los puntos
+   * cuyo nombre no da ninguna pista se pueden segmentar por **bandas de consumo
+   * propias**, sin pretender que sean las oficiales.
+   */
+  segmentoUsuario: z.string().optional(),
 
   /**
    * Clase de trazado NAG-100 §5 (1..4), por cantidad de unidades de vivienda en
