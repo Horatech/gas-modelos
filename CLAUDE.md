@@ -194,6 +194,32 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-11 - Grados-día con sentido: calefacción y refrigeración
+
+La base de los grados-día **ya era paramétrica** (el rollup guarda el vector de 15 bases,
+10 a 24 °C). Lo que estaba horneado era el **sentido**: en el nombre de los campos y en el
+cálculo, `Σ max(0, base − T)` — sólo frío.
+
+Alcanza para gas, donde la demanda sube con el frío y nada más. **No alcanza para
+electricidad, cuya demanda es bimodal en temperatura**: sube con el frío y también con el
+calor. Con un solo sentido, el verano de una red eléctrica se lee como si no pasara nada.
+
+- `SentidoGradosDia` = `'calefaccion' | 'refrigeracion'`. **Ausente se lee como
+  `calefaccion`**, que es lo que son todos los datos anteriores.
+- `IResumenOperativoNivel.sentidoGradosDia` y `IResumenDesvioHijo.sentidoGradosDia`, al
+  lado de `baseHdd` y por el mismo motivo: sin él el número no se interpreta — 600
+  grados-día de calefacción y 600 de refrigeración describen estaciones opuestas.
+- `IResumenDiarioLocalidad.gradosDiaRefrigeracion` y `gradosDiaOwmRefrigeracion`: los
+  vectores diarios de CDD, contraparte de `gradosDia` y `gradosDiaOwm`.
+
+**`gradosDia` sigue siendo calefacción** y no se renombra: tiene datos escritos y el
+rename no aportaría nada que el `sentido` explícito no resuelva.
+
+**Ausente ≠ cero** en los campos nuevos. Los días anteriores a este cambio no los tienen;
+poblarlos exige recalcular la serie diaria de ERA5 (76 años de histórico), que es una
+decisión aparte.
+
+
 ### 2026-08-11 - `OrigenClasificacion` suma `'division'`
 
 Detectado leyendo el reporte del **primer dry-run desplegado en test**: 862 puntos de
