@@ -85,6 +85,20 @@ export const ResumenDiarioLocalidadSchema = z.object({
   gradosDiaEfectivos: z.record(z.string(), z.number()).optional(),
 
   /**
+   * Grados-día de **refrigeración** (CDD) del día, mismo indexado por base:
+   * `Σ max(0, T_h − base) / N`. Contraparte de `gradosDia`, que es de **calefacción**.
+   *
+   * Hace falta porque **la demanda eléctrica es bimodal en temperatura**: sube con el
+   * frío y también con el calor. Con un solo sentido, el verano de una red eléctrica se
+   * lee como si no pasara nada. En gas casi siempre es 0 y no molesta.
+   *
+   * Escribe la serie diaria de ERA5-Land, igual que `gradosDia`. Los días anteriores a
+   * ago 2026 no lo tienen: hay que recalcular la serie para poblarlos, y ese recálculo
+   * es una decisión aparte (76 años de histórico). Ausente ≠ cero.
+   */
+  gradosDiaRefrigeracion: z.record(z.string(), z.number()).optional(),
+
+  /**
    * Normal 1991-2020 de ESE dia del año, mismo indexado por base. Es contra esto
    * que se mide el desvio: sin la normal, un grado-dia suelto no dice nada.
    */
@@ -134,6 +148,13 @@ export const ResumenDiarioLocalidadSchema = z.object({
    * muestras el promedio no describe el dia y produciria un numero que parece un dato.
    */
   gradosDiaOwm: z.record(z.string(), z.number()).optional(),
+
+  /**
+   * Refrigeración (CDD) desde la serie horaria de OpenWeatherMap. Es a `gradosDiaOwm` lo
+   * que `gradosDiaRefrigeracion` es a `gradosDia`: el relleno de la punta mientras ERA5
+   * no publica, con el mismo gate de >= 20 horas y el mismo sesgo conocido.
+   */
+  gradosDiaOwmRefrigeracion: z.record(z.string(), z.number()).optional(),
 
   /** Temperatura efectiva: `0,5·T(d) + 0,5·T_ef(d−1)`. Inercia termica del parque. */
   temperaturaEfectiva: z.number().optional(), // °C

@@ -15,6 +15,24 @@ export const NivelResumenSchema = z.enum([
 export type NivelResumen = z.infer<typeof NivelResumenSchema>;
 
 /** Punto de la serie diaria: consumo + temperatura (tendencia + correlacion). */
+/**
+ * Sentido de los grados-día.
+ *
+ * - `calefaccion` (HDD): `Σ max(0, base − T)`. Cuánto frío hubo. Es el que gobierna la
+ *   demanda de gas y el único que existía hasta ago 2026.
+ * - `refrigeracion` (CDD): `Σ max(0, T − base)`. Cuánto calor hubo.
+ *
+ * Hace falta porque **la demanda eléctrica es bimodal en temperatura**: sube con el frío
+ * y también con el calor. Con un solo sentido, el verano de una red eléctrica se lee como
+ * si no pasara nada.
+ *
+ * La base ya era paramétrica (el rollup guarda el vector de 15 bases); lo que estaba
+ * horneado era el sentido, en el nombre de los campos y en el cálculo. Ausente se lee
+ * como `calefaccion`, que es lo que son todos los datos anteriores a este cambio.
+ */
+export const SentidoGradosDiaSchema = z.enum(["calefaccion", "refrigeracion"]);
+export type SentidoGradosDia = z.infer<typeof SentidoGradosDiaSchema>;
+
 export const PuntoSerieResumenSchema = z.object({
   fecha: z.string(), // inicio del dia gas
   // Consumo TOTALIZADO del dia (suma de todos los medidores del nivel).
@@ -173,6 +191,15 @@ export const ResumenOperativoNivelSchema = z.object({
    */
   baseHdd: z.number().optional(),
 
+  /**
+   * Sentido con el que se resolvieron los escalares de `serie` y los acumulados.
+   *
+   * Viaja por el mismo motivo que `baseHdd`: sin él el número no se interpreta — 600
+   * grados-día de calefacción y 600 de refrigeración describen estaciones opuestas.
+   * Ausente se lee como `calefaccion`.
+   */
+  sentidoGradosDia: SentidoGradosDiaSchema.optional(),
+
   /** Suma de los grados-dia del periodo. Acumular sobre el TIEMPO si es valido. */
   gradosDiaAcumulado: z.number().optional(),
 
@@ -291,6 +318,8 @@ export const ResumenDesvioHijoSchema = z.object({
 
   /** Base en °C con la que se resolvieron los acumulados. Ver `baseHdd` del nivel. */
   baseHdd: z.number().optional(),
+  /** Sentido con el que se resolvieron. Ver `sentidoGradosDia` del nivel. */
+  sentidoGradosDia: SentidoGradosDiaSchema.optional(),
 
   gradosDiaAcumulado: z.number().optional(),
   gradosDiaNormalAcumulado: z.number().optional(),
