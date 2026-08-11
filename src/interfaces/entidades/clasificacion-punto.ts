@@ -78,6 +78,19 @@ export const OrigenClasificacionSchema = z.enum([
   "tag-opc",
   /** Import del listado del cliente. Única fuente posible de la medición fiscal. */
   "declaracion-cliente",
+  /**
+   * Derivado de la `division` del punto. **Confianza alta**: la división siempre
+   * está y no admite interpretación — un punto de `Residencial Agua` es agua y es
+   * consumo de un usuario, sin ambigüedad.
+   *
+   * Existe porque su ausencia obligaba a mentir. El clasificador atribuía lo
+   * derivado de la división a `patron-nombre` (que además fuerza `confianza: 'baja'`)
+   * y el `commodity` a `manual` — y `manual` significa "lo decidió un operador", que
+   * es exactamente lo que no era. Se detectó leyendo el reporte del primer dry-run
+   * en test: 862 puntos residenciales atribuidos a un patrón de nombre que nunca
+   * se evaluó.
+   */
+  "division",
   /** Los `grupos` que ya venían cargando los operadores. */
   "grupo-operador",
   "patron-nombre",

@@ -194,6 +194,26 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-11 - `OrigenClasificacion` suma `'division'`
+
+Detectado leyendo el reporte del **primer dry-run desplegado en test**: 862 puntos de
+`Residencial Agua` salían atribuidos a `patron-nombre` y su `commodity` a `manual`.
+
+Las dos atribuciones eran falsas, y son justamente las que existen para poder auditar:
+
+- Esos puntos se clasifican **por su división**, con certeza, sin evaluar ningún nombre.
+- `patron-nombre` además fuerza `confianza: 'baja'` en el cálculo del clasificador, así
+  que el caso **más** seguro del padrón quedaba registrado como el menos confiable.
+- `manual` es peor: significa "lo decidió un operador", que es lo que acompaña a
+  `bloqueada` en el resto del sistema. Atribuirle eso a un cálculo automático es mentir
+  en el campo que existe para no mentir.
+
+El valor faltaba y su ausencia obligaba a elegir entre dos mentiras. En el padrón de
+Camuzzi afectaba a los 1.279 puntos residenciales más el `commodity` de los 4.473.
+
+**Nada escrito para corregir**: todas las corridas fueron en dry-run.
+
+
 ### 2026-08-10 - `IClasificacionPunto.commodity` como campo propio
 
 Bug de diseño encontrado al implementar el clasificador (F3): el `commodity` se
