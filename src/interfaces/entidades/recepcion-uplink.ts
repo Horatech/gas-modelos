@@ -61,9 +61,13 @@ export type IUltimaRecepcion = z.infer<typeof UltimaRecepcionSchema>;
  * patrón que `ILogLora`) y la colección tiene TTL: no es el reporte del
  * dispositivo, es la traza del enlace.
  *
- * Sin virtuals de populate a propósito: `IDispositivo`/`IPuntoMedicion` son
- * parte del SCC de dispositivo y un schema real de ese lado cierra el ciclo
- * (ver CLAUDE.md). Lo que se necesita para mostrar la fila va denormalizado.
+ * Sin virtuals de populate a propósito: `IDispositivo` es parte del SCC de
+ * dispositivo y un schema real de ese lado cierra el ciclo (ver CLAUDE.md).
+ * Lo que se necesita para mostrar la fila va denormalizado.
+ *
+ * Tampoco lleva `idPuntoMedicion`: gas-entrada-lora resuelve el dispositivo
+ * por `deveui` y no conoce el punto, así que sería un campo sin escritor. Las
+ * recepciones de un punto se consultan por el `deveui` de su dispositivo.
  */
 export const RecepcionUplinkSchema = UltimaRecepcionSchema.extend({
   _id: z.string().optional(),
@@ -72,7 +76,6 @@ export const RecepcionUplinkSchema = UltimaRecepcionSchema.extend({
   idDispositivo: z.string().optional(),
   idLoraServer: z.string().optional(),
   idCliente: z.string().optional(),
-  idPuntoMedicion: z.string().optional(),
   /** Ubicación del dispositivo/punto al momento de la recepción */
   ubicacion: CoordenadasSchema.optional(),
   /** Punto GeoJSON para queries geoespaciales (índice 2dsphere) */
