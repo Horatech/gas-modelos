@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { LocalidadSchema } from "./localidad";
+import { GatewayLorawanSchema } from "./gateway-lorawan";
 import { DivisionSchema } from "../tenant/usuario/permiso";
 import { ClienteSchema } from "../tenant/cliente.model";
 import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
@@ -43,6 +44,11 @@ export const TipoAlertaSchema = z.enum([
   "Medidor detenido",
   "Fuga",
   "Sobrecaudal",
+  // Único tipo a nivel infraestructura, no a nivel dispositivo: el gateway
+  // LoRaWAN dejó de reportar al network server. No lleva deveui ni punto de
+  // medición, sí `idGatewayLorawan`. La abre gas-cron con histéresis (un
+  // backhaul caído se veía sólo como N puntos "Sin Reportar").
+  "Gateway sin reportar",
 ]);
 export type ITipoAlerta = z.infer<typeof TipoAlertaSchema>;
 
@@ -87,10 +93,13 @@ export const AlertaSchema = z.object({
   idMedidorElectrico: z.string().optional(),
   idScada: z.string().optional(),
   idDispositivoExternoNuc: z.string().optional(),
+  /** `_id` del GatewayLorawan, sólo en alertas de tipo "Gateway sin reportar" */
+  idGatewayLorawan: z.string().optional(),
   numeroSerieCorrectora: z.string().nullable().optional(),
   fechaCreacion: z.string().optional(),
   // Virtuals
   cliente: ClienteSchema.optional(),
+  gatewayLorawan: GatewayLorawanSchema.optional(),
   unidadNegocio: UnidadNegocioSchema.optional(),
   centroOperativo: CentroOperativoSchema.optional(),
   localidad: LocalidadSchema.optional(),
@@ -134,10 +143,12 @@ export interface IAlerta {
   idMedidorElectrico?: string;
   idScada?: string;
   idDispositivoExternoNuc?: string;
+  idGatewayLorawan?: string;
   numeroSerieCorrectora?: string | null;
   fechaCreacion?: string;
   // Virtuals
   cliente?: import("../tenant/cliente.model").ICliente;
+  gatewayLorawan?: import("./gateway-lorawan").IGatewayLorawan;
   unidadNegocio?: import("../gas/unidadNegocio/schema").IUnidadNegocio;
   centroOperativo?: import("../gas/centroOperativo/schema").ICentroOperativo;
   localidad?: import("./localidad").ILocalidad;
@@ -154,6 +165,7 @@ export interface IAlerta {
 export const CreateAlertaSchema = AlertaSchema.omit({
   _id: true,
   cliente: true,
+  gatewayLorawan: true,
   unidadNegocio: true,
   centroOperativo: true,
   localidad: true,
@@ -168,6 +180,7 @@ export const CreateAlertaSchema = AlertaSchema.omit({
 type OmitirCreate =
   | "_id"
   | "cliente"
+  | "gatewayLorawan"
   | "unidadNegocio"
   | "centroOperativo"
   | "localidad"
@@ -185,6 +198,7 @@ export const UpdateAlertaSchema = CreateAlertaSchema;
 type OmitirUpdate =
   | "_id"
   | "cliente"
+  | "gatewayLorawan"
   | "unidadNegocio"
   | "centroOperativo"
   | "localidad"

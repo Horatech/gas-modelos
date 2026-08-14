@@ -63,4 +63,5 @@ export * from "./indicadores-historicos";
 export * from "./gateway-lorawan";
 export * from "./cobertura-lorawan";
 export * from "./estadistica-gateway-lorawan";
+export * from "./recepcion-uplink";
 //
