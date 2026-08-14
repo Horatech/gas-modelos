@@ -62,6 +62,17 @@ export const PuntoMedicionSchema = z.object({
   idCuenta: z.string().nullable().optional(),
   codigoExternoConexion: z.string().optional(),
   codigoExternoInmueble: z.string().optional(),
+  // Payload de la conexión tal como lo entrega el sistema externo, para lo que
+  // no tiene semántica propia en INSIDEht. Espejo del bag que ya tiene
+  // ICuentaCliente para el inmueble.
+  //
+  // Lo que lo hace necesario: el transmisor de una conexión puede venir
+  // declarado en el padrón y NO estar provisionado todavía (el device lo carga
+  // la app móvil, aparte). Hasta ahora ese `trans_mac` no se guardaba en
+  // ninguna parte —el punto quedaba sin medidor y el dato sólo existía en un
+  // log— así que no había forma de vincularlo después ni de decirle al cliente
+  // qué equipo le falta dar de alta. En PROD se perdieron 3 conexiones así.
+  datosExternos: z.record(z.string(), z.any()).optional(),
   diametroConexion: z.number().optional(),
   materialConexion: z.string().optional(),
   facturable: z.boolean().optional(),
@@ -157,6 +168,7 @@ export interface IPuntoMedicion {
   idCuenta?: string | null;
   codigoExternoConexion?: string;
   codigoExternoInmueble?: string;
+  datosExternos?: Record<string, any>;
   diametroConexion?: number;
   materialConexion?: string;
   facturable?: boolean;
