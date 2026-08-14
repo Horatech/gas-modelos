@@ -7,6 +7,7 @@ import { ClienteSchema } from "../tenant/cliente.model";
 import { LoraServerSchema } from "../tenant/lora-server.model";
 import { LoteDispositivoSchema } from "../tenant/loteDispositivo.model";
 import { LocalidadSchema } from "./localidad";
+import { IUltimaRecepcion, UltimaRecepcionSchema } from "./recepcion-uplink";
 import type { IAlerta } from "./alerta";
 import type { IRegistro } from "./registro";
 
@@ -36,11 +37,21 @@ export const DispositivoSchema = z.object({
   // Solo con conectividad Lora
   idLoraServer: z.string().optional(),
   // Info de comunicacion
+  /** @deprecated sin escritor en LoRa: usar `ultimaRecepcion.maxSnr` */
   snr: z.number().optional(),
+  /** @deprecated sin escritor en LoRa: usar `ultimaRecepcion.maxRssi` */
   rssi: z.number().optional(),
+  /** @deprecated sin escritor: usar `ultimaRecepcion.adr` */
   adr: z.boolean().optional(),
+  /** @deprecated sin escritor: usar `ultimaRecepcion.dr` */
   dr: z.number().optional(),
   fechaUltimaComunicacion: z.string().optional(),
+  /**
+   * Estado del enlace en el último uplink recibido, con el detalle por gateway.
+   * Lo escribe gas-entrada-lora (único punto por donde pasan todos los uplinks
+   * LoRa de los tres network servers). Sólo dispositivos con conectividad LORA.
+   */
+  ultimaRecepcion: UltimaRecepcionSchema.optional(),
   // Otra info
   firmware: z.string().optional(),
   versionHardware: z.string().optional(), // Versión de hardware (ej: "v1", "v3" para NUC con/sin GPIO)
@@ -78,11 +89,16 @@ export interface IDispositivo {
   idLote?: string;
   tipoDispositivo?: TipoDispositivoGas;
   idLoraServer?: string;
+  /** @deprecated sin escritor en LoRa: usar `ultimaRecepcion.maxSnr` */
   snr?: number;
+  /** @deprecated sin escritor en LoRa: usar `ultimaRecepcion.maxRssi` */
   rssi?: number;
+  /** @deprecated sin escritor: usar `ultimaRecepcion.adr` */
   adr?: boolean;
+  /** @deprecated sin escritor: usar `ultimaRecepcion.dr` */
   dr?: number;
   fechaUltimaComunicacion?: string;
+  ultimaRecepcion?: IUltimaRecepcion;
   firmware?: string;
   versionHardware?: string;
   serieTransmisor?: string;

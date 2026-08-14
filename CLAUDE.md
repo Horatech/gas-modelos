@@ -194,6 +194,45 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-14 - La recepción por gateway como entidad (conectividad LoRaWAN)
+
+Fase F0 de `/PLAN-CONECTIVIDAD-COBERTURA-LORAWAN-V3.md`. Aditivo y opcional: publicarlo no
+cambia el comportamiento de ningún servicio.
+
+**Un uplink LoRaWAN no es "el RSSI del dispositivo": es N recepciones, una por gateway que
+lo escuchó.** Ese detalle llega hoy a `gas-entrada-lora` en `IUplink.metadatos[]`
+(gatewayID, rssi, loRaSNR, location por gateway), viaja a la API de device… y **ninguna lo
+lee**: `gas-sml`, `gas-api-ml107a`, `gas-api-euw300` y `gas-api-nme` no mencionan `rssi` en
+todo su `src/`. Por eso `IDispositivo.rssi/snr/dr/adr` **están muertos** — el único escritor
+de `rssi` en todo el sistema es `gas-api-uwm-nb`, que es NB-IoT, no LoRa. Quedan marcados
+`@deprecated` (los sigue leyendo el padrón exportado y el detalle del PM de agua, siempre
+vacíos; se limpian en F6).
+
+- Nuevo `recepcion-uplink.ts`: `GatewayRecepcionSchema`, `UltimaRecepcionSchema` (estado del
+  enlace en el último uplink, para embeber) y `RecepcionUplinkSchema` (traza histórica, la
+  colección lleva TTL).
+- `IDispositivo.ultimaRecepcion` — lo escribe `gas-entrada-lora`, único punto por donde
+  pasan todos los uplinks de los tres network servers (ChirpStack v3, v4, Orbiwise). Escribir
+  ahí evita tocar las ~8 APIs de device.
+- `TipoAlertaSchema` suma `"Gateway sin reportar"` e `IAlerta` suma `idGatewayLorawan` + el
+  virtual `gatewayLorawan`. **Es el primer tipo de alerta a nivel infraestructura**: no lleva
+  `deveui` ni punto de medición. Hasta ahora un backhaul caído sólo se veía como N puntos
+  "Sin Reportar" — los 3 gateways de ITCSA estuvieron 9 h 19 min caídos sin generar una sola
+  alerta. La abre gas-cron **con histéresis** (antecedente: 16.570 alertas por flapping).
+
+⚠️ **`distancia` se calcula contra `IGatewayLorawan.ubicacion`, NUNCA contra el `location`
+de `rxInfo`.** Los gateways hospedados reportan la ubicación estática del packet forwarder:
+los tres de ITCSA informan Chascomús estando en Mendoza, a 1.000 km. La cobertura actual
+(`gas-field-tester`) usa `rxInfo` y por eso tiene las distancias mal.
+
+`IRecepcionUplink` **no lleva virtuals de populate**: `IDispositivo`/`IPuntoMedicion` son del
+SCC y un schema real de ese lado cierra el ciclo. Lo que hace falta para mostrar la fila va
+denormalizado. `alerta.ts` sí usa el schema real de `IGatewayLorawan` (está fuera del SCC).
+Verificado: `madge --circular` sobre `dist/` da 0.
+
+⚠️ Necesita sus `@Prop()` en gas-datos (`dispositivo.model.ts` y `alerta.model.ts`): los
+schemas son estrictos y sin el `@Prop()` Mongoose descarta el valor **en silencio**.
+
 ### 2026-08-11 - Grados-día con sentido: calefacción y refrigeración
 
 La base de los grados-día **ya era paramétrica** (el rollup guarda el vector de 15 bases,
