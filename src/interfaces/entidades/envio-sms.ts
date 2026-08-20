@@ -22,6 +22,15 @@ export const TipoAlertaEnvioSchema = z.enum([
   "VERIBOX - Batería baja",
   "NSP - Batería baja",
   "SCADA - Error de comunicación con servidor",
+  // Medición residencial de agua (módulo ML107A). Las cuatro primeras las dispara
+  // gas-api-ml107a al ABRIR la alerta correspondiente sobre el punto; la de equipos
+  // fuera de línea la dispara gas-cron por porcentaje del parque, igual que sus
+  // equivalentes de NUC/NSP/VERIBOX/SCADA.
+  "Medidor de agua - Fuga",
+  "Medidor de agua - Flujo inverso",
+  "Medidor de agua - Ataque magnético",
+  "Medidor de agua - Batería baja",
+  "ML107A - Equipos fuera de línea",
 ]);
 // El nombre del TIPO se mantiene igual al original (TipoAlerta, sin prefijo I
 // porque nunca fue una interface) — solo la constante *Schema se renombró

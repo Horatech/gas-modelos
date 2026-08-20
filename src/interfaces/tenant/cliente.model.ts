@@ -204,6 +204,31 @@ export const ConfigClienteSchema = z.object({
   nucV3: z.boolean().optional(),
   sobreEscribirRegistrosNuc: z.boolean().optional(),
   valorAlarmaBateriaSml: z.number().optional(),
+  /**
+   * Metros cúbicos mínimos que tiene que crecer el acumulado de flujo inverso de un
+   * medidor residencial de agua, respecto de su lectura anterior, para abrir una
+   * alerta de "Flujo inverso".
+   *
+   * El campo del equipo es un ODÓMETRO (cuenta desde que se puso en servicio y nunca
+   * decrece): un valor > 0 sólo dice que alguna vez hubo contraflujo — le pasa al 67%
+   * del parque. Lo que indica contraflujo activo es el INCREMENTO entre dos lecturas,
+   * y eso es lo que se compara contra este umbral.
+   *
+   * Sin definir, se usa el default del productor (gas-api-ml107a). Campo plano y no
+   * un objeto anidado a propósito: el merge de `config` en gas-admin es SHALLOW.
+   */
+  umbralFlujoInversoAgua: z.number().optional(),
+  /**
+   * Cantidad de lecturas CONSECUTIVAS con la bandera de fuga encendida que hacen
+   * falta para abrir una alerta de "Fuga" en un medidor residencial de agua.
+   *
+   * Existe porque la bandera del equipo alterna: de los 445 equipos que la
+   * encendieron en un relevamiento de 3 días, 247 la prendieron y apagaron. Con 1 el
+   * comportamiento es el del bit crudo (abre y cierra con cada transmisión).
+   *
+   * Sin definir, se usa el default del productor (gas-api-ml107a).
+   */
+  lecturasParaAlertaFugaAgua: z.number().optional(),
   puedeCrearDispositivos: z.boolean().optional(),
   vistasPersonalizadas: VistasPersonalizadasPorDivisionSchema.optional(),
   moduloCoberturaLorawan: ModuloCoberturaLorawanSchema.optional(),
