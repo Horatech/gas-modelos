@@ -147,6 +147,18 @@ export const ModuloClimaSchema = z.object({
 });
 export type IModuloClima = z.infer<typeof ModuloClimaSchema>;
 
+/**
+ * Editor de clasificación de puntos de medición (F5 del modelo canónico).
+ *
+ * Ausente ⇒ apagado. Es una pantalla de administración del padrón que sólo tiene
+ * sentido para el cliente que está haciendo ese trabajo; al resto le muestra una
+ * sección vacía que no sabe para qué es.
+ */
+export const ModuloClasificacionSchema = z.object({
+  activo: z.boolean().optional(),
+});
+export type IModuloClasificacion = z.infer<typeof ModuloClasificacionSchema>;
+
 export const ParametrosObisSchema = z.object({
   reporteMask: z.number().optional(),
 });
@@ -196,6 +208,7 @@ export const ConfigClienteSchema = z.object({
   vistasPersonalizadas: VistasPersonalizadasPorDivisionSchema.optional(),
   moduloCoberturaLorawan: ModuloCoberturaLorawanSchema.optional(),
   moduloClima: ModuloClimaSchema.optional(),
+  moduloClasificacion: ModuloClasificacionSchema.optional(),
   parametrosObis: ParametrosObisSchema.optional(),
   permitirEditarUnNcoAsignado: z.boolean().optional(),
   crearMedidorResidencialAutomatico: z.boolean().optional(),
