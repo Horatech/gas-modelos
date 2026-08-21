@@ -22,6 +22,19 @@ export const MedidorResidencialSchema = z.object({
   ultimoReporte: z.custom<IReporte>().optional(),
   estadoActual: EstadoCorrectoraSchema.optional(),
   consumoInicial: z.number().optional(),
+  /**
+   * Odómetro del DISPOSITIVO en el momento de vincularlo a este medidor. Es el
+   * baseline que se resta al acumulado para que el medidor no herede lo que el
+   * equipo midió en instalaciones anteriores:
+   * `consumoCorregido = consumoInicial + (consumo - lecturaInicialDispositivo)`.
+   *
+   * No confundir con `consumoInicial`, que es la lectura del dial del medidor
+   * mecánico cargada por el operador. Lo escribe `asignarDispositivo`
+   * (gas-api-cliente, `/vinculacion/dispositivo`), nunca la ingesta.
+   *
+   * Ausente o 0 = comportamiento histórico (todo el odómetro cuenta).
+   */
+  lecturaInicialDispositivo: z.number().optional(),
   ubicacionGps: CoordenadasSchema.optional(),
   direccion: z.string().optional(),
   idLocalidad: z.string().optional(),
@@ -57,6 +70,19 @@ export interface IMedidorResidencial {
   ultimoReporte?: IReporte;
   estadoActual?: IEstado;
   consumoInicial?: number;
+  /**
+   * Odómetro del DISPOSITIVO en el momento de vincularlo a este medidor. Es el
+   * baseline que se resta al acumulado para que el medidor no herede lo que el
+   * equipo midió en instalaciones anteriores:
+   * `consumoCorregido = consumoInicial + (consumo - lecturaInicialDispositivo)`.
+   *
+   * No confundir con `consumoInicial`, que es la lectura del dial del medidor
+   * mecánico cargada por el operador. Lo escribe `asignarDispositivo`
+   * (gas-api-cliente, `/vinculacion/dispositivo`), nunca la ingesta.
+   *
+   * Ausente o 0 = comportamiento histórico (todo el odómetro cuenta).
+   */
+  lecturaInicialDispositivo?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
   idLocalidad?: string;
