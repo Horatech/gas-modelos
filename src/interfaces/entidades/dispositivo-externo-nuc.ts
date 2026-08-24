@@ -32,10 +32,14 @@ export const DispositivoExternoNucSchema = z.object({
   fechaAsignacionDispositivo: z.string().nullable().optional(),
   usaInput1: z.boolean().optional(),
   nombreInput1: z.string().optional(),
+  valorActivoInput1: z.string().optional(),
+  valorInactivoInput1: z.string().optional(),
   factorCorreccionInput1: z.number().optional(),
   valorInicialInput1: z.number().optional(),
   usaInput2: z.boolean().optional(),
   nombreInput2: z.string().optional(),
+  valorActivoInput2: z.string().optional(),
+  valorInactivoInput2: z.string().optional(),
   factorCorreccionInput2: z.number().optional(),
   valorInicialInput2: z.number().optional(),
   usaOutput1: z.boolean().optional(),
@@ -74,12 +78,16 @@ export interface IDispositivoExternoNuc {
   usaInput1?: boolean; // Si el dispositivo externo reporta un valor de input1
   // tipoInput1?: TipoInput; // Esto se define en el dispositivo
   nombreInput1?: string; // Nombre personalizado para el input1 (ej: "Alarma de fuga")
+  valorActivoInput1?: string; // Texto a mostrar cuando el input1 booleano vale 1 (ej: "Con fuga"). Si no se define, se muestra "Activo"
+  valorInactivoInput1?: string; // Texto a mostrar cuando el input1 booleano vale 0 (ej: "Sin fuga"). Si no se define, se muestra "Inactivo"
   factorCorreccionInput1?: number; // Factor de corrección para el input1 (multiplicador para convertir pulsos en consumo o valor real, aplica cuando el tipo es "Contador")
   valorInicialInput1?: number; // Valor inicial para el input1 (ej: lectura del contador al momento de asignar el dispositivo, aplica cuando el tipo es "Contador")
   // Input 2
   usaInput2?: boolean; // Si el dispositivo externo reporta un valor de input2
   // tipoInput2?: TipoInput; // Esto se define en el dispositivo
   nombreInput2?: string; // Nombre personalizado para el input2 (ej: "Contador de eventos")
+  valorActivoInput2?: string; // Texto a mostrar cuando el input2 booleano vale 1. Si no se define, se muestra "Activo"
+  valorInactivoInput2?: string; // Texto a mostrar cuando el input2 booleano vale 0. Si no se define, se muestra "Inactivo"
   factorCorreccionInput2?: number; // Factor de corrección para el input2 (multiplicador para convertir pulsos en consumo o valor real, aplica cuando el tipo es "Contador")
   valorInicialInput2?: number; // Valor inicial para el input2 (ej: lectura del contador al momento de asignar el dispositivo, aplica cuando el tipo es "Contador")
   // Output
