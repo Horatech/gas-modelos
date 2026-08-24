@@ -21,7 +21,16 @@ export const ReporteSMLSchema = z.object({
   triggerSource: z.number().optional(),
   checksum: z.number().optional(),
   // Parsed
+  // Instante en que la lectura entró a la plataforma (ISO, UTC). Es la fecha con
+  // la que se indexa y se ordena la serie.
   timestamp: z.string().optional(),
+  // Instante en que el MÓDULO tomó la muestra (ISO, UTC), leído del reloj que
+  // viaja en la trama larga del ML107A. El módulo lo emite en su hora local; acá
+  // se guarda ya normalizado a UTC, como el resto de las fechas del sistema.
+  // Ausente cuando la trama no trae reloj (trama corta) o cuando el reloj del
+  // equipo está demasiado desfasado del momento de recepción para ser creíble.
+  // Es la fecha de MEDICIÓN, en contraste con `timestamp`, que es la de registro.
+  timestampDispositivo: z.string().optional(),
   consumoNegativo: z.number().optional(), // Es el consumo acumulado en sentido negativo reportado por el dispositivo
   consumoPositivo: z.number().optional(), // Es el consumo acumulado en sentido positivo reportado por el dispositivo
   consumo: z.number().optional(), // Es el consumo acumulado reportado por el dispositivo // restando lo negativo
