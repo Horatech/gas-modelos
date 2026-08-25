@@ -6,3 +6,4 @@ export * from "./dispositivoVeriboxMicro";
 export * from "./dispositivoSml";
 export * from "./dispositivoNme";
 export * from "./dispositivoUwmNb";
+export * from "./dispositivoOcr";

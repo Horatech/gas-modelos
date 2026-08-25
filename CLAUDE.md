@@ -194,6 +194,35 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-25 - Config del dispositivo OCR y la lectura que calcula el backend
+
+Dos huecos que aparecieron al poner el clasificador de dígito por rueda a leer medidores
+reales en test.
+
+**`configs-dispositivo/dispositivoOcr.ts`** — la config del equipo OCR estaba entera en
+`config` (un `z.record(z.string(), z.any())`) y se cargaba a mano. Ahora tiene forma:
+`ocrRoi` (ventana del registro en coordenadas fraccionales + rotación, calibrada una vez
+por equipo porque la cámara va montada rígida), `anchoRegistro`, `ocrCeldas`,
+`ocrCeldasIgnoradas` y `modeloMedidor`.
+
+⚠️ **`modeloMedidor` es un enum (`ModeloMedidorOcr`) y no texto libre a propósito.** El
+worker aplica el clasificador **solo** a los modelos que tiene entrenados: se entrena con
+crops del odómetro real, y en un medidor que nunca vio la precisión cae a la mitad (medido:
+97% contra 50%). Con texto libre, un modelo mal tipeado deshabilitaba el clasificador **en
+silencio** y la lectura pasaba a OCR de línea sin que nadie se enterara. La lista blanca
+operativa —con qué datos se entrenó cada uno y sus métricas— vive junto al modelo, en
+`gas-ocr-worker/ocr_worker/models/entrenamiento.json`; acá está solo el catálogo de valores
+válidos, que es lo que cruza el borde de la API y lo que el ABM debe ofrecer como combo.
+
+**`IReporteOCR.lecturaBackend`** — `lectura` solo se promueve con consenso, así que cuando
+la lectura cae a `revision` la propuesta del backend **se perdía**: quedaban la confianza y
+las confianzas por celda, pero no el número. El operador que abre la cola tiene que leer la
+foto a ojo (el OCR no le ahorra nada) y no hay forma de auditar la calidad del pipeline
+sobre el histórico. Se persiste siempre, en m³.
+
+⚠️ Ambos necesitan su `@Prop()` en gas-datos (`reporte.model.ts` y `dispositivo.model.ts`):
+los schemas son estrictos y sin el `@Prop()` Mongoose descarta el valor **en silencio**.
+
 ### 2026-08-14 - La recepción por gateway como entidad (conectividad LoRaWAN)
 
 Fase F0 de `/PLAN-CONECTIVIDAD-COBERTURA-LORAWAN-V3.md`. Aditivo y opcional: publicarlo no
