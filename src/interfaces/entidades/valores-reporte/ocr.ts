@@ -64,7 +64,8 @@ export const ReporteOCRSchema = z.object({
   // lectura cae a `revision`: `lectura` solo se promueve con consenso, así que sin
   // este campo la propuesta del backend se pierde y el operador que abre la cola
   // tiene que leer la foto a ojo — el OCR no le ahorra nada. También es lo que
-  // permite auditar la calidad del pipeline sobre el histórico.
+  // permite auditar la calidad del pipeline sobre el histórico. No necesita `@Prop()`
+  // en gas-datos: `valores` está declarado `@Prop({ type: Object })`.
   lecturaBackend: z.number().optional(),
   confianzaBackend: z.number().optional(), // 0–1 (fracción). Documentado: fracción, no porcentaje.
   confianzasPorCelda: z.array(z.number()).optional(), // Confianza por dígito del odómetro.
