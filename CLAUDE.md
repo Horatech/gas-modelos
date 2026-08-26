@@ -194,6 +194,39 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-26 - Ciclo de facturación por división (día de cierre)
+
+`IConfigCliente.ciclosFacturacion` — el día del mes (1-28) en que cierra el período de
+facturación de una división. Hoy sólo lo usa `"Residencial Agua"`: habilita el selector de
+período en las vistas de detalle y el tipo de exportación "Periodo" (el "Mes" existente
+queda como mes calendario).
+
+El período rotulado por un mes es **media abierta**: `[diaCierre del mes anterior 00:00,
+diaCierre de ese mes 00:00)`. Sin solapamientos ni huecos.
+
+Tres decisiones que no se pueden cambiar sin volver a pensarlas:
+
+1. **El corte es a las 00:00 locales, no a las 7:00.** El 7:00-6:59 del resto de las
+   exportaciones es el día gas de las correctoras. Los medidores de agua reportan una vez
+   por día y con corte a las 7:00 el reporte de madrugada del día de cierre caía en el
+   período anterior.
+2. **Tope 28.** Un cierre 29/30/31 no existe en todos los meses y el período quedaría sin
+   definir en febrero.
+3. **Ausente ≠ 1.** Sin `diaCierre` la división no tiene ciclo y todo se comporta como
+   antes (mes calendario, ventana de N días en el detalle). No hay default.
+
+⚠️ **`CiclosFacturacionPorDivisionSchema` es un `z.object` literal, NO
+`z.partialRecord(DivisionSchema, ...)`.** Tomar `DivisionSchema` como valor desde
+`cliente.model.ts` cierra el ciclo runtime `cliente.model → usuario/permiso → localidad →
+cliente.model` y el barrel compilado explota con `ClienteSchema` undefined (pasó al
+implementar esto: `TypeError: Cannot read properties of undefined (reading 'optional')` en
+`dist/interfaces/entidades/localidad.js`). El import de `DivisionSchema` que estaba en el
+archivo era **código muerto** —lo elidía tsc por no usarse— y por eso el ciclo no se veía;
+`VistasPersonalizadasPorDivisionSchema` ya usaba `z.object` literal por el mismo motivo.
+Sumar una división es agregar una clave.
+
+No requiere cambios en gas-datos: `config` es `@Prop({ type: Object })`.
+
 ### 2026-08-25 - Config del dispositivo OCR y la lectura que calcula el backend
 
 Dos huecos que aparecieron al poner el clasificador de dígito por rueda a leer medidores

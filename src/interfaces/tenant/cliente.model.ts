@@ -6,7 +6,14 @@ import { ModeloCorrectoraSchema } from "../entidades/mensajes-nuc/mensajes-nuc";
 import { EstadoCorrectoraSchema } from "../entidades/estado";
 import { ImagenesClienteSchema } from "./cliente.dto";
 import { IntegracionSchema } from "./integraciones";
-import { DivisionSchema } from "./usuario/permiso";
+// OJO: `DivisionSchema` NO se puede importar como VALOR acá. `usuario/permiso`
+// importa `LocalidadSchema` y `localidad.ts` importa `ClienteSchema`, así que un
+// import de valor cierra el ciclo runtime cliente.model → permiso → localidad →
+// cliente.model y el barrel compilado explota con `ClienteSchema` undefined
+// (verificado). Por eso los records por división de este archivo
+// (`VistasPersonalizadasPorDivisionSchema`, `CiclosFacturacionPorDivisionSchema`)
+// se declaran como `z.object` literal con las divisiones soportadas en vez de
+// `z.partialRecord(DivisionSchema, ...)`.
 import type { Division } from "./usuario/permiso";
 
 export const TemplatesWhatsappSchema = z.enum([
@@ -194,6 +201,44 @@ export type DivisionConVistaPersonalizada = Extract<
   "Correctoras" | "Residencial"
 >;
 
+/**
+ * Ciclo de facturación de una división: el día del mes en que cierra el período.
+ *
+ * El período rotulado por un mes va de `diaCierre` del mes ANTERIOR (00:00,
+ * inclusive) a `diaCierre` de ese mes (00:00, exclusive) — media abierta, así los
+ * períodos no se solapan ni dejan huecos. Ej. `diaCierre: 5` ⇒ "Agosto" = del 5 de
+ * julio 00:00 al 5 de agosto 00:00.
+ *
+ * **El corte es a las 00:00 locales, NO a las 7:00.** El 7:00-6:59 del resto de las
+ * exportaciones es el día gas de las correctoras; los medidores residenciales de agua
+ * reportan una vez por día y con corte a las 7:00 el reporte de madrugada del día de
+ * cierre caería en el período anterior.
+ *
+ * Tope 28 a propósito: un cierre 29/30/31 no existe en todos los meses y el período
+ * quedaría sin definir en febrero.
+ *
+ * Ausente ⇒ la división no tiene ciclo de facturación y todo se comporta como antes
+ * (mes calendario en las exportaciones, ventana de N días en las vistas de detalle).
+ */
+export const CicloFacturacionSchema = z.object({
+  diaCierre: z.number().int().min(1).max(28).optional(),
+});
+export type ICicloFacturacion = z.infer<typeof CicloFacturacionSchema>;
+
+/**
+ * Ciclo de facturación por división. Hoy sólo lo consume "Residencial Agua".
+ *
+ * `z.object` literal y no `z.partialRecord(DivisionSchema, ...)`: ver el comentario
+ * del import de `usuario/permiso` arriba — tomar `DivisionSchema` como valor cierra un
+ * ciclo runtime. Sumar una división es agregar una clave acá.
+ */
+export const CiclosFacturacionPorDivisionSchema = z.object({
+  "Residencial Agua": CicloFacturacionSchema.optional(),
+});
+export type ICiclosFacturacionPorDivision = z.infer<typeof CiclosFacturacionPorDivisionSchema>;
+
+export type DivisionConCicloFacturacion = Extract<Division, "Residencial Agua">;
+
 export const ConfigClienteSchema = z.object({
   apns: z.array(ApnSchema).optional(),
   usaLlm: z.boolean().optional(),
@@ -235,6 +280,7 @@ export const ConfigClienteSchema = z.object({
   moduloClima: ModuloClimaSchema.optional(),
   moduloClasificacion: ModuloClasificacionSchema.optional(),
   parametrosObis: ParametrosObisSchema.optional(),
+  ciclosFacturacion: CiclosFacturacionPorDivisionSchema.optional(),
   permitirEditarUnNcoAsignado: z.boolean().optional(),
   crearMedidorResidencialAutomatico: z.boolean().optional(),
   gestionCuentas: z.boolean().optional(),
