@@ -16,6 +16,7 @@ export * from "./clasificacion-punto";
 export * from "./commodity";
 export * from "./perfil-lectura";
 export * from "./zona-balance";
+export * from "./enlace-red";
 export * from "./cuenta-cliente";
 export * from "./dispositivo";
 export * from "./envio-sms";
