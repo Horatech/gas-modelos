@@ -125,6 +125,14 @@ export const PuntoMedicionSchema = z.object({
   clasificacion: ClasificacionPuntoSchema.optional(),
   // Zonas de balance a las que pertenece el punto. N a N: un punto puede estar en
   // la zona de su transformador y en la del alimentador que la alimenta.
+  //
+  // **Campo DERIVADO**: lo escribe el recálculo de membresías a partir del grafo
+  // de `EnlaceRed` —descendientes del punto frontera de cada zona, cortando en la
+  // frontera de la zona hija—, no se carga a mano. El endpoint que lo permitía
+  // (`PATCH /puntosDeMedicion/:id/zonasBalance`) se eliminó: dos fuentes de verdad
+  // para lo mismo dejan al balance sin saber a cuál creerle.
+  //
+  // Ver enlace-red.ts y docs/11-tablero-operaciones/16-topologia-red.md.
   idsZonasBalance: z.array(z.string()).optional(),
   // Notificaciones
   limitesNotificacion: LimitesNotificacionSchema.optional(),
