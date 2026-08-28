@@ -194,6 +194,30 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-28 - `reverse_flow_alarm_record`: el registro de eventos de flujo inverso
+
+`AlarmSchema` suma `reverse_flow_alarm_record` (`ReverseFlowRecordSchema`), la key 26 del
+recurso `/82/0`. `gas-api-wrc` ya la decodificaba y la guardaba **cruda**
+(`server-udp.ts:1371`), sin tipo y sin forma.
+
+**No es un flag histórico, y el inverso no tiene uno.** El ataque magnético (keys 0 y 1) y
+el tamper (keys 2 y 3) sí vienen en par estado/histórico 0-1. El flujo inverso tiene el
+estado (key 10, **sólo lectura**) y este registro, que guarda **hasta 12 eventos con fecha
+y hora**: `veces` (1 byte), `fechaInicio` (3 bytes YY MM DD) y `horas` (2 bytes por evento).
+Cualquier criterio de alerta que espere "el histórico del inverso" como un 0-1 está
+buscando algo que el protocolo no define.
+
+**Todavía no tiene productor: 0 de 3.315 equipos del parque lo mandan** (relevado por
+firmware sobre `gas_production`, 28-ago). Se declara igual porque el decoder de
+`gas-api-wrc` lo necesita para dejar de guardar el valor crudo, y porque el paso caro es
+justamente éste: un campo nuevo son un PR acá más un bump en cada consumidor.
+
+`crudo` existe para no perder el valor cuando la trama no se pueda decodificar: la forma en
+que el equipo encapsula estos bytes en el SenML no está verificada contra un equipo real.
+
+No requiere `@Prop()` en gas-datos: `Reporte.valores` es `@Prop({ type: Object })`, así que
+Mongoose lo persiste tal cual.
+
 ### 2026-08-28 - Indicadores de Unidad de Negocio: contrato del cálculo único
 
 Fase F2.0 de `/PLAN-INDICADORES-UNIFICADOS.md`. Aditivo: publicarlo no cambia el

@@ -1,5 +1,27 @@
 import { z } from "zod";
 
+/**
+ * Registro de eventos de flujo inverso: recurso `/82/0` key 26 del protocolo NB-IoT
+ * V2.17 (`Reverse Flow Record`).
+ *
+ * NO es un flag histórico. A diferencia del ataque magnético (keys 0 y 1) y del
+ * tamper (keys 2 y 3), el inverso no tiene par estado/histórico: tiene el estado
+ * (key 10) y este registro, que guarda hasta 12 eventos con su fecha y hora.
+ *
+ * `crudo` es el valor tal como lo manda el equipo, para no perderlo cuando la trama
+ * no se pueda decodificar.
+ */
+export const ReverseFlowRecordSchema = z.object({
+  /** Cantidad de eventos declarada por el equipo (1 byte). */
+  veces: z.number().optional(),
+  /** Fecha de inicio del registro, ISO (3 bytes YY MM DD en la trama). */
+  fechaInicio: z.string().optional(),
+  /** Hora de cada evento, `HH:mm` (2 bytes por evento, hasta 12). */
+  horas: z.array(z.string()).optional(),
+  crudo: z.unknown().optional(),
+});
+export type ReverseFlowRecord = z.infer<typeof ReverseFlowRecordSchema>;
+
 export const AlarmSchema = z.object({
   magnetic_attack_status: z.number().optional(),
   historical_magnetic_attack: z.number().optional(),
@@ -8,7 +30,10 @@ export const AlarmSchema = z.object({
   leakage_alarm: z.number().optional(),
   over_flow_alarm: z.number().optional(),
   meter_stop_alarm: z.number().optional(),
+  /** Estado actual del flujo inverso (key 10). Sólo lectura en el equipo. */
   reverse_flow_alarm: z.number().optional(),
+  /** Registro de eventos de flujo inverso (key 26). Ver ReverseFlowRecordSchema. */
+  reverse_flow_alarm_record: ReverseFlowRecordSchema.optional(),
 });
 export type Alarm = z.infer<typeof AlarmSchema>;
 
