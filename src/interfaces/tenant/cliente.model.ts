@@ -166,6 +166,21 @@ export const ModuloClasificacionSchema = z.object({
 });
 export type IModuloClasificacion = z.infer<typeof ModuloClasificacionSchema>;
 
+/**
+ * Pantalla de carga de la topología de red (etapa 17 del Tablero de Operaciones).
+ *
+ * Ausente ⇒ apagado, igual que el módulo de clasificación. Flag propio y no el de
+ * clasificación porque son dos trabajos distintos sobre el mismo padrón: un cliente
+ * puede estar clasificando sus puntos sin cargar la topología, o al revés.
+ *
+ * Las conexiones son carga **manual**: no están latentes en los datos y no hay
+ * clasificador posible, así que esta pantalla es la única fuente del grafo.
+ */
+export const ModuloTopologiaSchema = z.object({
+  activo: z.boolean().optional(),
+});
+export type IModuloTopologia = z.infer<typeof ModuloTopologiaSchema>;
+
 export const ParametrosObisSchema = z.object({
   reporteMask: z.number().optional(),
 });
@@ -279,6 +294,7 @@ export const ConfigClienteSchema = z.object({
   moduloCoberturaLorawan: ModuloCoberturaLorawanSchema.optional(),
   moduloClima: ModuloClimaSchema.optional(),
   moduloClasificacion: ModuloClasificacionSchema.optional(),
+  moduloTopologia: ModuloTopologiaSchema.optional(),
   parametrosObis: ParametrosObisSchema.optional(),
   ciclosFacturacion: CiclosFacturacionPorDivisionSchema.optional(),
   permitirEditarUnNcoAsignado: z.boolean().optional(),
