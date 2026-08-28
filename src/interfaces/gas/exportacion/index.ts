@@ -8,11 +8,16 @@
 
 import { z } from "zod";
 
+// Indicadores de Unidad de Negocio: forma del resultado del cálculo. El catálogo
+// reusa `ICatalogoExport` / `IColumnaExportDescriptor` de este archivo.
+export * from "./indicadores";
+
 export const TipoExportJobSchema = z.enum([
   "registros",
   "reporte",
   "medidor-electrico",
   "puntos-medicion",
+  "indicadores",
 ]);
 export type TipoExportJob = z.infer<typeof TipoExportJobSchema>;
 
@@ -90,6 +95,12 @@ export const ColumnaExportDescriptorSchema = z.object({
   // Se sigue sirviendo para no romper a quien la pide, pero no se ofrece.
   deprecada: z.boolean().optional(),
   descripcion: z.string().optional(),
+  // Los tres campos que alimentan la hoja `Definiciones`. Los usa el catálogo
+  // de indicadores, donde una columna sin fórmula declarada no es auditable;
+  // en el padrón de puntos no aplican y van ausentes.
+  formula: z.string().optional(),
+  universo: z.string().optional(),
+  fuente: z.string().optional(),
 });
 export type IColumnaExportDescriptor = z.infer<
   typeof ColumnaExportDescriptorSchema
@@ -147,6 +158,10 @@ export const FiltrosExportPuntosMedicionSchema = z.object({
   facturable: z.boolean().optional(),
   // Por defecto los puntos "Dado de Baja" quedan fuera del padrón.
   incluirDadosDeBaja: z.boolean().optional(),
+  // Indicadores: agrega la fila "Sin Unidad de Negocio". Por defecto true — el
+  // export viejo los descartaba en silencio y el total no cerraba contra el
+  // padrón.
+  incluirSinUnidadNegocio: z.boolean().optional(),
   sinReportarDesde: z.string().optional(),
   sinReportarHasta: z.string().optional(),
   busqueda: z.string().optional(),
