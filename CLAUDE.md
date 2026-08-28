@@ -194,6 +194,51 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-08-28 - Indicadores de Unidad de Negocio: contrato del cálculo único
+
+Fase F2.0 de `/PLAN-INDICADORES-UNIFICADOS.md`. Aditivo: publicarlo no cambia el
+comportamiento de ningún servicio.
+
+`exportacion/indicadores.ts` — la forma de una fila de indicadores. El cálculo pasa a vivir
+**una sola vez, en gas-datos**, y alimenta dos salidas: el tablero de inicio (JSON) y la
+hoja `Indicadores` del Excel. Hasta ahora había **cinco** implementaciones divergentes de
+los mismos números (el tablero calculando en el navegador, el export, `/unidadnegocios/resumen`,
+el generador de xlsx y `indicadores-historicos/`, estas dos últimas sin un solo consumidor).
+
+**El catálogo NO tiene tipos propios**: reusa `ICatalogoExport` / `IColumnaExportDescriptor`,
+con `grupo` como bloque. El descriptor suma `formula`, `universo` y `fuente` — los tres
+campos que alimentan la hoja `Definiciones`, sin los cuales una columna no es auditable.
+Los valores del catálogo viven en gas-datos, igual que los del padrón.
+
+**Dos decisiones que viven en la forma del tipo, no en el código que lo llena:**
+
+1. **`porEstado` y `ratios` son records con clave de enum, y en zod eso es EXHAUSTIVO**:
+   exigen las diez claves de estado y los tres ratios aunque valgan 0. Es a propósito. El
+   export anterior contaba **8 de los 9 estados** de `IEstado` —faltaba `Sin Comunicación`—
+   y no tenía balde para los puntos sin estado calculado, así que `Total Puntos` no cerraba
+   contra la suma de sus columnas (verificado en test: 50 contra 49). Que el tipo lo exija
+   es lo que impide que vuelva a pasar.
+2. **Un ratio viaja con `numerador` y `denominador`, y vale `null` cuando el denominador es
+   0.** Lo primero es lo que hace auditable el porcentaje: dividir las dos columnas tiene
+   que dar la celda — hoy no da (una UN muestra 100 % con 7 sobre 8). Lo segundo distingue
+   dos cosas que no son iguales: una unidad sin un solo equipo cargado no tiene 0 % de
+   instalación, no tiene porcentaje.
+
+`TipoExportJob` suma `"indicadores"` (el worker ya despacha por tipo).
+`IFiltrosExportPuntosMedicion` suma `incluirSinUnidadNegocio`: los puntos sin unidad
+asignada existen —8 de 58 en el tenant de test— y el export anterior los descartaba en
+silencio recorriendo sólo las UNs.
+
+`EstadoIndicador` se arma como `union(EstadoCorrectoraSchema, literal("Sin Estado"))` y no
+como un enum de diez para que **no haya una segunda lista de estados que mantener**: si
+mañana `IEstado` suma un valor, este tipo lo hereda y el record exhaustivo obliga a darle
+columna.
+
+⚠️ `entidades/indicadores-historicos/` (`IIndicadorHistorico`) **no tiene consumidores en
+ningún repo del sistema** — relevado en gas-datos, gas-api-cliente, gas-web-cliente,
+gas-cron y gas-web-admin. Es un intento anterior del mismo tema, y arrastra los mismos 8
+estados. No lo toca este PR; se limpia en F2.4.
+
 ### 2026-08-26 - Ciclo de facturación por división (día de cierre)
 
 `IConfigCliente.ciclosFacturacion` — el día del mes (1-28) en que cierra el período de
