@@ -181,6 +181,20 @@ export const ModuloTopologiaSchema = z.object({
 });
 export type IModuloTopologia = z.infer<typeof ModuloTopologiaSchema>;
 
+/**
+ * Sinóptico de los puntos de medición SCADA (la vista de FUXA embebida).
+ *
+ * Ausente ⇒ apagado, igual que los otros módulos. Es infraestructura aparte: cada
+ * cliente con sinóptico necesita su propia instancia de FUXA desplegada, su entrada
+ * en `FUXA_INSTANCIAS` y una corrida del generador que le arme el proyecto. Sin el
+ * flag no se muestra nada del sinóptico y no se genera nada: ni botón, ni vista en
+ * el detalle del punto, ni proyecto.
+ */
+export const ModuloSinopticoSchema = z.object({
+  activo: z.boolean().optional(),
+});
+export type IModuloSinoptico = z.infer<typeof ModuloSinopticoSchema>;
+
 export const ParametrosObisSchema = z.object({
   reporteMask: z.number().optional(),
 });
@@ -295,6 +309,7 @@ export const ConfigClienteSchema = z.object({
   moduloClima: ModuloClimaSchema.optional(),
   moduloClasificacion: ModuloClasificacionSchema.optional(),
   moduloTopologia: ModuloTopologiaSchema.optional(),
+  moduloSinoptico: ModuloSinopticoSchema.optional(),
   parametrosObis: ParametrosObisSchema.optional(),
   ciclosFacturacion: CiclosFacturacionPorDivisionSchema.optional(),
   permitirEditarUnNcoAsignado: z.boolean().optional(),
