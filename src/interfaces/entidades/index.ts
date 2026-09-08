@@ -21,6 +21,7 @@ export * from "./cuenta-cliente";
 export * from "./dispositivo";
 export * from "./envio-sms";
 export * from "./estado";
+export * from "./baseline-dispositivo";
 export * from "./grupo";
 export * from "./kmz";
 export * from "./localidad";

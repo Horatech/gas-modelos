@@ -117,10 +117,43 @@ export const ReporteWRCSchema = z.object({
   port: z.number().optional(),
   // Parsed
   timestamp: z.string().optional(),
+  /**
+   * El `timestamp` de este registro rotula el **CIERRE** del intervalo, y `consumo` es
+   * el odómetro al cierre — o sea `consumoInstantaneo = consumo(X) - consumo(X-1)`,
+   * la convención del resto de la plataforma (SML Hac/SindCon, MRA, EUW).
+   *
+   * **No es un campo informativo: es el discriminante de convención.** Un registro
+   * WRC *sin* la marca está en la convención vieja, donde el timestamp rotulaba el
+   * **inicio** del intervalo y el parcial era `consumo(X+1) - consumo(X)` — al revés
+   * que todo lo demás. Esa asimetría venía del `dense_data_one_day`, que trae
+   * `fecha` + `initialFlowPulseNumber` (la lectura EN `fecha`) + N diffs.
+   *
+   * Sin la marca no se puede leer una serie que mezcla las dos convenciones, y el
+   * backfill no sería idempotente ni resumible. Mismo criterio y mismo motivo que
+   * `tsCorrido` en `IRegistro` (corrimiento American Meter).
+   *
+   * El nivel del bloque NO cambia con la convención: el ancla sigue siendo
+   * `initialFlowPulseNumber`. Lo único que cambia es a qué fila se le atribuye cada
+   * diff. Por eso la verificación que valida el backfill es que el **consumo de
+   * período no se mueva**.
+   */
+  tsCierre: z.boolean().optional(),
   consumoNegativo: z.number().optional(), // Es el consumo acumulado en sentido negativo reportado por el dispositivo
   consumoPositivo: z.number().optional(), // Es el consumo acumulado en sentido positivo reportado por el dispositivo
   consumo: z.number().optional(), // Es el consumo acumulado reportado por el dispositivo // restando lo negativo
-  consumoCorregido: z.number().optional(), // Es el consumo acumulado +- el consumo incial cargado en la plataforma
+  /**
+   * Acumulado del MEDIDOR (el dial del medidor físico), no del dispositivo:
+   * `consumoInicial + arrastreDispositivos + (consumo - lecturaInicialDispositivo)`.
+   *
+   * **Ausente cuando no se puede afirmar** — ver `baselineIncoherente`.
+   */
+  consumoCorregido: z.number().optional(),
+  /**
+   * El odómetro del dispositivo quedó por debajo de `lecturaInicialDispositivo`, así
+   * que `consumoCorregido` no se pudo calcular y va ausente. Ver el campo homónimo de
+   * `IReporteSML`.
+   */
+  baselineIncoherente: z.boolean().optional(),
   consumoInstantaneo: z.number().optional(), // Es el consumo instantaneo reportado por el dispositivo
   bateria: z.number().optional(),
 });

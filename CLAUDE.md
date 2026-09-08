@@ -194,6 +194,73 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-09-07 - Baseline del acumulado residencial: provisorio/confirmado, arrastre y convención del borde
+
+Fases F1 y F1-bis de `/PLAN-ACUMULADO-RESIDENCIAL-TRAZABILIDAD.md`. Todo aditivo y
+opcional; ausente = comportamiento actual.
+
+**El problema.** `consumoCorregido` (el acumulado del MEDIDOR) se calcula como
+`consumoInicial + max(0, consumo - lecturaInicialDispositivo)`, y el baseline se congela
+al vincular, **en un instante del que todavía puede no haber dato**: un equipo nuevo nunca
+reportó (baseline 0 ⇒ el odómetro entero entra al medidor) y el WRC manda el bloque del día
+D recién a las ~09:00Z del D+1. El dato correcto llega después y nadie lo mira, así que el
+error es permanente — `gas-datos` lo saca del `$set` y lo manda por `$setOnInsert`
+justamente para que la ingesta no re-baselinee.
+
+Medido en `gas_production` el 7-sep-2026: **34 de 3383** medidores de gas tienen
+`fechaAsignacionDispositivo` y **0 de 1091** de agua; 33 tienen baseline, **12 con valor
+distinto de 0**. O sea el 99,3% del parque corre con `consumoInicial + odómetro entero`.
+**349 medidores con más de 1 m³ heredado, 106.643 m³ a descontar.**
+
+Nuevo archivo hoja **`baseline-dispositivo.ts`** (`EstadoBaselineDispositivoSchema`:
+`provisorio` | `confirmado`). Va en archivo propio, igual que `estado.ts`, porque lo
+necesitan como VALOR los dos medidores residenciales, que son del SCC de `IDispositivo` y
+no pueden importarse entre sí.
+
+`IMedidorResidencial` e `IMedidorResidencialAgua` suman:
+
+- **`lecturaInicialDispositivoEstado`** — **ausente se lee como `confirmado`** (todo el
+  parque anterior). `provisorio` es lo único que autoriza a la ingesta a re-baselinear, y
+  una sola vez. Es el discriminante que hace el arreglo idempotente: sin él no hay forma de
+  saber a qué medidor volver cuando llega el bloque que cruza la hora de instalación.
+- **`arrastreDispositivos`** — lo que midieron los dispositivos ANTERIORES sobre este mismo
+  medidor. Sin esto un recambio de equipo hace **retroceder el dial**: `asignarDispositivo`
+  congela el odómetro del equipo nuevo pero `consumoInicial` sigue siendo la lectura
+  original. Va en campo aparte, y **no** avanzando `consumoInicial`, para que ese campo
+  conserve su significado (lectura del dial cargada por el operador) y el arrastre quede
+  auditable.
+
+`IReporteSML` e `IReporteWRC` suman **`baselineIncoherente`**: el odómetro quedó por debajo
+del baseline, así que `consumoCorregido` va **ausente**. Reemplaza al clamp
+`Math.max(0, ...)`, que dejaba el acumulado planchado en `consumoInicial` durante días y
+después saltaba, sin más rastro que un `Logger.warn`. Mismo rol que `regresionAcumulado` en
+`IRegistroMedidorElectrico`: es cómo se encuentran los equipos que esperan intervención.
+
+**`IReporteWRC.tsCierre` — la asimetría del WRC se unifica.** El `timestamp` pasa a rotular
+el **cierre** del intervalo y `consumo` a ser el odómetro al cierre, o sea
+`consumoInstantaneo = consumo(X) - consumo(X-1)` como el resto de la plataforma. Hasta ahora
+el WRC rotulaba el **inicio** (`consumo(X+1) - consumo(X)`), herencia del
+`dense_data_one_day`, que trae `fecha` + `initialFlowPulseNumber` (la lectura EN `fecha`) +
+N diffs. Era la decisión de producto pendiente que dejó abierta el backfill de ago-2026.
+
+⚠️ **`tsCierre` no es informativo: un registro WRC sin la marca está en la convención
+vieja.** Es lo que permite leer una serie que mezcla las dos durante la ventana entre el
+deploy y el backfill, y lo que hace el backfill idempotente y resumible. Mismo criterio y
+mismo motivo que `tsCorrido` en `IRegistro` (corrimiento American Meter).
+
+El **nivel** del bloque no cambia con la convención: el ancla sigue siendo
+`initialFlowPulseNumber`. Lo único que cambia es a qué fila se atribuye cada diff — por eso
+la verificación que valida el backfill es que el **consumo de período no se mueva**.
+
+Corregido de paso el comentario de `IReporteSML.consumoParcial`, que decía "consumoCorregido
+de este reporte − consumoCorregido del último": el código usa el **odómetro** (`consumo`), y
+a propósito, para que editar `consumoInicial` o el arrastre no genere un parcial espurio.
+
+⚠️ `lecturaInicialDispositivoEstado` y `arrastreDispositivos` necesitan su `@Prop()` en
+`gas-datos` (`medidorResidencial.model.ts` y `medidorResidencialAgua.model.ts`): los schemas
+son estrictos y sin el `@Prop()` Mongoose descarta el valor **en silencio**. Los de
+`valores` no lo necesitan (`Reporte.valores` es `@Prop({ type: Object })`).
+
 ### 2026-08-28 - `reverse_flow_alarm_record`: el registro de eventos de flujo inverso
 
 `AlarmSchema` suma `reverse_flow_alarm_record` (`ReverseFlowRecordSchema`), la key 26 del

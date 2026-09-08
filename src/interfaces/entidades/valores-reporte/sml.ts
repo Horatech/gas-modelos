@@ -34,11 +34,33 @@ export const ReporteSMLSchema = z.object({
   consumoNegativo: z.number().optional(), // Es el consumo acumulado en sentido negativo reportado por el dispositivo
   consumoPositivo: z.number().optional(), // Es el consumo acumulado en sentido positivo reportado por el dispositivo
   consumo: z.number().optional(), // Es el consumo acumulado reportado por el dispositivo // restando lo negativo
-  consumoCorregido: z.number().optional(), // Es el consumo acumulado +- el consumo incial cargado en la plataforma
-  // Consumo del período: consumoCorregido de este reporte - consumoCorregido del
-  // último reporte del medidor. El dispositivo SML/MRA reporta el acumulado
-  // (odómetro), no el parcial, así que se CALCULA en el backend (misma convención
-  // que OCR/NUC/agua). undefined en el primer reporte (sin acumulado anterior).
+  /**
+   * Acumulado del MEDIDOR (el dial del medidor físico), no del dispositivo:
+   * `consumoInicial + arrastreDispositivos + (consumo - lecturaInicialDispositivo)`.
+   *
+   * **Ausente cuando no se puede afirmar.** Si el odómetro queda por debajo del
+   * baseline del medidor, el reporte va sin este campo y con `baselineIncoherente`
+   * en `true`. Antes se clampeaba con `Math.max(0, ...)`, que dejaba el acumulado
+   * planchado en `consumoInicial` durante días y después saltaba, sin más rastro
+   * que un `Logger.warn`.
+   */
+  consumoCorregido: z.number().optional(),
+  /**
+   * El odómetro del dispositivo quedó por debajo de `lecturaInicialDispositivo`, así
+   * que `consumoCorregido` no se pudo calcular y va ausente.
+   *
+   * Causas conocidas: baseline tomado de un uplink posterior a la instalación, wrap
+   * del registro del equipo (ver el techo de 99.000 m³ del odómetro decimal), o fecha
+   * de asignación mal cargada. Es la señal para encontrar los equipos que esperan
+   * intervención — mismo rol que `regresionAcumulado` en `IRegistroMedidorElectrico`.
+   */
+  baselineIncoherente: z.boolean().optional(),
+  // Consumo del período = `consumo` de este reporte - `consumo` del último reporte
+  // del medidor. Se usa el ODÓMETRO del dispositivo, NO `consumoCorregido`: el
+  // corregido lleva el dial inicial del medidor y el arrastre, y si esos se editan
+  // el reporte siguiente daría un parcial espurio. El dispositivo SML/MRA reporta el
+  // acumulado, no el parcial, así que se CALCULA en el backend (misma convención que
+  // OCR/NUC/agua). undefined en el primer reporte (sin acumulado anterior).
   consumoParcial: z.number().optional(),
   consumoInstantaneo: z.number().optional(), // Es el consumo instantaneo reportado por el dispositivo
   bateria: z.number().optional(),

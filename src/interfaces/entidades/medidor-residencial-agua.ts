@@ -4,6 +4,8 @@ import { CentroOperativoSchema } from '../gas/centroOperativo/schema';
 import { UnidadNegocioSchema } from '../gas/unidadNegocio/schema';
 import { EstadoCorrectoraSchema } from './estado';
 import type { IEstado } from './estado';
+import { EstadoBaselineDispositivoSchema } from './baseline-dispositivo';
+import type { IEstadoBaselineDispositivo } from './baseline-dispositivo';
 import { CuencaSchema } from './cuenca';
 import { GrupoSchema } from './grupo';
 import { LocalidadSchema } from './localidad';
@@ -36,15 +38,38 @@ export const MedidorResidencialAguaSchema = z.object({
    * Odómetro del DISPOSITIVO en el momento de vincularlo a este medidor. Es el
    * baseline que se resta al acumulado para que el medidor no herede lo que el
    * equipo midió en instalaciones anteriores:
-   * `consumoCorregido = consumoInicial + (consumo - lecturaInicialDispositivo)`.
+   * `consumoCorregido = consumoInicial + arrastreDispositivos + (consumo - lecturaInicialDispositivo)`.
    *
    * No confundir con `consumoInicial`, que es la lectura del dial del medidor
    * mecánico cargada por el operador. Lo escribe `asignarDispositivo`
-   * (gas-api-cliente, `/vinculacion/dispositivo`), nunca la ingesta.
+   * (gas-api-cliente, `/vinculacion/dispositivo`); la ingesta sólo lo CONFIRMA
+   * cuando está `provisorio`, nunca lo re-baselinea por su cuenta.
    *
-   * Ausente o 0 = comportamiento histórico (todo el odómetro cuenta).
+   * Ausente o 0 = comportamiento histórico (todo el odómetro cuenta). En agua eso
+   * es TODO el parque: medido en prod el 7-sep-2026, 0 de 1091 medidores de agua
+   * tienen baseline y 0 tienen `fechaAsignacionDispositivo`.
    */
   lecturaInicialDispositivo: z.number().optional(),
+  /** Ver `EstadoBaselineDispositivoSchema`. Ausente = `confirmado`. */
+  lecturaInicialDispositivoEstado: EstadoBaselineDispositivoSchema.optional(),
+  /**
+   * Lo que midieron los dispositivos ANTERIORES sobre este mismo medidor.
+   *
+   * Sin esto, un recambio de equipo hace RETROCEDER el dial: `asignarDispositivo`
+   * congela el odómetro del equipo nuevo pero `consumoInicial` sigue siendo la
+   * lectura original, así que el acumulado del medidor pierde todo lo que midió el
+   * equipo anterior. Lo escriben `asignarDispositivo` / `desasignarDispositivo`,
+   * nunca la ingesta.
+   *
+   * Va en campo aparte, y no avanzando `consumoInicial`, para que `consumoInicial`
+   * conserve su significado —lectura del dial cargada por el operador— y el
+   * arrastre quede auditable.
+   *
+   * Ausente o 0 = el medidor nunca cambió de equipo. En agua no hay ni un caso
+   * medido: 0 de 1091 medidores tienen más de un dispositivo en su serie
+   * (prod, 7-sep-2026).
+   */
+  arrastreDispositivos: z.number().optional(),
   ubicacionGps: CoordenadasSchema.optional(),
   direccion: z.string().optional(),
   nombre: z.string().optional(),
@@ -91,15 +116,38 @@ export interface IMedidorResidencialAgua {
    * Odómetro del DISPOSITIVO en el momento de vincularlo a este medidor. Es el
    * baseline que se resta al acumulado para que el medidor no herede lo que el
    * equipo midió en instalaciones anteriores:
-   * `consumoCorregido = consumoInicial + (consumo - lecturaInicialDispositivo)`.
+   * `consumoCorregido = consumoInicial + arrastreDispositivos + (consumo - lecturaInicialDispositivo)`.
    *
    * No confundir con `consumoInicial`, que es la lectura del dial del medidor
    * mecánico cargada por el operador. Lo escribe `asignarDispositivo`
-   * (gas-api-cliente, `/vinculacion/dispositivo`), nunca la ingesta.
+   * (gas-api-cliente, `/vinculacion/dispositivo`); la ingesta sólo lo CONFIRMA
+   * cuando está `provisorio`, nunca lo re-baselinea por su cuenta.
    *
-   * Ausente o 0 = comportamiento histórico (todo el odómetro cuenta).
+   * Ausente o 0 = comportamiento histórico (todo el odómetro cuenta). En agua eso
+   * es TODO el parque: medido en prod el 7-sep-2026, 0 de 1091 medidores de agua
+   * tienen baseline y 0 tienen `fechaAsignacionDispositivo`.
    */
   lecturaInicialDispositivo?: number;
+  /** Ver `EstadoBaselineDispositivoSchema`. Ausente = `confirmado`. */
+  lecturaInicialDispositivoEstado?: IEstadoBaselineDispositivo;
+  /**
+   * Lo que midieron los dispositivos ANTERIORES sobre este mismo medidor.
+   *
+   * Sin esto, un recambio de equipo hace RETROCEDER el dial: `asignarDispositivo`
+   * congela el odómetro del equipo nuevo pero `consumoInicial` sigue siendo la
+   * lectura original, así que el acumulado del medidor pierde todo lo que midió el
+   * equipo anterior. Lo escriben `asignarDispositivo` / `desasignarDispositivo`,
+   * nunca la ingesta.
+   *
+   * Va en campo aparte, y no avanzando `consumoInicial`, para que `consumoInicial`
+   * conserve su significado —lectura del dial cargada por el operador— y el
+   * arrastre quede auditable.
+   *
+   * Ausente o 0 = el medidor nunca cambió de equipo. En agua no hay ni un caso
+   * medido: 0 de 1091 medidores tienen más de un dispositivo en su serie
+   * (prod, 7-sep-2026).
+   */
+  arrastreDispositivos?: number;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
   nombre?: string;
