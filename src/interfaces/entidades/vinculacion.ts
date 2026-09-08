@@ -33,6 +33,27 @@ export const AsignarDispositivoSchema = z.object({
   fechaAsignacion: z.string(),
   motivo: MotivoAsignacionSchema,
   observaciones: z.string().optional(),
+  /**
+   * Lectura del dial del medidor mecánico al instalar, en m³. **Sólo medidores
+   * residenciales** (gas y agua): es el ancla del acumulado del tramo que se abre.
+   *
+   * Ausente = nadie leyó el dial. El vínculo se abre con `dialPendiente` y el
+   * acumulado del medidor queda relativo al equipo hasta que se cargue. Es el caso
+   * del alta automática de la ingesta, y también el de un operador que instala sin
+   * anotar la lectura.
+   *
+   * Acá se declara la lectura y NO en el ABM del medidor: una lectura sin la fecha
+   * en que se tomó no se puede proyectar al instante de instalación.
+   */
+  dialLectura: z.number().optional(),
+  /**
+   * Cuándo se tomó `dialLectura`. Ausente = se asume `fechaAsignacion`.
+   *
+   * Puede ser posterior a `fechaAsignacion` (el operador carga el dial días
+   * después): el ancla se proyecta hacia atrás con lo que midió el equipo en el
+   * medio. Futura, no.
+   */
+  dialLecturaFecha: z.string().optional(),
 });
 export type IAsignarDispositivo = z.infer<typeof AsignarDispositivoSchema>;
 
@@ -43,10 +64,47 @@ export const DesasignarDispositivoSchema = z.object({
   fechaDesasignacion: z.string(),
   motivo: MotivoAsignacionSchema,
   observaciones: z.string().optional(),
+  /**
+   * Lectura del dial del medidor mecánico al retirar el equipo, en m³. Opcional.
+   *
+   * Cierra el tramo con un dial conocido, y es lo único que permite acotar el
+   * **hueco sin medición** que empieza acá: sin equipo el medidor sigue contando y
+   * nadie lo mide, así que la diferencia contra la lectura de la próxima
+   * instalación es consumo real que no tiene serie.
+   */
+  dialLectura: z.number().optional(),
+  /** Cuándo se tomó `dialLectura`. Ausente = se asume `fechaDesasignacion`. */
+  dialLecturaFecha: z.string().optional(),
 });
 export type IDesasignarDispositivo = z.infer<
   typeof DesasignarDispositivoSchema
 >;
+
+/**
+ * Corrección de la lectura del dial de un vínculo dispositivo→medidor ya abierto.
+ *
+ * Va como operación propia y deja un evento `cambio-lectura` en `asignaciones`, en
+ * vez de editar el medidor: la colección es un log append-only y al resolver el
+ * tramo gana la corrección más reciente. La auditoría muestra que la lectura se
+ * corrige de rutina —hay medidores con seis ediciones de `consumoInicial` en tres
+ * semanas— y con la fecha de cada lectura eso deja de ser una reescritura ciega.
+ *
+ * ⚠️ **No reescribe el histórico de reportes.** Regla del dueño del dominio
+ * (2026-09-08): los reportes ya escritos conservan su acumulado y la serie conserva
+ * el escalón. Corregir hacia atrás, si alguna vez hace falta, es una operación
+ * explícita y aparte.
+ */
+export const CambiarLecturaDialSchema = z.object({
+  tipoEntidad: TipoEntidadVinculableSchema,
+  idEntidad: z.string(),
+  /** Lectura del dial, en m³. */
+  dialLectura: z.number(),
+  /** Cuándo se tomó. No puede ser futura ni anterior a la apertura del vínculo. */
+  dialLecturaFecha: z.string(),
+  motivo: MotivoAsignacionSchema,
+  observaciones: z.string().optional(),
+});
+export type ICambiarLecturaDial = z.infer<typeof CambiarLecturaDialSchema>;
 
 ////// Entidad intermedia -> Punto de medición
 
