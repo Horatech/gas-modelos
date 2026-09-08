@@ -33,17 +33,19 @@ export const MedidorResidencialAguaSchema = z.object({
   fechaCreacion: z.string().optional(),
   ultimoReporte: z.custom<IReporte>().optional(),
   estadoActual: EstadoCorrectoraSchema.optional(),
+  /**
+   * Ancla del dial del medidor mecánico para el vínculo VIGENTE, en m³. Copia
+   * denormalizada del `dialInicial` del tramo abierto (`IAsignacion`), que es la
+   * fuente de verdad. Ya no lo edita el ABM del medidor.
+   */
   consumoInicial: z.number().optional(),
   /**
-   * Odómetro del DISPOSITIVO en el momento de vincularlo a este medidor. Es el
-   * baseline que se resta al acumulado para que el medidor no herede lo que el
-   * equipo midió en instalaciones anteriores:
-   * `consumoCorregido = consumoInicial + arrastreDispositivos + (consumo - lecturaInicialDispositivo)`.
+   * Odómetro del DISPOSITIVO al abrirse el vínculo VIGENTE. Es el baseline que se
+   * resta para que el medidor no herede lo que el equipo midió en instalaciones
+   * anteriores: `consumoCorregido = consumoInicial + (consumo - lecturaInicialDispositivo)`.
    *
-   * No confundir con `consumoInicial`, que es la lectura del dial del medidor
-   * mecánico cargada por el operador. Lo escribe `asignarDispositivo`
-   * (gas-api-cliente, `/vinculacion/dispositivo`); la ingesta sólo lo CONFIRMA
-   * cuando está `provisorio`, nunca lo re-baselinea por su cuenta.
+   * Copia denormalizada del campo homónimo del tramo abierto. Lo escribe
+   * `asignarDispositivo`; la ingesta sólo lo CONFIRMA cuando está `provisorio`.
    *
    * Ausente o 0 = comportamiento histórico (todo el odómetro cuenta). En agua eso
    * es TODO el parque: medido en prod el 7-sep-2026, 0 de 1091 medidores de agua
@@ -53,23 +55,11 @@ export const MedidorResidencialAguaSchema = z.object({
   /** Ver `EstadoBaselineDispositivoSchema`. Ausente = `confirmado`. */
   lecturaInicialDispositivoEstado: EstadoBaselineDispositivoSchema.optional(),
   /**
-   * Lo que midieron los dispositivos ANTERIORES sobre este mismo medidor.
-   *
-   * Sin esto, un recambio de equipo hace RETROCEDER el dial: `asignarDispositivo`
-   * congela el odómetro del equipo nuevo pero `consumoInicial` sigue siendo la
-   * lectura original, así que el acumulado del medidor pierde todo lo que midió el
-   * equipo anterior. Lo escriben `asignarDispositivo` / `desasignarDispositivo`,
-   * nunca la ingesta.
-   *
-   * Va en campo aparte, y no avanzando `consumoInicial`, para que `consumoInicial`
-   * conserve su significado —lectura del dial cargada por el operador— y el
-   * arrastre quede auditable.
-   *
-   * Ausente o 0 = el medidor nunca cambió de equipo. En agua no hay ni un caso
-   * medido: 0 de 1091 medidores tienen más de un dispositivo en su serie
-   * (prod, 7-sep-2026).
+   * Nadie leyó el dial en el vínculo vigente: el acumulado es relativo al equipo,
+   * no la lectura del medidor físico. Ver `IAsignacion.dialPendiente`. En agua es
+   * hoy TODO el parque de alta automática (1075 ML107A).
    */
-  arrastreDispositivos: z.number().optional(),
+  dialPendiente: z.boolean().optional(),
   ubicacionGps: CoordenadasSchema.optional(),
   direccion: z.string().optional(),
   nombre: z.string().optional(),
@@ -111,43 +101,31 @@ export interface IMedidorResidencialAgua {
   fechaCreacion?: string;
   ultimoReporte?: IReporte;
   estadoActual?: IEstado;
+  /**
+   * Ancla del dial del medidor mecánico para el vínculo VIGENTE, en m³. Copia
+   * denormalizada del `dialInicial` del tramo abierto (`IAsignacion`), que es la
+   * fuente de verdad. Ya no lo edita el ABM del medidor.
+   */
   consumoInicial?: number;
   /**
-   * Odómetro del DISPOSITIVO en el momento de vincularlo a este medidor. Es el
-   * baseline que se resta al acumulado para que el medidor no herede lo que el
-   * equipo midió en instalaciones anteriores:
-   * `consumoCorregido = consumoInicial + arrastreDispositivos + (consumo - lecturaInicialDispositivo)`.
+   * Odómetro del DISPOSITIVO al abrirse el vínculo VIGENTE. Es el baseline que se
+   * resta para que el medidor no herede lo que el equipo midió en instalaciones
+   * anteriores: `consumoCorregido = consumoInicial + (consumo - lecturaInicialDispositivo)`.
    *
-   * No confundir con `consumoInicial`, que es la lectura del dial del medidor
-   * mecánico cargada por el operador. Lo escribe `asignarDispositivo`
-   * (gas-api-cliente, `/vinculacion/dispositivo`); la ingesta sólo lo CONFIRMA
-   * cuando está `provisorio`, nunca lo re-baselinea por su cuenta.
+   * Copia denormalizada del campo homónimo del tramo abierto. Lo escribe
+   * `asignarDispositivo`; la ingesta sólo lo CONFIRMA cuando está `provisorio`.
    *
-   * Ausente o 0 = comportamiento histórico (todo el odómetro cuenta). En agua eso
-   * es TODO el parque: medido en prod el 7-sep-2026, 0 de 1091 medidores de agua
-   * tienen baseline y 0 tienen `fechaAsignacionDispositivo`.
+   * Ausente o 0 = comportamiento histórico. En agua eso es TODO el parque: medido
+   * en prod el 7-sep-2026, 0 de 1091 medidores tienen baseline.
    */
   lecturaInicialDispositivo?: number;
   /** Ver `EstadoBaselineDispositivoSchema`. Ausente = `confirmado`. */
   lecturaInicialDispositivoEstado?: IEstadoBaselineDispositivo;
   /**
-   * Lo que midieron los dispositivos ANTERIORES sobre este mismo medidor.
-   *
-   * Sin esto, un recambio de equipo hace RETROCEDER el dial: `asignarDispositivo`
-   * congela el odómetro del equipo nuevo pero `consumoInicial` sigue siendo la
-   * lectura original, así que el acumulado del medidor pierde todo lo que midió el
-   * equipo anterior. Lo escriben `asignarDispositivo` / `desasignarDispositivo`,
-   * nunca la ingesta.
-   *
-   * Va en campo aparte, y no avanzando `consumoInicial`, para que `consumoInicial`
-   * conserve su significado —lectura del dial cargada por el operador— y el
-   * arrastre quede auditable.
-   *
-   * Ausente o 0 = el medidor nunca cambió de equipo. En agua no hay ni un caso
-   * medido: 0 de 1091 medidores tienen más de un dispositivo en su serie
-   * (prod, 7-sep-2026).
+   * Nadie leyó el dial en el vínculo vigente: el acumulado es relativo al equipo,
+   * no la lectura del medidor físico. Ver `IAsignacion.dialPendiente`.
    */
-  arrastreDispositivos?: number;
+  dialPendiente?: boolean;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
   nombre?: string;

@@ -46,6 +46,10 @@ export const ACCIONES_ASIGNACION = [
   "desasignar",
   "reemplazar",
   "cambio-fecha",
+  // Corrección de la lectura del dial declarada para un vínculo ya abierto. Va
+  // como evento nuevo y no mutando el `asignar`: la colección es un log
+  // append-only. Al resolver un tramo gana la corrección más reciente.
+  "cambio-lectura",
 ] as const;
 export type IAccionAsignacion = (typeof ACCIONES_ASIGNACION)[number];
 

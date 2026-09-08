@@ -223,12 +223,49 @@ no pueden importarse entre sí.
   parque anterior). `provisorio` es lo único que autoriza a la ingesta a re-baselinear, y
   una sola vez. Es el discriminante que hace el arreglo idempotente: sin él no hay forma de
   saber a qué medidor volver cuando llega el bloque que cruza la hora de instalación.
-- **`arrastreDispositivos`** — lo que midieron los dispositivos ANTERIORES sobre este mismo
-  medidor. Sin esto un recambio de equipo hace **retroceder el dial**: `asignarDispositivo`
-  congela el odómetro del equipo nuevo pero `consumoInicial` sigue siendo la lectura
-  original. Va en campo aparte, y **no** avanzando `consumoInicial`, para que ese campo
-  conserve su significado (lectura del dial cargada por el operador) y el arrastre quede
-  auditable.
+- **`dialPendiente`** — nadie leyó el dial en el vínculo vigente. Es el caso del medidor
+  creado automáticamente por la ingesta (`origen: 'SISTEMA'`), que son **100 de los 153**
+  eventos residenciales de producción. Distinto de `consumoInicial: 0`, que afirma que el
+  dial ERA 0. El acumulado se sigue emitiendo con ancla 0 —el comportamiento actual— pero
+  marcado, así que alimenta una cola de trabajo y las vistas pueden rotularlo como
+  acumulado relativo al equipo en vez de hacerlo pasar por la lectura del medidor físico.
+
+**Las anclas del acumulado son propiedad del TRAMO, no del medidor.** `IAsignacion` suma
+`dialLectura`, `dialLecturaFecha`, `dialInicial`, `dialPendiente`,
+`lecturaInicialDispositivo` y `lecturaInicialDispositivoEstado`, y
+`ACCIONES_ASIGNACION` suma **`cambio-lectura`** (corrección de una lectura ya declarada;
+evento nuevo, no mutación, porque la colección es un log append-only — al resolver el tramo
+gana la corrección más reciente).
+
+Motivo, que el propio código ya documentaba como callejón sin salida en
+`gas-datos/.../medidorResidencials.service.ts`: *"el baseline viejo no está guardado en
+ninguna parte: no hay forma de recalcularlos"*. Un medidor sobrevive al recambio de equipo,
+así que guardar las anclas en el medidor destruye las del tramo anterior en cada recambio, y
+por eso `recalcularConsumoCorregido` sólo puede cubrir el vínculo vigente. Con las anclas en
+el evento, los tramos cerrados se reconstruyen y el recálculo alcanza toda la historia.
+
+Los dos campos del medidor (`consumoInicial`, `lecturaInicialDispositivo`) **quedan como
+copia denormalizada de las anclas del tramo VIGENTE**: es el camino rápido de la ingesta,
+que resuelve el acumulado sin una consulta por uplink, igual que `VinculosService` usa el
+estado actual cuando el bloque cae entero dentro del vínculo. Lo que cambia es quién los
+escribe: la lectura se declara al asignar el dispositivo y se corrige con un evento, **ya no
+se editan desde el ABM del medidor**.
+
+⚠️ **`dialLecturaFecha` no es decorativa.** La lectura del dial se toma días después de
+instalar, y con la fecha el ancla se proyecta exacto al instante de instalación —
+`dialInicial = dialLectura − (odómetro(fecha) − lecturaInicialDispositivo)`, porque el
+equipo midió ese tramo. Sin la fecha el offset queda sin verificar para siempre: es el
+estado de los **1514** medidores de gas que hoy tienen `consumoInicial` cargado en un
+instante desconocido.
+
+**Descartado: `arrastreDispositivos`.** Se había agregado en la primera versión de esta fase
+para que el dial no retrocediera en un recambio, sumando lo que midieron los equipos
+anteriores. Las anclas por tramo lo hacen innecesario y además **el arrastre estaba mal**:
+si entre dos equipos hay un hueco sin dispositivo, el medidor siguió contando y nadie lo
+midió, así que un arrastre calculado daba ese hueco en cero, en silencio y para siempre. La
+única entrada posible del arranque del tramo nuevo es una lectura física. Borrarlo no cuesta
+nada: medido en prod, sólo **3 de 3366** medidores de gas y **0 de 1091** de agua tienen más
+de un dispositivo en su serie.
 
 `IReporteSML` e `IReporteWRC` suman **`baselineIncoherente`**: el odómetro quedó por debajo
 del baseline, así que `consumoCorregido` va **ausente**. Reemplaza al clamp
@@ -256,9 +293,10 @@ Corregido de paso el comentario de `IReporteSML.consumoParcial`, que decía "con
 de este reporte − consumoCorregido del último": el código usa el **odómetro** (`consumo`), y
 a propósito, para que editar `consumoInicial` o el arrastre no genere un parcial espurio.
 
-⚠️ `lecturaInicialDispositivoEstado` y `arrastreDispositivos` necesitan su `@Prop()` en
-`gas-datos` (`medidorResidencial.model.ts` y `medidorResidencialAgua.model.ts`): los schemas
-son estrictos y sin el `@Prop()` Mongoose descarta el valor **en silencio**. Los de
+⚠️ Los campos nuevos necesitan su `@Prop()` en `gas-datos`:
+`lecturaInicialDispositivoEstado` y `dialPendiente` en `medidorResidencial.model.ts` y
+`medidorResidencialAgua.model.ts`, y los seis del tramo en `asignacion/schema.ts`. Los
+schemas son estrictos y sin el `@Prop()` Mongoose descarta el valor **en silencio**. Los de
 `valores` no lo necesitan (`Reporte.valores` es `@Prop({ type: Object })`).
 
 ### 2026-08-28 - `reverse_flow_alarm_record`: el registro de eventos de flujo inverso
