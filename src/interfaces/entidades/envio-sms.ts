@@ -31,6 +31,14 @@ export const TipoAlertaEnvioSchema = z.enum([
   "Medidor de agua - Ataque magnético",
   "Medidor de agua - Batería baja",
   "ML107A - Equipos fuera de línea",
+  // Antes vivían en `usuario.notificaciones[].habilitados` (ICodigoNotificacion) y
+  // los despachaba sólo gas-cron/creacion.service a la campanita. Desde 2026-09
+  // son alertas como las demás.
+  "Correctora sin Reportar",
+  "Error de Comunicación con la Correctora",
+  "Cromatografía Próxima a Vencer",
+  "Fallo en Aplicación de Cromatografía",
+  "Medidores Residenciales - Sensor desconectado",
 ]);
 // El nombre del TIPO se mantiene igual al original (TipoAlerta, sin prefijo I
 // porque nunca fue una interface) — solo la constante *Schema se renombró
