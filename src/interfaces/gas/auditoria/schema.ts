@@ -7,6 +7,9 @@ export const AuditoriaSchema = z.object({
   entidad: z.string().optional(),
   metodo: z.string().optional(),
   dato: z.record(z.string(), z.any()).optional(),
+  // Body del request en POST/PUT: las claves que el usuario mandó. Con la
+  // auditoría anterior del mismo `dato._id` alcanza para mostrar antes/después.
+  cambios: z.record(z.string(), z.any()).optional(),
   idUsuario: z.string().optional(),
   idCliente: z.string().optional(),
   fechaCreacion: z.string().optional(),

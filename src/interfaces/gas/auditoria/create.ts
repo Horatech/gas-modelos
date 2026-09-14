@@ -9,6 +9,7 @@ export const CreateAuditoriaSchema = z.object({
   entidad: z.string(),
   metodo: z.string(),
   dato: z.record(z.string(), z.any()),
+  cambios: z.record(z.string(), z.any()).optional(),
   idUsuario: z.string(),
   idCliente: z.string(),
 });
