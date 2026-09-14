@@ -20,6 +20,7 @@ export * from "./enlace-red";
 export * from "./cuenta-cliente";
 export * from "./dispositivo";
 export * from "./envio-sms";
+export * from "./envio-push";
 export * from "./estado";
 export * from "./baseline-dispositivo";
 export * from "./grupo";
