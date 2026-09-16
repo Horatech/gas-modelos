@@ -11,7 +11,7 @@ export const UpdateUsuarioSchema = z.object({
   hash: z.string().optional(),
   activo: z.boolean().optional(),
   tokensPush: z.array(TokenPushSchema).optional(),
-  /** @deprecated un solo token por usuario. Leer como fallback hasta que corra migrar-token-push. */
+  /** Token único legado (web vieja). Se lee siempre junto a `tokensPush`; no se migra. */
   tokenPush: z.string().optional(),
   datosPersonales: DatosPersonalesSchema.optional(),
   permisos: z.array(PermisoSchema).optional(),
