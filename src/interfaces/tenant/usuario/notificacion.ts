@@ -3,14 +3,19 @@ import { CentroOperativoSchema } from "../../gas/centroOperativo/schema";
 import { UnidadNegocioSchema } from "../../gas/unidadNegocio/schema";
 import { NivelSchema } from "./permiso";
 
-/** @deprecated los códigos pasaron a `TipoAlertaEnvioSchema`; `usuario.notificaciones` se migra a IEnvioSms. Se borra en una ronda posterior. */
+/**
+ * Perfiles de la campanita por nivel (`usuario.notificaciones`). Son dato de prod
+ * y canal de alarma de los clientes: NO se migran ni se reemplazan por `IEnvioSms`.
+ * gas-cron los lee tal cual; las configuraciones de alerta con canal push son un
+ * camino aditivo aparte. Los códigos 3 y 4 los define el front (`constantes.ts`).
+ */
 export enum ICodigoNotificacion {
   "Correctora sin Reportar" = 0,
   "Error de Comunicación con la Correctora" = 1,
   "Cromatografía Próxima a Vencer" = 2,
 }
 
-/** @deprecated los códigos pasaron a `TipoAlertaEnvioSchema`; `usuario.notificaciones` se migra a IEnvioSms. Se borra en una ronda posterior. */
+/** Ver la nota de `ICodigoNotificacion`: dato de prod, no se migra. */
 export const NotificacionesSchema = z.object({
   nivel: NivelSchema,
   idUnidadNegocio: z.string().optional(),

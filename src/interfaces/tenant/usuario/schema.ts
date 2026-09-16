@@ -16,7 +16,7 @@ export const UsuarioSchema = z.object({
   datosPersonales: DatosPersonalesSchema.optional(),
   notificaciones: z.array(NotificacionesSchema).optional(),
   tokensPush: z.array(TokenPushSchema).optional(),
-  /** @deprecated un solo token por usuario. Leer como fallback hasta que corra migrar-token-push. */
+  /** Token único legado (web vieja). Se lee siempre junto a `tokensPush`; no se migra. */
   tokenPush: z.string().optional(),
   fecha_activacion_whatsapp: z.string().optional(),
   // Virtuals
