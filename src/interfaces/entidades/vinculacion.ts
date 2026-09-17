@@ -29,7 +29,13 @@ export const AsignarDispositivoSchema = z.object({
   tipoEntidad: TipoEntidadVinculableSchema,
   idEntidad: z.string(),
   deveui: z.string(),
-  /** Fecha real de instalación del equipo en la entidad. No puede ser futura. */
+  /**
+   * Fecha real de instalación del equipo en la entidad. No puede ser futura.
+   *
+   * Sí puede ser retroactiva sin límite cuando el equipo nunca tuvo dispositivo:
+   * el alta normal es cargar hoy una instalación de días atrás. Si ya tuvo uno,
+   * el piso es el retiro del anterior: los dos tramos no se superponen.
+   */
   fechaAsignacion: z.string(),
   motivo: MotivoAsignacionSchema,
   observaciones: z.string().optional(),
@@ -116,6 +122,9 @@ export const VincularEntidadPuntoSchema = z.object({
    * Desde cuándo el equipo está instalado en el punto. Puede ser retroactiva: es
    * la fecha de corte que decide qué reportes, registros y alertas pasan a
    * contabilizarse en este punto.
+   *
+   * Sin límite hacia atrás si el equipo nunca estuvo en un punto; si estuvo, el
+   * piso es su desvinculación del anterior. Futura, no.
    */
   fechaAsignacion: z.string(),
   motivo: MotivoAsignacionSchema,
