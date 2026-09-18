@@ -14,23 +14,16 @@ export const TipoAlertaEnvioSchema = z.enum([
   "Unidades Presión - Sensor desconectado",
   "SCADA - Fuera de límite",
   "SCADA - Cambio de límite",
-  "SCADA - Equipos fuera de línea",
-  "NSP - Equipos fuera de línea",
-  "NUC - Equipos fuera de línea",
-  "VERIBOX - Equipos fuera de línea",
   "NUC - Batería baja",
   "VERIBOX - Batería baja",
   "NSP - Batería baja",
   "SCADA - Error de comunicación con servidor",
-  // Medición residencial de agua (módulo ML107A). Las cuatro primeras las dispara
-  // gas-api-ml107a al ABRIR la alerta correspondiente sobre el punto; la de equipos
-  // fuera de línea la dispara gas-cron por porcentaje del parque, igual que sus
-  // equivalentes de NUC/NSP/VERIBOX/SCADA.
+  // Medición residencial de agua (módulo ML107A). Las cuatro las dispara
+  // gas-api-ml107a al ABRIR la alerta correspondiente sobre el punto.
   "Medidor de agua - Fuga",
   "Medidor de agua - Flujo inverso",
   "Medidor de agua - Ataque magnético",
   "Medidor de agua - Batería baja",
-  "ML107A - Equipos fuera de línea",
   // Antes vivían en `usuario.notificaciones[].habilitados` (ICodigoNotificacion) y
   // los despachaba sólo gas-cron/creacion.service a la campanita. Desde 2026-09
   // son alertas como las demás.
@@ -68,12 +61,6 @@ export const AgrupacionEnvioSchema = z.enum([
 // así por servicios existentes); solo el *Schema se renombró.
 export type Agrupacion = z.infer<typeof AgrupacionEnvioSchema>;
 
-export const ConfigEnvioSmsSchema = z.object({
-  // Para Equipos fuera de línea
-  porcentaje: z.number().optional(),
-});
-export type IConfigEnvioSms = z.infer<typeof ConfigEnvioSmsSchema>;
-
 export const EnvioSmsSchema = z.object({
   _id: z.string().optional(),
   idCliente: z.string().optional(),
@@ -83,7 +70,6 @@ export const EnvioSmsSchema = z.object({
 
   // Condiciones de envio
   tiposAlerta: z.array(TipoAlertaEnvioSchema).optional(),
-  config: ConfigEnvioSmsSchema.optional(),
 
   // Mensaje
   mensaje: z.string().optional(),
