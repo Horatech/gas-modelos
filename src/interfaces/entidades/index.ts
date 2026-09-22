@@ -34,6 +34,7 @@ export * from "./log-nuc";
 export * from "./log-lora";
 export * from "./log-reporte";
 export * from "./log-twilio";
+export * from "./log";
 export * from "./subzona-tarifaria";
 export * from "./mantenimiento";
 export * from "./medidor-residencial";
