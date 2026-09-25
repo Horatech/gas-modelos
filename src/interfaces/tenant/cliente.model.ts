@@ -182,6 +182,16 @@ export const ModuloTopologiaSchema = z.object({
 export type IModuloTopologia = z.infer<typeof ModuloTopologiaSchema>;
 
 /**
+ * Navegación configurable de la vista de operaciones: el árbol de carpetas y
+ * entradas que el cliente arma a su gusto. Ausente ⇒ apagado, igual que los
+ * otros módulos. Hoy sólo Camuzzi lo tiene encendido.
+ */
+export const ModuloNavegacionSchema = z.object({
+  activo: z.boolean().optional(),
+});
+export type IModuloNavegacion = z.infer<typeof ModuloNavegacionSchema>;
+
+/**
  * Sinóptico de los puntos de medición SCADA (la vista de FUXA embebida).
  *
  * Ausente ⇒ apagado, igual que los otros módulos. Es infraestructura aparte: cada
@@ -309,6 +319,7 @@ export const ConfigClienteSchema = z.object({
   moduloClima: ModuloClimaSchema.optional(),
   moduloClasificacion: ModuloClasificacionSchema.optional(),
   moduloTopologia: ModuloTopologiaSchema.optional(),
+  moduloNavegacion: ModuloNavegacionSchema.optional(),
   moduloSinoptico: ModuloSinopticoSchema.optional(),
   parametrosObis: ParametrosObisSchema.optional(),
   ciclosFacturacion: CiclosFacturacionPorDivisionSchema.optional(),
