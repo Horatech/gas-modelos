@@ -55,7 +55,16 @@ export const UpdateNodoNavegacionSchema = NodoNavegacionSchema.omit({
   _id: true,
   idCliente: true,
   tipo: true,
-}).partial();
+})
+  .partial()
+  .extend({
+    // El editor manda `null` para vaciar el alcance o el destino ($unset en
+    // gas-datos). El schema de base/create no admite `null` en estos campos:
+    // acá sí, sólo en update.
+    idUnidadNegocio: z.string().nullable().optional(),
+    idCentroOperativo: z.string().nullable().optional(),
+    destino: z.record(z.string(), z.unknown()).nullable().optional(),
+  });
 export type IUpdateNodoNavegacion = z.infer<typeof UpdateNodoNavegacionSchema>;
 
 /** El orden completo de los hijos de una carpeta, después de un drag & drop. */
