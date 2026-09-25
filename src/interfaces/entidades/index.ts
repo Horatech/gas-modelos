@@ -62,6 +62,7 @@ export * from "./configDownlinkNme";
 export * from "./dispositivo-externo-nuc";
 export * from "./dash-general";
 export * from "./mensajes-bove";
+export * from "./nodo-navegacion";
 export * from "./gpio-config-nuc-auditoria";
 export * from "./indicadores-historicos";
 export * from "./gateway-lorawan";
