@@ -22,6 +22,7 @@ export * from "./dispositivo";
 export * from "./envio-sms";
 export * from "./envio-push";
 export * from "./estado";
+export * from "./estado-tailnet";
 export * from "./baseline-dispositivo";
 export * from "./grupo";
 export * from "./kmz";
