@@ -109,6 +109,8 @@ export type IColumnaExportDescriptor = z.infer<
 export const OpcionFiltroExportSchema = z.object({
   valor: z.string(),
   label: z.string(),
+  // Divisiones donde la opción tiene sentido; vacío o ausente = todas.
+  divisiones: z.array(z.string()).optional(),
 });
 export type IOpcionFiltroExport = z.infer<typeof OpcionFiltroExportSchema>;
 
@@ -119,6 +121,9 @@ export const FiltroExportDescriptorSchema = z.object({
   entidad: EntidadFiltroSchema.optional(),
   opciones: z.array(OpcionFiltroExportSchema).optional(),
   ayuda: z.string().optional(),
+  // Divisiones donde el filtro tiene sentido; vacío o ausente = todas. Mismo
+  // criterio que en las columnas: el front lo oculta si ninguna aplica.
+  divisiones: z.array(z.string()).optional(),
 });
 export type IFiltroExportDescriptor = z.infer<
   typeof FiltroExportDescriptorSchema
