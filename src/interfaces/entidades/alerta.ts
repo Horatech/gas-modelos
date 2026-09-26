@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LimiteScadaSchema } from "./rechazo-limite-scada";
 import { LocalidadSchema } from "./localidad";
 import { GatewayLorawanSchema } from "./gateway-lorawan";
 import { DivisionSchema } from "../tenant/usuario/permiso";
@@ -58,6 +59,11 @@ export const TipoAlertaSchema = z.enum([
   "Integración SCADA sin conexión",
   "Integración SCADA sin datos",
   "Integración SCADA con errores",
+  // Rechazo de la escritura de un límite por configuración (ej. BadOutOfRange: el valor de
+  // INSIDEht está fuera del rango del tag en iFix). Una por tag SCADA y por límite
+  // (`valores.limite`). Va con `idScada` y SIN `tag`: con `tag`, el cron no abriría "Sin
+  // Reportar" en ese tag y reportesOPC la cerraría como si fuera la "Fuera de rango".
+  "Error de configuración de límite",
 ]);
 export type ITipoAlerta = z.infer<typeof TipoAlertaSchema>;
 
@@ -78,7 +84,12 @@ export const AlertaInputsNucv2Schema = z.object({
 });
 export type IAlertaInputsNucv2 = z.infer<typeof AlertaInputsNucv2Schema>;
 
-export const ValoresAlertaSchema = AlertaInputsNucv2Schema.nullable();
+export const ValoresAlertaSchema = AlertaInputsNucv2Schema.extend({
+  // "Error de configuración de límite": qué límite se rechazó, con qué valor y qué código.
+  limite: LimiteScadaSchema.optional(),
+  valorRechazado: z.number().optional(),
+  codigoOpc: z.string().optional(),
+}).nullable();
 export type IValoresAlerta = z.infer<typeof ValoresAlertaSchema>;
 
 // Populates intra-SCC (IPuntoMedicion, IUnidadPresion, ICorrectora, IScada,
