@@ -194,6 +194,22 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-09-26 - Error de configuración de límite SCADA
+
+§ 6.bis de `/PLAN-ESTADO-ONPREMISE.md`. Aditivo.
+
+- Nuevo `rechazo-limite-scada.ts` (hoja): `LimiteScadaSchema` (`HH|H|L|LL`), `RechazoLimiteScadaSchema` (lo que el
+  adaptador manda a `POST /integracion/rechazo-limite`), `CODIGOS_OPC_CONFIGURACION` (hoy sólo `BadOutOfRange`) y
+  `esRechazoDeConfiguracion()`.
+- `TipoAlertaSchema` suma `"Error de configuración de límite"`: una por tag SCADA y por límite, con `idScada` y **sin
+  `tag`** (con `tag`, el cron no abriría "Sin Reportar" en ese tag y reportesOPC la cerraría como "Fuera de rango").
+- `ValoresAlertaSchema` suma `limite`, `valorRechazado` y `codigoOpc` (extiende el de NUCv2; `IAlertaInputsNucv2` no
+  cambia).
+- `IHeartbeatIntegracionScada`: `rechazosOpc` pasa a ser sólo de la integración (lo usa "Con errores") y se suma
+  `rechazosConfiguracion` (opcional, informativo).
+
+No requiere `@Prop()` en gas-datos: `Alerta.valores` es `@Prop({ type: Object })`.
+
 ### 2026-09-26 - Estado de la integración on-premise (enlace + adaptador OPC-UA)
 
 Fase 0 de `/PLAN-ESTADO-ONPREMISE.md` (raíz del sistema). Todo aditivo y opcional: publicarlo

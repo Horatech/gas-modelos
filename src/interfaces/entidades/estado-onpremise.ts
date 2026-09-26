@@ -23,8 +23,16 @@ export const HeartbeatIntegracionScadaSchema = z.object({
   conexionPerdidaDesde: z.string().optional(),
   /** Última notificación de datos de la suscripción (ISO 8601). Ausente si no llegó ninguna desde el arranque. */
   ultimoDato: z.string().optional(),
-  /** Operaciones OPC-UA rechazadas (escrituras y lecturas) acumuladas desde el arranque */
+  /**
+   * Operaciones OPC-UA rechazadas por la INTEGRACIÓN (timeouts, sesión, canal…) acumuladas desde
+   * el arranque. Es lo que usa el estado "Con errores".
+   */
   rechazosOpc: z.number(),
+  /**
+   * Rechazos de CONFIGURACIÓN (ver `CODIGOS_OPC_CONFIGURACION`) acumulados desde el arranque.
+   * Informativo: cada uno abre su alerta por tag y no suma a "Con errores".
+   */
+  rechazosConfiguracion: z.number().optional(),
   tags: z.number(),
   monitoredItems: z.number(),
   sesionesAbiertas: z.number(),
