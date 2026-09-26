@@ -32,6 +32,9 @@ export const TipoAlertaEnvioSchema = z.enum([
   "Cromatografía Próxima a Vencer",
   "Fallo en Aplicación de Cromatografía",
   "Medidores Residenciales - Sensor desconectado",
+  // Integración on-premise. Los estados del adaptador OPC-UA salen por
+  // "SCADA - Error de comunicación con servidor" (arriba); éste es el del enlace.
+  "Enlace con la plataforma",
 ]);
 // El nombre del TIPO se mantiene igual al original (TipoAlerta, sin prefijo I
 // porque nunca fue una interface) — solo la constante *Schema se renombró

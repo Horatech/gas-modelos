@@ -49,8 +49,26 @@ export const TipoAlertaSchema = z.enum([
   // medición, sí `idGatewayLorawan`. La abre gas-cron con histéresis (un
   // backhaul caído se veía sólo como N puntos "Sin Reportar").
   "Gateway sin reportar",
+  // Integración on-premise (enlace del tailnet + adaptador OPC-UA). Van sin punto,
+  // sin deveui y sin división: sólo `idCliente`. Las abre y cierra gas-cron según
+  // `IEstadoOnPremise`, y sólo con `config.onPremise.modo === 'activo'`. Visibles
+  // únicamente para Administrador + nivel Global.
+  "Enlace desconectado",
+  "Integración SCADA sin señal",
+  "Integración SCADA sin conexión",
+  "Integración SCADA sin datos",
+  "Integración SCADA con errores",
 ]);
 export type ITipoAlerta = z.infer<typeof TipoAlertaSchema>;
+
+/** Tipos de alerta de la integración on-premise: sólo los ve el admin global. */
+export const TIPOS_ALERTA_ONPREMISE = [
+  "Enlace desconectado",
+  "Integración SCADA sin señal",
+  "Integración SCADA sin conexión",
+  "Integración SCADA sin datos",
+  "Integración SCADA con errores",
+] as const satisfies readonly ITipoAlerta[];
 
 export const AlertaInputsNucv2Schema = z.object({
   input: z.union([z.literal(1), z.literal(2)]).optional(),

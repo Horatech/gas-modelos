@@ -194,6 +194,37 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-09-26 - Estado de la integración on-premise (enlace + adaptador OPC-UA)
+
+Fase 0 de `/PLAN-ESTADO-ONPREMISE.md` (raíz del sistema). Todo aditivo y opcional: publicarlo
+no cambia el comportamiento de ningún servicio.
+
+- `IConfigCliente.onPremise` (`ConfigOnPremiseSchema`): `modo` (`apagado` | `observacion` |
+  `activo`, **ausente = apagado**), `tags` (tags de Headscale de los nodos del tailnet que son
+  INSIDEht para ese cliente) e `integracionScada` (el cliente tiene adaptador OPC-UA).
+- Nuevo `estado-onpremise.ts`: `IHeartbeatIntegracionScada` (lo que el adaptador manda cada
+  minuto) e `IEstadoOnPremise` (un documento por cliente, lo escribe sólo el evaluador de
+  gas-cron), más los enums de estado de cada componente y el mapeo estado → tipo de alerta.
+- `TipoAlertaSchema` suma cinco tipos (`TIPOS_ALERTA_ONPREMISE`): van sin punto, sin deveui y
+  sin división, y sólo los ve el admin global.
+- `TipoAlertaEnvioSchema` suma `"Enlace con la plataforma"`. Los estados del adaptador salen
+  por el valor existente `"SCADA - Error de comunicación con servidor"`, que hoy no tiene
+  ninguna regla cargada en producción (verificado el 26-sep).
+- `TemplatesWhatsappSchema` (y por lo tanto `TemplatesMailSchema`) suma las plantillas de
+  aviso y de recuperación de los dos componentes.
+
+**El flag no condiciona nada de lo que ya existe**: las alertas y notificaciones SCADA por tag
+siguen igual con cualquier modo. Con `apagado` u `observacion` no se crea ninguna alerta de
+los tipos nuevos, así que un consumidor con modelos viejo nunca las lee (y si las leyera, no
+falla: gas-datos guarda `tipo` como `String` sin enum).
+
+⚠️ En gas-web-admin, `config` y `config.twilio.templates*` se arman desde el form con claves
+fijas: `onPremise` y las plantillas nuevas tienen que ser controles del form, o guardar un
+cliente las borra.
+
+⚠️ `EstadoEnlaceSchema` ya existía (`enlace-red.ts`): los nombres del enlace on-premise llevan
+el sufijo `OnPremise`.
+
 ### 2026-09-07 - Baseline del acumulado residencial: provisorio/confirmado, arrastre y convención del borde
 
 Fases F1 y F1-bis de `/PLAN-ACUMULADO-RESIDENCIAL-TRAZABILIDAD.md`. Todo aditivo y

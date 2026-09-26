@@ -30,6 +30,10 @@ export const TemplatesWhatsappSchema = z.enum([
   "Scada cambio de límites por fuera",
   "Equipos fuera de línea",
   "Batería baja",
+  "Enlace con la plataforma",
+  "Enlace con la plataforma restablecido",
+  "Integración SCADA",
+  "Integración SCADA restablecida",
 ]);
 export type TemplatesWhatsapp = z.infer<typeof TemplatesWhatsappSchema>;
 
@@ -278,6 +282,36 @@ export type ICiclosFacturacionPorDivision = z.infer<typeof CiclosFacturacionPorD
 
 export type DivisionConCicloFacturacion = Extract<Division, "Residencial Agua">;
 
+/**
+ * Integración on-premise del cliente: los nodos del tailnet que son INSIDEht y el
+ * adaptador OPC-UA. El evaluador (gas-cron) arma `IEstadoOnPremise` y, en modo
+ * `activo`, abre/cierra las alertas y notifica.
+ *
+ * - `apagado` (o ausente): el evaluador ignora al cliente.
+ * - `observacion`: calcula y guarda el estado, con las transiciones que habría
+ *   abierto, sin crear alertas, sin notificar y sin mostrar nada al cliente.
+ * - `activo`: alertas, notificaciones y pantalla para el admin global.
+ *
+ * Nada de lo que ya existe depende de este flag: las alertas y notificaciones
+ * SCADA por tag siguen igual con cualquier modo.
+ *
+ * OJO: el merge de `config` en gas-admin es SHALLOW; el objeto va completo en cada PUT.
+ */
+export const ModoOnPremiseSchema = z.enum(["apagado", "observacion", "activo"]);
+export type ModoOnPremise = z.infer<typeof ModoOnPremiseSchema>;
+
+export const ConfigOnPremiseSchema = z.object({
+  modo: ModoOnPremiseSchema.optional(),
+  /**
+   * Tags de Headscale de los nodos que son INSIDEht para este cliente (ej.
+   * `tag:camuzzi-scada`). Los nodos del cliente que no son INSIDEht no se listan.
+   */
+  tags: z.array(z.string()).optional(),
+  /** El cliente tiene adaptador OPC-UA: sin heartbeat, la integración queda "Sin señal". */
+  integracionScada: z.boolean().optional(),
+});
+export type IConfigOnPremise = z.infer<typeof ConfigOnPremiseSchema>;
+
 export const ConfigClienteSchema = z.object({
   apns: z.array(ApnSchema).optional(),
   usaLlm: z.boolean().optional(),
@@ -343,6 +377,7 @@ export const ConfigClienteSchema = z.object({
   iconosEstado: z
     .partialRecord(EstadoCorrectoraSchema, IconoEstadoSchema)
     .optional(),
+  onPremise: ConfigOnPremiseSchema.optional(),
 });
 export type IConfigCliente = z.infer<typeof ConfigClienteSchema>;
 
