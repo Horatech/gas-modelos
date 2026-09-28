@@ -194,6 +194,19 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-09-28 - Reloj del EUW300: `offsetRelojHoras`
+
+`IDispositivoEUW300.offsetRelojHoras`: zona del reloj del equipo, en horas respecto de UTC.
+La fecha/hora del payload viene en ese reloj **sin zona**; gas-api-euw300 le resta el
+offset para guardar `valores.timestamp` en **UTC real**. Ausente = -3 (hora Argentina).
+
+Hasta ahora `valores.timestamp` era la hora de pared del equipo rotulada como UTC. Relevado
+en `gas_production` (28-sep): los 5 de Santa Barbara tienen el reloj en -3, pero los 9 de
+AYSAM y Dalvian vienen de fábrica en **+8** (hora China), así que se veían 11 h adelantados
+(fechas "futuras" en el listado) y su diario "00:00" cae a las 13:00 ARG.
+
+No requiere `@Prop()` en gas-datos: `config` es `z.record` / `@Prop({ type: Object })`.
+
 ### 2026-09-26 - Error de configuración de límite SCADA
 
 § 6.bis de `/PLAN-ESTADO-ONPREMISE.md`. Aditivo.

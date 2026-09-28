@@ -80,6 +80,13 @@ export const DispositivoEUW300Schema = z.object({
   modoTransmision: z.enum(["texto-plano", "cifrado"]).optional(), // D3 del control code
   intervaloComunicacion: z.number().optional(), // Minutos entre reportes
   horaReporteDiario: z.string().optional(), // Hora del reporte diario (formato HH:mm)
+  /**
+   * Zona horaria del reloj del equipo, en horas respecto de UTC. La fecha/hora
+   * del payload viene en ese reloj sin zona: la ingesta le resta este offset
+   * para guardar `valores.timestamp` en UTC real. Sin valor se asume -3 (hora
+   * Argentina). Hay equipos que vienen de fábrica en +8 (hora China).
+   */
+  offsetRelojHoras: z.number().optional(),
 
   // Configuración de unidades por defecto
   unidadFlujoAcumuladoDefault: UnidadFlujoAcumuladoSchema.optional(),
