@@ -38,6 +38,10 @@ export const HeartbeatIntegracionScadaSchema = z.object({
   sesionesAbiertas: z.number(),
   /** Versión (commit) de la imagen del adaptador */
   version: z.string().optional(),
+  /** Canal por el túnel: muestras sin confirmar por el leaf (buffer del adaptador). */
+  pendientesAdaptador: z.number().optional(),
+  /** Canal por el túnel: último PubAck recibido del leaf (ISO 8601). */
+  ultimoAckLeaf: z.string().optional(),
 });
 export type IHeartbeatIntegracionScada = z.infer<typeof HeartbeatIntegracionScadaSchema>;
 

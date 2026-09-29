@@ -194,6 +194,23 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-09-29 - Canal SCADA por el túnel (`canal-scada.ts`)
+
+§ 2 de `/PLAN-SCADA-POR-TUNEL.md` (hito H0). Aditivo: todavía no lo consume nadie.
+
+- Mensajes del canal NATS entre el adaptador OPC-UA y la plataforma: `LoteTelemetria` /
+  `MuestraScada`, comandos en dos tiempos (`ComandoEscribirLimite`, `ComandoLeerLimites` →
+  `AceptacionComandoScada`; resultado como evento `ResultadoComandoScada`), `LimitesLeidosScada`,
+  `PedidoTagsScada` / `ListaTagsScada`.
+- Constantes: `subjectsCanalScada(inst)`, `STREAM_SUBJECTS_CANAL_SCADA` (sólo `tel` y `evt`: un
+  test falla si un stream captura `cfg`, `cmd` o `estado`), nombres de streams y KV,
+  `natsMsgIdCanalScada`.
+- `IHeartbeatIntegracionScada` suma `pendientesAdaptador?` y `ultimoAckLeaf?` (opcionales).
+- `OPCDataSchema` / `OPCType`: el payload MQTT de escritura de límites, hoy duplicado como
+  `OPCData` en gas-opcua-externo, gas-api-integraciones y gas-api-cliente. El adaptador nombra
+  `CV` al valor actual y las APIs `Valor Actual`: el enum tiene los dos.
+- Sin `idCliente` ni `apikey` en los payloads: la identidad es el account de NATS.
+
 ### 2026-09-28 - Reloj del EUW300: `offsetRelojHoras`
 
 `IDispositivoEUW300.offsetRelojHoras`: zona del reloj del equipo, en horas respecto de UTC.
