@@ -25,6 +25,7 @@ export * from "./estado";
 export * from "./estado-tailnet";
 export * from "./estado-onpremise";
 export * from "./rechazo-limite-scada";
+export * from "./canal-scada";
 export * from "./baseline-dispositivo";
 export * from "./grupo";
 export * from "./kmz";
