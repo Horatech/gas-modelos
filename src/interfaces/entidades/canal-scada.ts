@@ -123,6 +123,134 @@ export const LoteTelemetriaSchema = z.object({
 });
 export type ILoteTelemetria = z.infer<typeof LoteTelemetriaSchema>;
 
+// ── Huella por minuto (sombra) ───────────────────────────────────────────────────────────────
+
+/**
+ * Huella de lo que pasó por un camino en un minuto: cantidad de muestras y XOR de la firma de cada
+ * una. Durante la sombra los mismos datos viajan por HTTP y por el canal; si la huella de un minuto
+ * coincide en las dos puntas, ese minuto viajó idéntico (sin pérdidas, duplicados ni cambios).
+ *
+ * El minuto es el del `timestamp` de la muestra (hora de iFix), no el de envío ni el de llegada, así
+ * que no depende del atraso del canal. Suma y XOR son conmutativos: las huellas parciales de un mismo
+ * minuto emitidas en momentos distintos (lo que llega tarde después de un corte) se combinan en
+ * cualquier orden con `combinarHuellasScada`.
+ */
+export const OrigenHuellaScadaSchema = z.enum([
+  /** Muestras que el camino HTTP aceptó (2xx). */
+  "adaptador-http",
+  /** Muestras de lotes que el leaf confirmó (PubAck). */
+  "adaptador-canal",
+  /** Muestras de lotes que el consumidor recibió del hub (primera entrega). */
+  "consumidor",
+]);
+export type OrigenHuellaScada = z.infer<typeof OrigenHuellaScadaSchema>;
+
+export const HuellaMinutoScadaSchema = z.object({
+  /** Cantidad de muestras. */
+  n: z.number().int().nonnegative(),
+  /** XOR de las firmas, 16 dígitos hexadecimales. */
+  x: z.string().regex(/^[0-9a-f]{16}$/),
+});
+export type IHuellaMinutoScada = z.infer<typeof HuellaMinutoScadaSchema>;
+
+/** Lo que una punta acumuló desde su emisión anterior. Se loguea como `[HUELLA] <json>`. */
+export const HuellaParcialScadaSchema = z.object({
+  origen: OrigenHuellaScadaSchema,
+  inst: z.string(),
+  /** ISO 8601, reloj de quien emite. */
+  emitidoTs: z.string(),
+  /** Clave: minuto `YYYY-MM-DDTHH:MMZ` (ver `minutoHuellaScada`). */
+  minutos: z.record(z.string(), HuellaMinutoScadaSchema),
+});
+export type IHuellaParcialScada = z.infer<typeof HuellaParcialScadaSchema>;
+
+/** Campos de una muestra que entran en su firma (lo que se persiste de ella). */
+type MuestraFirmable = Pick<IMuestraScada, "tag" | "timestamp" | "valorActual" | "limiteHH" | "limiteH" | "limiteL" | "limiteLL">;
+
+const FNV64_OFFSET = BigInt("0xcbf29ce484222325");
+const FNV64_PRIME = BigInt("0x100000001b3");
+const MASK64 = BigInt("0xffffffffffffffff");
+
+/**
+ * Texto de un valor igual antes y después de pasar por JSON: `undefined` y una clave ausente dan
+ * lo mismo; `null` se distingue; un número no finito vale lo que JSON hace con él (`null`).
+ */
+function textoFirma(v: unknown): string {
+  if (v === undefined) return "";
+  if (v === null) return "null";
+  if (typeof v === "number" && !Number.isFinite(v)) return "null";
+  return String(v);
+}
+
+/** Firma de 64 bits (FNV-1a sobre las unidades UTF-16) de los campos persistidos de una muestra. */
+export function firmaMuestraScada(m: MuestraFirmable): bigint {
+  const texto = [m.tag, m.timestamp, m.valorActual, m.limiteHH, m.limiteH, m.limiteL, m.limiteLL]
+    .map(textoFirma)
+    .join("|");
+  let h = FNV64_OFFSET;
+  for (let i = 0; i < texto.length; i++) {
+    h ^= BigInt(texto.charCodeAt(i));
+    h = (h * FNV64_PRIME) & MASK64;
+  }
+  return h;
+}
+
+/** Minuto de la muestra (`YYYY-MM-DDTHH:MMZ`, UTC) o `sin-hora` si el `timestamp` falta o no es fecha. */
+export function minutoHuellaScada(timestamp: string | undefined): string {
+  const d = timestamp ? new Date(timestamp) : undefined;
+  if (!d || Number.isNaN(d.getTime())) return "sin-hora";
+  return `${d.toISOString().slice(0, 16)}Z`;
+}
+
+const hex64 = (x: bigint) => x.toString(16).padStart(16, "0");
+
+/** Acumula huellas por minuto entre emisiones. */
+export class AcumuladorHuellasScada {
+  private minutos = new Map<string, { n: number; x: bigint }>();
+
+  agregar(m: MuestraFirmable): void {
+    const clave = minutoHuellaScada(m.timestamp);
+    const actual = this.minutos.get(clave) ?? { n: 0, x: BigInt(0) };
+    actual.n++;
+    actual.x ^= firmaMuestraScada(m);
+    this.minutos.set(clave, actual);
+  }
+
+  get vacio(): boolean {
+    return this.minutos.size === 0;
+  }
+
+  /** Lo acumulado desde la extracción anterior; el acumulador queda vacío. */
+  extraer(): Record<string, IHuellaMinutoScada> {
+    const out: Record<string, IHuellaMinutoScada> = {};
+    for (const [k, v] of [...this.minutos.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+      out[k] = { n: v.n, x: hex64(v.x) };
+    }
+    this.minutos.clear();
+    return out;
+  }
+}
+
+/** Combina huellas parciales del mismo origen (suma de `n`, XOR de `x`, por minuto). */
+export function combinarHuellasScada(
+  parciales: Record<string, IHuellaMinutoScada>[],
+): Record<string, IHuellaMinutoScada> {
+  const acc = new Map<string, { n: number; x: bigint }>();
+  for (const p of parciales) {
+    for (const [k, v] of Object.entries(p)) {
+      const a = acc.get(k) ?? { n: 0, x: BigInt(0) };
+      a.n += v.n;
+      a.x ^= BigInt(`0x${v.x}`);
+      acc.set(k, a);
+    }
+  }
+  const out: Record<string, IHuellaMinutoScada> = {};
+  for (const [k, v] of [...acc.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+    out[k] = { n: v.n, x: hex64(v.x) };
+  }
+  return out;
+}
+
 // ── Comandos (petición/respuesta en dos tiempos) ─────────────────────────────────────────────
 
 /**
