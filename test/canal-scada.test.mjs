@@ -107,3 +107,93 @@ test("un heartbeat sin los campos del canal sigue validando", () => {
   });
   assert.equal(r.success, true);
 });
+
+const m_ = m;
+
+// ── Huella por minuto ────────────────────────────────────────────────────────────────────────
+
+const muestra = (extra = {}) => ({
+  tag: "BAC_PEH_ERP_AMERICA1_TP_PE",
+  timestamp: "2026-09-30T19:22:03.658Z",
+  valorActual: 21.7275,
+  limiteHH: 30,
+  ...extra,
+});
+
+test("la firma es la misma antes y después de viajar como JSON", () => {
+  const m = muestra({ limiteH: undefined, calidad: 0, tsServidor: "2026-09-30T19:22:04Z" });
+  const viajada = JSON.parse(JSON.stringify(m));
+  assert.equal(m_.firmaMuestraScada(m), m_.firmaMuestraScada(viajada));
+});
+
+test("la firma distingue null de ausente y cambia con cualquier campo persistido", () => {
+  const base = m_.firmaMuestraScada(muestra());
+  assert.notEqual(m_.firmaMuestraScada(muestra({ limiteL: null })), base);
+  assert.notEqual(m_.firmaMuestraScada(muestra({ valorActual: 21.7276 })), base);
+  assert.notEqual(m_.firmaMuestraScada(muestra({ timestamp: "2026-09-30T19:22:03.659Z" })), base);
+  assert.notEqual(m_.firmaMuestraScada(muestra({ tag: "OTRO" })), base);
+  assert.notEqual(m_.firmaMuestraScada(muestra({ valorActual: true })), m_.firmaMuestraScada(muestra({ valorActual: 1 })));
+  // Lo que no se persiste no entra en la firma.
+  assert.equal(m_.firmaMuestraScada(muestra({ calidad: 5, tsServidor: "x" })), base);
+});
+
+test("el minuto sale del timestamp de la muestra, en UTC", () => {
+  assert.equal(m_.minutoHuellaScada("2026-09-30T19:22:59.999Z"), "2026-09-30T19:22Z");
+  assert.equal(m_.minutoHuellaScada("2026-09-30T16:22:10.000-03:00"), "2026-09-30T19:22Z");
+  assert.equal(m_.minutoHuellaScada(undefined), "sin-hora");
+  assert.equal(m_.minutoHuellaScada("no es fecha"), "sin-hora");
+});
+
+test("el acumulador agrupa por minuto y queda vacío al extraer", () => {
+  const a = new m_.AcumuladorHuellasScada();
+  a.agregar(muestra());
+  a.agregar(muestra({ timestamp: "2026-09-30T19:22:40.000Z" }));
+  a.agregar(muestra({ timestamp: "2026-09-30T19:23:01.000Z" }));
+  const h = a.extraer();
+  assert.deepEqual(Object.keys(h), ["2026-09-30T19:22Z", "2026-09-30T19:23Z"]);
+  assert.equal(h["2026-09-30T19:22Z"].n, 2);
+  assert.match(h["2026-09-30T19:23Z"].x, /^[0-9a-f]{16}$/);
+  assert.equal(a.vacio, true);
+  assert.deepEqual(a.extraer(), {});
+  for (const v of Object.values(h)) assert.ok(m_.HuellaMinutoScadaSchema.safeParse(v).success);
+});
+
+test("las parciales se combinan en cualquier orden y dan lo mismo que acumular todo junto", () => {
+  const muestras = Array.from({ length: 50 }, (_, i) =>
+    muestra({ tag: `T${i % 7}`, timestamp: `2026-09-30T19:2${i % 3}:0${i % 10}.000Z`, valorActual: i }),
+  );
+  const todo = new m_.AcumuladorHuellasScada();
+  muestras.forEach((m) => todo.agregar(m));
+  const esperado = todo.extraer();
+
+  const parciales = [];
+  const a = new m_.AcumuladorHuellasScada();
+  muestras.forEach((m, i) => {
+    a.agregar(m);
+    if (i % 13 === 12) parciales.push(a.extraer());
+  });
+  parciales.push(a.extraer());
+  assert.deepEqual(m_.combinarHuellasScada(parciales), esperado);
+  assert.deepEqual(m_.combinarHuellasScada([...parciales].reverse()), esperado);
+});
+
+test("una muestra duplicada o faltante cambia la huella del minuto", () => {
+  const a = new m_.AcumuladorHuellasScada();
+  const b = new m_.AcumuladorHuellasScada();
+  const c = new m_.AcumuladorHuellasScada();
+  const ms = [muestra(), muestra({ tag: "B" }), muestra({ tag: "C" })];
+  ms.forEach((m) => a.agregar(m));
+  [...ms, ms[1]].forEach((m) => b.agregar(m)); // duplicada
+  ms.slice(0, 2).forEach((m) => c.agregar(m)); // faltante
+  const [ha, hb, hc] = [a, b, c].map((x) => x.extraer()["2026-09-30T19:22Z"]);
+  assert.notDeepEqual(hb, ha);
+  assert.notDeepEqual(hc, ha);
+});
+
+test("el parcial emitido valida contra su schema", () => {
+  const a = new m_.AcumuladorHuellasScada();
+  a.agregar(muestra());
+  const parcial = { origen: "consumidor", inst: "r03", emitidoTs: new Date().toISOString(), minutos: a.extraer() };
+  assert.ok(m_.HuellaParcialScadaSchema.safeParse(parcial).success);
+  assert.equal(m_.HuellaParcialScadaSchema.safeParse({ ...parcial, origen: "otro" }).success, false);
+});
