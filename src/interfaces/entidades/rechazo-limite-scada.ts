@@ -16,9 +16,13 @@ export type LimiteScada = z.infer<typeof LimiteScadaSchema>;
 /**
  * Códigos OPC UA que se tratan como error de configuración. El resto de los rechazos son de la
  * integración (comunicación) y cuentan para el estado "Con errores". Ver la clasificación en
- * `PLAN-ESTADO-ONPREMISE.md` § 6.bis: por ahora sólo `BadOutOfRange`, el único visto en producción.
+ * `PLAN-ESTADO-ONPREMISE.md` § 6.bis. Sólo los vistos en producción:
+ * - `BadOutOfRange`: el límite de INSIDEht está fuera del rango del tag en iFix.
+ * - `BadNodeIdUnknown`: iFix no tiene ese nodo; un tag (o el límite de un tag) dado de alta en
+ *   INSIDEht que no existe en iFix con ese nombre. Visto el 1-oct-2026 al leer los límites de
+ *   tags recién creados.
  */
-export const CODIGOS_OPC_CONFIGURACION = ["BadOutOfRange"] as const;
+export const CODIGOS_OPC_CONFIGURACION = ["BadOutOfRange", "BadNodeIdUnknown"] as const;
 
 export function esRechazoDeConfiguracion(codigo?: string): boolean {
   return !!codigo && (CODIGOS_OPC_CONFIGURACION as readonly string[]).includes(codigo);
