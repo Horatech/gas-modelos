@@ -95,6 +95,24 @@ test("el comando de escritura acepta sólo límites", () => {
   assert.equal(m.ComandoEscribirLimiteSchema.safeParse({ ...base, propiedad: "CV" }).success, false);
 });
 
+test("la aceptación distingue un tag booleano de uno no vigente", () => {
+  const ok = (estado) => m.AceptacionComandoScadaSchema.safeParse({ comandoId: "c1", estado }).success;
+  assert.equal(ok("TAG_BOOLEANO"), true);
+  assert.equal(ok("TAG_NO_VIGENTE"), true);
+  assert.equal(ok("BOOLEANO"), false);
+});
+
+test("los comandos MQTT validan con y sin comandoId", () => {
+  const escribir = { apikey: "k", tag: "T", type: "Alto", value: 1 };
+  assert.equal(m.OPCDataSchema.safeParse(escribir).success, true);
+  assert.equal(m.OPCDataSchema.safeParse({ ...escribir, comandoId: "c1" }).success, true);
+  assert.equal(m.OPCDataSchema.safeParse({ ...escribir, comandoId: 1 }).success, false);
+  const leer = { apikey: "k", tag: "T" };
+  assert.equal(m.OPCLeerLimitesSchema.safeParse(leer).success, true);
+  assert.equal(m.OPCLeerLimitesSchema.safeParse({ ...leer, comandoId: "c1" }).success, true);
+  assert.equal(m.OPCLeerLimitesSchema.safeParse({ tag: "T" }).success, false);
+});
+
 test("un heartbeat sin los campos del canal sigue validando", () => {
   const r = m.HeartbeatIntegracionScadaSchema.safeParse({
     arranque: "2026-09-28T17:57:29.000Z",

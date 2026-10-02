@@ -291,6 +291,8 @@ export const EstadoAceptacionScadaSchema = z.enum([
   "VENCIDO",
   "SIN_SESION",
   "TAG_NO_VIGENTE",
+  /** El tag es booleano: no tiene límites que leer ni escribir. */
+  "TAG_BOOLEANO",
 ]);
 export type EstadoAceptacionScada = z.infer<typeof EstadoAceptacionScadaSchema>;
 
@@ -362,5 +364,19 @@ export const OPCDataSchema = z.object({
   tag: z.string(),
   type: OPCTypeSchema,
   value: z.number(),
+  /**
+   * El mismo `comandoId` que viaja por el canal. Con el productor en `ambos`, el adaptador
+   * recibe el comando por los dos caminos y lo ejecuta una sola vez.
+   */
+  comandoId: z.string().optional(),
 });
 export type IOPCData = z.infer<typeof OPCDataSchema>;
+
+/** Payload de `…/scadas/leer/limites`. */
+export const OPCLeerLimitesSchema = z.object({
+  apikey: z.string(),
+  tag: z.string(),
+  /** Ver `OPCDataSchema.comandoId`. */
+  comandoId: z.string().optional(),
+});
+export type IOPCLeerLimites = z.infer<typeof OPCLeerLimitesSchema>;
