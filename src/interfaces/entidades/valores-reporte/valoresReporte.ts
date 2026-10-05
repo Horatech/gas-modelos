@@ -10,6 +10,7 @@ import { ReporteWRCSchema } from "./wrc";
 import { ReporteInputsNucSchema } from "./reporte-inputs-nuc";
 import { ReporteOCRSchema } from "./ocr";
 import { ReporteUWMNBSchema } from "./uwm-nb";
+import { ReporteBombeoSchema } from "./bombeo";
 
 // Unión heterogénea sin discriminante limpio -> z.union simple (no
 // z.discriminatedUnion). Parte del SCC de IDispositivo vía
@@ -28,5 +29,6 @@ export const ValoresReporteSchema = z.union([
   ReporteInputsNucSchema,
   ReporteOCRSchema,
   ReporteUWMNBSchema,
+  ReporteBombeoSchema,
 ]);
 export type IValoresReporte = z.infer<typeof ValoresReporteSchema>;

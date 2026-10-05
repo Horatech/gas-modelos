@@ -49,6 +49,7 @@ export const TipoDispositivoGasSchema = z.enum([
   "NME",
   "OCR",
   "UWM-NB",
+  "UC300",
 ]);
 export type TipoDispositivoGas = z.infer<typeof TipoDispositivoGasSchema>;
 
