@@ -39,6 +39,7 @@ export const EntidadesSchema = z.enum([
   "Medidor Eléctrico",
   "Dispositivo Externo NUC",
   "Punto de Medición",
+  "Estación de Bombeo",
 ]);
 export type IEntidades = z.infer<typeof EntidadesSchema>;
 

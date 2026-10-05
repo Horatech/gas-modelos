@@ -18,7 +18,7 @@ import type { Division } from "../tenant/usuario/permiso";
  * (`asignacion.ts`, `vinculacion.ts`), así que la fuente de verdad sigue siendo una.
  */
 
-/** Las 7 entidades intermedias que se pueden vincular a un punto de medición. */
+/** Las 8 entidades intermedias que se pueden vincular a un punto de medición. */
 export const TIPOS_ENTIDAD_VINCULABLE = [
   "Correctora",
   "Unidad de Presión",
@@ -27,6 +27,7 @@ export const TIPOS_ENTIDAD_VINCULABLE = [
   "Medidor Eléctrico",
   "Dispositivo Externo NUC",
   "Scada",
+  "Estación de Bombeo",
 ] as const;
 export type ITipoEntidadVinculable = (typeof TIPOS_ENTIDAD_VINCULABLE)[number];
 
@@ -187,6 +188,19 @@ export const METADATA_ENTIDADES_VINCULABLES: Record<
     campoHistorico: "idsAsignados",
     campoAlerta: "idScada",
     etiqueta: "tag SCADA",
+    coleccionesHistoricas: ["reportes"],
+  },
+  "Estación de Bombeo": {
+    tipoEntidad: "Estación de Bombeo",
+    divisiones: ["Estaciones de Bombeo"],
+    tiposDispositivo: ["UC300"],
+    campoIdPunto: "idEstacionBombeo",
+    campoFechaPunto: "fechaAsignacionEstacionBombeo",
+    multiple: false,
+    // gas-api-rtu escribe los reportes con idsAsignados [estación, punto, dispositivo].
+    campoHistorico: "idsAsignados",
+    campoAlerta: "idEstacionBombeo",
+    etiqueta: "estación de bombeo",
     coleccionesHistoricas: ["reportes"],
   },
 };
