@@ -11,6 +11,8 @@ export const UsuarioSchema = z.object({
   hash: z.string().optional(),
   idCliente: z.string().optional(),
   activo: z.boolean().optional(),
+  /** Usa el asistente de ayuda. Hace falta además `config.usaLlm` del cliente. */
+  usaLlm: z.boolean().optional(),
   fechaCreacion: z.string().optional(),
   permisos: z.array(PermisoSchema).optional(),
   datosPersonales: DatosPersonalesSchema.optional(),
