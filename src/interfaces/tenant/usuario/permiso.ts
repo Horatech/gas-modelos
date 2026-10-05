@@ -33,6 +33,7 @@ export const DivisionSchema = z.enum([
   "SCADA Mediciones",
   "Dispositivo Externo NUC",
   "Medidores Eléctricos",
+  "Estaciones de Bombeo",
 ]);
 export type Division = z.infer<typeof DivisionSchema>;
 

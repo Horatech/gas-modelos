@@ -13,7 +13,7 @@ import type { IDispositivoExternoNuc } from "./dispositivo-externo-nuc";
 
 export const ReporteTypesSchema = z.union([
   TipoInputDispositivoExternoSchema,
-  z.enum(["Presion", "Residencial", "Residencial Agua", "Scada"]),
+  z.enum(["Presion", "Residencial", "Residencial Agua", "Scada", "Bombeo"]),
 ]);
 export type reporteTypes = z.infer<typeof ReporteTypesSchema>;
 

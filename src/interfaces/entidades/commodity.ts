@@ -9,7 +9,11 @@
  * INVARIANTES respecto de `Dominio` (ver `canal-descriptor.ts`):
  * - `dominio: 'dispositivo'` ⇒ `commodity: 'na'` (batería y señal no son de ninguna vertical)
  * - `dominio: 'ambiente'`    ⇒ `commodity: 'na'`
- * - `dominio: 'proceso'`     ⇒ `commodity ∈ {gas, agua, electricidad, otro}`
+ * - `dominio: 'proceso'`     ⇒ `commodity ∈ {gas, agua, electricidad, saneamiento, otro}`
+ *
+ * `saneamiento` es la red cloacal (estaciones de bombeo de líquidos cloacales):
+ * vertical propia, separada de `agua` para que no se mezcle en agregaciones ni en
+ * catálogos de clasificación.
  *
  * `otro` cubre proceso sin vertical conocida: los contadores de pulsos externos
  * del NUC-2 (horas de bomba, eventos), que hoy no tienen unidad ni servicio en el
@@ -22,6 +26,7 @@ export const CommoditySchema = z.enum([
   "gas",
   "agua",
   "electricidad",
+  "saneamiento",
   "otro",
   "na",
 ]);

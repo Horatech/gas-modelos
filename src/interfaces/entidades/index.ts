@@ -11,6 +11,7 @@ export * from "./config-dispositivo";
 export * from "./correctora";
 export * from "./cromatografia";
 export * from "./cuenca";
+export * from "./estacion-bombeo";
 export * from "./canal-descriptor";
 export * from "./clasificacion-punto";
 export * from "./commodity";

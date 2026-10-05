@@ -95,6 +95,9 @@ export const PuntoMedicionSchema = z.object({
   // Medidor Electrico
   idMedidorElectrico: z.string().nullable().optional(),
   fechaAsignacionMedidorElectrico: z.string().nullable().optional(),
+  // Estación de bombeo (saneamiento)
+  idEstacionBombeo: z.string().nullable().optional(),
+  fechaAsignacionEstacionBombeo: z.string().nullable().optional(),
   // SCADA
   idsScada: z.array(z.string()).nullable().optional(),
   fechaAsignacionScada: z.string().nullable().optional(),
@@ -193,6 +196,8 @@ export interface IPuntoMedicion {
   fechaAsignacionMedidorResidencialAgua?: string | null;
   idMedidorElectrico?: string | null;
   fechaAsignacionMedidorElectrico?: string | null;
+  idEstacionBombeo?: string | null;
+  fechaAsignacionEstacionBombeo?: string | null;
   idsScada?: string[] | null;
   fechaAsignacionScada?: string | null;
   posicion?: number;
