@@ -41,7 +41,7 @@ test("estación con bombas; el alta no acepta calculados", () => {
   const e = {
     nombre: "Pozo Norte",
     idCliente: "c1",
-    deveuiRtu: "6445F17298620016",
+    deveui: "6445F17298620016",
     plantilla: "uc300-3b",
     bombas: [{ numero: 1, esclavoModbus: 2, entradaTestigo: "DI1", modoMando: "ninguno" }],
     ultimoEstado: { "b1.marcha": { valor: true, ok: true, medidoEn: "2026-09-02T13:23:03.000Z" } },
@@ -58,4 +58,18 @@ test("estación con bombas; el alta no acepta calculados", () => {
 test("el punto de medición referencia la estación", () => {
   const p = PuntoMedicionSchema.parse({ idEstacionBombeo: "e1", fechaAsignacionEstacionBombeo: "2026-10-05T00:00:00Z" });
   assert.equal(p.idEstacionBombeo, "e1");
+});
+
+test("la estación de bombeo es entidad vinculable por deveui", async () => {
+  const m = await import("../dist/index.js");
+  assert.ok(m.TIPOS_ENTIDAD_VINCULABLE.includes("Estación de Bombeo"));
+  assert.ok(m.EntidadesSchema.options.includes("Estación de Bombeo"));
+  const meta = m.METADATA_ENTIDADES_VINCULABLES["Estación de Bombeo"];
+  assert.deepEqual(meta.divisiones, ["Estaciones de Bombeo"]);
+  assert.deepEqual(meta.tiposDispositivo, ["UC300"]);
+  assert.equal(meta.campoIdPunto, "idEstacionBombeo");
+  assert.equal(m.PuntoMedicionSchema.shape[meta.campoFechaPunto] !== undefined, true);
+  assert.equal(m.AlertaSchema.shape[meta.campoAlerta] !== undefined, true);
+  assert.equal(m.EstacionBombeoSchema.shape.deveui !== undefined, true);
+  assert.equal(m.EstacionBombeoSchema.shape.deveuiRtu, undefined);
 });

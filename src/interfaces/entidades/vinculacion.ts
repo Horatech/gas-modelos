@@ -12,7 +12,7 @@ import { TIPOS_ENTIDAD_VINCULABLE } from "./metadata-vinculacion";
  */
 
 /**
- * Las 7 entidades intermedias que se pueden vincular a un punto de medición.
+ * Las 8 entidades intermedias que se pueden vincular a un punto de medición.
  * Subconjunto de `IEntidades` (que además incluye Dispositivo, UN, CO, Localidad
  * y el propio Punto de Medición, que no son vinculables en este sentido).
  *

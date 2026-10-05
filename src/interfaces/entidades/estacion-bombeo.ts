@@ -47,8 +47,12 @@ export const EstacionBombeoSchema = z.object({
   nombre: z.string().optional(),
   descripcion: z.string().optional(),
   idPuntoMedicion: z.string().nullable().optional(),
-  /** Número de serie del RTU (16 hex en el UC300); es el `deveui` de su IDispositivo. */
-  deveuiRtu: z.string().optional(),
+  /**
+   * RTU asignado: número de serie del UC300 (16 hex), que es el `deveui` de su
+   * IDispositivo. Mismo nombre de campo que el resto de las entidades
+   * vinculables: lo asigna y lo libera el proceso de vinculación, no el ABM.
+   */
+  deveui: z.string().nullable().optional(),
   /** Plantilla de canales del RTU ('uc300-3b', 'uc300-2b'). */
   plantilla: z.string().optional(),
   /**

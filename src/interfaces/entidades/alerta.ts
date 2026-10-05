@@ -122,6 +122,9 @@ export const AlertaSchema = z.object({
   idMedidorElectrico: z.string().optional(),
   idScada: z.string().optional(),
   idDispositivoExternoNuc: z.string().optional(),
+  idEstacionBombeo: z.string().optional(),
+  /** Bomba de la estación (`IBomba._id`) a la que se refiere la alerta, si aplica. */
+  idBomba: z.string().optional(),
   /** `_id` del GatewayLorawan, sólo en alertas de tipo "Gateway sin reportar" */
   idGatewayLorawan: z.string().optional(),
   numeroSerieCorrectora: z.string().nullable().optional(),
@@ -172,6 +175,8 @@ export interface IAlerta {
   idMedidorElectrico?: string;
   idScada?: string;
   idDispositivoExternoNuc?: string;
+  idEstacionBombeo?: string;
+  idBomba?: string;
   idGatewayLorawan?: string;
   numeroSerieCorrectora?: string | null;
   fechaCreacion?: string;
