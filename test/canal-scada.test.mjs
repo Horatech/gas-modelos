@@ -102,15 +102,18 @@ test("la aceptación distingue un tag booleano de uno no vigente", () => {
   assert.equal(ok("BOOLEANO"), false);
 });
 
-test("los comandos MQTT validan con y sin comandoId", () => {
-  const escribir = { apikey: "k", tag: "T", type: "Alto", value: 1 };
-  assert.equal(m.OPCDataSchema.safeParse(escribir).success, true);
-  assert.equal(m.OPCDataSchema.safeParse({ ...escribir, comandoId: "c1" }).success, true);
-  assert.equal(m.OPCDataSchema.safeParse({ ...escribir, comandoId: 1 }).success, false);
-  const leer = { apikey: "k", tag: "T" };
-  assert.equal(m.OPCLeerLimitesSchema.safeParse(leer).success, true);
-  assert.equal(m.OPCLeerLimitesSchema.safeParse({ ...leer, comandoId: "c1" }).success, true);
-  assert.equal(m.OPCLeerLimitesSchema.safeParse({ tag: "T" }).success, false);
+test("un lote sólo puede ser autoritativo del canal", () => {
+  const muestra = { tag: "T", timestamp: "2026-09-29T12:00:00.000Z", valorActual: 1.5 };
+  assert.equal(m.LoteTelemetriaSchema.safeParse(lote([muestra])).success, true);
+  assert.equal(
+    m.LoteTelemetriaSchema.safeParse({ ...lote([muestra]), autoritativo: "http" }).success,
+    false,
+  );
+});
+
+test("la huella no tiene origen HTTP", () => {
+  assert.equal(m.OrigenHuellaScadaSchema.safeParse("adaptador-canal").success, true);
+  assert.equal(m.OrigenHuellaScadaSchema.safeParse("adaptador-http").success, false);
 });
 
 test("un heartbeat sin los campos del canal sigue validando", () => {

@@ -50,21 +50,6 @@ export const STREAM_SUBJECTS_CANAL_SCADA = ["scada.v1.tel.>", "scada.v1.evt.>"] 
 export const STREAM_BORDE_SCADA = "SCADA_EDGE";
 /** Stream del hub, alimentado por `sources` desde el borde. */
 export const STREAM_HUB_SCADA = "SCADA";
-/** KV del dominio del leaf: el adaptador lo lee al arrancar aunque no haya túnel. */
-export const KV_CONFIG_CANAL_SCADA = "SCADA_CFG";
-
-/** Qué salida de telemetría usa el adaptador. Clave `canal.telemetria` del KV. */
-export const SalidaTelemetriaScadaSchema = z.enum(["http", "ambos", "nats"]);
-export type SalidaTelemetriaScada = z.infer<typeof SalidaTelemetriaScadaSchema>;
-
-/** Si el adaptador sigue suscripto a los comandos por MQTT. Clave `canal.comandos_mqtt` del KV. */
-export const ComandosMqttScadaSchema = z.enum(["on", "off"]);
-export type ComandosMqttScada = z.infer<typeof ComandosMqttScadaSchema>;
-
-export const CLAVES_KV_CANAL_SCADA = {
-  telemetria: "canal.telemetria",
-  comandosMqtt: "canal.comandos_mqtt",
-} as const;
 
 /**
  * Header `Nats-Msg-Id` de un mensaje de la VM: `<inst>:<arranqueId>:<seq>`. El stream del borde y
@@ -78,8 +63,7 @@ export function natsMsgIdCanalScada(inst: string, arranqueId: string, seq: numbe
 // ── Telemetría ───────────────────────────────────────────────────────────────────────────────
 
 /**
- * Una muestra: el mismo objeto que hoy recibe `POST /reportesOPC`, sin `idCliente` (lo da el
- * account). `calidad` y `tsServidor` viajan, pero hasta que se decida guardarlos el consumidor los
+ * Una muestra: el reporte SCADA de un tag, sin `idCliente` (lo da el account). `calidad` y `tsServidor` viajan, pero hasta que se decida guardarlos el consumidor los
  * quita antes de persistir (hoy `reporteOPC` guarda el objeto entero en `valores`).
  *
  * Los cuatro límites de un tag llegan de iFix con el mismo `sourceTimestamp`; una muestra puede
@@ -93,10 +77,6 @@ export const MuestraScadaSchema = ReporteScadaSchema.extend({
   tsServidor: z.string().optional(),
 });
 export type IMuestraScada = z.infer<typeof MuestraScadaSchema>;
-
-/** Qué camino vale para un lote (conmutación HTTP ↔ NATS sin duplicar efectos). */
-export const AutoritativoScadaSchema = z.enum(["nats", "http"]);
-export type AutoritativoScada = z.infer<typeof AutoritativoScadaSchema>;
 
 /**
  * Por qué se armó el lote. Lo marca el adaptador según su propio estado: iFix sella los valores
@@ -117,18 +97,19 @@ export const LoteTelemetriaSchema = z.object({
   seq: z.number().int().nonnegative(),
   /** Reloj del adaptador al cerrar el lote (ISO 8601). */
   armadoTs: z.string(),
-  autoritativo: AutoritativoScadaSchema,
+  /** Fijo: el canal es el único camino de la telemetría. */
+  autoritativo: z.literal("nats"),
   motivo: MotivoLoteScadaSchema,
   muestras: z.array(MuestraScadaSchema).min(1).max(MAX_MUESTRAS_LOTE_SCADA),
 });
 export type ILoteTelemetria = z.infer<typeof LoteTelemetriaSchema>;
 
-// ── Huella por minuto (sombra) ───────────────────────────────────────────────────────────────
+// ── Huella por minuto ────────────────────────────────────────────────────────────────────────
 
 /**
- * Huella de lo que pasó por un camino en un minuto: cantidad de muestras y XOR de la firma de cada
- * una. Durante la sombra los mismos datos viajan por HTTP y por el canal; si la huella de un minuto
- * coincide en las dos puntas, ese minuto viajó idéntico (sin pérdidas, duplicados ni cambios).
+ * Huella de lo que pasó por una punta del canal en un minuto: cantidad de muestras y XOR de la firma
+ * de cada una. Si la huella de un minuto coincide en el adaptador (lo que confirmó el leaf) y en el
+ * consumidor (lo que llegó del hub), ese minuto viajó idéntico (sin pérdidas, duplicados ni cambios).
  *
  * El minuto es el del `timestamp` de la muestra (hora de iFix), no el de envío ni el de llegada, así
  * que no depende del atraso del canal. Suma y XOR son conmutativos: las huellas parciales de un mismo
@@ -136,8 +117,6 @@ export type ILoteTelemetria = z.infer<typeof LoteTelemetriaSchema>;
  * cualquier orden con `combinarHuellasScada`.
  */
 export const OrigenHuellaScadaSchema = z.enum([
-  /** Muestras que el camino HTTP aceptó (2xx). */
-  "adaptador-http",
   /** Muestras de lotes que el leaf confirmó (PubAck). */
   "adaptador-canal",
   /** Muestras de lotes que el consumidor recibió del hub (primera entrega). */
@@ -348,35 +327,3 @@ export const ListaTagsScadaSchema = z.object({
   tags: z.array(TagSuscriptoScadaSchema),
 });
 export type IListaTagsScada = z.infer<typeof ListaTagsScadaSchema>;
-
-// ── Comandos por MQTT (camino actual, convive hasta F8) ──────────────────────────────────────
-
-/**
- * Tipo de valor en los comandos MQTT `…/scadas/escribir/limites`. El adaptador nombra `CV` al
- * valor actual; gas-api-integraciones y gas-api-cliente lo nombran `Valor Actual`.
- */
-export const OPCTypeSchema = z.enum(["Alto", "Muy Alto", "Bajo", "Muy Bajo", "CV", "Valor Actual"]);
-export type OPCType = z.infer<typeof OPCTypeSchema>;
-
-/** Payload de `…/scadas/escribir/limites` (hoy duplicado como `OPCData` en tres repos). */
-export const OPCDataSchema = z.object({
-  apikey: z.string(),
-  tag: z.string(),
-  type: OPCTypeSchema,
-  value: z.number(),
-  /**
-   * El mismo `comandoId` que viaja por el canal. Con el productor en `ambos`, el adaptador
-   * recibe el comando por los dos caminos y lo ejecuta una sola vez.
-   */
-  comandoId: z.string().optional(),
-});
-export type IOPCData = z.infer<typeof OPCDataSchema>;
-
-/** Payload de `…/scadas/leer/limites`. */
-export const OPCLeerLimitesSchema = z.object({
-  apikey: z.string(),
-  tag: z.string(),
-  /** Ver `OPCDataSchema.comandoId`. */
-  comandoId: z.string().optional(),
-});
-export type IOPCLeerLimites = z.infer<typeof OPCLeerLimitesSchema>;

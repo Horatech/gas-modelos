@@ -194,6 +194,18 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-05 - Canal SCADA: fuera los tipos de la transición (H8)
+
+Desde el 05-oct el canal NATS es el único camino de la integración SCADA (gas-opcua-externo `v2.0.0`,
+gas-api-integraciones `v1.19.0`, gas-api-cliente `v3.20.0`). Se quitan los tipos que sostenían la
+convivencia con HTTP y MQTT, que ya no importa nadie:
+
+- `OPCTypeSchema`, `OPCDataSchema`, `OPCLeerLimitesSchema` (payloads de los comandos MQTT).
+- `SalidaTelemetriaScadaSchema`, `ComandosMqttScadaSchema`, `CLAVES_KV_CANAL_SCADA` y
+  `KV_CONFIG_CANAL_SCADA` (modo del adaptador en el KV `SCADA_CFG` del leaf).
+- `AutoritativoScadaSchema`: `LoteTelemetria.autoritativo` queda fijo en `"nats"`.
+- Origen de huella `adaptador-http`.
+
 ### 2026-09-29 - Canal SCADA por el túnel (`canal-scada.ts`)
 
 § 2 de `/PLAN-SCADA-POR-TUNEL.md` (hito H0). Aditivo: todavía no lo consume nadie.
