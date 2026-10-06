@@ -69,6 +69,7 @@ export * from "./dash-general";
 export * from "./mensajes-bove";
 export * from "./nodo-navegacion";
 export * from "./unifilar";
+export * from "./simbolo";
 export * from "./consulta-asistente";
 export * from "./gpio-config-nuc-auditoria";
 export * from "./indicadores-historicos";
