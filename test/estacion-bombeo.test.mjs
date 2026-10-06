@@ -73,3 +73,14 @@ test("la estación de bombeo es entidad vinculable por deveui", async () => {
   assert.equal(m.EstacionBombeoSchema.shape.deveui !== undefined, true);
   assert.equal(m.EstacionBombeoSchema.shape.deveuiRtu, undefined);
 });
+
+test("la estación lleva los campos que escribe la vinculación", async () => {
+  const m = await import("../dist/index.js");
+  const r = m.UpdateEstacionBombeoSchema.safeParse({
+    deveui: null,
+    fechaAsignacionDispositivo: null,
+    estadoActual: "Sin Asignar",
+  });
+  assert.equal(r.success, true);
+  assert.equal(m.EstacionBombeoSchema.safeParse({ estadoActual: "Rota" }).success, false);
+});

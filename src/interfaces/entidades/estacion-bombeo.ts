@@ -8,6 +8,7 @@
  */
 
 import { z } from "zod";
+import { EstadoCorrectoraSchema } from "./estado";
 
 export const EntradaDigitalRtuSchema = z.enum(["DI1", "DI2", "DI3", "DI4"]);
 export type EntradaDigitalRtu = z.infer<typeof EntradaDigitalRtuSchema>;
@@ -53,6 +54,10 @@ export const EstacionBombeoSchema = z.object({
    * vinculables: lo asigna y lo libera el proceso de vinculación, no el ABM.
    */
   deveui: z.string().nullable().optional(),
+  /** Desde cuándo está asignado el RTU actual. Lo escribe la vinculación. */
+  fechaAsignacionDispositivo: z.string().nullable().optional(),
+  /** Estado de la estación; lo escriben la vinculación y el cálculo de estado. */
+  estadoActual: EstadoCorrectoraSchema.optional(),
   /** Plantilla de canales del RTU ('uc300-3b', 'uc300-2b'). */
   plantilla: z.string().optional(),
   /**
