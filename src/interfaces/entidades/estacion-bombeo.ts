@@ -47,7 +47,6 @@ export const EstacionBombeoSchema = z.object({
   _id: z.string().optional(),
   nombre: z.string().optional(),
   descripcion: z.string().optional(),
-  idPuntoMedicion: z.string().nullable().optional(),
   /**
    * RTU asignado: número de serie del UC300 (16 hex), que es el `deveui` de su
    * IDispositivo. Mismo nombre de campo que el resto de las entidades
@@ -65,6 +64,11 @@ export const EstacionBombeoSchema = z.object({
    * marcha según los decimales del sensor; ausente = el de la plantilla.
    */
   divisorNivel: z.number().optional(),
+  /**
+   * Nivel del pozo, en metros, a partir del cual se abre la alerta de nivel alto.
+   * Es propio de cada pozo: sin valor cargado no se alerta.
+   */
+  nivelAlarmaM: z.number().optional(),
   bombas: z.array(BombaSchema).optional(),
   // Calculado por el backend a partir de los reportes
   ultimoEstado: z.record(z.string(), ValorEstadoBombeoSchema).optional(),

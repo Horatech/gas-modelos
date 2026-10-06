@@ -64,6 +64,9 @@ export const TipoAlertaSchema = z.enum([
   // (`valores.limite`). Va con `idScada` y SIN `tag`: con `tag`, el cron no abriría "Sin
   // Reportar" en ese tag y reportesOPC la cerraría como si fuera la "Fuera de rango".
   "Error de configuración de límite",
+  // Estación de bombeo: el variador de una bomba informa falla activa (lectura
+  // fresca del RTU). Va con `idEstacionBombeo` e `idBomba`. La abre y cierra gas-api-rtu.
+  "Falla de variador",
 ]);
 export type ITipoAlerta = z.infer<typeof TipoAlertaSchema>;
 

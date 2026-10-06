@@ -84,3 +84,15 @@ test("la estación lleva los campos que escribe la vinculación", async () => {
   assert.equal(r.success, true);
   assert.equal(m.EstacionBombeoSchema.safeParse({ estadoActual: "Rota" }).success, false);
 });
+
+test("F2: alertas y envíos de bombeo; el punto no se guarda en la estación", async () => {
+  const m = await import("../dist/index.js");
+  assert.ok(m.TipoAlertaSchema.options.includes("Falla de variador"));
+  for (const t of [
+    "Estación de bombeo - Falla de variador",
+    "Estación de bombeo - Nivel alto",
+    "Estación de bombeo - Error de comunicación",
+  ]) assert.ok(m.TipoAlertaEnvioSchema.options.includes(t), t);
+  assert.equal(m.EstacionBombeoSchema.shape.idPuntoMedicion, undefined);
+  assert.equal(m.EstacionBombeoSchema.safeParse({ nivelAlarmaM: 3.5 }).success, true);
+});
