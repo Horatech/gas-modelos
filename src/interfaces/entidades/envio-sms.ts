@@ -35,6 +35,10 @@ export const TipoAlertaEnvioSchema = z.enum([
   // Integración on-premise. Los estados del adaptador OPC-UA salen por
   // "SCADA - Error de comunicación con servidor" (arriba); éste es el del enlace.
   "Enlace con la plataforma",
+  // Estaciones de bombeo (saneamiento). Las dispara gas-api-rtu al ABRIR la alerta.
+  "Estación de bombeo - Falla de variador",
+  "Estación de bombeo - Nivel alto",
+  "Estación de bombeo - Error de comunicación",
 ]);
 // El nombre del TIPO se mantiene igual al original (TipoAlerta, sin prefijo I
 // porque nunca fue una interface) — solo la constante *Schema se renombró
