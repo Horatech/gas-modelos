@@ -194,6 +194,23 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-08 - Historian del SCADA (`historian.ts`)
+
+§2.1 y §8 de `/PLAN-HISTORIAN-CAMUZZI.md`. Aditivo: todavía no lo consume nadie.
+
+- `hist.v1`: `ConsultaHistorian` (`serie` | `catalogo`) → `RespuestaHistorian` (`OK` | `RECHAZADA` |
+  `ERROR_HISTORIAN`), por `subjectConsultaHistorian(inst)` (petición/respuesta, fuera de todo stream).
+  La plataforma elige tags, ventana y resolución; el lector en la VM los traduce a una lista cerrada de
+  rutas de lectura de Proficy. Nunca viaja una ruta ni un parámetro crudo de Proficy.
+- Escalera fija de resoluciones (`2m`, `5m`, `15m`, `1h`, `1d`) para reusar bloques de caché. `2m` es la
+  grilla de archivo medida (120.000 ms) y se pide cruda; las demás llevan **envolvente obligatoria**
+  (promedio, mínimo, máximo): bajar resolución no puede esconder un pico.
+- Muestras como tuplas (`[ts, valor, calidad]` / `[ts, prom, min, max, calidad]`) para achicar la
+  respuesta que cruza el túnel. Calidad de Proficy 0..3.
+- Serie SCADA consolidada (`PedidoSerieScada` → `SerieScada`): puntos + `tramos` con fuente (`local` |
+  `historian`), resolución y estado (`ok` | `no-disponible` | `sin-mapeo`), para que el front marque de
+  dónde sale cada parte.
+
 ### 2026-10-05 - Canal SCADA: fuera los tipos de la transición (H8)
 
 Desde el 05-oct el canal NATS es el único camino de la integración SCADA (gas-opcua-externo `v2.0.0`,
