@@ -91,8 +91,10 @@ export const MuestraCrudaHistorianSchema = z.tuple([z.string(), z.number().nulla
 export type MuestraCrudaHistorian = z.infer<typeof MuestraCrudaHistorianSchema>;
 
 /**
- * Intervalo agregado: `[inicio ISO UTC, promedio, mínimo, máximo, calidad]`. La envolvente es
- * obligatoria: bajar resolución no puede esconder un pico (decisión 08-oct-2026).
+ * Intervalo agregado: `[cierre del intervalo ISO UTC, promedio, mínimo, máximo, calidad]`. Proficy
+ * rotula cada intervalo de `calculated` con su cierre (verificado contra `fixhist` el 08-oct-2026: la
+ * ventana 20:00→20:00 a 1 h devuelve de 21:00 a 20:00). La envolvente es obligatoria: bajar resolución
+ * no puede esconder un pico (decisión 08-oct-2026).
  */
 export const MuestraAgregadaHistorianSchema = z.tuple([
   z.string(),
@@ -185,7 +187,7 @@ export const PedidoSerieScadaSchema = z.object({
 });
 export type IPedidoSerieScada = z.infer<typeof PedidoSerieScadaSchema>;
 
-/** `[timestamp ISO UTC, valor]` en lo crudo; `[inicio, promedio, mínimo, máximo]` en lo agregado. */
+/** `[timestamp ISO UTC, valor]` en lo crudo; `[cierre del intervalo, promedio, mínimo, máximo]` en lo agregado. */
 export const PuntoSerieScadaSchema = z.union([
   z.tuple([z.string(), z.number()]),
   z.tuple([z.string(), z.number(), z.number(), z.number()]),
