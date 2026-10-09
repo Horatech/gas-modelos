@@ -59,6 +59,12 @@ export const TipoAlertaSchema = z.enum([
   "Integración SCADA sin conexión",
   "Integración SCADA sin datos",
   "Integración SCADA con errores",
+  // Conector Historian (lector del historiador en la VM del cliente). Mismas reglas que las
+  // anteriores: sin punto ni división, sólo admin global, sólo en modo `activo`.
+  "Conector Historian sin señal",
+  "Conector Historian sin credencial",
+  "Conector Historian sin conexión",
+  "Conector Historian con errores",
   // Rechazo de la escritura de un límite por configuración (ej. BadOutOfRange: el valor de
   // INSIDEht está fuera del rango del tag en iFix). Una por tag SCADA y por límite
   // (`valores.limite`). Va con `idScada` y SIN `tag`: con `tag`, el cron no abriría "Sin
@@ -77,6 +83,10 @@ export const TIPOS_ALERTA_ONPREMISE = [
   "Integración SCADA sin conexión",
   "Integración SCADA sin datos",
   "Integración SCADA con errores",
+  "Conector Historian sin señal",
+  "Conector Historian sin credencial",
+  "Conector Historian sin conexión",
+  "Conector Historian con errores",
 ] as const satisfies readonly ITipoAlerta[];
 
 export const AlertaInputsNucv2Schema = z.object({

@@ -25,6 +25,14 @@ export function subjectConsultaHistorian(inst: string): string {
   return `hist.v1.consulta.${inst}`;
 }
 
+/**
+ * VM → plataforma: `IHeartbeatConectorHistorian` cada 60 s. Core NATS, sin stream: con el túnel caído no
+ * llega, que es la semántica buscada (un heartbeat viejo reenviado daría un "vivo" falso).
+ */
+export function subjectEstadoHistorian(inst: string): string {
+  return `hist.v1.estado.${inst}`;
+}
+
 // ── Resolución ───────────────────────────────────────────────────────────────────────────────
 
 /**

@@ -194,6 +194,31 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-09 - Estado on-premise en tres componentes: túnel, puente OPC-UA, conector Historian
+
+§10 de `/PLAN-HISTORIAN-CAMUZZI.md`. Nombres frente al cliente: **Túnel** (`enlace`), **Puente OPC-UA**
+(`integracionScada`) y **Conector Historian** (`historian`, nuevo).
+
+- `estado-onpremise.ts`:
+  - `SondaTunelSchema` y `IEstadoComponenteEnlace.sondas` (por instancia): la sonda de punta a punta del canal
+    (la plataforma le pide a cada leaf `$JS.<dominio>.API.INFO`). Un nodo del tailnet online no implica que el
+    canal funcione. Un cliente puede tener más de una VM con leaf: el túnel cae si cae cualquiera.
+  - `HeartbeatConectorHistorianSchema` (lo publica el lector por `subjectEstadoHistorian`),
+    `EstadoConectorHistorianSchema`, `TIPO_ALERTA_POR_ESTADO_HISTORIAN`, `EstadoComponenteHistorianSchema`.
+  - `EstadoIntegracionScadaSchema` y el del conector empiezan con **`"Sin información"`**: los heartbeats van
+    por el canal, así que con el túnel caído no llegan; esos componentes se muestran así y **no abren alerta**
+    (la única alerta es la del túnel). `"Pausado"` (interruptor del lector) tampoco alerta.
+  - `ComponenteOnPremise` suma `historian`; `IEstadoOnPremise.historian`.
+- `historian.ts`: `subjectEstadoHistorian(inst)` = `hist.v1.estado.<inst>` (core NATS, sin stream).
+- `alerta.ts`: cuatro tipos `"Conector Historian …"`, también en `TIPOS_ALERTA_ONPREMISE`.
+- `cliente.model.ts`: `IConfigOnPremise.historian` (declaración explícita por cliente).
+
+Sin plantillas de envío nuevas: las notificaciones del estado on-premise quedaron fuera por decisión del usuario.
+
+⚠️ `gas-datos` `estado-onpremise.model.ts` necesita `@Prop({ type: Object }) historian` (el schema es estricto).
+⚠️ `gas-web-cliente` `integracion-onpremise/service.ts` tiene `Record<EstadoIntegracionScada, string>`: al subir de
+versión hay que darle nombre a `"Sin información"` o no compila.
+
 ### 2026-10-08 - Historian del SCADA (`historian.ts`)
 
 §2.1 y §8 de `/PLAN-HISTORIAN-CAMUZZI.md`. Aditivo: todavía no lo consume nadie.
