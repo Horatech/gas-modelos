@@ -194,6 +194,20 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-09 - Registros SCADA consolidados (`historian.ts`)
+
+Pendiente 7 de `/HANDOFF-HISTORIAN.md`. Aditivo: todavía no lo consume nadie.
+
+La tabla y el export del listado de una variable SCADA leían sólo la base; con el TTL quedarían vacíos antes
+del corte. Pasan a un endpoint de gas-api-cliente que usa el mismo planificador que la serie del gráfico.
+
+- `PedidoRegistrosScadaSchema`: `desde`, `hasta`, `page`, `limit` (≤ `MAX_LIMIT_REGISTROS_SCADA`) y `sort`
+  (`-fecha` por defecto; por valor sólo si todo el período es local).
+- `ListadoRegistrosScadaSchema` (`IListadoRegistrosScada`): filas `IRegistroScada` (`timestamp`, `valor`,
+  `minimo`/`maximo` en lo agregado, `fuente`), `totalCount`, `tramos` y `ordenPorValor`.
+- `PedidoExportRegistrosScadaSchema` + `MAX_DIAS_EXPORT_CRUDO_SCADA` (31): hasta ese período el export lleva
+  el Historian crudo a 2 min; más largo, por hora con promedio, mínimo y máximo.
+
 ### 2026-10-09 - Fuentes SCADA de un cliente (`fuente-scada.ts`)
 
 `/PLAN-MULTI-FUENTE-SCADA.md` §4.1. Aditivo: todavía no lo consume nadie.

@@ -233,3 +233,57 @@ export const SerieScadaSchema = z.object({
   truncado: z.boolean(),
 });
 export type ISerieScada = z.infer<typeof SerieScadaSchema>;
+
+// ── Registros SCADA consolidados (tabla y export del listado de una variable) ───────────────
+
+/**
+ * Hasta este período (días) el export lleva el tramo del Historian crudo, cada 2 min. Más largo, el
+ * tramo del Historian sale por hora con promedio, mínimo y máximo.
+ */
+export const MAX_DIAS_EXPORT_CRUDO_SCADA = 31;
+
+/** Tope de filas por página de la tabla. */
+export const MAX_LIMIT_REGISTROS_SCADA = 100;
+
+export const OrdenRegistrosScadaSchema = z.enum(["-fecha", "fecha", "-valor", "valor"]);
+export type OrdenRegistrosScada = z.infer<typeof OrdenRegistrosScadaSchema>;
+
+export const PedidoRegistrosScadaSchema = z.object({
+  desde: z.string(),
+  hasta: z.string(),
+  page: z.coerce.number().int().min(0).default(0),
+  limit: z.coerce.number().int().positive().max(MAX_LIMIT_REGISTROS_SCADA).default(10),
+  /** Por valor sólo si el período no tiene tramo del Historian (ver `ordenPorValor`). */
+  sort: OrdenRegistrosScadaSchema.default("-fecha"),
+});
+export type IPedidoRegistrosScada = z.infer<typeof PedidoRegistrosScadaSchema>;
+
+export const PedidoExportRegistrosScadaSchema = z.object({
+  desde: z.string(),
+  hasta: z.string(),
+});
+export type IPedidoExportRegistrosScada = z.infer<typeof PedidoExportRegistrosScadaSchema>;
+
+export const RegistroScadaSchema = z.object({
+  /** ISO UTC. En lo agregado, el cierre del intervalo. */
+  timestamp: z.string(),
+  valor: z.number(),
+  /** Sólo en filas agregadas del Historian. */
+  minimo: z.number().optional(),
+  maximo: z.number().optional(),
+  fuente: FuenteTramoSerieSchema,
+});
+export type IRegistroScada = z.infer<typeof RegistroScadaSchema>;
+
+export const ListadoRegistrosScadaSchema = z.object({
+  datos: z.array(RegistroScadaSchema),
+  /**
+   * Lo local se cuenta; lo del Historian se estima por la grilla de 2 min, así que con huecos en el
+   * Historian la última página puede traer menos filas.
+   */
+  totalCount: z.number(),
+  tramos: z.array(TramoSerieScadaSchema),
+  /** El período es todo local: se puede ordenar por valor. */
+  ordenPorValor: z.boolean(),
+});
+export type IListadoRegistrosScada = z.infer<typeof ListadoRegistrosScadaSchema>;
