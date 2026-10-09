@@ -309,6 +309,8 @@ export const ConfigOnPremiseSchema = z.object({
   tags: z.array(z.string()).optional(),
   /** El cliente tiene adaptador OPC-UA: sin heartbeat, la integración queda "Sin señal". */
   integracionScada: z.boolean().optional(),
+  /** El cliente tiene conector Historian: sin heartbeat, el conector queda "Sin señal". */
+  historian: z.boolean().optional(),
 });
 export type IConfigOnPremise = z.infer<typeof ConfigOnPremiseSchema>;
 
