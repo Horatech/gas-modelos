@@ -2,10 +2,17 @@ import { z } from "zod";
 import type { ITipoAlerta } from "./alerta";
 
 /**
- * Estado de la integración on-premise de un cliente: el enlace (nodos del tailnet
- * declarados en `config.onPremise.tags`) y el adaptador OPC-UA. Un documento por
- * cliente. Lo escribe únicamente el evaluador de gas-cron; gas-api-integraciones
- * sólo guarda el último heartbeat.
+ * Estado de la integración on-premise de un cliente, en tres componentes:
+ * - `enlace` ("Túnel" frente al cliente): nodos del tailnet declarados en `config.onPremise.tags`
+ *   y la sonda de punta a punta del canal (la plataforma le pide al leaf `$JS.<dominio>.API.INFO`).
+ * - `integracionScada` ("Puente OPC-UA"): el adaptador OPC-UA.
+ * - `historian` ("Conector Historian"): el lector del historiador.
+ *
+ * Los heartbeats del puente y del conector viajan por el canal: con el túnel caído no llegan. Por
+ * eso, con el enlace "Desconectado", esos dos quedan "Sin información" y no abren alerta propia.
+ *
+ * Un documento por cliente. Lo escribe únicamente el evaluador de gas-cron; gas-api-integraciones
+ * sólo guarda el último heartbeat y la última sonda. Plan: `gas/PLAN-HISTORIAN-CAMUZZI.md` §10.
  */
 
 /**
@@ -55,6 +62,8 @@ export type EstadoEnlaceOnPremise = z.infer<typeof EstadoEnlaceOnPremiseSchema>;
 
 /** En orden de precedencia: se muestra el primero que se cumple. */
 export const EstadoIntegracionScadaSchema = z.enum([
+  /** El túnel está caído: el heartbeat no puede llegar. No abre alerta. */
+  "Sin información",
   "Sin señal",
   "Sin conexión",
   "Sin datos",
@@ -84,6 +93,23 @@ export const NodoEnlaceOnPremiseSchema = z.object({
 });
 export type INodoEnlaceOnPremise = z.infer<typeof NodoEnlaceOnPremiseSchema>;
 
+/**
+ * Sonda de punta a punta del túnel: gas-api-integraciones le pide al leaf de la VM
+ * `$JS.<dominio>.API.INFO` por el canal cada minuto. La contesta el propio leaf, así que no depende
+ * del adaptador ni del lector.
+ */
+export const SondaTunelSchema = z.object({
+  /** Momento de la sonda, reloj de la plataforma (ISO 8601) */
+  fecha: z.string(),
+  ok: z.boolean(),
+  /** Ida y vuelta, si respondió */
+  rttMs: z.number().optional(),
+  error: z.string().optional(),
+  /** Última sonda que respondió (ISO 8601) */
+  ultimaOk: z.string().optional(),
+});
+export type ISondaTunel = z.infer<typeof SondaTunelSchema>;
+
 export const EstadoComponenteEnlaceSchema = z.object({
   estado: EstadoEnlaceOnPremiseSchema,
   /** Desde cuándo está en este estado (ISO 8601) */
@@ -91,6 +117,11 @@ export const EstadoComponenteEnlaceSchema = z.object({
   /** Última evaluación con datos del tailnet (ISO 8601) */
   actualizado: z.string().optional(),
   nodos: z.array(NodoEnlaceOnPremiseSchema).optional(),
+  /**
+   * Última sonda del canal por instancia (VM con leaf). Un cliente puede tener más de una (p. ej.
+   * el puente en una VM y el conector en otra): el túnel está caído si cae cualquiera.
+   */
+  sondas: z.record(z.string(), SondaTunelSchema).optional(),
 });
 export type IEstadoComponenteEnlace = z.infer<typeof EstadoComponenteEnlaceSchema>;
 
@@ -123,7 +154,93 @@ export const EstadoComponenteIntegracionSchema = z.object({
 });
 export type IEstadoComponenteIntegracion = z.infer<typeof EstadoComponenteIntegracionSchema>;
 
-export const ComponenteOnPremiseSchema = z.enum(["enlace", "integracionScada"]);
+// ── Conector Historian ───────────────────────────────────────────────────────────────────────
+
+/**
+ * Lo que el lector del Historian publica cada minuto por el canal (`subjectEstadoHistorian`).
+ * El account de NATS identifica al cliente.
+ */
+export const HeartbeatConectorHistorianSchema = z.object({
+  /** Arranque del proceso (ISO 8601). Si cambia, el proceso se reinició. */
+  arranque: z.string(),
+  /** Momento del envío según el reloj del lector (ISO 8601) */
+  enviado: z.string(),
+  /** Versión (commit) de la imagen */
+  version: z.string().optional(),
+  /** false = interruptor apagado (pausa deliberada) */
+  habilitado: z.boolean(),
+  tagsDeclarados: z.number(),
+  tagsPermitidos: z.number(),
+  /** Credencial con la que la puerta consulta el Historian */
+  token: z.object({
+    fuente: z.enum(["archivo", "cliente"]),
+    /** La puerta tiene un token utilizable */
+    ok: z.boolean(),
+    /** Vencimiento del token vigente (ISO 8601), si se conoce */
+    vence: z.string().optional(),
+    error: z.string().optional(),
+  }),
+  /** Sonda periódica al Historian (`serverproperties`, no lee tags) */
+  sonda: z.object({
+    ultimaOk: z.string().optional(),
+    ultimoError: z.string().optional(),
+    error: z.string().optional(),
+    /** HTTP del último error (401/403 = credencial rechazada) */
+    http: z.number().optional(),
+    ms: z.number().optional(),
+    /** `ReadQueueSize` del Historian en la última sonda */
+    colaLectura: z.number().optional(),
+  }),
+  /** Consultas atendidas desde el arranque */
+  consultas: z.object({
+    ok: z.number(),
+    rechazadas: z.number(),
+    errores: z.number(),
+  }),
+  cortacircuitoAbierto: z.boolean(),
+});
+export type IHeartbeatConectorHistorian = z.infer<typeof HeartbeatConectorHistorianSchema>;
+
+/** En orden de precedencia: se muestra el primero que se cumple. */
+export const EstadoConectorHistorianSchema = z.enum([
+  /** El túnel está caído: el heartbeat no puede llegar. No abre alerta. */
+  "Sin información",
+  "Sin señal",
+  /** Interruptor apagado. Informativo, no abre alerta. */
+  "Pausado",
+  /** Sin token utilizable, o el Historian lo rechaza (401/403). */
+  "Sin credencial",
+  /** La sonda al Historian falla. */
+  "Sin conexión",
+  /** Cortacircuito abierto o errores en la ventana. */
+  "Con errores",
+  "Operativo",
+]);
+export type EstadoConectorHistorian = z.infer<typeof EstadoConectorHistorianSchema>;
+
+export const TIPO_ALERTA_POR_ESTADO_HISTORIAN: Partial<Record<EstadoConectorHistorian, ITipoAlerta>> = {
+  "Sin señal": "Conector Historian sin señal",
+  "Sin credencial": "Conector Historian sin credencial",
+  "Sin conexión": "Conector Historian sin conexión",
+  "Con errores": "Conector Historian con errores",
+};
+
+export const EstadoComponenteHistorianSchema = z.object({
+  estado: EstadoConectorHistorianSchema,
+  desde: z.string(),
+  /** Última evaluación (ISO 8601) */
+  actualizado: z.string().optional(),
+  /** Último heartbeat recibido, tal cual */
+  heartbeat: HeartbeatConectorHistorianSchema.optional(),
+  /** Recepción del último heartbeat según el reloj de la plataforma (ISO 8601) */
+  heartbeatRecibido: z.string().optional(),
+  /** Muestras del contador `consultas.errores`, para la ventana de "Con errores" */
+  muestrasErrores: z.array(MuestraRechazosSchema).optional(),
+  ultimoConErrores: z.string().optional(),
+});
+export type IEstadoComponenteHistorian = z.infer<typeof EstadoComponenteHistorianSchema>;
+
+export const ComponenteOnPremiseSchema = z.enum(["enlace", "integracionScada", "historian"]);
 export type ComponenteOnPremise = z.infer<typeof ComponenteOnPremiseSchema>;
 
 /** Cambio de estado detectado por el evaluador. En modo `observacion` es lo único que queda. */
@@ -142,6 +259,7 @@ export const EstadoOnPremiseSchema = z.object({
   idCliente: z.string(),
   enlace: EstadoComponenteEnlaceSchema.optional(),
   integracionScada: EstadoComponenteIntegracionSchema.optional(),
+  historian: EstadoComponenteHistorianSchema.optional(),
   /** Últimas transiciones, la más reciente primero (acotado) */
   transiciones: z.array(TransicionOnPremiseSchema).optional(),
   fechaActualizacion: z.string().optional(),
