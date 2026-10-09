@@ -194,6 +194,34 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-09 - Fuentes SCADA de un cliente (`fuente-scada.ts`)
+
+`/PLAN-MULTI-FUENTE-SCADA.md` §4.1. Aditivo: todavía no lo consume nadie.
+
+Camuzzi tiene un segundo iFix (`srv-ifix02`, nodo `FIX02`) del que hay que leer tags en vivo. Cada
+servidor lo lee una instancia propia del adaptador OPC-UA, así que hace falta saber de qué servidor es
+cada tag.
+
+- `FuenteScadaSchema` (`IFuenteScada`): las fuentes de un cliente. `alias` (el nodo: `FIX`, `FIX02`),
+  `porDefecto`, `inst` (el `CANAL_INST` del adaptador que la lee), `protocolo` (`opcua`) y
+  `perfilNodeId` (`ifix`). Endpoint y credenciales **no** van acá: viven en el env de la VM.
+- `normalizarTagScada(entrada, fuentes)`: lleva el tag ingresado a cómo se guarda.
+  - `TAG`, `TAG.F_CV`, `FIX.TAG`, `FIX.TAG.F_CV` → `TAG` (fuente por defecto, como hoy).
+  - `FIX02.TAG[.F_CV]` → `FIX02.TAG`.
+  - Un alias que no es fuente del cliente se rechaza.
+- `partirTagScada`, `calificarTagScada`, `esTagDeFuenteScada`: un tag guardado pertenece a una sola
+  fuente. Sin prefijo = la por defecto.
+
+**Por qué el tag guardado lleva el prefijo** y no un campo `fuente` aparte: la plataforma busca el punto
+por tag solo (`scadas:tag:<tag>`, `configdispositivos:tag:<tag>`, la guarda del consumidor). Con el
+prefijo el tag sigue siendo único y ninguna de esas claves cambia. Los tags sin prefijo no se migran.
+
+**Sólo corta por `.`.** Verificado en `gas_production` (09-oct): ninguno de los 1.254 `scadas.tag` tiene
+`.`, y 20 usan `-`, `&` o `Ñ`. 18 `configdispositivos` tienen el tag en notación iFIX (`FIX.<TAG>`,
+`<TAG>.F_CV`), pegado tal como lo muestra iFIX: es lo que la normalización absorbe.
+
+No requiere `@Prop()` en gas-datos: la colección `fuentesscada` es nueva.
+
 ### 2026-10-08 - Historian del SCADA (`historian.ts`)
 
 §2.1 y §8 de `/PLAN-HISTORIAN-CAMUZZI.md`. Aditivo: todavía no lo consume nadie.
