@@ -58,7 +58,11 @@ test("heartbeat del conector válido; sin token ni sonda no pasa", () => {
 test("el documento de estado admite los tres componentes y la sonda del túnel", () => {
   const doc = {
     idCliente: "x",
-    enlace: { estado: "Conectado", desde: "a", sonda: { fecha: "b", ok: true, rttMs: 174, ultimaOk: "b" } },
+    enlace: {
+      estado: "Conectado",
+      desde: "a",
+      sondas: { r01: { fecha: "b", ok: true, rttMs: 174, ultimaOk: "b" }, r03: { fecha: "b", ok: false, error: "timeout" } },
+    },
     integracionScada: { estado: "Sin información", desde: "a" },
     historian: { estado: "Operativo", desde: "a" },
     transiciones: [{ fecha: "a", componente: "historian", de: "Sin señal", a: "Operativo", modo: "observacion" }],

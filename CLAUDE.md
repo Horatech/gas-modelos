@@ -200,8 +200,9 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 (`integracionScada`) y **Conector Historian** (`historian`, nuevo).
 
 - `estado-onpremise.ts`:
-  - `SondaTunelSchema` y `IEstadoComponenteEnlace.sonda`: la sonda de punta a punta del canal (la plataforma
-    le pide al leaf `$JS.<dominio>.API.INFO`). Un nodo del tailnet online no implica que el canal funcione.
+  - `SondaTunelSchema` y `IEstadoComponenteEnlace.sondas` (por instancia): la sonda de punta a punta del canal
+    (la plataforma le pide a cada leaf `$JS.<dominio>.API.INFO`). Un nodo del tailnet online no implica que el
+    canal funcione. Un cliente puede tener más de una VM con leaf: el túnel cae si cae cualquiera.
   - `HeartbeatConectorHistorianSchema` (lo publica el lector por `subjectEstadoHistorian`),
     `EstadoConectorHistorianSchema`, `TIPO_ALERTA_POR_ESTADO_HISTORIAN`, `EstadoComponenteHistorianSchema`.
   - `EstadoIntegracionScadaSchema` y el del conector empiezan con **`"Sin información"`**: los heartbeats van

@@ -117,8 +117,11 @@ export const EstadoComponenteEnlaceSchema = z.object({
   /** Última evaluación con datos del tailnet (ISO 8601) */
   actualizado: z.string().optional(),
   nodos: z.array(NodoEnlaceOnPremiseSchema).optional(),
-  /** Última sonda del canal */
-  sonda: SondaTunelSchema.optional(),
+  /**
+   * Última sonda del canal por instancia (VM con leaf). Un cliente puede tener más de una (p. ej.
+   * el puente en una VM y el conector en otra): el túnel está caído si cae cualquiera.
+   */
+  sondas: z.record(z.string(), SondaTunelSchema).optional(),
 });
 export type IEstadoComponenteEnlace = z.infer<typeof EstadoComponenteEnlaceSchema>;
 
