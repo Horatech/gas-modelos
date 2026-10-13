@@ -16,8 +16,9 @@ import type { ITipoAlerta } from "./alerta";
  */
 
 /**
- * Lo que el adaptador OPC-UA manda a gas-api-integraciones cada minuto
- * (`POST /integracion/heartbeat`). La apikey identifica al cliente.
+ * Lo que el adaptador OPC-UA manda cada minuto por el canal (`scada.v1.estado.<inst>`): la instancia
+ * sale del subject. El `POST /integracion/heartbeat` (apikey, sin instancia) queda para adaptadores
+ * anteriores al canal.
  */
 export const HeartbeatIntegracionScadaSchema = z.object({
   /** Arranque del proceso (ISO 8601). Si cambia, el proceso se reinició. */
@@ -134,11 +135,13 @@ export const MuestraRechazosSchema = z.object({
 });
 export type IMuestraRechazos = z.infer<typeof MuestraRechazosSchema>;
 
-export const EstadoComponenteIntegracionSchema = z.object({
+/**
+ * Estado de UNA instancia del adaptador (su `CANAL_INST`). Un cliente puede tener varias: una por
+ * fuente SCADA (`IFuenteScada.inst`, `gas/PLAN-MULTI-FUENTE-SCADA.md`).
+ */
+export const EstadoPuenteInstanciaSchema = z.object({
   estado: EstadoIntegracionScadaSchema,
   desde: z.string(),
-  /** Última evaluación (ISO 8601) */
-  actualizado: z.string().optional(),
   /** Último heartbeat recibido, tal cual */
   heartbeat: HeartbeatIntegracionScadaSchema.optional(),
   /** Recepción del último heartbeat según el reloj de la plataforma (ISO 8601) */
@@ -152,7 +155,34 @@ export const EstadoComponenteIntegracionSchema = z.object({
   /** Último momento en que la ventana tuvo rechazos por encima del umbral (ISO 8601) */
   ultimoConErrores: z.string().optional(),
 });
+export type IEstadoPuenteInstancia = z.infer<typeof EstadoPuenteInstanciaSchema>;
+
+/**
+ * El puente OPC-UA del cliente. Con `instancias`, `estado` es el peor de ellas
+ * (`peorEstadoIntegracion`) y `ultimoDato` el más reciente; `heartbeat` y `heartbeatRecibido` de este
+ * nivel son los del `POST /integracion/heartbeat` sin instancia y no se evalúan mientras haya
+ * instancias. Sin `instancias`, todo es como antes: un solo puente.
+ */
+export const EstadoComponenteIntegracionSchema = EstadoPuenteInstanciaSchema.extend({
+  /** Última evaluación (ISO 8601) */
+  actualizado: z.string().optional(),
+  /** Por `CANAL_INST`. Las escribe gas-api-integraciones (heartbeat) y gas-cron (evaluación). */
+  instancias: z.record(z.string(), EstadoPuenteInstanciaSchema).optional(),
+});
 export type IEstadoComponenteIntegracion = z.infer<typeof EstadoComponenteIntegracionSchema>;
+
+/**
+ * El peor de varios estados del puente, según la precedencia de `EstadoIntegracionScadaSchema` (el
+ * primero de la lista es el peor). undefined si no hay ninguno.
+ */
+export function peorEstadoIntegracion(
+  estados: readonly EstadoIntegracionScada[],
+): EstadoIntegracionScada | undefined {
+  const orden = EstadoIntegracionScadaSchema.options;
+  let peor: EstadoIntegracionScada | undefined;
+  for (const e of estados) if (peor === undefined || orden.indexOf(e) < orden.indexOf(peor)) peor = e;
+  return peor;
+}
 
 // ── Conector Historian ───────────────────────────────────────────────────────────────────────
 
