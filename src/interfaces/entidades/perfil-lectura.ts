@@ -571,9 +571,36 @@ const PERFIL_NME: IPerfilLectura = {
  *
  * Agregar una familia es agregar una entrada acá; no toca nada de lo publicado.
  */
+/**
+ * Variable SCADA: un reporte por muestra, forma angosta. Unidad, tipo y si es booleana salen del `IScada`. El tag
+ * es único por cliente (también con varias fuentes: `FIX02.TAG`), por eso la identidad es `device.tag`.
+ * Sin discriminante por `deviceTipo`: el reporte SCADA se reconoce por `device.tag`.
+ */
+export const PERFIL_SCADA: IPerfilLectura = {
+  clave: "SCADA",
+  origen: "reportes",
+  discriminante: {},
+  forma: "angosto",
+  canalUnico: { campoValor: "valores.valorActual", identidad: "device.tag", descriptorDesdeInstancia: true },
+  descripcion: "Variable SCADA (iFIX por OPC-UA)",
+};
+
+/** `reportes/SCADA#tag:<tag>`: cómo se guarda una variable SCADA en un preset o una vista. */
+export function canalScada(tag: string): string {
+  return canalRef("reportes", "SCADA", `tag:${tag}`);
+}
+
+/** Inverso de `canalScada`; `null` si el canal no es de una variable SCADA. */
+export function tagDeCanalScada(ref: string): string | null {
+  const p = parseCanalRef(ref);
+  if (!p || p.origen !== "reportes" || p.perfil !== "SCADA" || !p.selector.startsWith("tag:")) return null;
+  return p.selector.slice(4) || null;
+}
+
 export const CATALOGO_CANALES: IPerfilLectura[] = [
   PERFIL_NUC_CORRECTORA,
   PERFIL_NME,
+  PERFIL_SCADA,
 ];
 
 /** Descriptor de un `CanalRef`, o `undefined` si el catálogo no lo cubre. */
