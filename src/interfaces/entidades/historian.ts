@@ -234,6 +234,59 @@ export const SerieScadaSchema = z.object({
 });
 export type ISerieScada = z.infer<typeof SerieScadaSchema>;
 
+// ── Varias series y catálogo por tag (gráfico personalizado, P56) ─────────────────────────────
+
+export const MAX_SCADAS_SERIES = 20;
+
+const idsSeparadosPorComa = z
+  .string()
+  .transform((s) => s.split(",").map((x) => x.trim()).filter(Boolean))
+  .pipe(z.array(z.string()).min(1).max(MAX_SCADAS_SERIES));
+
+/** `GET /series-scada`: las de `/scadas/:id/serie`, de varios scadas en un pedido. Sin contexto de punto. */
+export const PedidoSeriesScadaSchema = z.object({
+  ids: idsSeparadosPorComa,
+  desde: z.string(),
+  hasta: z.string(),
+  maxPuntos: z.coerce.number().int().positive().max(MAX_PUNTOS_SERIE_SCADA).optional(),
+});
+export type IPedidoSeriesScada = z.infer<typeof PedidoSeriesScadaSchema>;
+
+export const SeriesScadaSchema = z.object({
+  /** En el orden de `ids`. */
+  series: z.array(z.object({ idScada: z.string(), serie: SerieScadaSchema })),
+});
+export type ISeriesScada = z.infer<typeof SeriesScadaSchema>;
+
+/** Tope de `POST /historian/catalogo` (se consulta al lector de a `MAX_TAGS_CONSULTA_HISTORIAN`). */
+export const MAX_TAGS_CATALOGO_HISTORIAN = 50;
+
+export const PedidoCatalogoHistorianSchema = z.object({
+  tags: z.array(z.string().min(1)).min(1).max(MAX_TAGS_CATALOGO_HISTORIAN),
+});
+
+export const EntradaCatalogoHistorianSchema = z.object({
+  tag: z.string(),
+  /** Declarado y archivado: el lector lo acepta en una consulta de serie. */
+  enHistorian: z.boolean(),
+  /** Primera muestra archivada (ISO 8601). */
+  primeraMuestra: z.string().optional(),
+});
+export type IEntradaCatalogoHistorian = z.infer<typeof EntradaCatalogoHistorianSchema>;
+
+export const RespuestaCatalogoHistorianSchema = z.object({
+  estado: z.enum(["ok", "no-disponible"]),
+  motivo: z.string().optional(),
+  tags: z.array(EntradaCatalogoHistorianSchema),
+});
+export type IRespuestaCatalogoHistorian = z.infer<typeof RespuestaCatalogoHistorianSchema>;
+
+/** `GET /series-scada/historian`. */
+export const PedidoCatalogoScadaSchema = z.object({ ids: idsSeparadosPorComa });
+
+export const CatalogoScadaSchema = z.array(EntradaCatalogoHistorianSchema.extend({ idScada: z.string() }));
+export type ICatalogoScada = z.infer<typeof CatalogoScadaSchema>;
+
 // ── Registros SCADA consolidados (tabla y export del listado de una variable) ───────────────
 
 /**

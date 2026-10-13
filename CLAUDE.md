@@ -194,6 +194,13 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-13 - Gráfico personalizado (`grafico-personalizado.ts`, `perfil-lectura.ts`, `historian.ts`)
+
+Preset por usuario del trend (`IGraficoPersonalizado`, series por `canalRef`); perfil SCADA en el catálogo de
+canales (`PERFIL_SCADA`, `canalScada`, `tagDeCanalScada`); varias series SCADA por pedido (`IPedidoSeriesScada` →
+`ISeriesScada`) y catálogo del historiador por tag (`IRespuestaCatalogoHistorian`, `ICatalogoScada`). gas-datos:
+entidad nueva `graficospersonalizados` (`@Prop()` en todos los campos).
+
 ### 2026-10-09 - Registros SCADA consolidados (`historian.ts`)
 
 Pendiente 7 de `/HANDOFF-HISTORIAN.md`. Aditivo: todavía no lo consume nadie.
