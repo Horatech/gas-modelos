@@ -70,3 +70,31 @@ test("el documento de estado admite los tres componentes y la sonda del túnel",
   assert.ok(m.EstadoOnPremiseSchema.safeParse(doc).success);
   assert.ok(m.ConfigOnPremiseSchema.safeParse({ modo: "observacion", historian: true }).success);
 });
+
+test("puente por instancia: el estado del puente es el peor de sus instancias", () => {
+  assert.equal(m.peorEstadoIntegracion([]), undefined);
+  assert.equal(m.peorEstadoIntegracion(["Operativa", "Con errores"]), "Con errores");
+  assert.equal(m.peorEstadoIntegracion(["Sin datos", "Sin señal", "Operativa"]), "Sin señal");
+  assert.equal(m.peorEstadoIntegracion(["Operativa"]), "Operativa");
+});
+
+test("puente por instancia: el componente admite instancias y sigue aceptando el formato de un solo puente", () => {
+  const hb = {
+    arranque: "2026-10-13T12:00:00.000Z",
+    enviado: "2026-10-13T12:05:00.000Z",
+    conectado: true,
+    rechazosOpc: 0,
+    tags: 3,
+    monitoredItems: 15,
+    sesionesAbiertas: 1,
+  };
+  const instancia = { estado: "Operativa", desde: "2026-10-13T12:01:00.000Z", heartbeat: hb };
+  const conInstancias = {
+    estado: "Sin señal",
+    desde: "2026-10-13T12:01:00.000Z",
+    instancias: { r03: instancia, "r03-fix02": { ...instancia, estado: "Sin señal" } },
+  };
+  assert.ok(m.EstadoComponenteIntegracionSchema.safeParse(conInstancias).success);
+  assert.ok(m.EstadoComponenteIntegracionSchema.safeParse({ estado: "Operativa", desde: "x", heartbeat: hb }).success);
+  assert.ok(!m.EstadoPuenteInstanciaSchema.safeParse({ ...instancia, estado: "Rota" }).success);
+});

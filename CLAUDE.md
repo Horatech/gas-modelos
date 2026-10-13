@@ -194,6 +194,22 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-13 - Puente OPC-UA por instancia (`estado-onpremise.ts`)
+
+`/PLAN-MULTI-FUENTE-SCADA.md`. Aditivo: sin `instancias`, el componente se lee como hasta ahora.
+
+Con una segunda fuente SCADA (Camuzzi `FIX02`) hay dos adaptadores por cliente, y el heartbeat de uno
+pisaba el del otro: `integracionScada` guardaba un solo `heartbeat`.
+
+- `EstadoPuenteInstanciaSchema` (`IEstadoPuenteInstancia`): estado, desde, heartbeat, recepción,
+  `ultimoDato`, muestras y `ultimoConErrores` de UNA instancia (`CANAL_INST`).
+- `IEstadoComponenteIntegracion.instancias`: record por instancia. Con instancias, `estado` es el peor
+  (`peorEstadoIntegracion`, por la precedencia del enum) y el `heartbeat` de arriba —el del
+  `POST /integracion/heartbeat`, sin instancia— no se evalúa.
+- Corregido el comentario de `HeartbeatIntegracionScadaSchema`: viaja por `scada.v1.estado.<inst>`.
+
+No requiere `@Prop()` en gas-datos: `integracionScada` es `@Prop({ type: Object })`.
+
 ### 2026-10-13 - Gráfico personalizado (`grafico-personalizado.ts`, `perfil-lectura.ts`, `historian.ts`)
 
 Preset por usuario del trend (`IGraficoPersonalizado`, series por `canalRef`); perfil SCADA en el catálogo de
