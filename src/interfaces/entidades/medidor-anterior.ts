@@ -21,6 +21,10 @@ import { z } from "zod";
  * `cambio-medidor-anterior` que apunta al original (`idAsignacionCorregida`); al
  * resolver gana el más reciente.
  *
+ * **Original = evento con `medidorAnterior` y SIN `idAsignacionCorregida`.** Es el
+ * `asignar` del vínculo, o un `cambio-medidor-anterior` "declarado" sobre un punto
+ * que ya tenía el medidor vinculado (`DeclararMedidorAnterior`).
+ *
  * Archivo hoja (sólo zod): lo importan `asignacion.ts` y `vinculacion.ts`.
  */
 export const MedidorAnteriorInputSchema = z.object({
