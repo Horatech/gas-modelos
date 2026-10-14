@@ -160,6 +160,25 @@ export type ICambiarMedidorAnterior = z.infer<
 >;
 
 /**
+ * Declara el medidor retirado sin telemetría de un punto que YA tiene su medidor
+ * de agua vinculado (vinculado antes de que existiera el dato, o sin cargarlo).
+ *
+ * No toca la vinculación: deja un evento `cambio-medidor-anterior` sin
+ * `idAsignacionCorregida`, que pasa a ser el original de ese recambio. La
+ * instalación es la vinculación vigente (`fechaAsignacionMedidorResidencialAgua`
+ * del punto). Si el punto ya tiene un recambio declarado para ese vínculo, se
+ * rechaza: corregirlo es `CambiarMedidorAnterior`.
+ */
+export const DeclararMedidorAnteriorSchema = z.object({
+  idPuntoMedicion: z.string(),
+  medidorAnterior: MedidorAnteriorInputSchema,
+  observaciones: z.string().optional(),
+});
+export type IDeclararMedidorAnterior = z.infer<
+  typeof DeclararMedidorAnteriorSchema
+>;
+
+/**
  * Un recambio con medidor retirado sin telemetría, ya resuelto (gana la corrección
  * más reciente). Lo devuelve `GET /vinculacion/punto/medidor-anterior`.
  */

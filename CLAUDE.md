@@ -194,6 +194,21 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-14 - Declarar el medidor anterior sobre un vínculo existente
+
+`DeclararMedidorAnteriorSchema` (`POST /vinculacion/punto/medidor-anterior/declarar`):
+para los puntos que ya tenían su medidor de agua vinculado cuando se agregó
+`medidorAnterior` (los 5 de Santa Barbara, vinculados el 16-jul) o que se vincularon sin
+cargarlo. No toca la vinculación: deja un `cambio-medidor-anterior` con la fecha de la
+vinculación vigente.
+
+**Cambia la regla de original vs. corrección:** original = evento con `medidorAnterior`
+y **sin `idAsignacionCorregida`** (antes: `accion !== 'cambio-medidor-anterior'`). Una
+declaración es un `cambio-medidor-anterior` sin `idAsignacionCorregida`, así que pasa a ser
+el original de su recambio y se corrige igual que el `asignar`. Los dos lectores
+(`recambiosVigentes` en gas-api-cliente y `medidorAnteriorPorPunto` en gas-datos) aplican
+la misma regla: si cambia en uno, cambia en el otro.
+
 ### 2026-10-14 - Medidor retirado sin telemetría (`medidorAnterior`)
 
 Caso Santa Barbara: se saca un medidor mecánico que nunca estuvo en la plataforma y se

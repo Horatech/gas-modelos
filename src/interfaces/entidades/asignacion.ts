@@ -181,7 +181,9 @@ export const AsignacionSchema = z.object({
   medidorAnterior: MedidorAnteriorSchema.optional(),
   /**
    * En un `cambio-medidor-anterior`: el `_id` del evento cuyo `medidorAnterior`
-   * completa o corrige. Gana la corrección más reciente.
+   * completa o corrige. Gana la corrección más reciente. Ausente en un
+   * `cambio-medidor-anterior` = es una declaración sobre un vínculo existente, y
+   * ese evento es el original del recambio.
    */
   idAsignacionCorregida: z.string().optional(),
 
