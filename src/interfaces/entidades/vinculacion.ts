@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { TenantInfoGasSchema } from "../auxiliares/tenentInfo";
 import { MotivoAsignacionSchema } from "./asignacion";
+import { MedidorAnteriorInputSchema, MedidorAnteriorSchema } from "./medidor-anterior";
 import { TIPOS_ENTIDAD_VINCULABLE } from "./metadata-vinculacion";
 
 /**
@@ -129,9 +130,54 @@ export const VincularEntidadPuntoSchema = z.object({
   fechaAsignacion: z.string(),
   motivo: MotivoAsignacionSchema,
   observaciones: z.string().optional(),
+  /**
+   * El equipo reemplaza un medidor físico que nunca estuvo en la plataforma. Sólo
+   * `Medidor Residencial Agua`. Las lecturas son opcionales: lo que falte deja el
+   * recambio pendiente y se completa con `/vinculacion/punto/medidor-anterior`.
+   */
+  medidorAnterior: MedidorAnteriorInputSchema.optional(),
 });
 export type IVincularEntidadPunto = z.infer<
   typeof VincularEntidadPuntoSchema
+>;
+
+/**
+ * Carga tardía o corrección de los datos del medidor retirado de un recambio ya
+ * registrado. Deja un evento `cambio-medidor-anterior` apuntando a
+ * `idAsignacion`; no edita el original.
+ *
+ * Los campos que no vengan se toman del estado vigente: completar la lectura
+ * facturada no obliga a repetir la de retiro.
+ */
+export const CambiarMedidorAnteriorSchema = z.object({
+  /** El evento `asignar` del medidor al punto que declaró el recambio. */
+  idAsignacion: z.string(),
+  medidorAnterior: MedidorAnteriorInputSchema,
+  observaciones: z.string().optional(),
+});
+export type ICambiarMedidorAnterior = z.infer<
+  typeof CambiarMedidorAnteriorSchema
+>;
+
+/**
+ * Un recambio con medidor retirado sin telemetría, ya resuelto (gana la corrección
+ * más reciente). Lo devuelve `GET /vinculacion/punto/medidor-anterior`.
+ */
+export const RecambioMedidorAnteriorSchema = z.object({
+  /** El evento original del recambio: es la clave para completarlo o corregirlo. */
+  idAsignacion: z.string(),
+  idPuntoMedicion: z.string(),
+  nombrePunto: z.string().optional(),
+  idMedidor: z.string().optional(),
+  nombreMedidor: z.string().optional(),
+  /** Instalación del equipo nuevo. */
+  fechaVigencia: z.string().nullable().optional(),
+  medidorAnterior: MedidorAnteriorSchema,
+  /** Cuándo se cargó o corrigió por última vez. */
+  fechaActualizacion: z.string().optional(),
+});
+export type IRecambioMedidorAnterior = z.infer<
+  typeof RecambioMedidorAnteriorSchema
 >;
 
 export const DesvincularEntidadPuntoSchema = z.object({

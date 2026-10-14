@@ -194,6 +194,36 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-14 - Medidor retirado sin telemetría (`medidorAnterior`)
+
+Caso Santa Barbara: se saca un medidor mecánico que nunca estuvo en la plataforma y se
+instala un EUW300 que arranca de cero. Lo que consumió el viejo entre la última lectura
+facturada y el retiro no lo midió nadie, y se perdía de la facturación del período.
+
+- Nuevo archivo hoja `medidor-anterior.ts`: `MedidorAnteriorInputSchema` (lo que declara
+  el operador: `numeroSerie`, `lecturaRetiro`, `fechaRetiro`, `lecturaFacturada`,
+  `fechaLecturaFacturada`) y `MedidorAnteriorSchema` (+ `consumoParcial` y `pendiente`,
+  que calcula gas-api-cliente).
+- `IAsignacion.medidorAnterior` en el evento `asignar` del medidor de agua al punto, e
+  `IAsignacion.idAsignacionCorregida` para las correcciones.
+- `ACCIONES_ASIGNACION` suma `cambio-medidor-anterior`: completar o corregir el dato es un
+  evento nuevo que apunta al original; gana el más reciente (mismo criterio que
+  `cambio-lectura`).
+- `VincularEntidadPuntoSchema.medidorAnterior` (opcional), `CambiarMedidorAnteriorSchema`
+  y `RecambioMedidorAnteriorSchema` (respuesta de `/vinculacion/punto/medidor-anterior`).
+
+**Se cargan las dos lecturas físicas del medidor viejo y la plataforma calcula la
+diferencia**, no el parcial ya calculado: mezclar una lectura del medidor viejo con una
+del equipo nuevo —como se armaba a mano— dio parciales negativos. `pendiente` ≠
+`consumoParcial: 0`: un recambio sin las dos lecturas no se factura como cero.
+
+El parcial se suma al período de facturación del **retiro** (`fechaRetiro`, o la
+instalación del nuevo), en la hoja "Periodo" del export de agua de gas-datos.
+
+⚠️ Necesita su `@Prop()` en `gas-datos/src/entidades/asignacion/schema.ts`
+(`medidorAnterior` como `type: Object`, `idAsignacionCorregida`): el schema es estricto y
+sin el `@Prop()` Mongoose descarta el valor en silencio.
+
 ### 2026-10-13 - Puente OPC-UA por instancia (`estado-onpremise.ts`)
 
 `/PLAN-MULTI-FUENTE-SCADA.md`. Aditivo: sin `instancias`, el componente se lee como hasta ahora.
