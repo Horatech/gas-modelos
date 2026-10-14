@@ -10,6 +10,7 @@ import type {
   IOrigenAsignacion,
 } from "./metadata-vinculacion";
 import { EstadoBaselineDispositivoSchema } from "./baseline-dispositivo";
+import { MedidorAnteriorSchema } from "./medidor-anterior";
 import { CentroOperativoSchema } from "../gas/centroOperativo/schema";
 import { UnidadNegocioSchema } from "../gas/unidadNegocio/schema";
 import { DivisionSchema } from "../tenant/usuario/permiso";
@@ -167,6 +168,22 @@ export const AsignacionSchema = z.object({
   lecturaInicialDispositivo: z.number().optional(),
   /** Ver `EstadoBaselineDispositivoSchema`. Ausente = `confirmado`. */
   lecturaInicialDispositivoEstado: EstadoBaselineDispositivoSchema.optional(),
+
+  // ==========================================================================
+  // Medidor retirado sin telemetría (sólo vínculo medidor residencial -> punto)
+  // ==========================================================================
+  /**
+   * El medidor físico que se sacó al instalar el equipo vinculado en este evento,
+   * cuando ese medidor nunca estuvo en la plataforma. Su consumo entre la última
+   * lectura facturada y el retiro se suma al período de facturación del retiro.
+   * Ver `medidor-anterior.ts`.
+   */
+  medidorAnterior: MedidorAnteriorSchema.optional(),
+  /**
+   * En un `cambio-medidor-anterior`: el `_id` del evento cuyo `medidorAnterior`
+   * completa o corrige. Gana la corrección más reciente.
+   */
+  idAsignacionCorregida: z.string().optional(),
 
   // Populate
   dispositivoAsignado: DispositivoSchema.optional(),

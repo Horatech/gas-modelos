@@ -51,6 +51,9 @@ export const ACCIONES_ASIGNACION = [
   // como evento nuevo y no mutando el `asignar`: la colección es un log
   // append-only. Al resolver un tramo gana la corrección más reciente.
   "cambio-lectura",
+  // Carga tardía o corrección de los datos del medidor retirado sin telemetría
+  // (`medidorAnterior`). Apunta al evento original con `idAsignacionCorregida`.
+  "cambio-medidor-anterior",
 ] as const;
 export type IAccionAsignacion = (typeof ACCIONES_ASIGNACION)[number];
 
