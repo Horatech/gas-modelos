@@ -64,11 +64,27 @@ export const CompletitudDiaSchema = z.object({
 });
 export type ICompletitudDia = z.infer<typeof CompletitudDiaSchema>;
 
+// Acumulado desde la instalación. `historico` cubre los días anteriores a la
+// ventana de `dias` (hasta `hasta` inclusive); `resumen` suma la ventana.
+// `completoDesde`: primer día de la racha de días completos que llega al último
+// contado, o null si ese día está incompleto.
+export const CompletitudAcumuladoSchema = z.object({
+  completos: z.number(),
+  contados: z.number(),
+  completoDesde: z.string().nullable(),
+});
+export type ICompletitudAcumulado = z.infer<typeof CompletitudAcumuladoSchema>;
+
 export const CompletitudSchema = z.object({
   incompleto: z.boolean(),
   diaEvaluado: z.string().optional(),
   dias: z.array(CompletitudDiaSchema),
   fechaCalculo: z.string(),
+  historico: CompletitudAcumuladoSchema.extend({ hasta: z.string() }).optional(),
+  // Sin `historico` todavía, el resumen es sólo de la ventana: "al menos".
+  resumen: CompletitudAcumuladoSchema.extend({
+    desdeInstalacion: z.boolean(),
+  }).optional(),
 });
 export type ICompletitud = z.infer<typeof CompletitudSchema>;
 
