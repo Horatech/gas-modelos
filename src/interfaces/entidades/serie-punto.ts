@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MAX_PUNTOS_SERIE_SCADA, RESOLUCION_HISTORIAN_MS, SerieScadaSchema } from "./historian";
+import { DesfaseMinSchema, MAX_PUNTOS_SERIE_SCADA, RESOLUCION_HISTORIAN_MS, SerieScadaSchema } from "./historian";
 import type { ResolucionHistorian } from "./historian";
 import { parseCanalRef } from "./perfil-lectura";
 
@@ -52,7 +52,7 @@ export const PedidoSeriesPuntoSchema = z.object({
   hasta: z.string(),
   maxPuntos: z.coerce.number().int().positive().max(MAX_PUNTOS_SERIE_SCADA).optional(),
   /** Minutos desde las 00:00 UTC al inicio del día (`desfaseCorteDiario`). Sin él, día gas. */
-  desfaseMin: z.coerce.number().int().min(-1440).max(1440).optional(),
+  desfaseMin: DesfaseMinSchema.optional(),
 });
 export type IPedidoSeriesPunto = z.infer<typeof PedidoSeriesPuntoSchema>;
 

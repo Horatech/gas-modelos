@@ -186,12 +186,19 @@ export type IRespuestaHistorian = z.infer<typeof RespuestaHistorianSchema>;
 /** Tope por defecto de puntos de una serie (el límite actual del gráfico SCADA). */
 export const MAX_PUNTOS_SERIE_SCADA = 10_000;
 
+/**
+ * Minutos desde las 00:00 UTC al inicio del día de los baldes diarios (corte diario). Sin él, día gas (600). El día
+ * calendario lo pone el navegador (`getTimezoneOffset()`, 180 en Argentina). Ver `desfaseCorteDiario`.
+ */
+export const DesfaseMinSchema = z.coerce.number().int().min(-1440).max(1440);
+
 export const PedidoSerieScadaSchema = z.object({
   desde: z.string(),
   hasta: z.string(),
   /** Contexto de punto: la serie empieza en la fecha de asignación de la variable al punto. */
   idPuntoMedicion: z.string().optional(),
   maxPuntos: z.coerce.number().int().positive().max(MAX_PUNTOS_SERIE_SCADA).optional(),
+  desfaseMin: DesfaseMinSchema.optional(),
 });
 export type IPedidoSerieScada = z.infer<typeof PedidoSerieScadaSchema>;
 
@@ -249,6 +256,7 @@ export const PedidoSeriesScadaSchema = z.object({
   desde: z.string(),
   hasta: z.string(),
   maxPuntos: z.coerce.number().int().positive().max(MAX_PUNTOS_SERIE_SCADA).optional(),
+  desfaseMin: DesfaseMinSchema.optional(),
 });
 export type IPedidoSeriesScada = z.infer<typeof PedidoSeriesScadaSchema>;
 

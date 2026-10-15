@@ -58,3 +58,11 @@ test("el preset acepta corte diario y lo rechaza si no es uno de los dos", () =>
   assert.equal(s.safeParse(p).success, true);
   assert.equal(s.safeParse({ ...p, corteDiario: "utc" }).success, false);
 });
+
+test("la serie SCADA acepta el corte diario (desfaseMin) y lo valida", () => {
+  const base = { desde: "2026-10-01T00:00:00.000Z", hasta: "2026-10-02T00:00:00.000Z" };
+  assert.equal(m.PedidoSerieScadaSchema.safeParse({ ...base, desfaseMin: "600" }).data.desfaseMin, 600);
+  assert.equal(m.PedidoSeriesScadaSchema.safeParse({ ...base, ids: "a,b", desfaseMin: 180 }).success, true);
+  assert.equal(m.PedidoSerieScadaSchema.safeParse({ ...base, desfaseMin: 2000 }).success, false);
+  assert.equal(m.PedidoSerieScadaSchema.safeParse(base).data.desfaseMin, undefined);
+});
