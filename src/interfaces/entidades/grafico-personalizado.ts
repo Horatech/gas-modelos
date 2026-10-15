@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { parseCanalRef } from "./perfil-lectura";
+import { CorteDiarioSchema } from "./serie-punto";
 
 /**
  * Gráfico personalizado (P56): preset por usuario del trend de series. Cada serie por `canalRef`
@@ -28,7 +29,7 @@ export const DURACION_GRAFICO_MS: Record<DuracionGrafico, number> = {
   "90D": 90 * DIA,
   "1A": 365 * DIA,
 };
-/** Sólo con todas las series en el historiador: lo local cubre 30 días. */
+/** Sólo con todas las series SCADA en el historiador: lo local SCADA cubre 30 días. Las series que no son SCADA no tienen TTL. */
 export const DURACIONES_SOLO_HISTORIAN: DuracionGrafico[] = ["90D", "1A"];
 
 export const SeriePresetSchema = z.object({
@@ -50,6 +51,8 @@ export const GraficoPersonalizadoSchema = z.object({
   vista: z.enum(["unico", "apilado"]),
   nombreMostrado: z.enum(["tag", "descripcion", "ambos"]),
   escala: z.enum(["auto", "configurada"]),
+  /** Dónde corta el día en los baldes diarios. Ausente = día gas. */
+  corteDiario: CorteDiarioSchema.optional(),
   series: z.array(SeriePresetSchema).max(MAX_SERIES_GRAFICO),
   fechaCreacion: z.string().optional(),
   fechaActualizacion: z.string().optional(),
