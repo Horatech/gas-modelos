@@ -42,6 +42,36 @@ export interface ILimitesNotificacion {
 export const FactorCargaEstadoSchema = z.enum(["Parcial", "Completo"]);
 export type FactorCargaEstado = z.infer<typeof FactorCargaEstadoSchema>;
 
+// Completitud de la serie de un medidor residencial SML/WRC: últimos 7 días gas
+// (el más reciente primero). La calcula gas-cron cada 3 h y de ella sale el
+// estado 'Incompleto'. Ver gas-insideht-doc,
+// docs/superpowers/specs/2026-10-15-incompleto-sml-wrc-design.md.
+export const TipoFaltanteSchema = z.enum([
+  "Alta",
+  "Pendiente",
+  "A/F",
+  "B",
+  "Sin clasificar",
+]);
+export type TipoFaltante = z.infer<typeof TipoFaltanteSchema>;
+
+export const CompletitudDiaSchema = z.object({
+  dia: z.string(), // día gas, 'YYYY-MM-DD'
+  esperadas: z.number(), // 24 o 1
+  recibidas: z.number(),
+  tipo: TipoFaltanteSchema.optional(), // sólo si recibidas < esperadas
+  sinAvance: z.boolean().optional(), // completo y con el odómetro quieto
+});
+export type ICompletitudDia = z.infer<typeof CompletitudDiaSchema>;
+
+export const CompletitudSchema = z.object({
+  incompleto: z.boolean(),
+  diaEvaluado: z.string().optional(),
+  dias: z.array(CompletitudDiaSchema),
+  fechaCalculo: z.string(),
+});
+export type ICompletitud = z.infer<typeof CompletitudSchema>;
+
 // Populates intra-SCC (ICorrectora, IUnidadPresion, IMedidorResidencial,
 // IMedidorResidencialAgua, IMedidorElectrico, IScada, ICuentaCliente,
 // IDispositivoExternoNuc) como z.custom: ver CLAUDE.md, "De solo tipos a
@@ -111,6 +141,8 @@ export const PuntoMedicionSchema = z.object({
   factorCargaEstado: FactorCargaEstadoSchema.nullable().optional(),
   fechaConsumoMaximo: z.string().nullable().optional(),
   fechaCalculoFactorCarga: z.string().nullable().optional(),
+  // Completitud de la serie (SML/WRC). Calculada por gas-cron.
+  completitud: CompletitudSchema.nullable().optional(),
   // Tenancy
   idCliente: z.string().optional(),
   idUnidadNegocio: z.string().optional(),
@@ -208,6 +240,7 @@ export interface IPuntoMedicion {
   factorCargaEstado?: FactorCargaEstado | null;
   fechaConsumoMaximo?: string | null;
   fechaCalculoFactorCarga?: string | null;
+  completitud?: ICompletitud | null;
   idCliente?: string;
   idUnidadNegocio?: string;
   idCentroOperativo?: string;
