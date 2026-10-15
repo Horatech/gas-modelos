@@ -194,6 +194,25 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-15 - Gráficos para todos los puntos: series que no son SCADA (`serie-punto.ts`, `perfil-lectura.ts`)
+
+Plan: gas-insideht-doc `docs/superpowers/plans/2026-10-15-graficos-todos-los-puntos.md` (P56 § 6). Aditivo.
+
+- `PERFIL_PRESION` (`reportes/Presion#valores.presion`): presión de la unidad de presión **por división**, no por
+  familia. NSP y Veribox guardan igual (`valores.presion`, `idsAsignados` con el punto), así que un preset sigue
+  andando si el punto cambia de equipo. `rangoPlausible.min = 0` deja afuera el `-1` de sensor en falla.
+- `CANALES_GRAFICABLES` por división (Presión; Correctoras: presión, temperatura y caudal del NUC) y `perfilDe(ref)`.
+  Primer consumidor del catálogo de canales.
+- `caudalPromedio` del NUC suma `rangoPlausible.min = 0`.
+- `PedidoSeriesPuntoSchema` (`POST /puntos/series`, 1 a 20 `{idPunto, canal}`) → `SeriesPuntoSchema` (misma serie
+  que SCADA, `ISerieScada`).
+- Corte diario: `CorteDiarioSchema` (`dia-gas` | `dia-calendario`), `HORAS_OFFSET_DIA_GAS = 10` (mismo valor que
+  gas-cron), `desfaseCorteDiario()` e `inicioBaldeConDesfase()`. El backend recibe el desfase en minutos; el
+  calendario lo pone el navegador. Nunca UTC a la vista.
+- `IGraficoPersonalizado.corteDiario` (opcional; ausente = día gas).
+
+⚠️ `graficospersonalizados` en gas-datos necesita `@Prop() corteDiario` (el schema es estricto).
+
 ### 2026-10-14 - Declarar el medidor anterior sobre un vínculo existente
 
 `DeclararMedidorAnteriorSchema` (`POST /vinculacion/punto/medidor-anterior/declarar`):

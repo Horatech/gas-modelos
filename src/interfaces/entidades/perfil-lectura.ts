@@ -43,13 +43,14 @@
  * con productor en producción. El resto de las 15 familias se suma perfil por
  * perfil, sin tocar nada de lo ya publicado.
  *
- * **Nadie consume esto todavía.** Publicarlo no cambia el comportamiento de ningún
- * servicio: es una declaración, y el resolver que la usa llega en F4.
+ * El primer consumidor es el gráfico personalizado (P56 § 6): `CANALES_GRAFICABLES` y
+ * `perfilDe` resuelven qué se grafica de cada punto que no es SCADA.
  */
 
 import type { ICanalDescriptor } from "./canal-descriptor";
 import type { TipoDispositivoGas } from "../auxiliares/tipoDispositivo";
 import type { ModeloCorrectora } from "./mensajes-nuc/mensajes-nuc";
+import type { Division } from "../tenant/usuario/permiso";
 
 /** Colección de lecturas. Son cinco paralelas, no un único bag `valores.*`. */
 export type OrigenLectura =
@@ -281,6 +282,8 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       agregableEntreDispositivos: false,
       emitido: true,
       origen: "medido-por-equipo",
+      // Caudal entrante: un valor negativo es un centinela, no una medición.
+      rangoPlausible: { min: 0 },
       divisionRequerida: "Correctoras",
       estado: "prod",
     },
@@ -597,11 +600,69 @@ export function tagDeCanalScada(ref: string): string | null {
   return p.selector.slice(4) || null;
 }
 
+/**
+ * Presión de una unidad de presión (NSP o Veribox), por **división** y no por familia: los dos guardan en
+ * `reportes` con `valores.presion` e `idsAsignados` con el punto, así que un preset sigue andando si el punto
+ * cambia de equipo. `rangoPlausible.min = 0` deja afuera el `-1` de sensor en falla y las presiones negativas,
+ * como ya hace gas-cron con NSP y Veribox. La temperatura del NSP no se publica: el firmware la manda en 0.
+ */
+export const PERFIL_PRESION: IPerfilLectura = {
+  clave: "Presion",
+  origen: "reportes",
+  discriminante: {},
+  forma: "ancho",
+  descripcion: "Presión de la unidad de presión del punto (NSP o Veribox)",
+  campos: {
+    "valores.presion": {
+      dominio: "proceso",
+      commodity: "gas",
+      quantityKind: "presion",
+      accumulation: "instantaneous",
+      unidadCanonica: "bar",
+      flowDirection: "na",
+      measuringPeriod: "periodoReporte",
+      tou: "na",
+      condicionMedicion: "na",
+      tipoValor: "numerico",
+      rol: "medida",
+      naturaleza: "medido",
+      agregableEntreDispositivos: false,
+      referencia: "manometrica",
+      rangoPlausible: { min: 0, max: 100 },
+      emitido: true,
+      origen: "medido-por-equipo",
+      divisionRequerida: "Presión",
+      estado: "prod",
+    },
+  },
+};
+
 export const CATALOGO_CANALES: IPerfilLectura[] = [
   PERFIL_NUC_CORRECTORA,
   PERFIL_NME,
   PERFIL_SCADA,
+  PERFIL_PRESION,
 ];
+
+/** Perfil de un `CanalRef`, o `undefined` si el catálogo no lo cubre. */
+export function perfilDe(ref: string): IPerfilLectura | undefined {
+  const partes = parseCanalRef(ref);
+  if (!partes) return undefined;
+  return CATALOGO_CANALES.find((p) => p.origen === partes.origen && p.clave === partes.perfil);
+}
+
+/**
+ * Canales que el gráfico personalizado ofrece por punto, según la división del punto (P56 § 6). SCADA no está:
+ * sus canales son las variables del punto (`canalScada(tag)`).
+ */
+export const CANALES_GRAFICABLES: Partial<Record<Division, string[]>> = {
+  "Presión": [canalRef("reportes", "Presion", "valores.presion")],
+  Correctoras: [
+    canalRef("registros", "NUC", "presion"),
+    canalRef("registros", "NUC", "temperatura"),
+    canalRef("registros", "NUC", "caudalPromedio"),
+  ],
+};
 
 /** Descriptor de un `CanalRef`, o `undefined` si el catálogo no lo cubre. */
 export function descriptorDe(ref: string): ICanalDescriptor | undefined {
