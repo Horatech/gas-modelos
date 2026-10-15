@@ -194,6 +194,12 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-15 - Corte diario también en la serie SCADA (`historian.ts`)
+
+`DesfaseMinSchema` y `desfaseMin` opcional en `PedidoSerieScadaSchema` y `PedidoSeriesScadaSchema`: los baldes diarios
+de la serie SCADA (tramo local y tramo del Historian) cortan en el día gas o en el día calendario del navegador, no
+en UTC. Sin él, día gas (gas-api-cliente). `PedidoSeriesPuntoSchema.desfaseMin` usa el mismo schema.
+
 ### 2026-10-15 - Gráficos para todos los puntos: series que no son SCADA (`serie-punto.ts`, `perfil-lectura.ts`)
 
 Plan: gas-insideht-doc `docs/superpowers/plans/2026-10-15-graficos-todos-los-puntos.md` (P56 § 6). Aditivo.
