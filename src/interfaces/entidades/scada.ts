@@ -42,6 +42,18 @@ export const ScadaSchema = z.object({
   ultimoRegistro: z.custom<IReporte>().optional(),
   ultimaAlerta: z.custom<IAlerta>().optional(),
   habilitado: z.boolean().optional(),
+  /**
+   * La variable se evalúa contra límites (HH/H/L/LL). Ausente = `true` (las variables anteriores a este campo se
+   * comportan como siempre); el alta desde el ABM la crea en `false`. `false`: no hay fuera de rango ni se adoptan
+   * límites de iFix. No afecta a las booleanas (alarman por `booleanoValorAlarma`).
+   */
+  conLimites: z.boolean().optional(),
+  /**
+   * Los límites de la variable se escriben en iFix (y la plataforma reconcilia si iFix cambia). Ausente = `true`
+   * (como siempre); el alta desde el ABM la crea en `false`. `false`: los límites quedan sólo en INSIDEht. Como
+   * mucho una variable por tag con réplica (iFix tiene un solo juego de límites por tag).
+   */
+  replicarEnIfix: z.boolean().optional(),
   estadoActual: EstadoCorrectoraSchema.optional(),
   config: z.custom<IConfigDispositivoScada>().optional(),
   idCliente: z.string().optional(),
@@ -72,6 +84,10 @@ export interface IScada {
   ultimoRegistro?: IReporte;
   ultimaAlerta?: IAlerta;
   habilitado?: boolean;
+  /** Ver `ScadaSchema.conLimites`. Ausente = `true`. */
+  conLimites?: boolean;
+  /** Ver `ScadaSchema.replicarEnIfix`. Ausente = `true`. */
+  replicarEnIfix?: boolean;
   estadoActual?: IEstado;
   config?: IConfigDispositivoScada;
   idCliente?: string;
@@ -101,3 +117,10 @@ type Omitir =
 export interface ICreateScada extends Omit<Partial<IScada>, Omitir> {}
 
 export interface IUpdateScada extends Omit<Partial<IScada>, Omitir> {}
+
+/** `conLimites` efectivo: ausente = `true` (comportamiento anterior al campo). */
+export const usaLimites = (s: Pick<IScada, "conLimites">): boolean => s.conLimites !== false;
+
+/** `replicarEnIfix` efectivo: ausente = `true`. Sin límites no hay nada que replicar. */
+export const replicaEnIfix = (s: Pick<IScada, "conLimites" | "replicarEnIfix">): boolean =>
+  usaLimites(s) && s.replicarEnIfix !== false;

@@ -194,6 +194,21 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-15 - Variables SCADA: con límites y réplica en iFix (`scada.ts`)
+
+Primera tajada de `PLAN-NORMALIZACION-TAGS-OPERACION` (E1 + E6.1), sin migración.
+
+- `IScada.conLimites?`: la variable se evalúa contra HH/H/L/LL. `false`: sin fuera de rango ni adopción de límites de
+  iFix. No afecta a las booleanas.
+- `IScada.replicarEnIfix?`: los límites se escriben en iFix y la plataforma reconcilia. `false`: quedan sólo en
+  INSIDEht. Como mucho una variable por tag con réplica (lo valida gas-api-cliente).
+- **Ausente = `true` en los dos**: las variables de prod siguen como hoy sin correr un seed (D-F). El alta desde el ABM
+  las crea en `false` (decisión 12).
+- Helpers `usaLimites(s)` y `replicaEnIfix(s)` con esa regla. En el front, usar la misma condición inline
+  (`!== false`): `scada.ts` es del SCC de `IDispositivo`.
+
+⚠️ `scadas` en gas-datos necesita `@Prop()` de los dos campos (el schema es estricto).
+
 ### 2026-10-15 - Corte diario también en la serie SCADA (`historian.ts`)
 
 `DesfaseMinSchema` y `desfaseMin` opcional en `PedidoSerieScadaSchema` y `PedidoSeriesScadaSchema`: los baldes diarios
