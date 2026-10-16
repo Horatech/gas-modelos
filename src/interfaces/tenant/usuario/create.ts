@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ModulosUsuarioSchema } from "./modulos";
 import { PermisoSchema } from "./permiso";
 
 export const DatosPersonalesSchema = z
@@ -17,5 +18,6 @@ export const CreateUsuarioSchema = z.object({
   hash: z.string().optional(),
   datosPersonales: DatosPersonalesSchema.optional(),
   permisos: z.array(PermisoSchema),
+  modulos: ModulosUsuarioSchema.optional(),
 });
 export type ICreateUsuario = z.infer<typeof CreateUsuarioSchema>;
