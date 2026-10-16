@@ -639,12 +639,88 @@ export const PERFIL_PRESION: IPerfilLectura = {
   },
 };
 
+/** Ejes comunes de los canales de clima: modelados por el proveedor en el centroide de la Localidad. */
+const AMBIENTE = {
+  dominio: "ambiente",
+  commodity: "na",
+  accumulation: "instantaneous",
+  flowDirection: "na",
+  measuringPeriod: "horario",
+  tou: "na",
+  condicionMedicion: "na",
+  tipoValor: "numerico",
+  rol: "medida",
+  naturaleza: "estimado",
+  agregableEntreDispositivos: false,
+  emitido: true,
+  estado: "prod",
+} as const;
+
+/**
+ * Clima de una Localidad (`registroclimas`, gas-api-clima): **no lo mide un equipo**, lo modela el proveedor en el
+ * centroide de la Localidad (`naturaleza: "estimado"`). Se identifica por Localidad o Centro Operativo, no por punto.
+ * Sin `divisionRequerida`: lo habilita el módulo clima del cliente y del usuario.
+ *
+ * Serie horaria: una muestra por hora con la observación y el pronóstico horario de la última corrida para esa
+ * hora, promediados — la misma regla que el resumen diario por Localidad. La dirección del viento no se publica:
+ * es un ángulo y no admite promedio, mínimo ni máximo. La humedad no se publica para gráficos.
+ */
+export const PERFIL_CLIMA: IPerfilLectura = {
+  clave: "Clima",
+  origen: "registroclimas",
+  discriminante: {},
+  forma: "ancho",
+  descripcion: "Clima de la Localidad (modelado en su centroide)",
+  campos: {
+    temperatura: {
+      ...AMBIENTE,
+      quantityKind: "temperatura",
+      unidadCanonica: "Cel",
+      rangoPlausible: { min: -60, max: 60 },
+      descripcion: "Temperatura ambiente",
+    },
+    sensacionTermica: {
+      ...AMBIENTE,
+      quantityKind: "temperatura",
+      unidadCanonica: "Cel",
+      rangoPlausible: { min: -80, max: 70 },
+      descripcion: "Sensación térmica",
+    },
+    "viento.velocidad": {
+      ...AMBIENTE,
+      quantityKind: "velocidad",
+      unidadCanonica: "m/s",
+      rangoPlausible: { min: 0, max: 120 },
+      descripcion: "Velocidad del viento",
+    },
+    presionAtmosferica: {
+      ...AMBIENTE,
+      quantityKind: "presion",
+      unidadCanonica: "hPa",
+      referencia: "absoluta",
+      rangoPlausible: { min: 800, max: 1100 },
+      descripcion: "Presión atmosférica",
+    },
+  },
+};
+
 export const CATALOGO_CANALES: IPerfilLectura[] = [
   PERFIL_NUC_CORRECTORA,
   PERFIL_NME,
   PERFIL_SCADA,
   PERFIL_PRESION,
+  PERFIL_CLIMA,
 ];
+
+/** Canales de clima que ofrece el gráfico personalizado, en el orden del selector. */
+export const CANALES_CLIMA: string[] = Object.keys(PERFIL_CLIMA.campos!).map((c) =>
+  canalRef("registroclimas", PERFIL_CLIMA.clave, c),
+);
+
+/** Si el `CanalRef` es de clima (se pide por Localidad o Centro Operativo, no por punto). */
+export function esCanalClima(ref: string): boolean {
+  return CANALES_CLIMA.includes(ref);
+}
 
 /** Perfil de un `CanalRef`, o `undefined` si el catálogo no lo cubre. */
 export function perfilDe(ref: string): IPerfilLectura | undefined {

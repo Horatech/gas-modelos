@@ -59,6 +59,8 @@ export type QuantityKind =
   | "tension"
   | "corriente"
   | "nivel"
+  /** Velocidad lineal (viento). */
+  | "velocidad"
   | "concentracion"
   | "compresibilidad"
   | "porcentaje"
