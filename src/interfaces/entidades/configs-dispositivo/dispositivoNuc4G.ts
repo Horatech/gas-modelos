@@ -3,7 +3,6 @@ import {
   TipoEdgeDeteccionSchema,
   TipoEntradaDigitalSchema,
 } from "../config-dispositivo";
-import { VersionHardwareSchema } from "../firmware";
 
 export const DispositivoNuc4GSchema = z.object({
   // Lo que viene en set configuracion
@@ -23,11 +22,6 @@ export const DispositivoNuc4GSchema = z.object({
   telefono: z.string().optional(),
   nsa: z.number().optional(),
   voltajeBateria: z.number().optional(),
-  versionHardware: z.string().optional(),
-  /**
-   * Este campo viene a partir una version de FW especifica y deja de venir el campo versionHardware
-   */
-  hardwareVersion: VersionHardwareSchema.optional(),
   //
   frecuenciaComunicacion: z.number().optional(),
   redPreferida: z.string().optional(),

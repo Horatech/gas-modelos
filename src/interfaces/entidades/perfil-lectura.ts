@@ -51,6 +51,7 @@ import type { ICanalDescriptor } from "./canal-descriptor";
 import type { TipoDispositivoGas } from "../auxiliares/tipoDispositivo";
 import type { ModeloCorrectora } from "./mensajes-nuc/mensajes-nuc";
 import type { Division } from "../tenant/usuario/permiso";
+import type { VersionHardware } from "./firmware";
 
 /** Colección de lecturas. Son cinco paralelas, no un único bag `valores.*`. */
 export type OrigenLectura =
@@ -65,12 +66,13 @@ export type FormaDocumento = "ancho" | "angosto";
 /**
  * Cómo se reconoce un documento de este perfil. **No se puede indexar sólo por
  * `tipoDispositivo`**: `NUC`-correctora y `NUC-2`/InputsNuc comparten
- * `tipoDispositivo: 'NUC'` y se distinguen por `versionHardware`.
+ * `tipoDispositivo: 'NUC'`. Un NUC v2.0 puede reportar las dos cosas (según
+ * `deviceMode`), así que se distinguen por `origen`, no por `versionHardware`.
  */
 export interface IDiscriminantePerfil {
   deviceTipo?: TipoDispositivoGas;
-  /** NUC v1 (correctora) vs v3 (InputsNuc / GPIO). */
-  versionHardware?: string;
+  /** NUC: sólo el hardware v2.0 tiene I/O digital (InputsNuc / GPIO). */
+  versionHardware?: VersionHardware;
   /** La marca de correctora cambia la escala de varios canales. */
   modelo?: ModeloCorrectora;
   /** `IReporteSML.tipo`: 'SindCon' | 'Hac' — mismo device, decode distinto. */
@@ -156,7 +158,7 @@ export function parseCanalRef(ref: string): ICanalRefPartes | null {
 const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
   clave: "NUC",
   origen: "registros",
-  discriminante: { deviceTipo: "NUC", versionHardware: "v1" },
+  discriminante: { deviceTipo: "NUC" },
   forma: "ancho",
   descripcion: "Correctora de gas vía NUC (colección registros)",
   campos: {

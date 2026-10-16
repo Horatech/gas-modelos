@@ -8,6 +8,7 @@ import { LoraServerSchema } from "../tenant/lora-server.model";
 import { LoteDispositivoSchema } from "../tenant/loteDispositivo.model";
 import { LocalidadSchema } from "./localidad";
 import { IUltimaRecepcion, UltimaRecepcionSchema } from "./recepcion-uplink";
+import { VersionHardware, VersionHardwareSchema } from "./firmware";
 import type { IAlerta } from "./alerta";
 import type { IRegistro } from "./registro";
 
@@ -54,7 +55,8 @@ export const DispositivoSchema = z.object({
   ultimaRecepcion: UltimaRecepcionSchema.optional(),
   // Otra info
   firmware: z.string().optional(),
-  versionHardware: z.string().optional(), // Versión de hardware (ej: "v1", "v3" para NUC con/sin GPIO)
+  // NUC: mismos valores que los binarios de firmware. Sólo v2.0 tiene I/O digital.
+  versionHardware: VersionHardwareSchema.optional(),
   serieTransmisor: z.string().optional(), // serie del transmisor (integración externa, p. ej. TNS_NRO_SERIE)
   codigoExternoTransmisor: z.string().optional(), // TNS_ID del sistema externo (idempotencia de la ingesta)
   ubicacion: CoordenadasSchema.optional(),
@@ -100,7 +102,7 @@ export interface IDispositivo {
   fechaUltimaComunicacion?: string;
   ultimaRecepcion?: IUltimaRecepcion;
   firmware?: string;
-  versionHardware?: string;
+  versionHardware?: VersionHardware;
   serieTransmisor?: string;
   codigoExternoTransmisor?: string;
   ubicacion?: ICoordenadas;
