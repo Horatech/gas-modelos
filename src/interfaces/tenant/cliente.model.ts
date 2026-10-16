@@ -196,6 +196,15 @@ export const ModuloNavegacionSchema = z.object({
 export type IModuloNavegacion = z.infer<typeof ModuloNavegacionSchema>;
 
 /**
+ * Linepack, dentro de la vista de operaciones. Ausente ⇒ apagado. Hace falta
+ * además `moduloNavegacion`, y al usuario `modulos.navegacion` y `modulos.linepack`.
+ */
+export const ModuloLinepackSchema = z.object({
+  activo: z.boolean().optional(),
+});
+export type IModuloLinepack = z.infer<typeof ModuloLinepackSchema>;
+
+/**
  * Sinóptico de los puntos de medición SCADA (la vista de FUXA embebida).
  *
  * Ausente ⇒ apagado, igual que los otros módulos. Es infraestructura aparte: cada
@@ -356,6 +365,7 @@ export const ConfigClienteSchema = z.object({
   moduloClasificacion: ModuloClasificacionSchema.optional(),
   moduloTopologia: ModuloTopologiaSchema.optional(),
   moduloNavegacion: ModuloNavegacionSchema.optional(),
+  moduloLinepack: ModuloLinepackSchema.optional(),
   moduloSinoptico: ModuloSinopticoSchema.optional(),
   parametrosObis: ParametrosObisSchema.optional(),
   ciclosFacturacion: CiclosFacturacionPorDivisionSchema.optional(),

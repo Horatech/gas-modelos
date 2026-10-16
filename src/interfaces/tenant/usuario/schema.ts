@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ClienteSchema } from "../cliente.model";
 import { DatosPersonalesSchema } from "./create";
+import { ModulosUsuarioSchema } from "./modulos";
 import { NotificacionesSchema } from "./notificacion";
 import { PermisoSchema } from "./permiso";
 import { TokenPushSchema } from "./token-push";
@@ -13,6 +14,8 @@ export const UsuarioSchema = z.object({
   activo: z.boolean().optional(),
   /** Usa el asistente de ayuda. Hace falta además `config.usaLlm` del cliente. */
   usaLlm: z.boolean().optional(),
+  /** Módulos habilitados para el usuario, además del flag del cliente. */
+  modulos: ModulosUsuarioSchema.optional(),
   fechaCreacion: z.string().optional(),
   permisos: z.array(PermisoSchema).optional(),
   datosPersonales: DatosPersonalesSchema.optional(),
