@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { parseCanalRef } from "./perfil-lectura";
 import { CorteDiarioSchema } from "./serie-punto";
+import { AmbitoClimaSchema } from "./serie-clima";
 
 /**
  * Gráfico personalizado (P56): preset por usuario del trend de series. Cada serie por `canalRef`
- * (SCADA: `canalScada(tag)`; otras familias: canal + `idPunto`).
+ * (SCADA: `canalScada(tag)`; clima: canal + `ambito`; otras familias: canal + `idPunto`).
  * Spec: gas-insideht-doc docs/superpowers/specs/2026-10-09-grafico-personalizado-design.md
  */
 
@@ -34,8 +35,10 @@ export const DURACIONES_SOLO_HISTORIAN: DuracionGrafico[] = ["90D", "1A"];
 
 export const SeriePresetSchema = z.object({
   canal: z.string().refine((c) => parseCanalRef(c) !== null, { message: "canal inválido" }),
-  /** Sólo en canales que no identifican la instancia (no SCADA). */
+  /** Sólo en canales que no identifican la instancia (no SCADA ni clima). */
   idPunto: z.string().optional(),
+  /** Sólo en canales de clima: la Localidad o el Centro Operativo. */
+  ambito: AmbitoClimaSchema.optional(),
   visible: z.boolean(),
 });
 export type ISeriePreset = z.infer<typeof SeriePresetSchema>;
