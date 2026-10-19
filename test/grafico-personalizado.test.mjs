@@ -62,3 +62,11 @@ test("escala por serie: min y max opcionales, min < max; márgenes opcional", ()
   assert.equal(s.parse({ ...base, margenes: false }).margenes, false);
   assert.equal(s.parse(base).margenes, undefined);
 });
+
+test("escala ajustada a los márgenes: sin extremos fijos", () => {
+  const s = m.CreateGraficoPersonalizadoSchema;
+  const con = (escala) => ({ ...base, series: [{ ...base.series[0], escala }] });
+  assert.deepEqual(s.parse(con({ margenes: true })).series[0].escala, { margenes: true });
+  assert.equal(s.safeParse(con({ margenes: true, max: 10 })).success, false);
+  assert.equal(s.safeParse(con({ margenes: false, max: 10 })).success, true);
+});

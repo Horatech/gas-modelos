@@ -34,16 +34,21 @@ export const DURACION_GRAFICO_MS: Record<DuracionGrafico, number> = {
 export const DURACIONES_SOLO_HISTORIAN: DuracionGrafico[] = ["90D", "1A"];
 
 /**
- * Escala del eje de una serie: los extremos fijos que tenga. Ausente (o sin ninguno) = automática. La serie con escala
- * propia va en su propio eje aunque comparta unidad con otras.
+ * Escala del eje de una serie. Ausente (o vacía) = automática: se ajusta a los datos. `margenes`: se ajusta a los datos
+ * y a los márgenes de la variable (HH/H/L/LL; mínimo y máximo de presión). `min` y/o `max`: extremos fijos. `margenes`
+ * no va con extremos fijos. La serie con escala propia va en su propio eje aunque comparta unidad con otras.
  */
 export const EscalaSerieSchema = z
   .object({
     min: z.number().optional(),
     max: z.number().optional(),
+    margenes: z.boolean().optional(),
   })
   .refine((e) => e.min === undefined || e.max === undefined || e.min < e.max, {
     message: "min debe ser menor que max",
+  })
+  .refine((e) => !e.margenes || (e.min === undefined && e.max === undefined), {
+    message: "la escala a los márgenes no lleva extremos fijos",
   });
 export type IEscalaSerie = z.infer<typeof EscalaSerieSchema>;
 
