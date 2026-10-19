@@ -194,6 +194,20 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-19 - Gráfico personalizado: escala por serie y márgenes (`grafico-personalizado.ts`)
+
+Aditivo y opcional: un preset sin los campos nuevos se lee como hasta ahora.
+
+- `EscalaSerieSchema` (`IEscalaSerie`): `min` y/o `max` fijos del eje de una serie; ausente (o sin ninguno) =
+  automática. Valida `min < max`. `SeriePresetSchema.escala` la lleva por serie.
+- `IGraficoPersonalizado.margenes`: si el gráfico muestra los límites de las variables (HH/H/L/LL de SCADA; mínimo y
+  máximo de la unidad de presión). Ausente = se muestran.
+- `escala` (`auto` | `configurada`) queda por compatibilidad: el front traduce un preset `configurada` (mín/máx de la
+  variable SCADA para todo el gráfico) a escala por serie al abrirlo, y guarda `auto`.
+
+⚠️ `graficospersonalizados` en gas-datos necesita `@Prop() margenes` (el schema es estricto). La escala por serie no:
+`series` es `@Prop({ type: [Object] })`.
+
 ### 2026-10-15 - Variables SCADA: con límites y réplica en iFix (`scada.ts`)
 
 Primera tajada de `PLAN-NORMALIZACION-TAGS-OPERACION` (E1 + E6.1), sin migración.
