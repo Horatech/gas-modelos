@@ -194,6 +194,12 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-19 - Escala de una serie ajustada a sus márgenes (`grafico-personalizado.ts`)
+
+`IEscalaSerie.margenes` (opcional): el eje se ajusta a los datos y a los márgenes de la variable. Tercera opción junto
+a la automática (ajustada a los datos; ausente) y la fija (`min`/`max`); no se combina con extremos fijos (lo valida el
+schema). No requiere `@Prop()` en gas-datos: `series` es `@Prop({ type: [Object] })`.
+
 ### 2026-10-19 - Gráfico personalizado: escala por serie y márgenes (`grafico-personalizado.ts`)
 
 Aditivo y opcional: un preset sin los campos nuevos se lee como hasta ahora.
