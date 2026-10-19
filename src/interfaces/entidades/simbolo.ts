@@ -20,6 +20,19 @@ export const CajaSimboloSchema = z.object({
 });
 export type ICajaSimbolo = z.infer<typeof CajaSimboloSchema>;
 
+/**
+ * Dónde se conecta un caño, en la grilla 56×36: un punto (`x`, `y`) o un tramo hasta (`x2`, `y2`) por donde
+ * puede entrar en cualquier lado (el techo de un recipiente). `id` la nombra (`serpentin-1`, `quemador`).
+ */
+export const TomaSimboloSchema = z.object({
+  id: z.string().optional(),
+  x: z.number(),
+  y: z.number(),
+  x2: z.number().optional(),
+  y2: z.number().optional(),
+});
+export type ITomaSimbolo = z.infer<typeof TomaSimboloSchema>;
+
 export const SimboloSchema = z.object({
   _id: z.string().optional(),
   idCliente: z.string(),
@@ -32,6 +45,8 @@ export const SimboloSchema = z.object({
   svg: z.string(),
   /** La parte del dibujo que toca los caños: con ella se encaja el símbolo en el diagrama. */
   cuerpo: CajaSimboloSchema,
+  /** Las tomas del símbolo; sin ellas, un caño llega al borde del cuerpo. Las usan el conversor y el editor. */
+  tomas: z.array(TomaSimboloSchema).optional(),
 });
 export type ISimbolo = z.infer<typeof SimboloSchema>;
 
