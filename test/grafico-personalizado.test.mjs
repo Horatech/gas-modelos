@@ -50,3 +50,15 @@ test("pedido de series: ids separados por coma, 1 a 20", () => {
   assert.equal(m.PedidoSeriesScadaSchema.safeParse({ ...p, ids: muchos }).success, false);
   assert.deepEqual(m.PedidoCatalogoScadaSchema.parse({ ids: "a,b" }).ids, ["a", "b"]);
 });
+
+test("escala por serie: min y max opcionales, min < max; márgenes opcional", () => {
+  const s = m.CreateGraficoPersonalizadoSchema;
+  const con = (escala) => ({ ...base, series: [{ ...base.series[0], escala }] });
+  assert.equal(s.safeParse(con({ min: 0, max: 10 })).success, true);
+  assert.equal(s.safeParse(con({ max: 10 })).success, true);
+  assert.equal(s.safeParse(con({})).success, true);
+  assert.equal(s.safeParse(con({ min: 10, max: 10 })).success, false);
+  assert.deepEqual(s.parse(con({ min: 1 })).series[0].escala, { min: 1 });
+  assert.equal(s.parse({ ...base, margenes: false }).margenes, false);
+  assert.equal(s.parse(base).margenes, undefined);
+});

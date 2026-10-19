@@ -33,6 +33,20 @@ export const DURACION_GRAFICO_MS: Record<DuracionGrafico, number> = {
 /** Sólo con todas las series SCADA en el historiador: lo local SCADA cubre 30 días. Las series que no son SCADA no tienen TTL. */
 export const DURACIONES_SOLO_HISTORIAN: DuracionGrafico[] = ["90D", "1A"];
 
+/**
+ * Escala del eje de una serie: los extremos fijos que tenga. Ausente (o sin ninguno) = automática. La serie con escala
+ * propia va en su propio eje aunque comparta unidad con otras.
+ */
+export const EscalaSerieSchema = z
+  .object({
+    min: z.number().optional(),
+    max: z.number().optional(),
+  })
+  .refine((e) => e.min === undefined || e.max === undefined || e.min < e.max, {
+    message: "min debe ser menor que max",
+  });
+export type IEscalaSerie = z.infer<typeof EscalaSerieSchema>;
+
 export const SeriePresetSchema = z.object({
   canal: z.string().refine((c) => parseCanalRef(c) !== null, { message: "canal inválido" }),
   /** Sólo en canales que no identifican la instancia (no SCADA ni clima). */
@@ -40,6 +54,7 @@ export const SeriePresetSchema = z.object({
   /** Sólo en canales de clima: la Localidad o el Centro Operativo. */
   ambito: AmbitoClimaSchema.optional(),
   visible: z.boolean(),
+  escala: EscalaSerieSchema.optional(),
 });
 export type ISeriePreset = z.infer<typeof SeriePresetSchema>;
 
@@ -53,7 +68,13 @@ export const GraficoPersonalizadoSchema = z.object({
   rango: z.object({ desde: z.string(), hasta: z.string() }).optional(),
   vista: z.enum(["unico", "apilado"]),
   nombreMostrado: z.enum(["tag", "descripcion", "ambos"]),
+  /**
+   * `configurada` = el mínimo y máximo de la variable SCADA, para todo el gráfico. Lo reemplaza `escala` de cada serie:
+   * el front traduce un preset `configurada` a escala por serie al abrirlo y guarda `auto`.
+   */
   escala: z.enum(["auto", "configurada"]),
+  /** Límites de las variables (HH/H/L/LL de SCADA; mínimo y máximo de la unidad de presión). Ausente = se muestran. */
+  margenes: z.boolean().optional(),
   /** Dónde corta el día en los baldes diarios. Ausente = día gas. */
   corteDiario: CorteDiarioSchema.optional(),
   series: z.array(SeriePresetSchema).max(MAX_SERIES_GRAFICO),
