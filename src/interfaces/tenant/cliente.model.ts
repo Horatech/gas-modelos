@@ -205,13 +205,9 @@ export const ModuloLinepackSchema = z.object({
 export type IModuloLinepack = z.infer<typeof ModuloLinepackSchema>;
 
 /**
- * Sinóptico de los puntos de medición SCADA (la vista de FUXA embebida).
- *
- * Ausente ⇒ apagado, igual que los otros módulos. Es infraestructura aparte: cada
- * cliente con sinóptico necesita su propia instancia de FUXA desplegada, su entrada
- * en `FUXA_INSTANCIAS` y una corrida del generador que le arme el proyecto. Sin el
- * flag no se muestra nada del sinóptico y no se genera nada: ni botón, ni vista en
- * el detalle del punto, ni proyecto.
+ * @deprecated FUXA se dio de baja (2026-10): nadie lee este flag. Queda en el
+ * esquema porque hay clientes que lo tienen guardado y los datos no se migran;
+ * se saca cuando ningún documento lo tenga.
  */
 export const ModuloSinopticoSchema = z.object({
   activo: z.boolean().optional(),
