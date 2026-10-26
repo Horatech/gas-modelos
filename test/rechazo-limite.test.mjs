@@ -1,6 +1,7 @@
 /**
- * Clasificación de los rechazos OPC UA: configuración (por tag) vs comunicación (salud de la
- * integración). Ver `PLAN-ESTADO-ONPREMISE.md` § 6.bis.
+ * Clasificación de los rechazos OPC UA: por tag (configuración u operación) vs integración (salud
+ * del puente). Lista cerrada de códigos de integración; el resto es por tag. Ver
+ * `PLAN-ESTADO-ONPREMISE.md` § 6.bis.
  */
 
 import { test } from "node:test";
@@ -10,13 +11,49 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const m = require("../dist/index.js");
 
-test("rango y nodo inexistente son de configuración", () => {
-  assert.equal(m.esRechazoDeConfiguracion("BadOutOfRange"), true);
-  assert.equal(m.esRechazoDeConfiguracion("BadNodeIdUnknown"), true);
+test("lo que el servidor contesta sobre un tag es por tag (configuración)", () => {
+  for (const c of [
+    "BadOutOfRange",
+    "BadNodeIdUnknown",
+    "BadNodeIdInvalid",
+    "BadUserAccessDenied",
+    "BadConfigurationError",
+    "BadUnexpectedError",
+    "BadNotWritable",
+    "BadTypeMismatch",
+    "BadAttributeIdInvalid",
+    "TAG_NO_ENCONTRADO",
+  ]) {
+    assert.equal(m.esRechazoDeConfiguracion(c), true, c);
+    assert.equal(m.esRechazoDeIntegracion(c), false, c);
+  }
 });
 
-test("las fallas de comunicación y lo desconocido no son de configuración", () => {
-  for (const c of ["BadTooManySessions", "BadTimeout", "BadSessionIdInvalid", "BadSubscriptionIdInvalid", "OtroError", "", undefined]) {
+test("transporte, canal, sesión, servidor y credenciales son de integración", () => {
+  for (const c of [
+    "BadTimeout",
+    "BadRequestTimeout",
+    "BadCommunicationError",
+    "BadNoCommunication",
+    "BadConnectionClosed",
+    "BadTooManySessions",
+    "BadSessionIdInvalid",
+    "BadSessionClosed",
+    "BadSecureChannelClosed",
+    "BadServerHalted",
+    "BadServerNotConnected",
+    "BadSubscriptionIdInvalid",
+    "BadIdentityTokenRejected",
+    "BadCertificateInvalid",
+  ]) {
+    assert.equal(m.esRechazoDeIntegracion(c), true, c);
+    assert.equal(m.esRechazoDeConfiguracion(c), false, c);
+  }
+});
+
+test("sin código es de integración, nunca de configuración", () => {
+  for (const c of ["", undefined]) {
+    assert.equal(m.esRechazoDeIntegracion(c), true, String(c));
     assert.equal(m.esRechazoDeConfiguracion(c), false, String(c));
   }
 });
