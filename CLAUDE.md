@@ -194,6 +194,16 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-28 - Nombre e imagen del asistente por cliente (`cliente.model.ts`)
+
+`IConfigCliente.asistente` (`AsistenteClienteSchema`): `nombre` e `imagen` (URL, como `imagenes.logo`) con los que se
+presenta Horacito en ese cliente. Ausentes = "Horacito" y la H. El nombre lo manda gas-api-cliente a gas-asistente
+en el contexto; el front toma los dos de la config del cliente.
+
+No requiere `@Prop()` en gas-datos: `config` es `@Prop({ type: Object })`.
+⚠️ gas-web-admin arma `config` desde el form con claves fijas: `asistente` tiene que ser control del form o guardar
+un cliente lo borra.
+
 ### 2026-10-19 - Escala de una serie ajustada a sus márgenes (`grafico-personalizado.ts`)
 
 `IEscalaSerie.margenes` (opcional): el eje se ajusta a los datos y a los márgenes de la variable. Tercera opción junto

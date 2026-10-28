@@ -319,9 +319,22 @@ export const ConfigOnPremiseSchema = z.object({
 });
 export type IConfigOnPremise = z.infer<typeof ConfigOnPremiseSchema>;
 
+/**
+ * Cómo se presenta el asistente (Horacito) en este cliente. "Horacito" es nuestro nombre: cada
+ * cliente puede tener el suyo. Ausentes = "Horacito" y la H.
+ */
+export const AsistenteClienteSchema = z.object({
+  /** Nombre con el que se presenta: en el botón, en el chat y en sus respuestas. */
+  nombre: z.string().optional(),
+  /** URL de la imagen del botón y del chat, como `imagenes.logo`. */
+  imagen: z.string().optional(),
+});
+export type IAsistenteCliente = z.infer<typeof AsistenteClienteSchema>;
+
 export const ConfigClienteSchema = z.object({
   apns: z.array(ApnSchema).optional(),
   usaLlm: z.boolean().optional(),
+  asistente: AsistenteClienteSchema.optional(),
   tokensMensualesDisponibles: z.number().optional(),
   maximoUsuariosUsanLlm: z.number().optional(),
   twilio: ConfigTwilioSchema.optional(),
