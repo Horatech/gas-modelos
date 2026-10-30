@@ -21,6 +21,7 @@ import type { ICuentaCliente } from "./cuenta-cliente";
 import type { IDispositivoExternoNuc } from "./dispositivo-externo-nuc";
 import { ClasificacionPuntoSchema } from "./clasificacion-punto";
 import { ZonaBalanceSchema } from "./zona-balance";
+import { OrigenSistemaPuntoSchema } from "./sistema";
 
 export const LimitesNotificacionSchema = z.object({
   sms: z.number().optional(),
@@ -185,6 +186,16 @@ export const PuntoMedicionSchema = z.object({
   //
   // Ver enlace-red.ts y docs/11-tablero-operaciones/16-topologia-red.md.
   idsZonasBalance: z.array(z.string()).optional(),
+  // Sistema de red al que pertenece el punto: **uno solo** (decisión del
+  // 26-oct-2026), en el nivel más bajo que se conozca —el subsistema—, igual que
+  // `TramoRed.idSistema`. Cruza unidades de negocio: no reemplaza a UN/CO/Localidad.
+  //
+  // **Campo DERIVADO**, como `idsZonasBalance`: lo escribe el recálculo nocturno de
+  // gas-datos desde la red (`NodoRed`, y más adelante la traza). `origenSistema`
+  // dice de dónde salió; lo `manual` el recálculo no lo pisa. Sin populate: el
+  // sistema se resuelve aparte (`sistema.ts` no entra al SCC de IDispositivo).
+  idSistema: z.string().nullable().optional(),
+  origenSistema: OrigenSistemaPuntoSchema.optional(),
   // Notificaciones
   limitesNotificacion: LimitesNotificacionSchema.optional(),
   // Virtuals
@@ -268,6 +279,8 @@ export interface IPuntoMedicion {
   division?: import("../tenant/usuario/permiso").Division;
   clasificacion?: import("./clasificacion-punto").IClasificacionPunto;
   idsZonasBalance?: string[];
+  idSistema?: string | null;
+  origenSistema?: import("./sistema").OrigenSistemaPunto;
   limitesNotificacion?: ILimitesNotificacion;
   // Virtuals
   correctora?: ICorrectora;

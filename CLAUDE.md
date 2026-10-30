@@ -194,6 +194,21 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-30 - Pertenencia del punto a un sistema de red (`punto-medicion.ts`, `sistema.ts`)
+
+`IPuntoMedicion.idSistema` (uno solo, en el nivel más bajo conocido: el subsistema) y `origenSistema`
+(`OrigenSistemaPuntoSchema`: `nodo` | `traza` | `manual`, en `sistema.ts`). Aditivo y opcional.
+
+**Campo derivado**, mismo patrón que `idsZonasBalance`: lo escribe un recálculo nocturno de gas-datos (disparado por
+gas-cron) a partir de la red. Primera regla: el punto asociado a un `NodoRed` que está en un solo subsistema toma ese
+subsistema; el nodo de borde (dos subsistemas) no se asigna y se reporta. `manual` no lo pisa el recálculo. La regla
+`traza` (punto sobre la cañería de un subsistema) queda por diseñar.
+
+Para qué: la agrupación que cruza unidades de negocio sin repetir puntos (decisión del 26-oct, pedido R7 de la
+operación) y la base de los cruces por sistema (qué consume y qué controla en un subsistema).
+
+Sin populate: `sistema.ts` sólo importa `commodity.ts`, así que el punto lo importa como valor sin cerrar ciclo.
+⚠️ `puntomedicions` en gas-datos necesita `@Prop()` de los dos campos (el schema es estricto).
 ### 2026-10-30 - Key de IA del asistente por cliente (`cliente.model.ts`)
 
 `IAsistenteCliente`: `usaNuestraIa` (tilde: responde con nuestra key), `proveedorIa` (`"claude"`, por ahora el único)
