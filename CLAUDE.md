@@ -194,6 +194,17 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-30 - Traza de herramientas en la consulta al asistente (`consulta-asistente.ts`)
+
+`IConsultaAsistente.herramientas` (`HerramientaConsultaAsistenteSchema`): las herramientas que usó el asistente para
+responder, en orden, con `nombre`, `argumentos`, `resultado` (recortado por gas-asistente) y `esError`. Aditivo.
+
+Para qué: auditar cada respuesta (hasta ahora el registro no decía qué se consultó) y que la pregunta siguiente de
+la misma charla vea lo consultado antes. gas-api-cliente reenviaba el historial sólo con texto y el modelo
+desmentía consultas que sí había hecho (dos veces en las consultas reales del 29-oct).
+
+⚠️ `consultasAsistente` en gas-datos necesita `@Prop({ type: [Object] }) herramientas` (el schema es estricto).
+
 ### 2026-10-28 - Nombre e imagen del asistente por cliente (`cliente.model.ts`)
 
 `IConfigCliente.asistente` (`AsistenteClienteSchema`): `nombre` e `imagen` (URL, como `imagenes.logo`) con los que se
