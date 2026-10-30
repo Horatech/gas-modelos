@@ -209,6 +209,17 @@ operación) y la base de los cruces por sistema (qué consume y qué controla en
 
 Sin populate: `sistema.ts` sólo importa `commodity.ts`, así que el punto lo importa como valor sin cerrar ciclo.
 ⚠️ `puntomedicions` en gas-datos necesita `@Prop()` de los dos campos (el schema es estricto).
+### 2026-10-30 - Key de IA del asistente por cliente (`cliente.model.ts`)
+
+`IAsistenteCliente`: `usaNuestraIa` (tilde: responde con nuestra key), `proveedorIa` (`"claude"`, por ahora el único)
+y `apiKey` (la del cliente). Sin tilde ni `apiKey` el asistente no corre en el cliente, aunque tenga `usaLlm`.
+Aditivo; `config` es `Object` en gas-datos.
+
+Para qué: que cada cliente pague su consumo con su propia key, o que lo paguemos nosotros con el tilde.
+
+⚠️ `apiKey` nunca sale en una respuesta (json replacer de gas-api-cliente y gas-admin) y gas-datos ya la tapa en
+los logs. gas-admin hace merge SHALLOW de `config`: al guardar sin key tiene que conservar la guardada.
+⚠️ Antes de que gas-api-cliente exija tilde o key, los clientes con `usaLlm` (prod: GPE y Camuzzi) llevan el tilde.
 
 ### 2026-10-30 - Módulo de clasificación por usuario (`usuario/modulos.ts`)
 

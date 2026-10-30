@@ -328,6 +328,15 @@ export const AsistenteClienteSchema = z.object({
   nombre: z.string().optional(),
   /** URL de la imagen del botón y del chat, como `imagenes.logo`. */
   imagen: z.string().optional(),
+  /**
+   * Con qué key de IA responde. `true` = la nuestra (la paga GPE); si no, el cliente tiene que
+   * cargar la suya en `apiKey`. Sin una ni otra el asistente no corre en este cliente.
+   */
+  usaNuestraIa: z.boolean().optional(),
+  /** Proveedor de la key del cliente. Por ahora sólo Claude. */
+  proveedorIa: z.enum(["claude"]).optional(),
+  /** Key de IA del cliente. Nunca sale en una respuesta ni en un log. */
+  apiKey: z.string().optional(),
 });
 export type IAsistenteCliente = z.infer<typeof AsistenteClienteSchema>;
 
