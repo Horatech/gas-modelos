@@ -15,5 +15,7 @@ export const ModulosUsuarioSchema = z.object({
   linepack: z.boolean().optional(),
   /** Clima. Con `config.moduloClima`. Temporal: sólo lo mira el front. */
   clima: z.boolean().optional(),
+  /** Clasificación del padrón (editor y cobertura). Con `config.moduloClasificacion`. */
+  clasificacion: z.boolean().optional(),
 });
 export type IModulosUsuario = z.infer<typeof ModulosUsuarioSchema>;
