@@ -1,6 +1,10 @@
 /**
- * Tramo de red: el caño entre dos nodos, con lo que pide el linepack
- * (longitud, diámetro interno, presión de trabajo) y su traza.
+ * Tramo de red: el caño, con lo que pide el linepack (longitud, diámetro
+ * interno, presión de trabajo) y su traza.
+ *
+ * Los extremos son opcionales: el caño del GIS del cliente (KMZ) no trae
+ * topología, sólo el nombre de sus extremos (`nombre`). Diseño:
+ * gas-insideht-doc `docs/superpowers/specs/2026-10-30-sistemas-red-desde-kmz-design.md`.
  *
  * Es otro grafo que `EnlaceRed`: aquél une puntos de medición y se carga a mano
  * para ramas y zonas; éste une nodos, se importa, y lleva atributos físicos.
@@ -23,9 +27,11 @@ export const TramoRedSchema = z.object({
   codigo: z.string(),
   /** El nivel más bajo que declara la fuente; si no declara ninguno, la raíz. */
   idSistema: z.string(),
-  /** `desde` alimenta a `hasta`, igual que en `EnlaceRed`. */
-  idNodoDesde: z.string(),
-  idNodoHasta: z.string(),
+  /** `desde` alimenta a `hasta`, igual que en `EnlaceRed`. Vacíos si la fuente no trae topología. */
+  idNodoDesde: z.string().nullable().optional(),
+  idNodoHasta: z.string().nullable().optional(),
+  /** Nombre del caño en el GIS (`Nombre_Ca`: "Cobo - Mar Chiquita"). */
+  nombre: z.string().optional(),
   tipo: TipoTramoSchema.optional(),
   longitudM: z.number().nullable().optional(),
   diametroInternoM: z.number().nullable().optional(),
@@ -48,9 +54,13 @@ export const UpdateTramoRedSchema = TramoRedSchema.omit({
 }).partial();
 export type IUpdateTramoRed = z.infer<typeof UpdateTramoRedSchema>;
 
-/** Los dos extremos en el mismo nodo: no es un tramo, y rompe cualquier recorrido. */
+/**
+ * Los dos extremos en el mismo nodo: no es un tramo, y rompe cualquier recorrido.
+ * Sin alguno de los dos extremos no hay bucle posible.
+ */
 export function esTramoBucle(
   t: Pick<ITramoRed, "idNodoDesde" | "idNodoHasta">,
 ): boolean {
+  if (!t.idNodoDesde || !t.idNodoHasta) return false;
   return String(t.idNodoDesde) === String(t.idNodoHasta);
 }

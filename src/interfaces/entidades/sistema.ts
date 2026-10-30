@@ -46,7 +46,8 @@ export type IUpdateSistema = z.infer<typeof UpdateSistemaSchema>;
 /**
  * De dónde salió el `idSistema` de un punto de medición (`punto-medicion.ts`).
  *
- * - `nodo`: el punto está asociado a un `NodoRed` que está en un solo subsistema.
+ * - `nodo`: el punto está en una estación (a pocos metros de un `NodoRed`) de un
+ *   solo subsistema.
  * - `traza`: el punto cae sobre la cañería de un subsistema (regla a diseñar).
  * - `manual`: lo fijó un operador. El recálculo no lo pisa.
  */

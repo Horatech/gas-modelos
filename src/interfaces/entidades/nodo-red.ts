@@ -29,6 +29,15 @@ export const NodoRedSchema = z.object({
   geojson: GeoJSONSchema.optional(),
   /** Vacío = nodo sin medición. */
   idPuntoMedicion: z.string().nullable().optional(),
+  /** El caño del que cuelga la estación (`SSS-NNN` de su `ID_Lic` en el GIS). */
+  idTramo: z.string().nullable().optional(),
+  /**
+   * Presión de suministro y regulada de la estación (`Pres_Sum` / `Pres_Reg` del
+   * GIS). **En la unidad del GIS del cliente, sin convertir**: no está confirmada
+   * (ver el spec del 30-oct). Vacío si el GIS no la trae.
+   */
+  presionSuministro: z.number().nullable().optional(),
+  presionRegulada: z.number().nullable().optional(),
   origen: OrigenRedSchema,
   fechaCreacion: z.string().optional(),
   idCliente: z.string(),

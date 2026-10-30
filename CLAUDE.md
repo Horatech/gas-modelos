@@ -200,15 +200,21 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 (`OrigenSistemaPuntoSchema`: `nodo` | `traza` | `manual`, en `sistema.ts`). Aditivo y opcional.
 
 **Campo derivado**, mismo patrón que `idsZonasBalance`: lo escribe un recálculo nocturno de gas-datos (disparado por
-gas-cron) a partir de la red. Primera regla: el punto asociado a un `NodoRed` que está en un solo subsistema toma ese
-subsistema; el nodo de borde (dos subsistemas) no se asigna y se reporta. `manual` no lo pisa el recálculo. La regla
-`traza` (punto sobre la cañería de un subsistema) queda por diseñar.
+gas-cron) a partir de la red. Primera regla (`nodo`): el punto que está en una estación —a pocos metros de un
+`NodoRed`— de un solo subsistema toma ese subsistema; estaciones de dos subsistemas no asignan y se reportan. `manual`
+no lo pisa el recálculo. La regla para los consumos queda por diseñar.
+
+**Red desde los KMZ del cliente** (spec gas-insideht-doc `2026-10-30-sistemas-red-desde-kmz-design.md`):
+`TramoRed.idNodoDesde/Hasta` pasan a opcionales (el caño del GIS no trae topología) y suma `nombre`;
+`esTramoBucle` da `false` si falta un extremo. `NodoRed` suma `idTramo` (el caño del que cuelga la estación) y
+`presionSuministro`/`presionRegulada` en la unidad del GIS, sin convertir (unidad sin confirmar).
 
 Para qué: la agrupación que cruza unidades de negocio sin repetir puntos (decisión del 26-oct, pedido R7 de la
 operación) y la base de los cruces por sistema (qué consume y qué controla en un subsistema).
 
 Sin populate: `sistema.ts` sólo importa `commodity.ts`, así que el punto lo importa como valor sin cerrar ciclo.
-⚠️ `puntomedicions` en gas-datos necesita `@Prop()` de los dos campos (el schema es estricto).
+⚠️ gas-datos necesita `@Prop()` de los campos nuevos en `puntomedicions`, `tramoreds` y `nodoreds` (schemas
+estrictos), y sacar el `required` de los extremos del tramo.
 ### 2026-10-30 - Key de IA del asistente por cliente (`cliente.model.ts`)
 
 `IAsistenteCliente`: `usaNuestraIa` (tilde: responde con nuestra key), `proveedorIa` (`"claude"`, por ahora el único)
