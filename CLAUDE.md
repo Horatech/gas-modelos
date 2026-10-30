@@ -194,6 +194,18 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-30 - Key de IA del asistente por cliente (`cliente.model.ts`)
+
+`IAsistenteCliente`: `usaNuestraIa` (tilde: responde con nuestra key), `proveedorIa` (`"claude"`, por ahora el único)
+y `apiKey` (la del cliente). Sin tilde ni `apiKey` el asistente no corre en el cliente, aunque tenga `usaLlm`.
+Aditivo; `config` es `Object` en gas-datos.
+
+Para qué: que cada cliente pague su consumo con su propia key, o que lo paguemos nosotros con el tilde.
+
+⚠️ `apiKey` nunca sale en una respuesta (json replacer de gas-api-cliente y gas-admin) y gas-datos ya la tapa en
+los logs. gas-admin hace merge SHALLOW de `config`: al guardar sin key tiene que conservar la guardada.
+⚠️ Antes de que gas-api-cliente exija tilde o key, los clientes con `usaLlm` (prod: GPE y Camuzzi) llevan el tilde.
+
 ### 2026-10-30 - Módulo de clasificación por usuario (`usuario/modulos.ts`)
 
 `IModulosUsuario.clasificacion`: la clasificación del padrón pasa a pedir el flag del usuario además de
