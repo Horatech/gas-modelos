@@ -194,6 +194,14 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-10-30 - Módulo de clasificación por usuario (`usuario/modulos.ts`)
+
+`IModulosUsuario.clasificacion`: la clasificación del padrón pasa a pedir el flag del usuario además de
+`config.moduloClasificacion` del cliente, como Operación, Linepack y Clima. Ausente ⇒ apagado, también para el
+administrador global. Aditivo; gas-datos guarda `modulos` como `Object`, sin `@Prop()` nuevo.
+
+Para qué: encender la clasificación en un cliente sin mostrársela a todos sus usuarios.
+
 ### 2026-10-30 - Traza de herramientas en la consulta al asistente (`consulta-asistente.ts`)
 
 `IConsultaAsistente.herramientas` (`HerramientaConsultaAsistenteSchema`): las herramientas que usó el asistente para
