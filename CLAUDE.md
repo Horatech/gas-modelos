@@ -194,6 +194,17 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-02 - Módulo Red (`cliente.model.ts`, `usuario/modulos.ts`)
+
+`IConfigCliente.moduloRed` (`ModuloRedSchema`) e `IModulosUsuario.red`: la sección Red del portal (sistemas, puntos y
+conexiones) se gatea con su propio flag de cliente y de usuario, como Operación y Clima. Aditivo.
+
+`moduloClasificacion` del cliente pasa a ser **sólo** el interruptor del clasificador automático (gas-cron escribe la
+clasificación y la pertenencia a sistemas de ese cliente); no muestra pantalla. `modulos.clasificacion` del usuario
+queda `@deprecated`: la pantalla de clasificación es la pestaña Puntos de Red.
+
+No requiere `@Prop()` en gas-datos: `config` y `modulos` son `@Prop({ type: Object })`.
+
 ### 2026-10-30 - Pertenencia del punto a un sistema de red (`punto-medicion.ts`, `sistema.ts`)
 
 `IPuntoMedicion.idSistema` (uno solo, en el nivel más bajo conocido: el subsistema) y `origenSistema`

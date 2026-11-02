@@ -159,16 +159,29 @@ export const ModuloClimaSchema = z.object({
 export type IModuloClima = z.infer<typeof ModuloClimaSchema>;
 
 /**
- * Editor de clasificación de puntos de medición (F5 del modelo canónico).
+ * Clasificador automático de puntos de medición (F3 del modelo canónico).
  *
- * Ausente ⇒ apagado. Es una pantalla de administración del padrón que sólo tiene
- * sentido para el cliente que está haciendo ese trabajo; al resto le muestra una
- * sección vacía que no sabe para qué es.
+ * Ausente ⇒ apagado. Con el flag, el job nocturno de gas-cron **escribe** la
+ * clasificación del padrón de este cliente (sin él, sólo la mide), y también la
+ * pertenencia de los puntos a sistemas. Desde el 2-nov-2026 **no muestra nada**:
+ * la pantalla de clasificación es la pestaña Puntos de la sección Red
+ * (`moduloRed`).
  */
 export const ModuloClasificacionSchema = z.object({
   activo: z.boolean().optional(),
 });
 export type IModuloClasificacion = z.infer<typeof ModuloClasificacionSchema>;
+
+/**
+ * Sección Red del portal: sistemas (la red del GIS y los puntos de cada
+ * subsistema), puntos (la clasificación) y conexiones (la topología, que pide
+ * además `moduloTopologia`). Ausente ⇒ apagado. El usuario necesita además
+ * `modulos.red`.
+ */
+export const ModuloRedSchema = z.object({
+  activo: z.boolean().optional(),
+});
+export type IModuloRed = z.infer<typeof ModuloRedSchema>;
 
 /**
  * Pantalla de carga de la topología de red (etapa 17 del Tablero de Operaciones).
@@ -381,6 +394,7 @@ export const ConfigClienteSchema = z.object({
   moduloCoberturaLorawan: ModuloCoberturaLorawanSchema.optional(),
   moduloClima: ModuloClimaSchema.optional(),
   moduloClasificacion: ModuloClasificacionSchema.optional(),
+  moduloRed: ModuloRedSchema.optional(),
   moduloTopologia: ModuloTopologiaSchema.optional(),
   moduloNavegacion: ModuloNavegacionSchema.optional(),
   moduloLinepack: ModuloLinepackSchema.optional(),

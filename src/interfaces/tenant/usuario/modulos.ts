@@ -15,7 +15,12 @@ export const ModulosUsuarioSchema = z.object({
   linepack: z.boolean().optional(),
   /** Clima. Con `config.moduloClima`. Temporal: sólo lo mira el front. */
   clima: z.boolean().optional(),
-  /** Clasificación del padrón (editor y cobertura). Con `config.moduloClasificacion`. */
+  /** Sección Red (sistemas, puntos y conexiones). Con `config.moduloRed`. */
+  red: z.boolean().optional(),
+  /**
+   * @deprecated Desde el 2-nov-2026 la clasificación es la pestaña Puntos de la
+   * sección Red y la gatea `red`. Se conserva para no romper usuarios guardados.
+   */
   clasificacion: z.boolean().optional(),
 });
 export type IModulosUsuario = z.infer<typeof ModulosUsuarioSchema>;
