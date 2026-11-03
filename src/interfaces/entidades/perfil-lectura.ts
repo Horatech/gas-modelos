@@ -59,7 +59,12 @@ export type OrigenLectura =
   | "reportes"
   | "registrohorarioaguas"
   | "registromedidorelectricos"
-  | "registroclimas";
+  | "registroclimas"
+  /**
+   * No es una colección: el linepack de la red de Aquiom, reconstruido por gas-api-cliente con nuestras series
+   * SCADA de los extremos de cada tramo (ver `PERFIL_LINEPACK`).
+   */
+  | "linepack";
 
 export type FormaDocumento = "ancho" | "angosto";
 
@@ -704,13 +709,81 @@ export const PERFIL_CLIMA: IPerfilLectura = {
   },
 };
 
+/** Ejes comunes de las señales de la red de linepack: horarias, calculadas en el backend. */
+const RED_LINEPACK = {
+  dominio: "proceso",
+  commodity: "gas",
+  accumulation: "instantaneous",
+  flowDirection: "na",
+  measuringPeriod: "horario",
+  tou: "na",
+  tipoValor: "numerico",
+  rol: "medida",
+  naturaleza: "calculado",
+  emitido: true,
+  origen: "calculado-en-backend",
+  estado: "prod",
+} as const;
+
+const PRESION_LINEPACK = {
+  ...RED_LINEPACK,
+  quantityKind: "presion",
+  unidadCanonica: "bar",
+  condicionMedicion: "na",
+  referencia: "manometrica",
+  agregableEntreDispositivos: false,
+} as const;
+
+/**
+ * Red de linepack de Aquiom (sistema → subsistema → tramo). El selector es la señal del tramo en Aquiom. Aquiom no
+ * publica su histórico: gas-api-cliente lo reconstruye por hora con nuestras series SCADA de los extremos (tag o
+ * fórmula del nodo virtual), la presión media del caño y `LINEPACK = k × (P. promedio + P atm)` con el `k` del tramo
+ * que publica Aquiom. El linepack de un subsistema o de un sistema es la suma de sus tramos. Sin `divisionRequerida`:
+ * lo habilitan los módulos Operación y linepack del cliente y del usuario.
+ */
+export const PERFIL_LINEPACK: IPerfilLectura = {
+  clave: "Linepack",
+  origen: "linepack",
+  discriminante: {},
+  forma: "ancho",
+  descripcion: "Red de linepack de Aquiom, reconstruida con las series SCADA",
+  campos: {
+    LINEPACK: {
+      ...RED_LINEPACK,
+      quantityKind: "volumen",
+      unidadCanonica: "Sm3",
+      condicionMedicion: "base",
+      agregableEntreDispositivos: true,
+      rangoPlausible: { min: 0 },
+      descripcion: "Linepack",
+    },
+    PRESION_PROMEDIO: { ...PRESION_LINEPACK, descripcion: "Presión promedio" },
+    P_INICIO: { ...PRESION_LINEPACK, descripcion: "Presión de inicio" },
+    P_FIN: { ...PRESION_LINEPACK, descripcion: "Presión de fin" },
+  },
+};
+
 export const CATALOGO_CANALES: IPerfilLectura[] = [
   PERFIL_NUC_CORRECTORA,
   PERFIL_NME,
   PERFIL_SCADA,
   PERFIL_PRESION,
   PERFIL_CLIMA,
+  PERFIL_LINEPACK,
 ];
+
+/** Canales de un tramo de la red de linepack, en el orden del selector. */
+export const CANALES_LINEPACK: string[] = Object.keys(PERFIL_LINEPACK.campos!).map((c) =>
+  canalRef("linepack", PERFIL_LINEPACK.clave, c),
+);
+
+/** El linepack: el único canal de un subsistema o de un sistema (la suma de sus tramos). */
+export const CANAL_LINEPACK = canalRef("linepack", PERFIL_LINEPACK.clave, "LINEPACK");
+
+/** Si el `CanalRef` es de la red de linepack (se pide por sistema, subsistema o tramo, no por punto). */
+export function esCanalLinepack(ref: string): boolean {
+  return CANALES_LINEPACK.includes(ref);
+}
 
 /** Canales de clima que ofrece el gráfico personalizado, en el orden del selector. */
 export const CANALES_CLIMA: string[] = Object.keys(PERFIL_CLIMA.campos!).map((c) =>

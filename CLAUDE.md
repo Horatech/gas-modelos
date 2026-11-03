@@ -194,6 +194,17 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-03 - Linepack en el gráfico personalizado (`perfil-lectura.ts`, `serie-linepack.ts`, `grafico-personalizado.ts`)
+
+`PERFIL_LINEPACK` (origen `linepack`, que no es una colección): las señales de un tramo de Aquiom (`LINEPACK`,
+`PRESION_PROMEDIO`, `P_INICIO`, `P_FIN`) como canales `linepack/Linepack#<señal>` (`CANALES_LINEPACK`,
+`CANAL_LINEPACK`, `esCanalLinepack`). `POST /linepack/series` de gas-api-cliente (`PedidoSeriesLinepackSchema`,
+`SeriesLinepackSchema`): por `AmbitoLinepackSchema` (`Sistema` | `Subsistema` | `Tramo`, ids de Aquiom); en sistema y
+subsistema sólo `LINEPACK` (la suma de los tramos). `ISeriePreset.linepack`, opcional. Aditivo.
+
+No requiere `@Prop()` en gas-datos: `series` es `[Object]`. gas-api-cliente sí necesita el pin nuevo: valida el preset
+con zod, que descarta el campo que no conoce.
+
 ### 2026-11-02 - Módulo Red (`cliente.model.ts`, `usuario/modulos.ts`)
 
 `IConfigCliente.moduloRed` (`ModuloRedSchema`) e `IModulosUsuario.red`: la sección Red del portal (sistemas, puntos y
