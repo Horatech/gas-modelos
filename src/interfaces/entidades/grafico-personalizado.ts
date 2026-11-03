@@ -2,10 +2,11 @@ import { z } from "zod";
 import { parseCanalRef } from "./perfil-lectura";
 import { CorteDiarioSchema } from "./serie-punto";
 import { AmbitoClimaSchema } from "./serie-clima";
+import { AmbitoLinepackSchema, canalValidoEn } from "./serie-linepack";
 
 /**
  * Gráfico personalizado (P56): preset por usuario del trend de series. Cada serie por `canalRef`
- * (SCADA: `canalScada(tag)`; clima: canal + `ambito`; otras familias: canal + `idPunto`).
+ * (SCADA: `canalScada(tag)`; clima: canal + `ambito`; linepack: canal + `linepack`; otras familias: canal + `idPunto`).
  * Spec: gas-insideht-doc docs/superpowers/specs/2026-10-09-grafico-personalizado-design.md
  */
 
@@ -52,15 +53,19 @@ export const EscalaSerieSchema = z
   });
 export type IEscalaSerie = z.infer<typeof EscalaSerieSchema>;
 
-export const SeriePresetSchema = z.object({
-  canal: z.string().refine((c) => parseCanalRef(c) !== null, { message: "canal inválido" }),
-  /** Sólo en canales que no identifican la instancia (no SCADA ni clima). */
-  idPunto: z.string().optional(),
-  /** Sólo en canales de clima: la Localidad o el Centro Operativo. */
-  ambito: AmbitoClimaSchema.optional(),
-  visible: z.boolean(),
-  escala: EscalaSerieSchema.optional(),
-});
+export const SeriePresetSchema = z
+  .object({
+    canal: z.string().refine((c) => parseCanalRef(c) !== null, { message: "canal inválido" }),
+    /** Sólo en canales que no identifican la instancia (no SCADA, clima ni linepack). */
+    idPunto: z.string().optional(),
+    /** Sólo en canales de clima: la Localidad o el Centro Operativo. */
+    ambito: AmbitoClimaSchema.optional(),
+    /** Sólo en canales de linepack: el sistema, el subsistema o el tramo de Aquiom. */
+    linepack: AmbitoLinepackSchema.optional(),
+    visible: z.boolean(),
+    escala: EscalaSerieSchema.optional(),
+  })
+  .refine((s) => !s.linepack || canalValidoEn(s.canal, s.linepack), { message: "canal de linepack inválido" });
 export type ISeriePreset = z.infer<typeof SeriePresetSchema>;
 
 export const GraficoPersonalizadoSchema = z.object({
