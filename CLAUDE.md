@@ -194,6 +194,25 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-04 - Nivel de red desde el GIS del cliente; presión absoluta de la correctora
+
+`OrigenClasificacionSchema` suma **`gis-cliente`**: el nivel de red de una correctora que está en una estación del GIS
+(`INodoRed`, a pocos metros) sale de `presionSuministro` / `presionRegulada` de esa estación, según el lado donde mide
+la correctora. Aditivo.
+
+`registros/NUC#presion` pasa de `referencia: "manometrica"` a **`"absoluta"`**: la correctora informa la presión
+absoluta con la que corrige el volumen; SCADA, NSP y Veribox informan relativa. Medido en producción el 4-nov: del lado
+regulado de las ERP del GIS, la correctora mide una mediana de +1,1 bar sobre la regulada (Proser, Corus, Dresser2) y
+NSP/Veribox, 0. No es universal (hay correctoras con mínimos por debajo de 1 bar). Es metadato: ningún consumidor lee
+`referencia` todavía, así que no cambia ningún número.
+
+Por qué: con la presión medida y los umbrales NAG-100, una estación regulada a 4 bar (98 en el GIS de Camuzzi, el borde
+MEDIA/ALTA) quedaba en ALTA. El nivel sale del GIS; la medición sólo decide el lado.
+
+⚠️ gas-web-cliente tiene `Record<OrigenClasificacion, string>` (`modulos/clasificacion/etiquetas.ts`): al subir de
+versión hay que darle nombre a `gis-cliente` o no compila. gas-datos guarda `clasificacion` como objeto: sin `@Prop()`
+nuevo.
+
 ### 2026-11-03 - Linepack en el gráfico personalizado (`perfil-lectura.ts`, `serie-linepack.ts`, `grafico-personalizado.ts`)
 
 `PERFIL_LINEPACK` (origen `linepack`, que no es una colección): las señales de un tramo de Aquiom (`LINEPACK`,

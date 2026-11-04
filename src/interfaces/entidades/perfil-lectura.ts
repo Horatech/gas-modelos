@@ -183,7 +183,13 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       // No se promedia presión entre equipos hasta que el punto declare su nivel
       // de red: en un mismo cliente conviven umbrales de 4,4 bar y de 70 bar.
       agregableEntreDispositivos: false,
-      referencia: "manometrica",
+      // La correctora informa presión ABSOLUTA (la que usa para corregir el volumen);
+      // SCADA, NSP y Veribox informan relativa. Medido en producción el 4-nov-2026: del
+      // lado regulado de las ERP del GIS, la medida de la correctora menos la regulada
+      // da una mediana de +1,1 bar (Proser, Corus, Dresser2) y la de NSP/Veribox, 0.
+      // Hay equipos con mínimos por debajo de 1 bar, así que no es universal: no se
+      // compara con un umbral de presión relativa sin restar la atmosférica.
+      referencia: "absoluta",
       rangoPlausible: { min: 0, max: 100 },
       emitido: true,
       origen: "medido-por-equipo",
