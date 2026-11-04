@@ -24,8 +24,16 @@ export type IIntegracionInfluxV2 = z.infer<typeof IntegracionInfluxV2Schema>;
 
 export const IntegracionSchema = z.object({
   tipoDispositivo: z.string().optional(),
-  tipoIntegracion: z.enum(["INFLUXV1", "INFLUXV2", "HTTPS", "FTP"]).optional(), // SQL / MONGODB
-  endpoint: z.string().optional(), // https://miapi.com
+  // MQTT: puente del crudo de los RTU (UC300) a un broker del cliente, en los dos
+  // sentidos. Uplinks (status, dev, accepted/rejected) salen con el mismo tópico
+  // y payload; los comandos (cmd/update, modbus/update) que el destino publica
+  // para un SN del cliente vuelven al equipo. Lo ejecuta gas-api-rtu.
+  // endpoint = host o URL (mqtts:// por defecto), puerto = 8883/1883,
+  // credenciales2 = keys `user`, `password` y opcional `clientId`.
+  tipoIntegracion: z
+    .enum(["INFLUXV1", "INFLUXV2", "HTTPS", "FTP", "MQTT"])
+    .optional(), // SQL / MONGODB
+  endpoint: z.string().optional(), // https://miapi.com | mqtts://broker.com
   puerto: z.number().optional(), // 8080
   method: z.enum(["GET", "POST", "PUT", "PATCH"]).optional(),
   credenciales: z
