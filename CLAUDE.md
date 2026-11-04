@@ -194,6 +194,14 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-04 - Volúmenes del NUC no negativos (`perfil-lectura.ts`)
+
+`rangoPlausible: { min: 0 }` en `correctedParcializado`, `uncorrectedParcializado` y `correctedTotalizado` del perfil
+NUC. gas-nuc4g crea cada registro con todos los campos en -1 ("no vino", `existeValor`), y un volumen no es negativo:
+sin el rango, la tabla de registros del chat sumaba los -1 en el total del período. La temperatura queda como está
+(-1 °C es una lectura posible). Hoy no cambia ninguna serie: `/puntos/series` de gas-datos grafica presión,
+temperatura y caudal de las correctoras, que ya tenían su rango.
+
 ### 2026-11-04 - Bloques del chat: mapa y lista por ids (`bloque-asistente.ts`)
 
 Resto del renderer de bloques (registros, puntos, seguimiento y mapa), que ya no se despliega por fases.

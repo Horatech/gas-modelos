@@ -268,3 +268,11 @@ test("descriptorDe resuelve el catálogo y devuelve undefined para lo no cubiert
   assert.equal(descriptorDe("registros/NUC#noExiste"), undefined);
   assert.equal(descriptorDe("reportes/SML#valores.consumo"), undefined, "SML no está en el slice");
 });
+
+test("volúmenes del NUC: el -1 con que se crea el registro queda fuera del rango plausible", () => {
+  for (const c of ["correctedParcializado", "uncorrectedParcializado", "correctedTotalizado"]) {
+    assert.equal(m.descriptorDe(`registros/NUC#${c}`).rangoPlausible.min, 0, c);
+  }
+  // La temperatura no: -1 °C es una lectura posible.
+  assert.equal(m.descriptorDe("registros/NUC#temperatura").rangoPlausible.min, -40);
+});
