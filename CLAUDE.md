@@ -194,6 +194,19 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-04 - Integración MQTT: puente del crudo de los RTU (`tenant/integraciones.ts`)
+
+`tipoIntegracion` suma `"MQTT"`. Primera integración que no manda datos procesados: gas-api-rtu
+reenvía el crudo UCP de los UC300 del cliente a su broker (mismo tópico y payload) y le devuelve
+al equipo los comandos (`cmd/update`, `modbus/update`) que el broker publique para esos SN.
+Primer uso: el Mosquitto de Acceso (`mqtt.coliving.sh:8883`, cliente `gas-puente`).
+
+Sin campos nuevos: `endpoint` = host o URL `mqtts://`/`mqtt://` (sin esquema, TLS), `puerto`,
+`credenciales2` con keys `user`, `password` y opcional `clientId`. `tipoDispositivo` `"UC300"`
+(o vacío). gas-integraciones lo ignora (busca por tipo exacto).
+
+No requiere `@Prop()` en gas-datos: `integraciones` es `[Object]`.
+
 ### 2026-11-03 - Linepack en el gráfico personalizado (`perfil-lectura.ts`, `serie-linepack.ts`, `grafico-personalizado.ts`)
 
 `PERFIL_LINEPACK` (origen `linepack`, que no es una colección): las señales de un tramo de Aquiom (`LINEPACK`,
