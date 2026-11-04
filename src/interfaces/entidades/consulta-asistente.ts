@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BloquesRespuestaSchema } from "./bloque-asistente";
 
 export const ResultadoConsultaAsistenteSchema = z.enum(["ok", "error"]);
 export type ResultadoConsultaAsistente = z.infer<typeof ResultadoConsultaAsistenteSchema>;
@@ -34,6 +35,9 @@ export const ConsultaAsistenteSchema = z.object({
   fuentes: z.array(FuenteAsistenteSchema).optional(),
   // En el orden en que se llamaron.
   herramientas: z.array(HerramientaConsultaAsistenteSchema).optional(),
+  // Los bloques que referencia `respuesta` con `{{bloque:<id>}}`, cada uno devuelto por una herramienta de esta
+  // consulta. Ausente en las consultas anteriores a los bloques: esas se muestran como texto.
+  bloques: BloquesRespuestaSchema.optional(),
   modelo: z.string().optional(),
   tokensEntrada: z.number().nullable().optional(),
   tokensSalida: z.number().nullable().optional(),

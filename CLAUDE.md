@@ -91,9 +91,9 @@ Lo que sigue siendo delicado, y cambia de forma:
   `npm run gen:json-schema -- --verbose` avisa si algún schema nuevo no serializa
   (agregarlo a `SKIP_SCHEMAS` en `scripts/gen-json-schema.mjs` documentando el motivo,
   no ignorar el error).
-- Convenciones Zod v4: `z.object`/`z.union`/`z.enum` (API canónica; no hay
-  `z.discriminatedUnion` en este repo, las uniones son heterogéneas sin discriminante
-  limpio). NO usar `z.nativeEnum` ni `.passthrough()/.strict()/.strip()` deprecados.
+- Convenciones Zod v4: `z.object`/`z.union`/`z.enum` (API canónica; casi todas las
+  uniones son heterogéneas sin discriminante limpio. `z.discriminatedUnion` sólo cuando
+  cada opción tiene un literal propio, como `BloqueAsistenteSchema`). NO usar `z.nativeEnum` ni `.passthrough()/.strict()/.strip()` deprecados.
   Modo `strip` por defecto (interop Mongoose). Ids/fechas como `z.string()` plano.
 - `TIPOS_DISPOSITIVOS` (`auxiliares/tipoDispositivo.ts`) ahora es
   `TipoDispositivoGasSchema.options` — fuente única de verdad, ya sin la restricción
@@ -193,6 +193,31 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 - En firmware: `SIZE_TEL_STANDARD = 13`
 
 ## Cambios recientes
+
+### 2026-11-04 - Bloques del chat del asistente (`bloque-asistente.ts`, `consulta-asistente.ts`)
+
+F0 del renderer de bloques: el chat del asistente intercala el texto del agente con bloques que dibuja el sistema.
+Un bloque es una especificación declarativa (qué mostrar, sin valores): lo devuelve una tool del MCP, el texto lo
+ubica con `{{bloque:<id>}}` (`marcadorBloque`, `regexMarcadorBloque`) y el front pide los datos con el token del
+usuario. Aditivo: todavía no lo consume nadie.
+
+- `BloqueAsistenteSchema`: unión discriminada por `tipo` (`TIPOS_BLOQUE_ASISTENTE`). Comunes: `id`, `titulo`,
+  `version` (entero desde 1; sube al refinar el mismo `id`).
+  - `valor`: `idPunto` + `canales` (`CanalRef`).
+  - `serie`: `series` con los ids de Gráficos (`<idScada>`, `<idPunto>.<campo>`, `L.<id>.<campo>`), `desde`/`hasta`
+    absolutos (día o instante; la tool convierte los relativos para que la conversación reabierta muestre lo mismo).
+  - `registros`: `idPunto`, `canales`, ventana UTC no vacía y `zonaHoraria` IANA.
+  - `seguimiento`: `idPunto`, `canal?`, `modo` (`vivo` | `ultimoReporte` | `ultimoEnvio`, lo decide el backend según
+    el equipo) y `cadenciaEsperadaMin`.
+  - `puntos`: `filtro` (estados, UN, CO, divisiones) y `orden`.
+- `IConsultaAsistente.bloques` (`BloquesRespuestaSchema`, sin ids repetidos): los bloques de la respuesta. Ausente en
+  las consultas anteriores, que se muestran como texto.
+
+Es la primera unión con `z.discriminatedUnion` del repo: acá el discriminante es limpio (`tipo` literal en cada
+opción) y da errores por tipo en vez de por cada opción. `gen:json-schema` la serializa sin problema.
+
+⚠️ `consultasAsistente` en gas-datos necesita `@Prop({ type: [Object] }) bloques` y los inputs tienen que aceptarlo
+(`forbidNonWhitelisted`: sin eso el POST da 400).
 
 ### 2026-11-04 - Integración MQTT: puente del crudo de los RTU (`tenant/integraciones.ts`)
 
