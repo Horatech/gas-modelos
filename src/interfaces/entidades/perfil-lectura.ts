@@ -231,6 +231,8 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       divisionRequerida: "Correctoras",
       estado: "prod",
       descripcion: "Volumen corregido del período (Vb)",
+      // Un volumen no es negativo: el -1 es el "no vino" con que gas-nuc4g crea el registro (`existeValor`).
+      rangoPlausible: { min: 0 },
     },
     uncorrectedParcializado: {
       dominio: "proceso",
@@ -252,6 +254,8 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       divisionRequerida: "Correctoras",
       estado: "prod",
       descripcion: "Volumen sin corregir del período (Vm)",
+      // Un volumen no es negativo: el -1 es el "no vino" con que gas-nuc4g crea el registro (`existeValor`).
+      rangoPlausible: { min: 0 },
     },
     correctedTotalizado: {
       dominio: "proceso",
@@ -272,6 +276,8 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       divisionRequerida: "Correctoras",
       estado: "prod",
       descripcion: "Odómetro de volumen corregido. Se agrega con last, nunca sum",
+      // Un volumen no es negativo: el -1 es el "no vino" con que gas-nuc4g crea el registro (`existeValor`).
+      rangoPlausible: { min: 0 },
     },
     caudalPromedio: {
       dominio: "proceso",
