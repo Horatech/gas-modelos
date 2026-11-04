@@ -19,15 +19,17 @@ const registros = base("registros", {
 const seguimiento = base("seguimiento", { idPunto: "p1", modo: "vivo", cadenciaEsperadaMin: 1 });
 const puntos = base("puntos", { filtro: { estados: ["Alerta"], divisiones: ["Presión"] }, orden: "-fechaUltimoReporte" });
 
+const mapa = base("mapa", { idsPunto: ["p1", "p2"], centro: "p1", radioKm: 5 });
+
 const ok = (b) => m.BloqueAsistenteSchema.safeParse(b).success;
 
 test("los cinco tipos válidos pasan y el tipo discrimina", () => {
-  for (const b of [valor, serie, registros, seguimiento, puntos]) {
+  for (const b of [valor, serie, registros, seguimiento, puntos, mapa]) {
     const r = m.BloqueAsistenteSchema.safeParse(b);
     assert.equal(r.success, true, `${b.tipo}: ${JSON.stringify(r.error?.issues)}`);
     assert.equal(r.data.tipo, b.tipo);
   }
-  assert.deepEqual(m.TIPOS_BLOQUE_ASISTENTE, ["valor", "serie", "registros", "seguimiento", "puntos"]);
+  assert.deepEqual(m.TIPOS_BLOQUE_ASISTENTE, ["valor", "serie", "registros", "seguimiento", "puntos", "mapa"]);
   assert.deepEqual(m.BloqueAsistenteSchema.options.map((o) => o.shape.tipo.value), m.TIPOS_BLOQUE_ASISTENTE);
 });
 
@@ -106,4 +108,17 @@ test("consulta: bloques opcional, sin ids repetidos", () => {
   assert.equal(m.CreateConsultaAsistenteSchema.safeParse({ ...consulta, bloques: [valor, { ...serie, id: "b2" }] }).success, true);
   assert.equal(m.ConsultaAsistenteSchema.safeParse({ ...consulta, bloques: [valor, serie] }).success, false);
   assert.equal(m.ConsultaAsistenteSchema.safeParse({ ...consulta, bloques: [{ ...valor, canales: [] }] }).success, false);
+});
+
+test("puntos: idsPunto para una lista que el filtro no expresa, hasta el tope", () => {
+  assert.equal(ok({ ...puntos, filtro: { idsPunto: ["p1", "p2"] } }), true);
+  assert.equal(ok({ ...puntos, filtro: { idsPunto: [] } }), false);
+  assert.equal(ok({ ...puntos, filtro: { idsPunto: Array(m.MAX_PUNTOS_BLOQUE + 1).fill("p") } }), false);
+});
+
+test("mapa: puntos por id, centro y radio opcionales", () => {
+  assert.equal(ok({ ...mapa, centro: undefined, radioKm: undefined }), true);
+  assert.equal(ok({ ...mapa, idsPunto: [] }), false);
+  assert.equal(ok({ ...mapa, radioKm: 0 }), false);
+  assert.equal(ok({ ...mapa, idsPunto: Array(m.MAX_PUNTOS_BLOQUE + 1).fill("p") }), false);
 });

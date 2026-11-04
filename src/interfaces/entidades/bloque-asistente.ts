@@ -14,6 +14,8 @@ import { DivisionSchema } from "../tenant/usuario/permiso";
  */
 
 export const MAX_CANALES_BLOQUE = 20;
+/** Puntos de una lista o de un mapa armados por la herramienta (una búsqueda, los cercanos a uno). */
+export const MAX_PUNTOS_BLOQUE = 200;
 
 const CanalRefSchema = z.string().refine((c) => parseCanalRef(c) !== null, { message: "canal inválido" });
 
@@ -60,7 +62,8 @@ export type IBloqueSerie = z.infer<typeof BloqueSerieSchema>;
 
 /**
  * Los registros de un punto en una ventana. `desde` y `hasta` son instantes UTC; `zonaHoraria` (IANA) es la del
- * usuario y sirve para mostrar las horas como las pidió.
+ * usuario y sirve para mostrar las horas como las pidió. Cada registro rotula el cierre de su intervalo: el de las
+ * 16:00 es lo que pasó de 15 a 16 (ver `IRegistro.tsCorrido`).
  */
 export const BloqueRegistrosSchema = BloqueBaseSchema.extend({
   tipo: z.literal("registros"),
@@ -92,8 +95,13 @@ export const BloqueSeguimientoSchema = BloqueBaseSchema.extend({
 });
 export type IBloqueSeguimiento = z.infer<typeof BloqueSeguimientoSchema>;
 
-/** Filtro de la lista de puntos. Cada campo ausente no filtra; los presentes se combinan. */
+/**
+ * Filtro de la lista de puntos. Cada campo ausente no filtra; los presentes se combinan. `idsPunto`: una lista que el
+ * filtro no expresa (el resultado de una búsqueda por texto, los puntos de unas alertas); los permisos los aplica la
+ * API igual.
+ */
 export const FiltroBloquePuntosSchema = z.object({
+  idsPunto: z.array(z.string().min(1)).min(1).max(MAX_PUNTOS_BLOQUE).optional(),
   estados: z.array(EstadoCorrectoraSchema).min(1).optional(),
   idsUnidadNegocio: z.array(z.string().min(1)).min(1).optional(),
   idsCentroOperativo: z.array(z.string().min(1)).min(1).optional(),
@@ -109,17 +117,38 @@ export const BloquePuntosSchema = BloqueBaseSchema.extend({
 });
 export type IBloquePuntos = z.infer<typeof BloquePuntosSchema>;
 
+/**
+ * Puntos en el mapa. La herramienta resuelve cuáles (una búsqueda, los cercanos a uno) y el bloque los guarda por id,
+ * así la conversación reabierta muestra los mismos. `centro`: el punto de referencia (el de "cerca de"), resaltado;
+ * con `radioKm`, el círculo de la búsqueda.
+ */
+export const BloqueMapaSchema = BloqueBaseSchema.extend({
+  tipo: z.literal("mapa"),
+  idsPunto: z.array(z.string().min(1)).min(1).max(MAX_PUNTOS_BLOQUE),
+  centro: z.string().min(1).optional(),
+  radioKm: z.number().positive().optional(),
+});
+export type IBloqueMapa = z.infer<typeof BloqueMapaSchema>;
+
 export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloqueValorSchema,
   BloqueSerieSchema,
   BloqueRegistrosSchema,
   BloqueSeguimientoSchema,
   BloquePuntosSchema,
+  BloqueMapaSchema,
 ]);
 export type IBloqueAsistente = z.infer<typeof BloqueAsistenteSchema>;
 export type TipoBloqueAsistente = IBloqueAsistente["tipo"];
 
-export const TIPOS_BLOQUE_ASISTENTE: TipoBloqueAsistente[] = ["valor", "serie", "registros", "seguimiento", "puntos"];
+export const TIPOS_BLOQUE_ASISTENTE: TipoBloqueAsistente[] = [
+  "valor",
+  "serie",
+  "registros",
+  "seguimiento",
+  "puntos",
+  "mapa",
+];
 
 /** Marcador con el que el texto de la respuesta ubica un bloque. */
 export const marcadorBloque = (id: string) => `{{bloque:${id}}}`;
