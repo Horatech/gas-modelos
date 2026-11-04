@@ -194,6 +194,19 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-04 - Bloques del chat: mapa y lista por ids (`bloque-asistente.ts`)
+
+Resto del renderer de bloques (registros, puntos, seguimiento y mapa), que ya no se despliega por fases.
+
+- `BloqueMapaSchema` (`tipo: "mapa"`): `idsPunto` (hasta `MAX_PUNTOS_BLOQUE`, 200) que resuelve la herramienta (una
+  búsqueda, los cercanos a un punto), `centro` (el punto de referencia, resaltado) y `radioKm` opcionales. Por id, como
+  los períodos absolutos: la conversación reabierta muestra los mismos puntos.
+- `FiltroBloquePuntosSchema.idsPunto`: la lista que el filtro por estado/UN/CO/división no expresa (resultado de una
+  búsqueda por texto, puntos de unas alertas). Los permisos los aplica la API igual.
+- Comentario de `BloqueRegistrosSchema`: cada registro rotula el cierre de su intervalo (el de las 16:00 es de 15 a 16).
+
+Aditivo. gas-api-cliente necesita el pin nuevo: valida los bloques con este esquema y descartaría los de tipo `mapa`.
+
 ### 2026-11-04 - Bloques del chat del asistente (`bloque-asistente.ts`, `consulta-asistente.ts`)
 
 F0 del renderer de bloques: el chat del asistente intercala el texto del agente con bloques que dibuja el sistema.
