@@ -4,7 +4,7 @@ import { CANAL_LINEPACK, esCanalLinepack } from "./perfil-lectura";
 
 /**
  * Series de la red de linepack de Aquiom para el gráfico personalizado (`PERFIL_LINEPACK`): una señal de un tramo
- * (linepack, presión promedio, de inicio o de fin), o el linepack de un subsistema o de un sistema (la suma de sus
+ * (linepack, presión de inicio o de fin), o el linepack de un subsistema o de un sistema (la suma de sus
  * tramos). Una por hora, reconstruida con nuestras series SCADA. La respuesta tiene la forma de la serie SCADA.
  */
 
