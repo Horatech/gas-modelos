@@ -194,6 +194,24 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-05 - Conversaciones y sugerencias del asistente (`consulta-asistente.ts`)
+
+Primer paso de la interfaz del asistente tipo escritorio (lista de conversaciones a la izquierda; cualquiera se puede
+continuar). Aditivo: todavía no lo consume nadie.
+
+- `ConversacionAsistenteSchema` (`IConversacionAsistente`): una fila de la lista. **No se guarda**: sale de agrupar
+  las consultas `ok` del usuario por `idConversacion` (gas-datos). `titulo` = la primera pregunta recortada a
+  `MAX_TITULO_CONVERSACION_ASISTENTE` (80); `inicio`/`ultima`; `turnos`; `conSeguimiento` (alguna respuesta con un
+  bloque `seguimiento` `vivo`: al abrirla, el chat lo reanuda).
+- `PedidoConversacionesAsistenteSchema`: página del listado, `limit` (de la query, hasta
+  `MAX_CONVERSACIONES_ASISTENTE`, 100) y `antes` (la `ultima` de la última fila de la página anterior).
+- `SugerenciasAsistenteSchema`: hasta `MAX_SUGERENCIAS_ASISTENTE` (3) pedidos de seguimiento que propone el asistente
+  al final de una respuesta con datos, de 3 a 80 caracteres y sin repetir (sin distinguir mayúsculas). El chat los
+  muestra como botones y el texto viaja como la pregunta siguiente. `IConsultaAsistente.sugerencias` los guarda.
+
+⚠️ `consultasAsistente` en gas-datos necesita `@Prop({ type: [String], default: undefined }) sugerencias` y los inputs
+tienen que aceptarlo (`forbidNonWhitelisted`: sin eso el POST da 400).
+
 ### 2026-11-04 - Volúmenes del NUC no negativos (`perfil-lectura.ts`)
 
 `rangoPlausible: { min: 0 }` en `correctedParcializado`, `uncorrectedParcializado` y `correctedTotalizado` del perfil
