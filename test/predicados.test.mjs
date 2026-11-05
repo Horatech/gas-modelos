@@ -269,6 +269,18 @@ test("descriptorDe resuelve el catálogo y devuelve undefined para lo no cubiert
   assert.equal(descriptorDe("reportes/SML#valores.consumo"), undefined, "SML no está en el slice");
 });
 
+test("referencia de presión: la correctora informa absoluta, la unidad de presión relativa", () => {
+  // Compararlas, o aplicarle a la correctora un umbral de presión relativa (niveles NAG-100),
+  // sin restar la atmosférica corre el nivel un escalón en el borde de 4 bar.
+  assert.equal(descriptorDe("registros/NUC#presion").referencia, "absoluta");
+  assert.equal(descriptorDe("reportes/Presion#valores.presion").referencia, "manometrica");
+});
+
+test("clasificación: el GIS del cliente es un origen válido", () => {
+  assert.equal(m.OrigenClasificacionSchema.safeParse("gis-cliente").success, true);
+  assert.equal(m.ClasificacionPuntoSchema.safeParse({ origen: "gis-cliente", confianza: "media" }).success, true);
+});
+
 test("volúmenes del NUC: el -1 con que se crea el registro queda fuera del rango plausible", () => {
   for (const c of ["correctedParcializado", "uncorrectedParcializado", "correctedTotalizado"]) {
     assert.equal(m.descriptorDe(`registros/NUC#${c}`).rangoPlausible.min, 0, c);

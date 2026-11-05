@@ -99,6 +99,14 @@ export const OrigenClasificacionSchema = z.enum([
   "consumo-medido",
   /** Clase de trazado NAG-100 §5, desde cartografía abierta. */
   "geo-osm",
+  /**
+   * Estación reguladora del GIS del cliente (`INodoRed`, `presionSuministro` /
+   * `presionRegulada`) a la que está asociado el punto por cercanía. El nivel de
+   * red sale de la presión que declara el GIS para el lado de la estación donde
+   * mide el punto; la medición del punto sólo decide el lado. **Confianza media**:
+   * la asociación es por distancia y el lado por comparación de presiones.
+   */
+  "gis-cliente",
   "manual",
 ]);
 export type OrigenClasificacion = z.infer<typeof OrigenClasificacionSchema>;
