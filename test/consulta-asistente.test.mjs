@@ -33,3 +33,25 @@ test("pedido del listado: limit de la query como número, con tope", () => {
   assert.equal(m.PedidoConversacionesAsistenteSchema.safeParse({ limit: String(m.MAX_CONVERSACIONES_ASISTENTE + 1) }).success, false);
   assert.equal(m.PedidoConversacionesAsistenteSchema.safeParse({ limit: "0" }).success, false);
 });
+
+test("valoración: voto, o null para sacarla; comentario sólo con el negativo", () => {
+  const P = m.PedidoValoracionAsistenteSchema;
+  assert.deepEqual(P.parse({ voto: "positivo" }), { voto: "positivo" });
+  assert.deepEqual(P.parse({ voto: null }), { voto: null });
+  assert.deepEqual(P.parse({ voto: "negativo", comentario: "  La presión de ayer  " }), { voto: "negativo", comentario: "La presión de ayer" });
+  assert.deepEqual(P.parse({ voto: "negativo", comentario: "   " }), { voto: "negativo", comentario: undefined });
+  assert.deepEqual(P.parse({ voto: "positivo", comentario: "" }), { voto: "positivo", comentario: undefined });
+  assert.equal(P.safeParse({ voto: "positivo", comentario: "bien" }).success, false);
+  assert.equal(P.safeParse({ voto: null, comentario: "x" }).success, false);
+  assert.equal(P.safeParse({ voto: "meh" }).success, false);
+  assert.equal(P.safeParse({}).success, false);
+  assert.equal(P.safeParse({ voto: "negativo", comentario: "x".repeat(m.MAX_COMENTARIO_VALORACION_ASISTENTE + 1) }).success, false);
+});
+
+test("la consulta acepta una valoración, y el alta no la lleva", () => {
+  const base = { idCliente: "c", idUsuario: "u", idConversacion: "k", pregunta: "¿?", resultado: "ok" };
+  const valoracion = { voto: "negativo", comentario: "Esperaba el caudal", fecha: "2026-11-05T12:00:00.000Z" };
+  assert.deepEqual(m.ConsultaAsistenteSchema.parse({ ...base, valoracion }).valoracion, valoracion);
+  assert.equal(m.ConsultaAsistenteSchema.safeParse({ ...base, valoracion: { voto: "x" } }).success, false);
+  assert.equal("valoracion" in m.CreateConsultaAsistenteSchema.shape, false);
+});
