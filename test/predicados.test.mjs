@@ -280,3 +280,11 @@ test("clasificación: el GIS del cliente es un origen válido", () => {
   assert.equal(m.OrigenClasificacionSchema.safeParse("gis-cliente").success, true);
   assert.equal(m.ClasificacionPuntoSchema.safeParse({ origen: "gis-cliente", confianza: "media" }).success, true);
 });
+
+test("volúmenes del NUC: el -1 con que se crea el registro queda fuera del rango plausible", () => {
+  for (const c of ["correctedParcializado", "uncorrectedParcializado", "correctedTotalizado"]) {
+    assert.equal(m.descriptorDe(`registros/NUC#${c}`).rangoPlausible.min, 0, c);
+  }
+  // La temperatura no: -1 °C es una lectura posible.
+  assert.equal(m.descriptorDe("registros/NUC#temperatura").rangoPlausible.min, -40);
+});

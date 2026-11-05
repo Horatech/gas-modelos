@@ -237,6 +237,8 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       divisionRequerida: "Correctoras",
       estado: "prod",
       descripcion: "Volumen corregido del período (Vb)",
+      // Un volumen no es negativo: el -1 es el "no vino" con que gas-nuc4g crea el registro (`existeValor`).
+      rangoPlausible: { min: 0 },
     },
     uncorrectedParcializado: {
       dominio: "proceso",
@@ -258,6 +260,8 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       divisionRequerida: "Correctoras",
       estado: "prod",
       descripcion: "Volumen sin corregir del período (Vm)",
+      // Un volumen no es negativo: el -1 es el "no vino" con que gas-nuc4g crea el registro (`existeValor`).
+      rangoPlausible: { min: 0 },
     },
     correctedTotalizado: {
       dominio: "proceso",
@@ -278,6 +282,8 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       divisionRequerida: "Correctoras",
       estado: "prod",
       descripcion: "Odómetro de volumen corregido. Se agrega con last, nunca sum",
+      // Un volumen no es negativo: el -1 es el "no vino" con que gas-nuc4g crea el registro (`existeValor`).
+      rangoPlausible: { min: 0 },
     },
     caudalPromedio: {
       dominio: "proceso",
@@ -744,7 +750,7 @@ const PRESION_LINEPACK = {
  * Red de linepack de Aquiom (sistema → subsistema → tramo). El selector es la señal del tramo en Aquiom. Aquiom no
  * publica su histórico: gas-api-cliente lo reconstruye por hora con nuestras series SCADA de los extremos (tag o
  * fórmula del nodo virtual), la presión media del caño y `LINEPACK = k × (P. promedio + P atm)` con el `k` del tramo
- * que publica Aquiom. El linepack de un subsistema o de un sistema es la suma de sus tramos. Sin `divisionRequerida`:
+ * que publica Aquiom. La presión promedio es sólo ese paso intermedio: no es un canal. El linepack de un subsistema o de un sistema es la suma de sus tramos. Sin `divisionRequerida`:
  * lo habilitan los módulos Operación y linepack del cliente y del usuario.
  */
 export const PERFIL_LINEPACK: IPerfilLectura = {
@@ -763,7 +769,6 @@ export const PERFIL_LINEPACK: IPerfilLectura = {
       rangoPlausible: { min: 0 },
       descripcion: "Linepack",
     },
-    PRESION_PROMEDIO: { ...PRESION_LINEPACK, descripcion: "Presión promedio" },
     P_INICIO: { ...PRESION_LINEPACK, descripcion: "Presión de inicio" },
     P_FIN: { ...PRESION_LINEPACK, descripcion: "Presión de fin" },
   },

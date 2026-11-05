@@ -91,9 +91,9 @@ Lo que sigue siendo delicado, y cambia de forma:
   `npm run gen:json-schema -- --verbose` avisa si algún schema nuevo no serializa
   (agregarlo a `SKIP_SCHEMAS` en `scripts/gen-json-schema.mjs` documentando el motivo,
   no ignorar el error).
-- Convenciones Zod v4: `z.object`/`z.union`/`z.enum` (API canónica; no hay
-  `z.discriminatedUnion` en este repo, las uniones son heterogéneas sin discriminante
-  limpio). NO usar `z.nativeEnum` ni `.passthrough()/.strict()/.strip()` deprecados.
+- Convenciones Zod v4: `z.object`/`z.union`/`z.enum` (API canónica; casi todas las
+  uniones son heterogéneas sin discriminante limpio. `z.discriminatedUnion` sólo cuando
+  cada opción tiene un literal propio, como `BloqueAsistenteSchema`). NO usar `z.nativeEnum` ni `.passthrough()/.strict()/.strip()` deprecados.
   Modo `strip` por defecto (interop Mongoose). Ids/fechas como `z.string()` plano.
 - `TIPOS_DISPOSITIVOS` (`auxiliares/tipoDispositivo.ts`) ahora es
   `TipoDispositivoGasSchema.options` — fuente única de verdad, ya sin la restricción
@@ -194,7 +194,7 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
-### 2026-11-04 - Nivel de red desde el GIS del cliente; presión absoluta de la correctora
+### 2026-11-05 - Nivel de red desde el GIS del cliente; presión absoluta de la correctora
 
 `OrigenClasificacionSchema` suma **`gis-cliente`**: el nivel de red de una correctora que está en una estación del GIS
 (`INodoRed`, a pocos metros) sale de `presionSuministro` / `presionRegulada` de esa estación, según el lado donde mide
@@ -212,6 +212,106 @@ MEDIA/ALTA) quedaba en ALTA. El nivel sale del GIS; la medición sólo decide el
 ⚠️ gas-web-cliente tiene `Record<OrigenClasificacion, string>` (`modulos/clasificacion/etiquetas.ts`): al subir de
 versión hay que darle nombre a `gis-cliente` o no compila. gas-datos guarda `clasificacion` como objeto: sin `@Prop()`
 nuevo.
+
+### 2026-11-05 - La presión promedio del linepack no es un canal (`perfil-lectura.ts`)
+
+`PRESION_PROMEDIO` sale de `PERFIL_LINEPACK.campos`: es sólo el paso intermedio de `LINEPACK = k × (P. promedio + P
+atm)` y no se muestra en ningún lado. `CANALES_LINEPACK` queda en `LINEPACK`, `P_INICIO` y `P_FIN`; el gráfico
+personalizado ya no la ofrece y `PedidoSeriesLinepackSchema` / `SeriePresetSchema` la rechazan. Verificado el
+5-nov: ningún preset guardado la usa (`graficospersonalizados` de `gas_production` y `gas_test`).
+
+⚠️ gas-api-cliente la sigue calculando para el linepack, pero deja de devolverla en el histórico del tramo.
+
+### 2026-11-05 - Valoración de las respuestas del asistente (`consulta-asistente.ts`)
+
+Las manitos 👍/👎 al pie de cada respuesta del chat, para revisar después qué esperaba el usuario y qué recibió.
+Aditivo: todavía no lo consume nadie.
+
+- `IConsultaAsistente.valoracion` (`ValoracionAsistenteSchema`): `voto` (`positivo` | `negativo`), `comentario`
+  opcional y `fecha` (la pone gas-datos). Una por consulta; la última vale (el usuario puede cambiar el voto).
+- `PedidoValoracionAsistenteSchema`: lo que manda el chat. `voto: null` saca la valoración. El comentario («¿Qué
+  esperabas?») va sólo con el voto negativo, hasta `MAX_COMENTARIO_VALORACION_ASISTENTE` (1000); vacío = ausente.
+- `CreateConsultaAsistenteSchema` omite `valoracion`: no viaja al registrar la consulta, llega después por su pedido.
+
+⚠️ `consultasAsistente` en gas-datos necesita `@Prop({ type: Object }) valoracion`. El alta no cambia: los inputs del
+POST siguen sin el campo.
+
+### 2026-11-05 - Conversaciones y sugerencias del asistente (`consulta-asistente.ts`)
+
+Primer paso de la interfaz del asistente tipo escritorio (lista de conversaciones a la izquierda; cualquiera se puede
+continuar). Aditivo: todavía no lo consume nadie.
+
+- `ConversacionAsistenteSchema` (`IConversacionAsistente`): una fila de la lista. **No se guarda**: sale de agrupar
+  las consultas `ok` del usuario por `idConversacion` (gas-datos). `titulo` = la primera pregunta recortada a
+  `MAX_TITULO_CONVERSACION_ASISTENTE` (80); `inicio`/`ultima`; `turnos`; `conSeguimiento` (alguna respuesta con un
+  bloque `seguimiento` `vivo`: al abrirla, el chat lo reanuda).
+- `PedidoConversacionesAsistenteSchema`: página del listado, `limit` (de la query, hasta
+  `MAX_CONVERSACIONES_ASISTENTE`, 100) y `antes` (la `ultima` de la última fila de la página anterior).
+- `SugerenciasAsistenteSchema`: hasta `MAX_SUGERENCIAS_ASISTENTE` (3) pedidos de seguimiento que propone el asistente
+  al final de una respuesta con datos, de 3 a 80 caracteres y sin repetir (sin distinguir mayúsculas). El chat los
+  muestra como botones y el texto viaja como la pregunta siguiente. `IConsultaAsistente.sugerencias` los guarda.
+
+⚠️ `consultasAsistente` en gas-datos necesita `@Prop({ type: [String], default: undefined }) sugerencias` y los inputs
+tienen que aceptarlo (`forbidNonWhitelisted`: sin eso el POST da 400).
+
+### 2026-11-04 - Volúmenes del NUC no negativos (`perfil-lectura.ts`)
+
+`rangoPlausible: { min: 0 }` en `correctedParcializado`, `uncorrectedParcializado` y `correctedTotalizado` del perfil
+NUC. gas-nuc4g crea cada registro con todos los campos en -1 ("no vino", `existeValor`), y un volumen no es negativo:
+sin el rango, la tabla de registros del chat sumaba los -1 en el total del período. La temperatura queda como está
+(-1 °C es una lectura posible). Hoy no cambia ninguna serie: `/puntos/series` de gas-datos grafica presión,
+temperatura y caudal de las correctoras, que ya tenían su rango.
+
+### 2026-11-04 - Bloques del chat: mapa y lista por ids (`bloque-asistente.ts`)
+
+Resto del renderer de bloques (registros, puntos, seguimiento y mapa), que ya no se despliega por fases.
+
+- `BloqueMapaSchema` (`tipo: "mapa"`): `idsPunto` (hasta `MAX_PUNTOS_BLOQUE`, 200) que resuelve la herramienta (una
+  búsqueda, los cercanos a un punto), `centro` (el punto de referencia, resaltado) y `radioKm` opcionales. Por id, como
+  los períodos absolutos: la conversación reabierta muestra los mismos puntos.
+- `FiltroBloquePuntosSchema.idsPunto`: la lista que el filtro por estado/UN/CO/división no expresa (resultado de una
+  búsqueda por texto, puntos de unas alertas). Los permisos los aplica la API igual.
+- Comentario de `BloqueRegistrosSchema`: cada registro rotula el cierre de su intervalo (el de las 16:00 es de 15 a 16).
+
+Aditivo. gas-api-cliente necesita el pin nuevo: valida los bloques con este esquema y descartaría los de tipo `mapa`.
+
+### 2026-11-04 - Bloques del chat del asistente (`bloque-asistente.ts`, `consulta-asistente.ts`)
+
+F0 del renderer de bloques: el chat del asistente intercala el texto del agente con bloques que dibuja el sistema.
+Un bloque es una especificación declarativa (qué mostrar, sin valores): lo devuelve una tool del MCP, el texto lo
+ubica con `{{bloque:<id>}}` (`marcadorBloque`, `regexMarcadorBloque`) y el front pide los datos con el token del
+usuario. Aditivo: todavía no lo consume nadie.
+
+- `BloqueAsistenteSchema`: unión discriminada por `tipo` (`TIPOS_BLOQUE_ASISTENTE`). Comunes: `id`, `titulo`,
+  `version` (entero desde 1; sube al refinar el mismo `id`).
+  - `valor`: `idPunto` + `canales` (`CanalRef`).
+  - `serie`: `series` con los ids de Gráficos (`<idScada>`, `<idPunto>.<campo>`, `L.<id>.<campo>`), `desde`/`hasta`
+    absolutos (día o instante; la tool convierte los relativos para que la conversación reabierta muestre lo mismo).
+  - `registros`: `idPunto`, `canales`, ventana UTC no vacía y `zonaHoraria` IANA.
+  - `seguimiento`: `idPunto`, `canal?`, `modo` (`vivo` | `ultimoReporte` | `ultimoEnvio`, lo decide el backend según
+    el equipo) y `cadenciaEsperadaMin`.
+  - `puntos`: `filtro` (estados, UN, CO, divisiones) y `orden`.
+- `IConsultaAsistente.bloques` (`BloquesRespuestaSchema`, sin ids repetidos): los bloques de la respuesta. Ausente en
+  las consultas anteriores, que se muestran como texto.
+
+Es la primera unión con `z.discriminatedUnion` del repo: acá el discriminante es limpio (`tipo` literal en cada
+opción) y da errores por tipo en vez de por cada opción. `gen:json-schema` la serializa sin problema.
+
+⚠️ `consultasAsistente` en gas-datos necesita `@Prop({ type: [Object] }) bloques` y los inputs tienen que aceptarlo
+(`forbidNonWhitelisted`: sin eso el POST da 400).
+
+### 2026-11-04 - Integración MQTT: puente del crudo de los RTU (`tenant/integraciones.ts`)
+
+`tipoIntegracion` suma `"MQTT"`. Primera integración que no manda datos procesados: gas-api-rtu
+reenvía el crudo UCP de los UC300 del cliente a su broker (mismo tópico y payload) y le devuelve
+al equipo los comandos (`cmd/update`, `modbus/update`) que el broker publique para esos SN.
+Primer uso: el Mosquitto de Acceso (`mqtt.coliving.sh:8883`, cliente `gas-puente`).
+
+Sin campos nuevos: `endpoint` = host o URL `mqtts://`/`mqtt://` (sin esquema, TLS), `puerto`,
+`credenciales2` con keys `user`, `password` y opcional `clientId`. `tipoDispositivo` `"UC300"`
+(o vacío). gas-integraciones lo ignora (busca por tipo exacto).
+
+No requiere `@Prop()` en gas-datos: `integraciones` es `[Object]`.
 
 ### 2026-11-03 - Linepack en el gráfico personalizado (`perfil-lectura.ts`, `serie-linepack.ts`, `grafico-personalizado.ts`)
 
