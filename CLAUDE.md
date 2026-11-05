@@ -194,6 +194,20 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-05 - Valoración de las respuestas del asistente (`consulta-asistente.ts`)
+
+Las manitos 👍/👎 al pie de cada respuesta del chat, para revisar después qué esperaba el usuario y qué recibió.
+Aditivo: todavía no lo consume nadie.
+
+- `IConsultaAsistente.valoracion` (`ValoracionAsistenteSchema`): `voto` (`positivo` | `negativo`), `comentario`
+  opcional y `fecha` (la pone gas-datos). Una por consulta; la última vale (el usuario puede cambiar el voto).
+- `PedidoValoracionAsistenteSchema`: lo que manda el chat. `voto: null` saca la valoración. El comentario («¿Qué
+  esperabas?») va sólo con el voto negativo, hasta `MAX_COMENTARIO_VALORACION_ASISTENTE` (1000); vacío = ausente.
+- `CreateConsultaAsistenteSchema` omite `valoracion`: no viaja al registrar la consulta, llega después por su pedido.
+
+⚠️ `consultasAsistente` en gas-datos necesita `@Prop({ type: Object }) valoracion`. El alta no cambia: los inputs del
+POST siguen sin el campo.
+
 ### 2026-11-05 - Conversaciones y sugerencias del asistente (`consulta-asistente.ts`)
 
 Primer paso de la interfaz del asistente tipo escritorio (lista de conversaciones a la izquierda; cualquiera se puede

@@ -32,6 +32,38 @@ export const SugerenciasAsistenteSchema = z
   .refine((ss) => new Set(ss.map((s) => s.toLowerCase())).size === ss.length, { message: "sugerencia repetida" });
 export type ISugerenciasAsistente = z.infer<typeof SugerenciasAsistenteSchema>;
 
+// La valoración que deja el usuario sobre una respuesta (las manitos al pie): sirve para revisar qué esperaba y qué
+// recibió. El comentario va sólo con el voto negativo («¿Qué esperabas?») y es opcional.
+export const VotoAsistenteSchema = z.enum(["positivo", "negativo"]);
+export type VotoAsistente = z.infer<typeof VotoAsistenteSchema>;
+export const MAX_COMENTARIO_VALORACION_ASISTENTE = 1000;
+const ComentarioValoracionSchema = z
+  .string()
+  .trim()
+  .max(MAX_COMENTARIO_VALORACION_ASISTENTE)
+  .transform((s) => s || undefined)
+  .optional();
+
+export const ValoracionAsistenteSchema = z.object({
+  voto: VotoAsistenteSchema,
+  comentario: z.string().optional(),
+  // La pone gas-datos al guardarla; la última vale (el usuario puede cambiar el voto).
+  fecha: z.string().optional(),
+});
+export type IValoracionAsistente = z.infer<typeof ValoracionAsistenteSchema>;
+
+// Lo que manda el chat al votar. `voto: null` saca la valoración. Un comentario vacío cuenta como ausente.
+export const PedidoValoracionAsistenteSchema = z
+  .object({
+    voto: VotoAsistenteSchema.nullable(),
+    comentario: ComentarioValoracionSchema,
+  })
+  .refine((p) => p.voto === "negativo" || p.comentario === undefined, {
+    message: "el comentario va sólo con el voto negativo",
+    path: ["comentario"],
+  });
+export type IPedidoValoracionAsistente = z.input<typeof PedidoValoracionAsistenteSchema>;
+
 // Una pregunta al asistente de ayuda: qué se preguntó, qué respondió y cuánto consumió.
 // El costo no se guarda: se calcula con los tokens y el precio del modelo, que cambia.
 export const ConsultaAsistenteSchema = z.object({
@@ -57,10 +89,13 @@ export const ConsultaAsistenteSchema = z.object({
   ms: z.number().optional(),
   resultado: ResultadoConsultaAsistenteSchema,
   error: z.string().optional(),
+  // Ausente mientras el usuario no votó la respuesta.
+  valoracion: ValoracionAsistenteSchema.optional(),
 });
 export type IConsultaAsistente = z.infer<typeof ConsultaAsistenteSchema>;
 
-export const CreateConsultaAsistenteSchema = ConsultaAsistenteSchema.omit({ _id: true, fecha: true });
+// La valoración no viaja al registrar la consulta: llega después, por su propio pedido.
+export const CreateConsultaAsistenteSchema = ConsultaAsistenteSchema.omit({ _id: true, fecha: true, valoracion: true });
 export type ICreateConsultaAsistente = z.infer<typeof CreateConsultaAsistenteSchema>;
 
 // Largo del título de una conversación en el listado: la primera pregunta, recortada.
