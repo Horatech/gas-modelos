@@ -194,6 +194,15 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-05 - La presión promedio del linepack no es un canal (`perfil-lectura.ts`)
+
+`PRESION_PROMEDIO` sale de `PERFIL_LINEPACK.campos`: es sólo el paso intermedio de `LINEPACK = k × (P. promedio + P
+atm)` y no se muestra en ningún lado. `CANALES_LINEPACK` queda en `LINEPACK`, `P_INICIO` y `P_FIN`; el gráfico
+personalizado ya no la ofrece y `PedidoSeriesLinepackSchema` / `SeriePresetSchema` la rechazan. Verificado el
+5-nov: ningún preset guardado la usa (`graficospersonalizados` de `gas_production` y `gas_test`).
+
+⚠️ gas-api-cliente la sigue calculando para el linepack, pero deja de devolverla en el histórico del tramo.
+
 ### 2026-11-05 - Valoración de las respuestas del asistente (`consulta-asistente.ts`)
 
 Las manitos 👍/👎 al pie de cada respuesta del chat, para revisar después qué esperaba el usuario y qué recibió.
