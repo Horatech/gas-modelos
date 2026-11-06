@@ -1,11 +1,13 @@
 import { z } from "zod";
 import { TipoDispositivoSchema } from "../auxiliares/tipoDispositivo";
+import { CommoditySchema } from "../entidades/commodity";
 import { ModeloCorrectoraSchema } from "../entidades/mensajes-nuc/mensajes-nuc";
 // Import directo al archivo HOJA `entidades/estado.ts`, no a `entidades/correctora`
 // ni al barrel: correctora → localidad → ClienteSchema cerraría un ciclo runtime.
 import { EstadoCorrectoraSchema } from "../entidades/estado";
 import { ImagenesClienteSchema } from "./cliente.dto";
 import { IntegracionSchema } from "./integraciones";
+import type { Modulo } from "./modulo";
 // OJO: `DivisionSchema` NO se puede importar como VALOR acá. `usuario/permiso`
 // importa `LocalidadSchema` y `localidad.ts` importa `ClienteSchema`, así que un
 // import de valor cierra el ciclo runtime cliente.model → permiso → localidad →
@@ -218,14 +220,36 @@ export const ModuloLinepackSchema = z.object({
 export type IModuloLinepack = z.infer<typeof ModuloLinepackSchema>;
 
 /**
- * @deprecated FUXA se dio de baja (2026-10): nadie lee este flag. Queda en el
- * esquema porque hay clientes que lo tienen guardado y los datos no se migran;
- * se saca cuando ningún documento lo tenga.
+ * Un módulo del cliente. `activo` es la llave; el resto son opciones del módulo
+ * (hoy sólo cobertura LoRaWAN tiene una: `verMetricas`).
  */
-export const ModuloSinopticoSchema = z.object({
+export const ModuloClienteSchema = z.object({
   activo: z.boolean().optional(),
+  verMetricas: z.boolean().optional(),
 });
-export type IModuloSinoptico = z.infer<typeof ModuloSinopticoSchema>;
+export type IModuloCliente = z.infer<typeof ModuloClienteSchema>;
+
+/**
+ * Los módulos del cliente, una llave por módulo con el mismo nombre que en
+ * `IUsuario.modulos`. Reemplaza a `moduloNavegacion`, `moduloLinepack`,
+ * `moduloClima`, `moduloRed`, `moduloClasificacion`, `moduloCoberturaLorawan` y
+ * `moduloTopologia`, que quedan hasta que todos los consumidores lean este campo:
+ * `capacidadesDe` (`tenant/capacidades.ts`) mira primero acá y si no, el campo
+ * viejo. El admin escribe acá.
+ *
+ * OJO: el merge de `config` en gas-admin es SHALLOW, así que `modulos` se manda
+ * entero en cada PUT.
+ */
+export const ModulosClienteSchema = z.object({
+  navegacion: ModuloClienteSchema.optional(),
+  linepack: ModuloClienteSchema.optional(),
+  clima: ModuloClienteSchema.optional(),
+  red: ModuloClienteSchema.optional(),
+  clasificacion: ModuloClienteSchema.optional(),
+  coberturaLorawan: ModuloClienteSchema.optional(),
+  topologia: ModuloClienteSchema.optional(),
+} as Record<Modulo, z.ZodOptional<typeof ModuloClienteSchema>>);
+export type IModulosCliente = z.infer<typeof ModulosClienteSchema>;
 
 export const ParametrosObisSchema = z.object({
   reporteMask: z.number().optional(),
@@ -398,7 +422,7 @@ export const ConfigClienteSchema = z.object({
   moduloTopologia: ModuloTopologiaSchema.optional(),
   moduloNavegacion: ModuloNavegacionSchema.optional(),
   moduloLinepack: ModuloLinepackSchema.optional(),
-  moduloSinoptico: ModuloSinopticoSchema.optional(),
+  modulos: ModulosClienteSchema.optional(),
   parametrosObis: ParametrosObisSchema.optional(),
   ciclosFacturacion: CiclosFacturacionPorDivisionSchema.optional(),
   permitirEditarUnNcoAsignado: z.boolean().optional(),
@@ -437,6 +461,15 @@ export const ClienteSchema = z.object({
   admin: z.boolean().optional(),
   imagenes: ImagenesClienteSchema.optional(),
   tiposDispositivo: z.array(TipoDispositivoSchema).optional(),
+  /**
+   * Qué vende el cliente: gas, agua, electricidad… Lo declara el admin; no se
+   * infiere del hardware. Sin declarar, `capacidadesDe` lo deriva de
+   * `tiposDispositivo` (`COMMODITY_POR_TIPO`) hasta que alguien lo cargue.
+   * Decide qué divisiones y qué funciones existen para sus usuarios: una
+   * distribuidora de gas no ve herramientas de agua aunque un permiso sin
+   * división las cubra.
+   */
+  commodities: z.array(CommoditySchema).optional(),
   integraciones: z.array(IntegracionSchema).optional(),
   config: ConfigClienteSchema.optional(),
 });
@@ -457,6 +490,15 @@ export const CreateClienteSchema = z.object({
   admin: z.boolean().optional(),
   imagenes: ImagenesClienteSchema.optional(),
   tiposDispositivo: z.array(TipoDispositivoSchema).optional(),
+  /**
+   * Qué vende el cliente: gas, agua, electricidad… Lo declara el admin; no se
+   * infiere del hardware. Sin declarar, `capacidadesDe` lo deriva de
+   * `tiposDispositivo` (`COMMODITY_POR_TIPO`) hasta que alguien lo cargue.
+   * Decide qué divisiones y qué funciones existen para sus usuarios: una
+   * distribuidora de gas no ve herramientas de agua aunque un permiso sin
+   * división las cubra.
+   */
+  commodities: z.array(CommoditySchema).optional(),
   integraciones: z.array(IntegracionSchema).optional(),
   config: ConfigClienteSchema.optional(),
 });
