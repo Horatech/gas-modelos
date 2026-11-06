@@ -194,6 +194,43 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-06 - Capacidades por cliente y usuario: `commodities`, módulos normalizados y resolver (`tenant/capacidades.ts`)
+
+Por qué: no existía "qué es el cliente". La vertical se infería de `tiposDispositivo` con
+tablas copiadas en cada repo (portal, admin, MCP), y el MCP del asistente ni la miraba: un
+administrador global de una distribuidora de gas veía herramientas de agua. Los módulos
+vivían con dos nombres (`config.moduloClima` en el cliente, `modulos.clima` en el usuario)
+y sumar uno tocaba cinco repos.
+
+- **`ICliente.commodities: Commodity[]`** (`ClienteSchema`, `CreateClienteSchema`): qué vende
+  el cliente, **declarado por el admin**. Sin declarar, `commoditiesDe` lo deriva de
+  `tiposDispositivo` con `COMMODITY_POR_TIPO`; SCADA no deriva nada, hay que declararlo.
+- **`ModuloSchema`** (`tenant/modulo.ts`, hoja): navegacion, linepack, clima, red,
+  clasificacion, coberturaLorawan, topologia. **Sinóptico se retira** (`ModuloSinopticoSchema`
+  y `config.moduloSinoptico` ya no existen: los diagramas viven en la vista operativa).
+- **`IConfigCliente.modulos`** (`ModulosClienteSchema`, una llave por módulo con `{ activo,
+  verMetricas? }`) reemplaza a `moduloNavegacion`…`moduloTopologia`, que **quedan** hasta que
+  todos los consumidores lean el campo nuevo: `moduloActivoEnCliente` mira primero
+  `modulos.<m>` y si no está, el campo viejo. El admin escribe el nuevo.
+- **`IUsuario.modulos`** pasa a tener las llaves del enum (suma `coberturaLorawan` y
+  `topologia`). Tanto este como `ModulosClienteSchema` son `z.object` con las llaves
+  explícitas y no `z.partialRecord`: `partialRecord` con llaves de enum **rechaza** una llave
+  desconocida, y acá hace falta strip (Mongoose). El test fija que las llaves sean las del enum.
+- **`tenant/capacidades.ts`**: `TIPOS_POR_DIVISION` (la tabla del portal, más SCADA por nombre
+  y Dispositivo Externo NUC con NUC), `COMMODITY_POR_TIPO`, `COMMODITY_POR_DIVISION`,
+  `divisionesDelCliente`, `veDivision`, `tieneModulo`, `CATALOGO_CAPACIDADES` y el resolver
+  **`capacidadesDe(usuario, cliente = usuario.cliente): Set<Capacidad>`**. Regla central: **un
+  permiso sin división vale para las divisiones del cliente, no para todas las que existen**
+  (es lo que el portal ya hacía y lo que casi todos los usuarios fuera de Camuzzi usan).
+  Sólo importa valores de hojas; del cliente, el usuario y el permiso toma tipos.
+- **División no se toca.** Sigue siendo el eje de permisos tal cual (los 9 valores, con lo
+  desprolijo que tiene: commodity colada en Residencial Agua y Medidores Eléctricos, SCADA
+  partida en dos). La commodity va en el cliente.
+
+Consumidores previstos: gas-mcp (registro de tools por `capacidadesDe`), gas-api-cliente
+(`ModuloGuard` → capacidades), gas-web-cliente y gas-web-admin (gates de menú y selector de
+divisiones/módulos). Plan: `gas/ANALISIS-CAPACIDADES-CLIENTE-USUARIO.md`.
+
 ### 2026-11-05 - Nivel de red desde el GIS del cliente; presión absoluta de la correctora
 
 `OrigenClasificacionSchema` suma **`gis-cliente`**: el nivel de red de una correctora que está en una estación del GIS

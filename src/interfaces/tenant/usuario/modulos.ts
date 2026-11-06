@@ -1,26 +1,22 @@
 import { z } from "zod";
+import type { Modulo } from "../modulo";
 
 /**
- * Módulos habilitados para el usuario. Cada uno se suma al flag del cliente
- * (`config.modulo<X>.activo`): hacen falta los dos. Ausente ⇒ apagado, también
- * para el administrador global.
+ * Qué módulos tiene marcados el usuario. Sólo cuenta si el cliente también tiene
+ * el módulo activo (`IConfigCliente.modulos`): ver `capacidadesDe`.
  *
- * Los permisos sobre UN/CO/Localidad deciden qué ve el usuario dentro del
- * módulo; esto decide si entra. Se editan desde web-admin.
+ * Es un `z.object` con una llave por valor de `ModuloSchema` y no un
+ * `z.partialRecord`, para que una llave desconocida se descarte (modo strip,
+ * como todo lo que viene de Mongoose) en vez de rechazar el documento. El test
+ * fija que las llaves sean exactamente las del enum.
  */
 export const ModulosUsuarioSchema = z.object({
-  /** Operación (navegación, tablas, unifilares, históricos). Con `config.moduloNavegacion`. */
   navegacion: z.boolean().optional(),
-  /** Linepack, dentro de Operación. Con `config.moduloLinepack` y `navegacion`. */
   linepack: z.boolean().optional(),
-  /** Clima. Con `config.moduloClima`. Temporal: sólo lo mira el front. */
   clima: z.boolean().optional(),
-  /** Sección Red (sistemas, puntos y conexiones). Con `config.moduloRed`. */
   red: z.boolean().optional(),
-  /**
-   * @deprecated Desde el 2-nov-2026 la clasificación es la pestaña Puntos de la
-   * sección Red y la gatea `red`. Se conserva para no romper usuarios guardados.
-   */
   clasificacion: z.boolean().optional(),
-});
+  coberturaLorawan: z.boolean().optional(),
+  topologia: z.boolean().optional(),
+} as Record<Modulo, z.ZodOptional<z.ZodBoolean>>);
 export type IModulosUsuario = z.infer<typeof ModulosUsuarioSchema>;

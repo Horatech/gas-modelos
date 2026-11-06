@@ -2,6 +2,8 @@ export * from "./usuario";
 //
 export * from "./cliente.dto";
 export * from "./cliente.model";
+export * from "./modulo";
+export * from "./capacidades";
 export * from "./periodo-facturacion";
 export * from "./lora-server.dto";
 export * from "./lora-server.model";
