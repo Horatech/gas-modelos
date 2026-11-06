@@ -33,6 +33,8 @@ test("commodities: declaradas mandan; sin declarar, se derivan del hardware", ()
   assert.deepEqual(m.commoditiesDe(camuzzi), ["gas"]);
   assert.deepEqual(m.commoditiesDe(aysam), ["agua"]);
   assert.deepEqual(m.commoditiesDe({ tiposDispositivo: ["EUW300", "NME"] }), ["agua", "electricidad"]);
+  // Santa Bárbara: medidores de agua y una estación de bombeo = agua y saneamiento.
+  assert.deepEqual(m.commoditiesDe({ tiposDispositivo: ["EUW300", "MRA", "UC300"] }), ["agua", "saneamiento"]);
   // SCADA solo no deriva nada: hay que declararlo.
   assert.deepEqual(m.commoditiesDe({ tiposDispositivo: ["SCADA Mediciones"] }), []);
   assert.deepEqual(m.commoditiesDe({ tiposDispositivo: ["SCADA Mediciones"], commodities: ["gas"] }), ["gas"]);
@@ -48,6 +50,9 @@ test("divisiones del cliente: hardware de la división y commodity que vende", (
   assert.deepEqual(m.divisionesDelCliente({ tiposDispositivo: ["EUW300", "NME"], commodities: ["electricidad"] }), ["Medidores Eléctricos"]);
   // SCADA sin commodity declarada existe igual: no tiene commodity propia.
   assert.deepEqual(m.divisionesDelCliente({ tiposDispositivo: ["SCADA Mediciones"] }), ["SCADA Mediciones"]);
+  // Bombeo sólo para quien vende saneamiento: declarado sólo agua, la estación no aparece.
+  assert.deepEqual(m.divisionesDelCliente({ tiposDispositivo: ["EUW300", "UC300"], commodities: ["agua"] }), ["Residencial Agua"]);
+  assert.deepEqual(m.divisionesDelCliente({ tiposDispositivo: ["EUW300", "UC300"] }), ["Residencial Agua", "Estaciones de Bombeo"]);
   assert.deepEqual(m.divisionesDelCliente(undefined), []);
 });
 

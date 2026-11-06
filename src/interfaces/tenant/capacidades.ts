@@ -70,7 +70,8 @@ export const COMMODITY_POR_TIPO: Record<TipoDispositivo, Commodity | undefined> 
   NME: "electricidad",
   OCR: "gas",
   "UWM-NB": "agua",
-  UC300: "agua",
+  // Bombeo es saneamiento, no agua potable (Santa Bárbara: agua y saneamiento).
+  UC300: "saneamiento",
 };
 
 /**
@@ -86,7 +87,7 @@ export const COMMODITY_POR_DIVISION: Record<Division, Commodity | undefined> = {
   "SCADA Mediciones": undefined,
   "Dispositivo Externo NUC": "gas",
   "Medidores Eléctricos": "electricidad",
-  "Estaciones de Bombeo": "agua",
+  "Estaciones de Bombeo": "saneamiento",
 };
 
 type ClienteParaCapacidades = Pick<ICliente, "tiposDispositivo" | "commodities" | "config">;

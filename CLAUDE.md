@@ -194,6 +194,12 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-06 - Bombeo es saneamiento (`COMMODITY_POR_TIPO.UC300`, `COMMODITY_POR_DIVISION["Estaciones de Bombeo"]`)
+
+Santa Bárbara vende agua **y saneamiento**: la estación de bombeo (UC300) es saneamiento, no agua potable. La
+tabla decía `agua`. Efecto: un cliente que declara sólo `agua` no tiene la división Estaciones de Bombeo; con
+`saneamiento` sí.
+
 ### 2026-11-06 - Capacidades por cliente y usuario: `commodities`, módulos normalizados y resolver (`tenant/capacidades.ts`)
 
 Por qué: no existía "qué es el cliente". La vertical se infería de `tiposDispositivo` con
