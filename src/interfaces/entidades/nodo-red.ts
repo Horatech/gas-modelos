@@ -11,12 +11,14 @@
 
 import { z } from "zod";
 import { GeoJSONSchema } from "../auxiliares/coordenadas";
-import { OrigenRedSchema } from "./sistema";
+import { FuenteRedSchema, OrigenRedSchema } from "./sistema";
 
 export const NodoRedSchema = z.object({
   _id: z.string().optional(),
   /** `asset_id` del proveedor (`ERP_ELCHOURRON`). Único por cliente. */
   codigo: z.string(),
+  /** Id del nodo en el proveedor de linepack (`NV_H`, `PT_PM267`). Vacío si no lo modela. */
+  codigoProveedor: z.string().nullable().optional(),
   nombre: z.string().optional(),
   /** `ERP`, `NV` (virtual), `PT`, `GI`, `PC`, `SCR`, `PE`… Lista abierta. */
   tipo: z.string().optional(),
@@ -39,6 +41,7 @@ export const NodoRedSchema = z.object({
   presionSuministro: z.number().nullable().optional(),
   presionRegulada: z.number().nullable().optional(),
   origen: OrigenRedSchema,
+  fuente: FuenteRedSchema.optional(),
   fechaCreacion: z.string().optional(),
   idCliente: z.string(),
 });

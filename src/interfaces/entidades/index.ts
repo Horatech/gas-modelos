@@ -21,6 +21,7 @@ export * from "./enlace-red";
 export * from "./sistema";
 export * from "./nodo-red";
 export * from "./tramo-red";
+export * from "./tramo-linepack";
 export * from "./cuenta-cliente";
 export * from "./dispositivo";
 export * from "./envio-sms";

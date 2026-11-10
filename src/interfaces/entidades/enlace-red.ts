@@ -14,7 +14,8 @@
  * 1. **La carga es manual.** A diferencia de la clasificación —que está latente en
  *    el tag OPC, en el grupo del operador y en la presión medida—, quién alimenta
  *    a quién NO está en los datos. No hay clasificador posible: el nombre no
- *    alcanza. De ahí que `origen` no tenga valor automático.
+ *    alcanza. De ahí que `origen` no tenga valor automático. (`proveedor` no es
+ *    una excepción: es una declaración de quien modela la red, no una inferencia.)
  * 2. **Se permiten anillos.** La red mallada de media presión es real. Prohibirlos
  *    en la validación y descubrirlos después sería migrar aristas ya cargadas a
  *    mano. La protección contra recorridos patológicos vive en el recorrido
@@ -78,12 +79,14 @@ export type IEstadoEnlace = z.infer<typeof EstadoEnlaceSchema>;
 /**
  * De dónde salió la arista. No incluye ningún valor automático porque no hay
  * inferencia posible: `importado` es "vino de un archivo del cliente", no
- * "lo dedujo el sistema".
+ * "lo dedujo el sistema". `proveedor`: la sincroniza el import del proveedor de
+ * linepack (un tramo suyo = un enlace); de ese enlace cuelga el `TramoLinepack`.
  */
 export const OrigenEnlaceSchema = z.enum([
   "manual",
   "declaracion-cliente",
   "importado",
+  "proveedor",
 ]);
 export type OrigenEnlace = z.infer<typeof OrigenEnlaceSchema>;
 
