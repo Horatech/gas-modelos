@@ -19,6 +19,14 @@ import { CommoditySchema } from "./commodity";
 export const OrigenRedSchema = z.enum(["importado", "manual"]);
 export type OrigenRed = z.infer<typeof OrigenRedSchema>;
 
+/**
+ * Qué GIS trajo el caño o el nodo, o qué corrida el tramo de linepack. Donde el
+ * proveedor de linepack modela un sistema, su GIS reemplaza al del cliente.
+ * Ausente en caños y nodos = `gis` (lo importado antes de este campo).
+ */
+export const FuenteRedSchema = z.enum(["aquiom", "gis"]);
+export type FuenteRed = z.infer<typeof FuenteRedSchema>;
+
 export const SistemaSchema = z.object({
   _id: z.string().optional(),
   nombre: z.string(),
@@ -50,8 +58,17 @@ export type IUpdateSistema = z.infer<typeof UpdateSistemaSchema>;
  *   solo subsistema.
  * - `traza`: el punto cae sobre la cañería de un subsistema (regla a diseñar).
  * - `manual`: lo fijó un operador. El recálculo no lo pisa.
+ * - `proveedor`: lo asignó el import del proveedor de linepack (el subsistema de
+ *   los tramos de los que el punto es extremo). Le gana a `nodo` y `traza`.
+ * - `declaracion-cliente`: vino de una planilla del cliente.
  */
-export const OrigenSistemaPuntoSchema = z.enum(["nodo", "traza", "manual"]);
+export const OrigenSistemaPuntoSchema = z.enum([
+  "nodo",
+  "traza",
+  "manual",
+  "proveedor",
+  "declaracion-cliente",
+]);
 export type OrigenSistemaPunto = z.infer<typeof OrigenSistemaPuntoSchema>;
 
 export function esSistemaRaiz(s: Pick<ISistema, "idSistemaPadre">): boolean {

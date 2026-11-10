@@ -15,7 +15,7 @@
 
 import { z } from "zod";
 import { GeoJSONSchema } from "../auxiliares/coordenadas";
-import { OrigenRedSchema } from "./sistema";
+import { FuenteRedSchema, OrigenRedSchema } from "./sistema";
 
 /** El `d_TdTrm` del GIS. */
 export const TipoTramoSchema = z.enum(["Cañería", "Loop", "Troncal", "Servicio"]);
@@ -40,6 +40,7 @@ export const TramoRedSchema = z.object({
   /** LineString, `[lng, lat]`. Índice 2dsphere en el backend. */
   geojson: GeoJSONSchema.optional(),
   origen: OrigenRedSchema,
+  fuente: FuenteRedSchema.optional(),
   fechaCreacion: z.string().optional(),
   idCliente: z.string(),
 });
