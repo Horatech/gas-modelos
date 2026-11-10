@@ -35,8 +35,12 @@ export type IComposicionTramoLinepack = z.infer<
 
 export const TramoLinepackSchema = z.object({
   _id: z.string().optional(),
-  /** El enlace PM→PM del que cuelga. */
-  idEnlaceRed: z.string(),
+  /**
+   * El enlace PM→PM del que cuelga. Vacío mientras algún extremo no tenga punto
+   * de medición: hoy, los nodos virtuales del proveedor, hasta que exista el PM
+   * virtual (gas-insideht-doc #345). El re-import lo completa.
+   */
+  idEnlaceRed: z.string().nullable().optional(),
   /** `088-001-A`. Único por cliente: es la clave del re-import. */
   codigo: z.string(),
   /** `SYS_088_001_A`: con esto se pegan los valores del proveedor. */
