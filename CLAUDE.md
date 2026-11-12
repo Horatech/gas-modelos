@@ -194,6 +194,42 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-12 - Consumo residencial por ámbito como serie (`perfil-lectura.ts`, `serie-ambito.ts`, `grafico-personalizado.ts`)
+
+Plan: gas-insideht-doc `docs/superpowers/plans/2026-11-12-consumo-por-ambito-en-graficos.md`. Aditivo: todavía no lo
+consume nadie.
+
+- `PERFIL_AMBITO` (origen `resumendiariolocalidads`, el rollup diario de gas-datos): `consumoResidencial` (`volumen`,
+  `delta`, `m3`, diario) y `cantidadMedidoresResidenciales` (cuántos medidores entraron en la suma del día). No son de
+  un punto: se piden por Localidad, Centro Operativo o Unidad de Negocio, y el de un ámbito mayor es la suma de sus
+  Localidades. `CANAL_CONSUMO_RESIDENCIAL`, `CANAL_MEDIDORES_RESIDENCIALES`, `CANALES_AMBITO`, `esCanalAmbito`.
+- **El consumo es una acumulación: los días se suman, nunca se promedian** (`aggDe` = `sum`; `grupoDePromedio` no le da
+  grupo). `CANALES_AMBITO_GRAFICABLES` sólo trae el consumo: los medidores acompañan en una tabla, no en el gráfico.
+- `serie-ambito.ts`: `PedidoSeriesAmbitoSchema` (`POST /ambitos/series`, 1 a 20 `{canal, ambito}`) →
+  `SeriesAmbitoSchema` (misma serie que SCADA, un valor por día gas). `NivelAmbitoSerieSchema` suma `UnidadNegocio` a
+  los dos niveles del clima.
+- `SeriePresetSchema.ambito` pasa de `AmbitoClimaSchema` a `AmbitoSerieSchema` (acepta Unidad de Negocio); un canal de
+  clima con Unidad de Negocio se rechaza, como antes.
+
+No requiere `@Prop()` en gas-datos: `series` del preset es `[Object]`. gas-api-cliente necesita el pin nuevo para
+aceptar un preset con el canal o con ámbito de Unidad de Negocio.
+
+### 2026-11-12 - Canal de la consulta al asistente (`consulta-asistente.ts`)
+
+`CanalAsistenteSchema` (`web` | `android` | `ios`) e `IConsultaAsistente.canal`, opcional: desde dónde se preguntó.
+Fuera de la web el asistente responde con otro formato y otras herramientas. ⚠️ `consultasAsistente` en gas-datos lleva
+su `@Prop()` y el alta lo acepta (gas-datos #296); gas-api-cliente lo registra (#298).
+
+### 2026-11-12 - Promedio entre puntos (`clasificacion-punto.ts`, `perfil-lectura.ts`)
+
+`grupoDePromedio(descriptor, clasificacion?, referenciaDeclarada?)` → `{ clave, faltaClasificacion }`: los valores de
+puntos con la misma `clave` se promedian entre sí; `null` no entra en ningún promedio. Sólo instantáneos de proceso.
+La **temperatura del gas** se promedia entre todos los puntos (`registros/NUC#temperatura` pasa a
+`agregableEntreDispositivos: true`); la **presión**, con las de la misma referencia y el mismo nivel de red (sin nivel
+no entra; la referencia es la declarada para el equipo o la por defecto del canal; los roles no se exigen).
+`faltaClasificacion` avisa que faltó nivel, referencia declarada o roles. No reemplaza a `sumable()` ni a
+`mismoGrupoDeAgregacion()`, que son para sumar. Primer consumidor: gas-mcp `historico_conjunto`.
+
 ### 2026-11-06 - Bombeo es saneamiento (`COMMODITY_POR_TIPO.UC300`, `COMMODITY_POR_DIVISION["Estaciones de Bombeo"]`)
 
 Santa Bárbara vende agua **y saneamiento**: la estación de bombeo (UC300) es saneamiento, no agua potable. La

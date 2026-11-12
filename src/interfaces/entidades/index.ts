@@ -81,6 +81,7 @@ export * from "./simbolo";
 export * from "./grafico-personalizado";
 export * from "./serie-punto";
 export * from "./serie-clima";
+export * from "./serie-ambito";
 export * from "./serie-linepack";
 export * from "./bloque-asistente";
 export * from "./consulta-asistente";
