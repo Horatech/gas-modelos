@@ -64,7 +64,9 @@ export type OrigenLectura =
    * No es una colección: el linepack de la red de Aquiom, reconstruido por gas-api-cliente con nuestras series
    * SCADA de los extremos de cada tramo (ver `PERFIL_LINEPACK`).
    */
-  | "linepack";
+  | "linepack"
+  /** Colección `valoresVirtuales`: presión que el proveedor calcula de un PM virtual (ver `PERFIL_NODO_VIRTUAL`). */
+  | "valoresVirtuales";
 
 export type FormaDocumento = "ancho" | "angosto";
 
@@ -747,6 +749,16 @@ const PRESION_LINEPACK = {
   agregableEntreDispositivos: false,
 } as const;
 
+const PRESION_NODO_VIRTUAL = {
+  ...PRESION_LINEPACK,
+  naturaleza: "estimado",
+  origen: "calculado-por-tercero",
+  dominio: "proceso",
+  divisionRequerida: "Nodos Virtuales",
+  emitido: true,
+  estado: "prod",
+} as const;
+
 /**
  * Red de linepack de Aquiom (sistema → subsistema → tramo). El selector es la señal del tramo en Aquiom. Aquiom no
  * publica su histórico: gas-api-cliente lo reconstruye por hora con nuestras series SCADA de los extremos (tag o
@@ -775,6 +787,22 @@ export const PERFIL_LINEPACK: IPerfilLectura = {
   },
 };
 
+/**
+ * Nodo virtual de la red (PM sin equipo): la presión de entrada y de salida la calcula el proveedor y gas-datos la
+ * guarda en `valoresVirtuales`. Es una estimación de un tercero, no una medición nuestra.
+ */
+export const PERFIL_NODO_VIRTUAL: IPerfilLectura = {
+  clave: "NodoVirtual",
+  origen: "valoresVirtuales",
+  discriminante: {},
+  forma: "angosto",
+  descripcion: "Nodo virtual de la red, presión calculada por el proveedor",
+  campos: {
+    P_ENTRADA: { ...PRESION_NODO_VIRTUAL, descripcion: "Presión de entrada" },
+    P_SALIDA: { ...PRESION_NODO_VIRTUAL, descripcion: "Presión de salida" },
+  },
+};
+
 export const CATALOGO_CANALES: IPerfilLectura[] = [
   PERFIL_NUC_CORRECTORA,
   PERFIL_NME,
@@ -782,6 +810,7 @@ export const CATALOGO_CANALES: IPerfilLectura[] = [
   PERFIL_PRESION,
   PERFIL_CLIMA,
   PERFIL_LINEPACK,
+  PERFIL_NODO_VIRTUAL,
 ];
 
 /** Canales de un tramo de la red de linepack, en el orden del selector. */
@@ -824,6 +853,10 @@ export const CANALES_GRAFICABLES: Partial<Record<Division, string[]>> = {
     canalRef("registros", "NUC", "presion"),
     canalRef("registros", "NUC", "temperatura"),
     canalRef("registros", "NUC", "caudalPromedio"),
+  ],
+  "Nodos Virtuales": [
+    canalRef("valoresVirtuales", "NodoVirtual", "P_ENTRADA"),
+    canalRef("valoresVirtuales", "NodoVirtual", "P_SALIDA"),
   ],
 };
 
