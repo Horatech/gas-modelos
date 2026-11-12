@@ -60,6 +60,8 @@ export type OrigenLectura =
   | "registrohorarioaguas"
   | "registromedidorelectricos"
   | "registroclimas"
+  /** El resumen diario por Localidad: lo que la plataforma ya sumó por día gas (ver `PERFIL_AMBITO`). */
+  | "resumendiariolocalidads"
   /**
    * No es una colección: el linepack de la red de Aquiom, reconstruido por gas-api-cliente con nuestras series
    * SCADA de los extremos de cada tramo (ver `PERFIL_LINEPACK`).
@@ -722,6 +724,68 @@ export const PERFIL_CLIMA: IPerfilLectura = {
   },
 };
 
+/**
+ * Lo que el resumen diario por Localidad (`resumendiariolocalidads`, gas-datos) ya sumó por día gas. **No es de un
+ * punto**: se pide por Localidad, Centro Operativo o Unidad de Negocio, y el de un ámbito mayor es la suma de sus
+ * Localidades.
+ *
+ * El consumo es una acumulación: al agruparlo en un período más largo (semana, mes) los días **se suman**; no se
+ * promedia nunca. `medidores` dice cuántos medidores entraron en la suma de cada día, para no leer un día con medio
+ * parque como una caída del consumo: acompaña al consumo en una tabla, no se grafica.
+ */
+export const PERFIL_AMBITO: IPerfilLectura = {
+  clave: "Ambito",
+  origen: "resumendiariolocalidads",
+  discriminante: {},
+  forma: "ancho",
+  descripcion: "Resumen diario por Localidad, sumado por ámbito",
+  campos: {
+    consumoResidencial: {
+      dominio: "proceso",
+      commodity: "gas",
+      quantityKind: "volumen",
+      accumulation: "delta",
+      unidadCanonica: "m3",
+      flowDirection: "entrante",
+      measuringPeriod: "diario",
+      tou: "na",
+      condicionMedicion: "medida",
+      tipoValor: "numerico",
+      rol: "medida",
+      naturaleza: "calculado",
+      // Ya es una suma de medidores, y la de un ámbito mayor es la suma de sus Localidades.
+      agregableEntreDispositivos: true,
+      rangoPlausible: { min: 0 },
+      emitido: true,
+      origen: "calculado-en-backend",
+      divisionRequerida: "Residencial",
+      estado: "prod",
+      descripcion: "Consumo residencial",
+    },
+    cantidadMedidoresResidenciales: {
+      dominio: "dispositivo",
+      commodity: "na",
+      quantityKind: "conteo",
+      accumulation: "instantaneous",
+      unidadCanonica: "1",
+      flowDirection: "na",
+      measuringPeriod: "diario",
+      tou: "na",
+      condicionMedicion: "na",
+      tipoValor: "numerico",
+      rol: "medida",
+      naturaleza: "calculado",
+      agregableEntreDispositivos: true,
+      rangoPlausible: { min: 0 },
+      emitido: true,
+      origen: "calculado-en-backend",
+      divisionRequerida: "Residencial",
+      estado: "prod",
+      descripcion: "Medidores residenciales que entraron en el consumo del día",
+    },
+  },
+};
+
 /** Ejes comunes de las señales de la red de linepack: horarias, calculadas en el backend. */
 const RED_LINEPACK = {
   dominio: "proceso",
@@ -781,6 +845,7 @@ export const CATALOGO_CANALES: IPerfilLectura[] = [
   PERFIL_SCADA,
   PERFIL_PRESION,
   PERFIL_CLIMA,
+  PERFIL_AMBITO,
   PERFIL_LINEPACK,
 ];
 
@@ -805,6 +870,27 @@ export const CANALES_CLIMA: string[] = Object.keys(PERFIL_CLIMA.campos!).map((c)
 /** Si el `CanalRef` es de clima (se pide por Localidad o Centro Operativo, no por punto). */
 export function esCanalClima(ref: string): boolean {
   return CANALES_CLIMA.includes(ref);
+}
+
+/** El consumo residencial de un ámbito: el canal que el gráfico personalizado ofrece junto al clima. */
+export const CANAL_CONSUMO_RESIDENCIAL = canalRef("resumendiariolocalidads", PERFIL_AMBITO.clave, "consumoResidencial");
+
+/** Cuántos medidores entraron en el consumo de cada día: va con el consumo en una tabla, no en el gráfico. */
+export const CANAL_MEDIDORES_RESIDENCIALES = canalRef(
+  "resumendiariolocalidads",
+  PERFIL_AMBITO.clave,
+  "cantidadMedidoresResidenciales",
+);
+
+/** Canales del resumen diario que se piden por ámbito (`POST /ambitos/series`). */
+export const CANALES_AMBITO: string[] = [CANAL_CONSUMO_RESIDENCIAL, CANAL_MEDIDORES_RESIDENCIALES];
+
+/** Los que ofrece el gráfico personalizado, en el orden del selector. */
+export const CANALES_AMBITO_GRAFICABLES: string[] = [CANAL_CONSUMO_RESIDENCIAL];
+
+/** Si el `CanalRef` es del resumen diario (se pide por Localidad, Centro Operativo o Unidad de Negocio). */
+export function esCanalAmbito(ref: string): boolean {
+  return CANALES_AMBITO.includes(ref);
 }
 
 /** Perfil de un `CanalRef`, o `undefined` si el catálogo no lo cubre. */
