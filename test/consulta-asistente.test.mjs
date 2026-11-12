@@ -55,3 +55,13 @@ test("la consulta acepta una valoración, y el alta no la lleva", () => {
   assert.equal(m.ConsultaAsistenteSchema.safeParse({ ...base, valoracion: { voto: "x" } }).success, false);
   assert.equal("valoracion" in m.CreateConsultaAsistenteSchema.shape, false);
 });
+
+test("la consulta guarda desde qué canal se preguntó; sin él sigue valiendo", () => {
+  const base = { idCliente: "c", idUsuario: "u", idConversacion: "k", pregunta: "¿?", resultado: "ok" };
+  for (const canal of ["web", "android", "ios"]) {
+    assert.equal(m.ConsultaAsistenteSchema.parse({ ...base, canal }).canal, canal);
+    assert.equal(m.CreateConsultaAsistenteSchema.parse({ ...base, canal }).canal, canal);
+  }
+  assert.equal(m.ConsultaAsistenteSchema.safeParse({ ...base, canal: "whatsapp" }).success, false);
+  assert.equal("canal" in m.ConsultaAsistenteSchema.parse(base), false);
+});
