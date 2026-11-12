@@ -209,7 +209,8 @@ const PERFIL_NUC_CORRECTORA: IPerfilLectura = {
       tipoValor: "numerico",
       rol: "medida",
       naturaleza: "medido",
-      agregableEntreDispositivos: false,
+      // La temperatura del gas se promedia entre equipos (ver `grupoDePromedio`).
+      agregableEntreDispositivos: true,
       rangoPlausible: { min: -40, max: 80 },
       emitido: true,
       origen: "medido-por-equipo",

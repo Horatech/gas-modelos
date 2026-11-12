@@ -25,6 +25,8 @@
 
 import { z } from "zod";
 import { CommoditySchema } from "./commodity";
+import { aggDe } from "./canal-descriptor";
+import type { ICanalDescriptor, ReferenciaPresion } from "./canal-descriptor";
 
 /**
  * Rol GENÉRICO del punto en la red. Común a las tres verticales.
@@ -248,4 +250,61 @@ export function mismoGrupoDeAgregacion(
   // Mismo conjunto de roles, sin importar el orden.
   if (rolesA.length !== rolesB.length) return false;
   return rolesA.every((r) => rolesB.includes(r));
+}
+
+/** Con qué otros valores se puede promediar el de un canal de un punto. */
+export interface IGrupoDePromedio {
+  /**
+   * Los valores de puntos con la misma clave se promedian entre sí. `null`: este
+   * valor no entra en ningún promedio entre puntos.
+   */
+  clave: string | null;
+  /**
+   * La respuesta se apoya en un valor por defecto o le faltó clasificación del
+   * punto (nivel de red, referencia declarada, roles): con esa información el
+   * resultado sería mejor. Quien muestra el promedio lo avisa.
+   */
+  faltaClasificacion: boolean;
+}
+
+/**
+ * ¿Con qué otros valores se promedia, entre puntos, el de este canal?
+ *
+ * Es la pregunta de "el promedio de la temperatura de las correctoras de una
+ * unidad de negocio". No es `sumable()` (sumar) ni `mismoGrupoDeAgregacion()`
+ * (sumar entre puntos, que además exige los mismos roles): promediar pide menos.
+ *
+ * - Sólo valores instantáneos de proceso (`aggDe` = promedio/mín/máx).
+ * - Un canal `agregableEntreDispositivos` se promedia entre todos los puntos: la
+ *   temperatura del gas.
+ * - La **presión** se promedia sólo con las de la misma referencia (absoluta o
+ *   manométrica) y del mismo nivel de red. Sin nivel de red no entra. La
+ *   referencia es la declarada para el equipo y, si no hay, la por defecto del
+ *   canal; los roles de red no se exigen. Apoyarse en la referencia por defecto
+ *   o no tener roles deja `faltaClasificacion`.
+ * - El resto de los canales que no son agregables entre dispositivos (el caudal)
+ *   no tiene regla: no entra.
+ */
+export function grupoDePromedio(
+  d: ICanalDescriptor,
+  clasificacion?: IClasificacionPunto,
+  referenciaDeclarada?: ReferenciaPresion,
+): IGrupoDePromedio {
+  if (!d.emitido || d.dominio !== "proceso" || aggDe(d) !== "avgMinMax") {
+    return { clave: null, faltaClasificacion: false };
+  }
+  const base = [d.commodity, d.quantityKind, d.unidadCanonica, d.condicionMedicion].join("|");
+  if (d.agregableEntreDispositivos) return { clave: base, faltaClasificacion: false };
+  if (d.quantityKind !== "presion") return { clave: null, faltaClasificacion: false };
+
+  const nivel = clasificacion?.nivelRed;
+  const declarada = referenciaDeclarada && referenciaDeclarada !== "desconocida" ? referenciaDeclarada : undefined;
+  const referencia = declarada ?? (d.referencia !== "desconocida" ? d.referencia : undefined);
+  if (!nivel || nivel.commodity !== d.commodity || !referencia) {
+    return { clave: null, faltaClasificacion: true };
+  }
+  return {
+    clave: [base, nivel.codigo, referencia].join("|"),
+    faltaClasificacion: !declarada || !clasificacion?.rolesRed?.length,
+  };
 }
