@@ -182,6 +182,7 @@ export type OrigenValor =
   | "medido-por-equipo"
   | "copiado-de-config"
   | "calculado-en-backend"
+  | "calculado-por-tercero"
   | "desconocido";
 
 /**

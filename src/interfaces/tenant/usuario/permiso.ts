@@ -34,6 +34,7 @@ export const DivisionSchema = z.enum([
   "Dispositivo Externo NUC",
   "Medidores Eléctricos",
   "Estaciones de Bombeo",
+  "Nodos Virtuales",
 ]);
 export type Division = z.infer<typeof DivisionSchema>;
 

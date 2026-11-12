@@ -45,6 +45,8 @@ export const TIPOS_POR_DIVISION: Record<Division, readonly TipoDispositivo[]> = 
   "Dispositivo Externo NUC": ["NUC"],
   "Medidores Eléctricos": ["NME"],
   "Estaciones de Bombeo": ["UC300"],
+  // Sin dispositivo: lo habilita el módulo linepack (ver `divisionesDelCliente`).
+  "Nodos Virtuales": [],
 };
 
 export const DIVISIONES: readonly Division[] = Object.freeze(Object.keys(TIPOS_POR_DIVISION) as Division[]);
@@ -88,6 +90,7 @@ export const COMMODITY_POR_DIVISION: Record<Division, Commodity | undefined> = {
   "Dispositivo Externo NUC": "gas",
   "Medidores Eléctricos": "electricidad",
   "Estaciones de Bombeo": "saneamiento",
+  "Nodos Virtuales": undefined,
 };
 
 type ClienteParaCapacidades = Pick<ICliente, "tiposDispositivo" | "commodities" | "config">;
@@ -114,6 +117,7 @@ export function divisionesDelCliente(cliente?: ClienteParaCapacidades): Division
   return DIVISIONES.filter((d) => {
     const commodity = COMMODITY_POR_DIVISION[d];
     if (commodity && !commodities.includes(commodity)) return false;
+    if (d === "Nodos Virtuales") return moduloActivoEnCliente(cliente, "linepack");
     return TIPOS_POR_DIVISION[d].some((t) => tipos.includes(t));
   });
 }

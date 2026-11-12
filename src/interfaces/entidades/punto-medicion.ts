@@ -196,6 +196,13 @@ export const PuntoMedicionSchema = z.object({
   // sistema se resuelve aparte (`sistema.ts` no entra al SCC de IDispositivo).
   idSistema: z.string().nullable().optional(),
   origenSistema: OrigenSistemaPuntoSchema.optional(),
+  // PM virtual: nodo de la red que no tiene equipo (lo calcula el proveedor, ver `ValorVirtual`).
+  // Los `*Proveedor` son lo que el proveedor declara del nodo; `null` = no lo dijo.
+  virtual: z.boolean().optional(),
+  codigoProveedor: z.string().nullable().optional(),
+  supuestoProveedor: z.boolean().nullable().optional(),
+  confianzaProveedor: z.string().nullable().optional(),
+  comentarioProveedor: z.string().nullable().optional(),
   // Notificaciones
   limitesNotificacion: LimitesNotificacionSchema.optional(),
   // Virtuals
@@ -281,6 +288,11 @@ export interface IPuntoMedicion {
   idsZonasBalance?: string[];
   idSistema?: string | null;
   origenSistema?: import("./sistema").OrigenSistemaPunto;
+  virtual?: boolean;
+  codigoProveedor?: string | null;
+  supuestoProveedor?: boolean | null;
+  confianzaProveedor?: string | null;
+  comentarioProveedor?: string | null;
   limitesNotificacion?: ILimitesNotificacion;
   // Virtuals
   correctora?: ICorrectora;

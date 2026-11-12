@@ -115,3 +115,10 @@ test("el cliente declara commodities", () => {
   assert.equal(m.ClienteSchema.safeParse({ commodities: ["petroleo"] }).success, false);
   assert.deepEqual(m.CreateClienteSchema.parse({ nombre: "x", commodities: ["agua"] }).commodities, ["agua"]);
 });
+
+test("Nodos Virtuales: por módulo linepack, no por dispositivo", () => {
+  const sin = { tiposDispositivo: ["SCADA Mediciones"], config: {} };
+  const con = { tiposDispositivo: ["SCADA Mediciones"], config: { modulos: { linepack: { activo: true } } } };
+  assert.ok(!m.divisionesDelCliente(sin).includes("Nodos Virtuales"));
+  assert.ok(m.divisionesDelCliente(con).includes("Nodos Virtuales"));
+});
