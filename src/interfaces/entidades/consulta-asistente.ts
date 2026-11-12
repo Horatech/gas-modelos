@@ -64,6 +64,11 @@ export const PedidoValoracionAsistenteSchema = z
   });
 export type IPedidoValoracionAsistente = z.input<typeof PedidoValoracionAsistenteSchema>;
 
+// Desde dónde se preguntó: el chat de la web o la app del teléfono. Fuera de la web el asistente responde con otro
+// formato y otras herramientas, así que para revisar una respuesta hay que saber de cuál vino.
+export const CanalAsistenteSchema = z.enum(["web", "android", "ios"]);
+export type CanalAsistente = z.infer<typeof CanalAsistenteSchema>;
+
 // Una pregunta al asistente de ayuda: qué se preguntó, qué respondió y cuánto consumió.
 // El costo no se guarda: se calcula con los tokens y el precio del modelo, que cambia.
 export const ConsultaAsistenteSchema = z.object({
@@ -73,6 +78,8 @@ export const ConsultaAsistenteSchema = z.object({
   // Agrupa las preguntas de una misma charla; lo genera el front.
   idConversacion: z.string(),
   fecha: z.string().optional(),
+  // Ausente en las consultas anteriores a este campo.
+  canal: CanalAsistenteSchema.optional(),
   pregunta: z.string(),
   respuesta: z.string().optional(),
   fuentes: z.array(FuenteAsistenteSchema).optional(),
