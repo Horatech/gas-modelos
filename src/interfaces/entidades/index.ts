@@ -22,6 +22,7 @@ export * from "./sistema";
 export * from "./nodo-red";
 export * from "./tramo-red";
 export * from "./tramo-linepack";
+export * from "./umbral-linepack";
 export * from "./valor-virtual";
 export * from "./cuenta-cliente";
 export * from "./dispositivo";
