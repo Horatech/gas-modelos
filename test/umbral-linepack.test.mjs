@@ -64,3 +64,10 @@ test("UmbralLinepackSchema: extremos válidos y omit sin romper", () => {
   assert.ok(m.CreateUmbralLinepackSchema.safeParse(fila).success);
   assert.ok(m.UpdateUmbralLinepackSchema.safeParse({ lo: 3 }).success);
 });
+
+test("umbral ausente (undefined) cuenta como null", () => {
+  assert.equal(m.umbralesEnOrden({ lo: 12 }), true);
+  assert.equal(m.umbralesEnOrden({ lolo: 13, lo: 12 }), false);
+  assert.equal(m.evaluarExtremo(11, "good", "bar", { lo: 12, unidad: "bar" }), "yellow");
+  assert.equal(m.evaluarExtremo(20, "good", "bar", { lo: 12, unidad: "bar" }), "green");
+});

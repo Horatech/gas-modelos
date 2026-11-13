@@ -32,19 +32,30 @@ const valores = {
   unidad: z.string().min(1),
 };
 
+/**
+ * Los cuatro umbrales. Opcionales en el tipo porque los consumidores compilan
+ * `modelos/src` sin `strictNullChecks`: un ausente (`undefined`) vale `null`.
+ */
 type Valores = {
-  lo: number | null;
-  lolo: number | null;
-  hi: number | null;
-  hihi: number | null;
+  lo?: number | null;
+  lolo?: number | null;
+  hi?: number | null;
+  hihi?: number | null;
 };
+
+const cadenaDe = (u: Valores) => [
+  u.lolo ?? null,
+  u.lo ?? null,
+  u.hi ?? null,
+  u.hihi ?? null,
+];
 
 /**
  * `lolo ≤ lo < hi ≤ hihi` sobre los presentes, comparando **cada par**, no sólo
  * los vecinos: con `lo: 20, hihi: 15` y el resto `null`, falla.
  */
 export function umbralesEnOrden(u: Valores): boolean {
-  const cadena = [u.lolo, u.lo, u.hi, u.hihi];
+  const cadena = cadenaDe(u);
   for (let i = 0; i < cadena.length; i++) {
     for (let j = i + 1; j < cadena.length; j++) {
       const a = cadena[i];
@@ -120,20 +131,17 @@ export function evaluarExtremo(
   valor: number | null | undefined,
   calidad: string | undefined,
   unidadSenal: string | undefined,
-  u: IValoresUmbralLinepack,
+  u: Valores & { unidad: string },
 ): EstadoUmbral {
   if (typeof valor !== "number" || calidad !== "good") return "gray";
   const hacia = unidadSenal || "bar";
-  const conv = (x: number | null) =>
-    x === null ? null : convertirPresion(x, u.unidad, hacia);
-  const lolo = conv(u.lolo);
-  const lo = conv(u.lo);
-  const hi = conv(u.hi);
-  const hihi = conv(u.hihi);
-  const perdido = [u.lolo, u.lo, u.hi, u.hihi].some(
-    (x, i) => x !== null && [lolo, lo, hi, hihi][i] === null,
+  const crudos = cadenaDe(u);
+  const [lolo, lo, hi, hihi] = crudos.map((x) =>
+    x === null ? null : convertirPresion(x, u.unidad, hacia),
   );
-  if (perdido) return "gray";
+  // Un umbral cargado que no se puede llevar a la unidad de la señal: no se compara.
+  if (crudos.some((x, i) => x !== null && [lolo, lo, hi, hihi][i] === null))
+    return "gray";
   if ((lolo !== null && valor < lolo) || (hihi !== null && valor > hihi))
     return "red";
   if ((lo !== null && valor < lo) || (hi !== null && valor > hi))
