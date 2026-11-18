@@ -194,6 +194,24 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-18 - Re-anclaje del acumulado residencial por lectura del dial (`medidor-residencial*.ts`, `vinculacion.ts`)
+
+Una lectura del dial con fecha posterior a la instalación, sobre un medidor que ya tiene lectura inicial, dejaba
+de ser "lectura de control" (no cambiaba nada) y pasa a **re-anclar** el acumulado desde su fecha: desde ahí
+`consumoCorregido = lectura + (odómetro − odómetro del equipo en esa fecha)`; antes, nada cambia. Caso: equipo mal
+instalado que perdió pulsos (medidor 7100470, ~15 m³ por debajo del dial).
+
+- `IMedidorResidencial*.fechaAnclaje`: desde cuándo valen las anclas denormalizadas. Ausente = la instalación.
+  La ingesta usa el camino rápido sólo si el bloque cae entero desde ahí, y confirma el baseline `provisorio` en
+  ese instante.
+- `cambio-lectura` con `fechaVigencia` posterior al inicio del tramo **parte el tramo** (gas-sml `armarTramos`);
+  igual al inicio, corrige el ancla como antes. Los eventos viejos siguen leyéndose igual.
+- `RecalcularAcumuladoMedidorSchema` (`POST /reportes/recalcular-acumulado-medidor` de gas-datos): reescribe
+  `consumoCorregido` de los reportes del medidor desde el ancla. **Excepción explícita** a la regla de
+  2026-09-08 de no reescribir el histórico, decidida el 18-nov.
+
+⚠️ `fechaAnclaje` necesita `@Prop({ type: Date })` en los dos modelos de medidor de gas-datos.
+
 ### 2026-11-12 - Consumo residencial por ámbito como serie (`perfil-lectura.ts`, `serie-ambito.ts`, `grafico-personalizado.ts`)
 
 Plan: gas-insideht-doc `docs/superpowers/plans/2026-11-12-consumo-por-ambito-en-graficos.md`. Aditivo: todavía no lo

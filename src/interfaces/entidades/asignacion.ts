@@ -127,6 +127,12 @@ export const AsignacionSchema = z.object({
    * para cerrar el tramo y para medir el hueco sin medición que sigue); en
    * `cambio-lectura`, la corrección.
    *
+   * Un `cambio-lectura` con `fechaVigencia` igual a la apertura del tramo corrige
+   * el ancla de todo el tramo. Con `fechaVigencia` POSTERIOR **re-ancla**: el tramo
+   * se parte en esa fecha y desde ahí `dialInicial = dialLectura` y
+   * `lecturaInicialDispositivo` = odómetro del equipo en esa fecha (equipo mal
+   * instalado que perdió pulsos: el acumulado vuelve a coincidir con el dial).
+   *
    * **Es una lectura física, no un cálculo.** Por eso cierra el caso del equipo
    * retirado: mientras no hubo equipo el medidor siguió contando y nadie lo midió,
    * así que el único dato posible del arranque del tramo nuevo es que alguien lo
