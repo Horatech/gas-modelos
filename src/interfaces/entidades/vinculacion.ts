@@ -96,10 +96,21 @@ export type IDesasignarDispositivo = z.infer<
  * corrige de rutina —hay medidores con seis ediciones de `consumoInicial` en tres
  * semanas— y con la fecha de cada lectura eso deja de ser una reescritura ciega.
  *
- * ⚠️ **No reescribe el histórico de reportes.** Regla del dueño del dominio
- * (2026-09-08): los reportes ya escritos conservan su acumulado y la serie conserva
- * el escalón. Corregir hacia atrás, si alguna vez hace falta, es una operación
- * explícita y aparte.
+ * Según la fecha de la lectura respecto del inicio del ancla vigente (la
+ * instalación, o la última lectura que re-ancló):
+ * - **en el inicio**: reemplaza esa ancla (corrige una lectura mal tipeada);
+ * - **posterior, sin inicial cargada**: se proyecta hacia atrás a la instalación;
+ * - **posterior, con inicial**: **re-ancla** desde su fecha. Desde ahí el acumulado
+ *   es la lectura más lo que mida el equipo (equipo mal instalado que perdió pulsos).
+ *   Antes de esa fecha no cambia nada.
+ *
+ * Una lectura anterior al ancla vigente se rechaza: ese período ya tiene su ancla.
+ *
+ * ⚠️ **Re-ancla también los reportes ya escritos desde esa fecha** (decisión del
+ * 18-nov-2026, excepción explícita a la regla de 2026-09-08 de no reescribir el
+ * histórico): es una operación explícita, con su evento, y lo que se recalcula es
+ * sólo `consumoCorregido` del medidor desde la fecha de la lectura. Ver
+ * `RecalcularAcumuladoMedidorSchema`.
  */
 export const CambiarLecturaDialSchema = z.object({
   tipoEntidad: TipoEntidadVinculableSchema,
@@ -112,6 +123,29 @@ export const CambiarLecturaDialSchema = z.object({
   observaciones: z.string().optional(),
 });
 export type ICambiarLecturaDial = z.infer<typeof CambiarLecturaDialSchema>;
+
+/**
+ * Recalcula `valores.consumoCorregido` de los reportes de un medidor con un ancla
+ * nueva, desde un instante (gas-datos, `POST /reportes/recalcular-acumulado-medidor`).
+ * Lo usa el re-anclaje por lectura del dial.
+ *
+ * Sólo toca reportes del medidor Y del dispositivo (`idsAsignados` con los dos),
+ * con odómetro (`valores.consumo`) y cuyo instante sea `>= desde`. El instante de un
+ * WRC en convención de cierre (`tsCierre`) es el inicio del intervalo, el mismo
+ * criterio de atribución que la ingesta. Misma fórmula que la ingesta:
+ * `dialInicial + (consumo - lecturaInicialDispositivo)`, y con el odómetro por
+ * debajo del baseline el acumulado queda ausente y marcado `baselineIncoherente`.
+ */
+export const RecalcularAcumuladoMedidorSchema = z.object({
+  idMedidor: z.string(),
+  idDispositivo: z.string(),
+  desde: z.string(),
+  dialInicial: z.number(),
+  lecturaInicialDispositivo: z.number(),
+});
+export type IRecalcularAcumuladoMedidor = z.infer<
+  typeof RecalcularAcumuladoMedidorSchema
+>;
 
 ////// Entidad intermedia -> Punto de medición
 

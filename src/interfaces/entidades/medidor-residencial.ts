@@ -59,6 +59,18 @@ export const MedidorResidencialSchema = z.object({
    * tramo abierto; ver `IAsignacion`.
    */
   dialPendiente: z.boolean().optional(),
+  /**
+   * Desde cuándo valen las anclas vigentes (`consumoInicial`,
+   * `lecturaInicialDispositivo`). Ausente = desde `fechaAsignacionDispositivo`.
+   *
+   * Una lectura del dial cargada después de instalar RE-ANCLA el tramo desde su
+   * fecha (evento `cambio-lectura` con `fechaVigencia` = fecha de la lectura): antes
+   * de esa fecha el acumulado sale de las anclas anteriores, que viven en los
+   * eventos. La ingesta usa el camino rápido sólo si el bloque cae entero desde
+   * acá, y el baseline `provisorio` se confirma en este instante, no en la
+   * instalación.
+   */
+  fechaAnclaje: z.string().nullable().optional(),
   ubicacionGps: CoordenadasSchema.optional(),
   direccion: z.string().optional(),
   idLocalidad: z.string().optional(),
@@ -117,6 +129,8 @@ export interface IMedidorResidencial {
    * no la lectura del medidor físico. Ver `IAsignacion.dialPendiente`.
    */
   dialPendiente?: boolean;
+  /** Ver `MedidorResidencial*Schema.fechaAnclaje`. Ausente = `fechaAsignacionDispositivo`. */
+  fechaAnclaje?: string | null;
   ubicacionGps?: ICoordenadas;
   direccion?: string;
   idLocalidad?: string;
