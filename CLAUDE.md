@@ -194,6 +194,18 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-19 - Límites de linepack: vuelven HI y HIHI por nodo (`umbral-linepack.ts`)
+
+Spec: gas-insideht-doc `docs/superpowers/specs/2026-11-19-linepack-limites-nodo-segmentos-design.md` (§ 6.1,
+decisiones 3, 18 y 21). **Cambio que rompe**: gas-datos implementa la interfaz con `Exactly`, así que su modelo y sus
+inputs suman los dos campos al subir el pin.
+
+- `UmbralLinepackSchema` y `ValoresUmbralLinepackSchema` suman `hi` (máximo) y `hihi` (máximo crítico), por nodo,
+  nullable como `lo` y `lolo`. Son opcionales: el cálculo completo sólo pide LO y LOLO.
+- `umbralesEnOrden`: `lolo ≤ lo < hi ≤ hihi` entre los presentes (cada par que está, en ese orden; entre un inferior
+  y un superior, estricto).
+- Por arriba no hay linepack máximo: gas-api-cliente compara HI/HIHI con la presión de cada extremo del tramo.
+
 ### 2026-11-19 - Límites de linepack por nodo (`umbral-linepack.ts`)
 
 Spec: gas-insideht-doc `docs/superpowers/specs/2026-11-19-linepack-limites-nodo-segmentos-design.md` (§ 2.1).
