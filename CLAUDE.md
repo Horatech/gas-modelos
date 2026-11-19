@@ -194,6 +194,22 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-19 - Alertas ignoradas por equipo SML / WRC / MRA (`configs-dispositivo/dispositivoSml.ts`)
+
+Equipos que en campo reportan una alarma de forma permanente aunque midan bien (típico: "Falla de medición" en
+WRC/SML-4G). Desde gas-web-admin se marcan, uno por uno o en masa, los tipos a ignorar.
+
+- `IDispositivoSml.alertasIgnoradas` (`config.alertasIgnoradas`): gas-sml cierra la abierta de esos tipos y no
+  abre nuevas (Hac y WRC; SindCon no abre alertas).
+- `TIPOS_ALERTA_IGNORABLES_SML` / `TipoAlertaIgnorableSmlSchema`: sólo lo que reporta el equipo. "Sin Reportar" no
+  se ignora. Enum propio (`satisfies readonly ITipoAlerta[]`) y no un valor tomado de `alerta.ts`, que es del SCC.
+- `ActualizarAlertasIgnoradasSchema` (`POST /dispositivos/alertas-ignoradas` de gas-datos, vía gas-admin): `ids`,
+  `tipos`, `modo` (`reemplazar` | `agregar` | `quitar`). Además de la config, cierra en el momento las abiertas y
+  corrige `tiposAlertaActivos`/`estado` del punto y `estadoActual` del medidor (cerrar una alerta no recalcula nada,
+  y un WRC reporta una vez por día). → `ResultadoAlertasIgnoradasSchema`.
+
+No requiere `@Prop()` en gas-datos: `config` es `@Prop({ type: Object })`.
+
 ### 2026-11-18 - Re-anclaje del acumulado residencial por lectura del dial (`medidor-residencial*.ts`, `vinculacion.ts`)
 
 Una lectura del dial con fecha posterior a la instalación, sobre un medidor que ya tiene lectura inicial, dejaba
