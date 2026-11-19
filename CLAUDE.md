@@ -194,6 +194,23 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-19 - Límites de linepack por nodo (`umbral-linepack.ts`)
+
+Spec: gas-insideht-doc `docs/superpowers/specs/2026-11-19-linepack-limites-nodo-segmentos-design.md` (§ 2.1).
+Reemplaza el diseño por extremo de tramo del 13-nov. **Cambio que rompe**: los consumidores que usan la forma vieja
+(gas-datos, gas-api-cliente, gas-web-cliente) cambian en su PR al subir el pin.
+
+- `UmbralLinepackSchema`: **una fila por punto de medición** (`idPuntoMedicion`), no por `codigoTramo` + `extremo`.
+  Un nodo compartido por varios tramos tiene un solo límite. El de un nodo virtual no se guarda (lo calcula
+  gas-api-cliente con la fórmula del nodo); la limitadora sí lleva fila, sobre su punto virtual.
+- Sólo **LO y LOLO**: se van `hi` y `hihi`. `ValoresUmbralLinepackSchema` valida `lolo ≤ lo`, ninguno negativo.
+- Se van `ExtremoLinepackSchema`, `evaluarExtremo` y `peorEstadoUmbral`: el color sale del linepack del tramo contra
+  su mínimo y su crítico, y lo calcula gas-api-cliente. Quedan `EstadoUmbral` y `convertirPresion`.
+
+⚠️ gas-datos: el modelo cambia de campos y el índice único pasa a `{ idCliente, idPuntoMedicion }`. El índice viejo
+`idCliente_1_codigoTramo_1_extremo_1` (único) existe en `gas_production` y `gas_test` y choca con la clave nueva: se
+borra a mano al desplegar, junto con la fila de TEST (prod tiene 0 filas, verificado el 19-nov).
+
 ### 2026-11-19 - Alertas ignoradas por equipo SML / WRC / MRA (`configs-dispositivo/dispositivoSml.ts`)
 
 Equipos que en campo reportan una alarma de forma permanente aunque midan bien (típico: "Falla de medición" en
