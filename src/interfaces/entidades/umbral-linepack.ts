@@ -1,79 +1,54 @@
 /**
- * Umbrales de presión por extremo de un tramo de linepack (LO/LOLO/HI/HIHI).
+ * Límites de presión de un nodo de la red de linepack: mínimo operativo (LO) y
+ * mínimo crítico (LOLO).
+ *
+ * El nodo es un punto de medición: el real de un extremo medido o, sólo para la
+ * limitadora, su punto virtual. Un nodo compartido por varios tramos tiene un
+ * solo límite, y lo ven todos los usuarios del cliente. El límite de los demás
+ * nodos virtuales no se guarda: gas-api-cliente lo calcula con la fórmula del
+ * nodo sobre los límites de los nodos medidos.
  *
  * Es un juego **paralelo** a los límites del iFIX y a los `limiteL`/`limiteLL`
- * de los puntos: no los lee, no los escribe y no dispara alertas. Sirve para
- * pintar el tramo en la vista de linepack y dibujar las líneas en su gráfico.
- * Una fila por cliente, tramo (`codigo` del `TramoLinepack`) y extremo.
+ * de los puntos: no los lee, no los escribe y no dispara alertas. Con ellos se
+ * calculan el linepack mínimo y el crítico de cada tramo.
  *
  * Diseño: gas-insideht-doc
- * `docs/superpowers/specs/2026-11-13-umbrales-tramo-linepack-design.md`.
+ * `docs/superpowers/specs/2026-11-19-linepack-limites-nodo-segmentos-design.md`.
  *
- * Un umbral `null` es "sin ese umbral", nunca cero.
+ * Un límite `null` es "sin ese límite", nunca cero.
  */
 
 import { z } from "zod";
 
-export const ExtremoLinepackSchema = z.enum(["P_INICIO", "P_FIN"]);
-export type ExtremoLinepack = z.infer<typeof ExtremoLinepackSchema>;
-
-const umbral = z.number().nonnegative().nullable();
+const limite = z.number().nonnegative().nullable();
 
 const valores = {
   /** Presión mínima operativa, en `unidad`. */
-  lo: umbral,
+  lo: limite,
   /** Presión mínima crítica, en `unidad`. */
-  lolo: umbral,
-  /** Presión máxima operativa, en `unidad`. */
-  hi: umbral,
-  /** Presión máxima crítica, en `unidad` (referencia del proveedor: la MAPO del caño). */
-  hihi: umbral,
-  /** La `unidad` de la señal del extremo al cargar (`bar` o `kg/cm2`). */
+  lolo: limite,
+  /** La `unidad` de la señal del nodo al cargar (`bar` o `kg/cm2`). */
   unidad: z.string().min(1),
 };
 
 /**
- * Los cuatro umbrales. Opcionales en el tipo porque los consumidores compilan
- * `modelos/src` sin `strictNullChecks`: un ausente (`undefined`) vale `null`.
+ * Opcionales en el tipo porque los consumidores compilan `modelos/src` sin
+ * `strictNullChecks`: un ausente (`undefined`) vale `null`.
  */
-type Valores = {
-  lo?: number | null;
-  lolo?: number | null;
-  hi?: number | null;
-  hihi?: number | null;
-};
+type Valores = { lo?: number | null; lolo?: number | null };
 
-const cadenaDe = (u: Valores) => [
-  u.lolo ?? null,
-  u.lo ?? null,
-  u.hi ?? null,
-  u.hihi ?? null,
-];
-
-/**
- * `lolo ≤ lo < hi ≤ hihi` sobre los presentes, comparando **cada par**, no sólo
- * los vecinos: con `lo: 20, hihi: 15` y el resto `null`, falla.
- */
+/** `lolo ≤ lo` si están los dos. */
 export function umbralesEnOrden(u: Valores): boolean {
-  const cadena = cadenaDe(u);
-  for (let i = 0; i < cadena.length; i++) {
-    for (let j = i + 1; j < cadena.length; j++) {
-      const a = cadena[i];
-      const b = cadena[j];
-      if (a === null || b === null) continue;
-      // Entre un mínimo (lolo, lo) y un máximo (hi, hihi) el orden es estricto.
-      const estricto = i < 2 && j >= 2;
-      if (estricto ? !(a < b) : !(a <= b)) return false;
-    }
-  }
-  return true;
+  const lo = u.lo ?? null;
+  const lolo = u.lolo ?? null;
+  return lo === null || lolo === null || lolo <= lo;
 }
 
-/** Lo que se carga para un extremo: el body del `PUT`. */
+/** Lo que se carga para un nodo: el body del `PUT`. */
 export const ValoresUmbralLinepackSchema = z
   .object(valores)
   .refine(umbralesEnOrden, {
-    message: "Umbrales fuera de orden: LOLO ≤ LO < HI ≤ HIHI",
+    message: "Límites fuera de orden: LOLO ≤ LO",
   });
 export type IValoresUmbralLinepack = z.infer<
   typeof ValoresUmbralLinepackSchema
@@ -83,9 +58,8 @@ export type IValoresUmbralLinepack = z.infer<
 export const UmbralLinepackSchema = z.object({
   _id: z.string().optional(),
   idCliente: z.string(),
-  /** `088-001-A`: el `codigo` del `TramoLinepack`, que es la clave del re-import. */
-  codigoTramo: z.string(),
-  extremo: ExtremoLinepackSchema,
+  /** El nodo: el punto de medición del extremo (real, o virtual en la limitadora). */
+  idPuntoMedicion: z.string(),
   ...valores,
   /** Quién cargó el último cambio. */
   idUsuario: z.string().optional(),
@@ -104,6 +78,10 @@ export const UpdateUmbralLinepackSchema = UmbralLinepackSchema.omit({
 }).partial();
 export type IUpdateUmbralLinepack = z.infer<typeof UpdateUmbralLinepackSchema>;
 
+/**
+ * Color de un tramo o segmento: su linepack actual contra el mínimo (amarillo)
+ * y el crítico (rojo); gris si falta algún dato.
+ */
 export type EstadoUmbral = "green" | "yellow" | "red" | "gray";
 
 const BAR_POR_KGCM2 = 0.980665;
@@ -121,39 +99,3 @@ export function convertirPresion(
   if (a === undefined || b === undefined) return null;
   return Number(((valor * a) / b).toPrecision(12));
 }
-
-/**
- * Estado de un extremo contra sus umbrales. Gris si no hay valor, si el valor no
- * es fresco (`calidad` distinta de `good`: un dato de hace días no puede pintar
- * verde) o si la unidad de la fila no se puede llevar a la de la señal.
- */
-export function evaluarExtremo(
-  valor: number | null | undefined,
-  calidad: string | undefined,
-  unidadSenal: string | undefined,
-  u: Valores & { unidad: string },
-): EstadoUmbral {
-  if (typeof valor !== "number" || calidad !== "good") return "gray";
-  const hacia = unidadSenal || "bar";
-  const crudos = cadenaDe(u);
-  const [lolo, lo, hi, hihi] = crudos.map((x) =>
-    x === null ? null : convertirPresion(x, u.unidad, hacia),
-  );
-  // Un umbral cargado que no se puede llevar a la unidad de la señal: no se compara.
-  if (crudos.some((x, i) => x !== null && [lolo, lo, hi, hihi][i] === null))
-    return "gray";
-  if ((lolo !== null && valor < lolo) || (hihi !== null && valor > hihi))
-    return "red";
-  if ((lo !== null && valor < lo) || (hi !== null && valor > hi))
-    return "yellow";
-  return "green";
-}
-
-const GRAVEDAD: EstadoUmbral[] = ["gray", "green", "yellow", "red"];
-
-/** El peor: red › yellow › green › gray. Vacío → gray. */
-export const peorEstadoUmbral = (estados: EstadoUmbral[]): EstadoUmbral =>
-  estados.reduce<EstadoUmbral>(
-    (a, e) => (GRAVEDAD.indexOf(e) > GRAVEDAD.indexOf(a) ? e : a),
-    "gray",
-  );
