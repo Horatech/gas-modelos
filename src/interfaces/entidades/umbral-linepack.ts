@@ -1,6 +1,6 @@
 /**
- * Límites de presión de un nodo de la red de linepack: mínimo operativo (LO) y
- * mínimo crítico (LOLO).
+ * Límites de presión de un nodo de la red de linepack: mínimo operativo (LO),
+ * mínimo crítico (LOLO), máximo (HI) y máximo crítico (HIHI).
  *
  * El nodo es un punto de medición: el real de un extremo medido o, sólo para la
  * limitadora, su punto virtual. Un nodo compartido por varios tramos tiene un
@@ -9,8 +9,9 @@
  * nodo sobre los límites de los nodos medidos.
  *
  * Es un juego **paralelo** a los límites del iFIX y a los `limiteL`/`limiteLL`
- * de los puntos: no los lee, no los escribe y no dispara alertas. Con ellos se
- * calculan el linepack mínimo y el crítico de cada tramo.
+ * de los puntos: no los lee, no los escribe y no dispara alertas. Con LO y LOLO
+ * se calculan el linepack mínimo y el crítico de cada tramo; HI y HIHI se
+ * comparan con la presión de cada extremo (no hay linepack máximo).
  *
  * Diseño: gas-insideht-doc
  * `docs/superpowers/specs/2026-11-19-linepack-limites-nodo-segmentos-design.md`.
@@ -27,6 +28,10 @@ const valores = {
   lo: limite,
   /** Presión mínima crítica, en `unidad`. */
   lolo: limite,
+  /** Presión máxima operativa, en `unidad`. */
+  hi: limite,
+  /** Presión máxima crítica, en `unidad`. */
+  hihi: limite,
   /** La `unidad` de la señal del nodo al cargar (`bar` o `kg/cm2`). */
   unidad: z.string().min(1),
 };
@@ -35,20 +40,39 @@ const valores = {
  * Opcionales en el tipo porque los consumidores compilan `modelos/src` sin
  * `strictNullChecks`: un ausente (`undefined`) vale `null`.
  */
-type Valores = { lo?: number | null; lolo?: number | null };
+type Valores = {
+  lo?: number | null;
+  lolo?: number | null;
+  hi?: number | null;
+  hihi?: number | null;
+};
 
-/** `lolo ≤ lo` si están los dos. */
+const ORDEN = ["lolo", "lo", "hi", "hihi"] as const;
+const SUPERIORES = new Set<string>(["hi", "hihi"]);
+
+/**
+ * `lolo ≤ lo < hi ≤ hihi` entre los presentes: cada par que está, en ese orden.
+ * Entre un límite inferior y uno superior, estricto.
+ */
 export function umbralesEnOrden(u: Valores): boolean {
-  const lo = u.lo ?? null;
-  const lolo = u.lolo ?? null;
-  return lo === null || lolo === null || lolo <= lo;
+  const presentes = ORDEN.flatMap((k) => {
+    const v = u[k] ?? null;
+    return v === null ? [] : [{ k, v }];
+  });
+  return presentes.every((a, i) =>
+    presentes
+      .slice(i + 1)
+      .every((b) =>
+        !SUPERIORES.has(a.k) && SUPERIORES.has(b.k) ? a.v < b.v : a.v <= b.v,
+      ),
+  );
 }
 
 /** Lo que se carga para un nodo: el body del `PUT`. */
 export const ValoresUmbralLinepackSchema = z
   .object(valores)
   .refine(umbralesEnOrden, {
-    message: "Límites fuera de orden: LOLO ≤ LO",
+    message: "Límites fuera de orden: LOLO ≤ LO < HI ≤ HIHI",
   });
 export type IValoresUmbralLinepack = z.infer<
   typeof ValoresUmbralLinepackSchema
@@ -79,8 +103,9 @@ export const UpdateUmbralLinepackSchema = UmbralLinepackSchema.omit({
 export type IUpdateUmbralLinepack = z.infer<typeof UpdateUmbralLinepackSchema>;
 
 /**
- * Color de un tramo o segmento: su linepack actual contra el mínimo (amarillo)
- * y el crítico (rojo); gris si falta algún dato.
+ * Color de un tramo o segmento: por abajo, su linepack actual contra el mínimo
+ * (amarillo) y el crítico (rojo); por arriba, la presión de cada extremo contra
+ * el máximo (amarillo) y el máximo crítico (rojo) de su nodo. Gana el peor.
  */
 export type EstadoUmbral = "green" | "yellow" | "red" | "gray";
 

@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const m = require("../dist/index.js");
 
-const U = (o) => ({ lo: null, lolo: null, unidad: "bar", ...o });
+const U = (o) => ({ lo: null, lolo: null, hi: null, hihi: null, unidad: "bar", ...o });
 
 test("orden de límites: válidos e inválidos", () => {
   assert.ok(m.ValoresUmbralLinepackSchema.safeParse(U({ lolo: 10, lo: 12 })).success);
@@ -16,10 +16,27 @@ test("orden de límites: válidos e inválidos", () => {
   assert.equal(m.ValoresUmbralLinepackSchema.safeParse(U({ unidad: "" })).success, false);
 });
 
-test("sin HI ni HIHI: no son parte de los valores", () => {
+test("cuatro límites: lolo ≤ lo < hi ≤ hihi sobre los presentes", () => {
+  const ok = (o) => m.ValoresUmbralLinepackSchema.safeParse(U(o)).success;
+  assert.ok(ok({ lolo: 10, lo: 12, hi: 40, hihi: 45 }));
+  assert.ok(ok({ lolo: 10, lo: 12, hi: 40, hihi: 40 }));
+  assert.ok(ok({ hi: 40 }));
+  assert.ok(ok({ hihi: 45 }));
+  assert.ok(ok({ lo: 12, hihi: 45 }));
+  // Entre un inferior y un superior, estricto.
+  assert.equal(ok({ lo: 40, hi: 40 }), false);
+  assert.equal(ok({ lolo: 40, hihi: 40 }), false);
+  assert.equal(ok({ lo: 41, hi: 40 }), false);
+  // Ausente el del medio, se comparan los que están.
+  assert.equal(ok({ lolo: 46, hihi: 45 }), false);
+  assert.equal(ok({ lo: 12, hi: 46, hihi: 45 }), false);
+  assert.equal(ok({ hihi: -1 }), false);
+});
+
+test("los cuatro viajan en los valores", () => {
   const r = m.ValoresUmbralLinepackSchema.safeParse(U({ lo: 12, hi: 40, hihi: 45 }));
   assert.ok(r.success);
-  assert.deepEqual(Object.keys(r.data).sort(), ["lo", "lolo", "unidad"]);
+  assert.deepEqual(Object.keys(r.data).sort(), ["hi", "hihi", "lo", "lolo", "unidad"]);
 });
 
 test("convertirPresion", () => {
@@ -41,4 +58,6 @@ test("límite ausente (undefined) cuenta como null", () => {
   assert.equal(m.umbralesEnOrden({ lo: 12 }), true);
   assert.equal(m.umbralesEnOrden({ lolo: 12 }), true);
   assert.equal(m.umbralesEnOrden({ lolo: 13, lo: 12 }), false);
+  assert.equal(m.umbralesEnOrden({ hi: 40 }), true);
+  assert.equal(m.umbralesEnOrden({ lo: 40, hi: 40 }), false);
 });
