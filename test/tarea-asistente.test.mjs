@@ -110,3 +110,32 @@ test("la consulta acepta el aviso de una tarea y sigue valiendo sin él", () => 
   assert.ok(m.CreateConsultaAsistenteSchema.safeParse({ ...base, ...aviso }).success);
   assert.equal(m.ConsultaAsistenteSchema.safeParse({ ...base, ...aviso, tarea: { idTarea: "t", evento: "otro" } }).success, false);
 });
+
+test("correctora con campo del catálogo; las otras fuentes sin campo", () => {
+  const r = (variable) => pedido({ tipo: "reporte", variable, reporte: { cadaMin: 30 } });
+  assert.ok(r({ fuente: "correctora", id: "c1", campo: "presion" }).success);
+  assert.equal(r({ fuente: "correctora", id: "c1" }).success, false);
+  assert.equal(r({ fuente: "correctora", id: "c1", campo: "bateria" }).success, false);
+  assert.equal(r({ fuente: "scada", id: "s1", campo: "presion" }).success, false);
+});
+
+test("último valor por fuente, con la hora del dato", () => {
+  const ts = "2026-11-20T12:00:00.000Z";
+  assert.deepEqual(
+    m.ultimoValorTareaAsistente({ fuente: "scada" }, { unidad: "bar", ultimoRegistro: { valores: { valorActual: "1.25", timestamp: ts } } }),
+    { valor: 1.25, fechaDato: ts, unidad: "bar" },
+  );
+  assert.deepEqual(
+    m.ultimoValorTareaAsistente({ fuente: "unidadPresion" }, { ultimoRegistro: { valores: { presion: 2, unidad: "kg/cm2", timestamp: Date.parse(ts) } } }),
+    { valor: 2, fechaDato: ts, unidad: "kg/cm2" },
+  );
+  assert.deepEqual(
+    m.ultimoValorTareaAsistente({ fuente: "correctora", campo: "temperatura" }, { ultimoRegistro: { temperatura: 18.5, timestamp: ts } }),
+    { valor: 18.5, fechaDato: ts, unidad: "°C" },
+  );
+  // Sin valor numérico o sin hora: nada.
+  assert.equal(m.ultimoValorTareaAsistente({ fuente: "scada" }, { ultimoRegistro: { valores: { valorActual: "abierto", timestamp: ts } } }), undefined);
+  assert.equal(m.ultimoValorTareaAsistente({ fuente: "scada" }, { ultimoRegistro: { valores: { valorActual: 1 } } }), undefined);
+  assert.equal(m.ultimoValorTareaAsistente({ fuente: "correctora", campo: "presion" }, {}), undefined);
+  assert.equal(m.ultimoValorTareaAsistente({ fuente: "scada" }, null), undefined);
+});

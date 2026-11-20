@@ -209,6 +209,8 @@ consume nadie.
 - Funciones compartidas: `describirTareaAsistente` (el texto que ve el usuario lo arma el código, nunca el LLM; hora
   de Argentina y coma decimal), `vigenciaTareaAsistenteValida` (≤ `MAX_VIGENCIA_TAREA_ASISTENTE_HORAS`, 48),
   `menorSeparacionHorasMin`, `intervaloConsultaEfectivoMin` (usuario → cliente → 60) y `consultaRespetaIntervalo`.
+- `ultimoValorTareaAsistente(variable, doc)`: el último valor y la hora del dato según la fuente (forma del documento
+  en Redis/gas-datos); `CAMPOS_CORRECTORA_TAREA_ASISTENTE` (presión absoluta, temperatura, caudales) con su unidad.
   Tope: `MAX_TAREAS_ASISTENTE_POR_USUARIO` (10, cuentan `ESTADOS_TAREA_ASISTENTE_VIGENTE`).
 - `IConsultaAsistente.origen` (`usuario` | `tarea`; ausente = `usuario`) y `tarea` (`idTarea`, `evento`, `valores`):
   cada aviso de una tarea queda como consulta de su charla y es el registro de resultados.

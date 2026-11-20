@@ -41,6 +41,17 @@ export const ESTADOS_TAREA_ASISTENTE_VIGENTE: readonly EstadoTareaAsistente[] = 
 export const FuenteVariableTareaAsistenteSchema = z.enum(["scada", "unidadPresion", "correctora"]);
 export type FuenteVariableTareaAsistente = z.infer<typeof FuenteVariableTareaAsistenteSchema>;
 
+/**
+ * Campos de la correctora que se pueden seguir, con su nombre y unidad (los del perfil `NUC` de `perfil-lectura.ts`).
+ * La presión de la correctora es ABSOLUTA: no se compara con una presión relativa de SCADA o NSP.
+ */
+export const CAMPOS_CORRECTORA_TAREA_ASISTENTE: Record<string, { nombre: string; unidad: string }> = {
+  presion: { nombre: "Presión absoluta", unidad: "bar" },
+  temperatura: { nombre: "Temperatura", unidad: "°C" },
+  caudalPromedio: { nombre: "Caudal promedio", unidad: "m³/h" },
+  caudalPico: { nombre: "Caudal pico", unidad: "m³/h" },
+};
+
 /** Lo que manda quien crea la tarea para elegir la variable. */
 export const PedidoVariableTareaAsistenteSchema = z.object({
   fuente: FuenteVariableTareaAsistenteSchema,
@@ -187,6 +198,11 @@ export function problemasTareaAsistente(t: ReglaTarea): string[] {
   debe("umbral", t.tipo === "umbral");
   debe("reporte", t.tipo === "reporte");
   debe("consulta", t.tipo === "consulta");
+  const v = t.variable as { fuente?: string; campo?: string } | undefined;
+  if (v?.fuente === "correctora" && !(v.campo && v.campo in CAMPOS_CORRECTORA_TAREA_ASISTENTE)) {
+    p.push(`correctora requiere campo: ${Object.keys(CAMPOS_CORRECTORA_TAREA_ASISTENTE).join(", ")}`);
+  }
+  if (v && v.fuente !== "correctora" && v.campo !== undefined) p.push(`${v.fuente} no lleva campo`);
   const u = t.umbral;
   if (u) {
     if (u.operador === "fueraDe" && !(u.valor2 !== undefined && u.valor2 > u.valor)) {
@@ -315,4 +331,62 @@ export function describirTareaAsistente(
     return `Responder «${c.pregunta}» ${cuando}, ${hasta}`;
   }
   return `Tarea ${t.tipo}, ${hasta}`;
+}
+
+/** El último valor de una variable, con la hora del dato. */
+export interface IValorVariableTareaAsistente {
+  valor: number;
+  /** ISO. */
+  fechaDato: string;
+  unidad?: string;
+}
+
+const aNumero = (v: unknown): number | undefined => {
+  const n = typeof v === "string" && v.trim() !== "" ? Number(v) : v;
+  return typeof n === "number" && Number.isFinite(n) ? n : undefined;
+};
+
+/** El Mongo tiene timestamps como fecha, string ISO o milisegundos. */
+const aIso = (t: unknown): string | undefined => {
+  const d = t instanceof Date ? t : typeof t === "number" || typeof t === "string" ? new Date(t) : undefined;
+  return d && Number.isFinite(d.getTime()) ? d.toISOString() : undefined;
+};
+
+/**
+ * Lee el último valor del documento de la fuente (el de gas-cache-api en Redis o el de gas-datos, con la misma forma):
+ * - `scada`: `ultimoRegistro.valores.{valorActual, timestamp}`, unidad la del SCADA.
+ * - `unidadPresion`: `ultimoRegistro.valores.{presion, unidad, timestamp}`.
+ * - `correctora`: `ultimoRegistro.{<campo>, timestamp}`, unidad la del catálogo.
+ *
+ * `undefined` si no hay valor numérico con hora: la tarea no inventa un dato.
+ */
+export function ultimoValorTareaAsistente(
+  variable: Pick<IVariableTareaAsistente, "fuente" | "campo">,
+  doc: unknown,
+): IValorVariableTareaAsistente | undefined {
+  const d = (doc ?? {}) as { unidad?: unknown; ultimoRegistro?: Record<string, unknown> };
+  const ur = d.ultimoRegistro;
+  if (!ur || typeof ur !== "object") return undefined;
+  const valores = (ur.valores ?? {}) as Record<string, unknown>;
+  let valor: number | undefined;
+  let ts: unknown;
+  let unidad: string | undefined;
+  if (variable.fuente === "scada") {
+    valor = aNumero(valores.valorActual);
+    ts = valores.timestamp ?? ur.timestamp;
+    unidad = typeof d.unidad === "string" && d.unidad ? d.unidad : undefined;
+  } else if (variable.fuente === "unidadPresion") {
+    valor = aNumero(valores.presion);
+    ts = valores.timestamp ?? ur.timestamp;
+    unidad = typeof valores.unidad === "string" && valores.unidad ? valores.unidad : undefined;
+  } else {
+    const campo = variable.campo ?? "";
+    if (!(campo in CAMPOS_CORRECTORA_TAREA_ASISTENTE)) return undefined;
+    valor = aNumero(ur[campo]);
+    ts = ur.timestamp;
+    unidad = CAMPOS_CORRECTORA_TAREA_ASISTENTE[campo].unidad;
+  }
+  const fechaDato = aIso(ts);
+  if (valor === undefined || !fechaDato) return undefined;
+  return { valor, fechaDato, ...(unidad && { unidad }) };
 }
