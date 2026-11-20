@@ -13,7 +13,12 @@
  */
 
 import { z } from "zod";
-import { CanalAsistenteSchema } from "./consulta-asistente";
+
+// Desde dónde se preguntó: el chat de la web o la app del teléfono. Fuera de la web el asistente responde con otro
+// formato y otras herramientas, así que para revisar una respuesta hay que saber de cuál vino. Vive acá y no en
+// consulta-asistente para que bloque-asistente pueda usar este archivo sin un import circular.
+export const CanalAsistenteSchema = z.enum(["web", "android", "ios"]);
+export type CanalAsistente = z.infer<typeof CanalAsistenteSchema>;
 
 /** Tope de tareas por usuario; cuentan las `activa` y las `pausada`. */
 export const MAX_TAREAS_ASISTENTE_POR_USUARIO = 10;
@@ -219,23 +224,29 @@ export function problemasTareaAsistente(t: ReglaTarea): string[] {
   return p;
 }
 
+const reglasPorTipo = (t: ReglaTarea, ctx: z.RefinementCtx) => {
+  for (const message of problemasTareaAsistente(t)) ctx.addIssue({ code: "custom", message });
+};
+
+/** Qué hace la tarea y hasta cuándo: lo que propone el asistente en la tarjeta de la charla. */
+const ReglaPedidoTareaAsistenteBase = z.object({
+  tipo: TipoTareaAsistenteSchema,
+  variable: PedidoVariableTareaAsistenteSchema.optional(),
+  umbral: UmbralTareaAsistenteSchema.optional(),
+  reporte: ReporteTareaAsistenteSchema.optional(),
+  consulta: ConsultaTareaAsistenteSchema.optional(),
+  /** ISO. Empieza al crearla; gas-api-cliente controla la vigencia máxima. */
+  hasta: z.iso.datetime({ offset: true }),
+});
+export const ReglaPedidoTareaAsistenteSchema = ReglaPedidoTareaAsistenteBase.superRefine(reglasPorTipo);
+export type IReglaPedidoTareaAsistente = z.input<typeof ReglaPedidoTareaAsistenteSchema>;
+
 /** Lo que manda el front (o la tarjeta de la charla) al crear. El resto lo completa gas-api-cliente. */
-export const PedidoTareaAsistenteSchema = z
-  .object({
-    tipo: TipoTareaAsistenteSchema,
-    variable: PedidoVariableTareaAsistenteSchema.optional(),
-    umbral: UmbralTareaAsistenteSchema.optional(),
-    reporte: ReporteTareaAsistenteSchema.optional(),
-    consulta: ConsultaTareaAsistenteSchema.optional(),
-    /** ISO. Empieza al crearla; gas-api-cliente controla la vigencia máxima. */
-    hasta: z.iso.datetime({ offset: true }),
-    /** La charla donde se propuso; ausente desde "Mis tareas" (se genera una). */
-    idConversacion: z.string().min(1).optional(),
-    origen: OrigenTareaAsistenteSchema,
-  })
-  .superRefine((t, ctx) => {
-    for (const message of problemasTareaAsistente(t)) ctx.addIssue({ code: "custom", message });
-  });
+export const PedidoTareaAsistenteSchema = ReglaPedidoTareaAsistenteBase.extend({
+  /** La charla donde se propuso; ausente desde "Mis tareas" (se genera una). */
+  idConversacion: z.string().min(1).optional(),
+  origen: OrigenTareaAsistenteSchema,
+}).superRefine(reglasPorTipo);
 export type IPedidoTareaAsistente = z.input<typeof PedidoTareaAsistenteSchema>;
 
 /** `hasta` posterior a `desde` y dentro de la vigencia máxima. */

@@ -20,17 +20,35 @@ const seguimiento = base("seguimiento", { idPunto: "p1", modo: "vivo", cadenciaE
 const puntos = base("puntos", { filtro: { estados: ["Alerta"], divisiones: ["Presión"] }, orden: "-fechaUltimoReporte" });
 
 const mapa = base("mapa", { idsPunto: ["p1", "p2"], centro: "p1", radioKm: 5 });
+const tarea = base("tarea", {
+  pedido: {
+    tipo: "umbral",
+    variable: { fuente: "scada", id: "67dd567d194433230a22381d" },
+    umbral: { operador: "mayor", valor: 10, repetir: "unaVez" },
+    hasta: "2026-11-21T03:00:00.000Z",
+  },
+  descripcion: "Avisar si «X · Presión» supera 10 bar (una vez), hasta el 21/11 00:00",
+  ultimoDato: { valor: 14.5, unidad: "bar", fechaDato: "2026-11-20T16:00:00.000Z" },
+});
 
 const ok = (b) => m.BloqueAsistenteSchema.safeParse(b).success;
 
 test("los cinco tipos válidos pasan y el tipo discrimina", () => {
-  for (const b of [valor, serie, registros, seguimiento, puntos, mapa]) {
+  for (const b of [valor, serie, registros, seguimiento, puntos, mapa, tarea]) {
     const r = m.BloqueAsistenteSchema.safeParse(b);
     assert.equal(r.success, true, `${b.tipo}: ${JSON.stringify(r.error?.issues)}`);
     assert.equal(r.data.tipo, b.tipo);
   }
-  assert.deepEqual(m.TIPOS_BLOQUE_ASISTENTE, ["valor", "serie", "registros", "seguimiento", "puntos", "mapa"]);
+  assert.deepEqual(m.TIPOS_BLOQUE_ASISTENTE, ["valor", "serie", "registros", "seguimiento", "puntos", "mapa", "tarea"]);
   assert.deepEqual(m.BloqueAsistenteSchema.options.map((o) => o.shape.tipo.value), m.TIPOS_BLOQUE_ASISTENTE);
+});
+
+test("tarea: el pedido cumple las reglas por tipo y no lleva origen ni conversación", () => {
+  assert.equal(ok({ ...tarea, pedido: { ...tarea.pedido, umbral: undefined } }), false);
+  assert.equal(ok({ ...tarea, pedido: { ...tarea.pedido, hasta: "mañana" } }), false);
+  const r = m.BloqueAsistenteSchema.safeParse({ ...tarea, pedido: { ...tarea.pedido, origen: { canal: "web" } } });
+  assert.equal(r.success, true);
+  assert.equal(r.data.pedido.origen, undefined);
 });
 
 test("tipo desconocido o campos de otro tipo: rechazado", () => {

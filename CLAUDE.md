@@ -194,6 +194,15 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-20 - Bloque `tarea`: la propuesta de una tarea en la charla (2.45.0)
+
+- `BloqueTareaSchema` (`tipo: "tarea"`) en `BloqueAsistenteSchema` y `TIPOS_BLOQUE_ASISTENTE`: `pedido` (la regla,
+  sin `origen` ni `idConversacion`, que pone el front al confirmar), `descripcion` (de `describirTareaAsistente`) y
+  `ultimoDato`. No ejecuta nada: el front muestra "Confirmar" y recién ahí hace el `POST /tareas-asistente`.
+- `ReglaPedidoTareaAsistenteSchema`: el pedido sin `origen` ni `idConversacion`, con las mismas reglas por tipo.
+- `CanalAsistenteSchema` pasa de `consulta-asistente.ts` a `tarea-asistente.ts` (mismo export desde el índice), para que
+  `bloque-asistente.ts` use `tarea-asistente.ts` sin import circular.
+
 ### 2026-11-20 - Tareas programadas del asistente (`tarea-asistente.ts`, `consulta-asistente.ts`, cliente y usuario)
 
 Plan: gas-insideht-doc `docs/superpowers/plans/2026-11-02-tareas-programadas.md` (§ 4). Aditivo: todavía no lo
