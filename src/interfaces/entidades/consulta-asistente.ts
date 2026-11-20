@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { BloquesRespuestaSchema } from "./bloque-asistente";
+import { CanalAsistenteSchema } from "./tarea-asistente";
 
 export const ResultadoConsultaAsistenteSchema = z.enum(["ok", "error"]);
 export type ResultadoConsultaAsistente = z.infer<typeof ResultadoConsultaAsistenteSchema>;
@@ -63,11 +64,6 @@ export const PedidoValoracionAsistenteSchema = z
     path: ["comentario"],
   });
 export type IPedidoValoracionAsistente = z.input<typeof PedidoValoracionAsistenteSchema>;
-
-// Desde dónde se preguntó: el chat de la web o la app del teléfono. Fuera de la web el asistente responde con otro
-// formato y otras herramientas, así que para revisar una respuesta hay que saber de cuál vino.
-export const CanalAsistenteSchema = z.enum(["web", "android", "ios"]);
-export type CanalAsistente = z.infer<typeof CanalAsistenteSchema>;
 
 // Quién originó la consulta: el usuario preguntando, o una tarea programada (un aviso o una corrida de `consulta`).
 export const OrigenConsultaAsistenteSchema = z.enum(["usuario", "tarea"]);

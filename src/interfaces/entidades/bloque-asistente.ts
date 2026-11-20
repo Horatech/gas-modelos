@@ -3,6 +3,7 @@ import { EstadoCorrectoraSchema } from "./estado";
 import { MAX_SERIES_GRAFICO } from "./grafico-personalizado";
 import { parseCanalRef } from "./perfil-lectura";
 import { DivisionSchema } from "../tenant/usuario/permiso";
+import { ReglaPedidoTareaAsistenteSchema } from "./tarea-asistente";
 
 /**
  * Bloques del chat del asistente: lo que el sistema dibuja entre el texto del agente (un valor, una serie, una tabla
@@ -130,6 +131,20 @@ export const BloqueMapaSchema = BloqueBaseSchema.extend({
 });
 export type IBloqueMapa = z.infer<typeof BloqueMapaSchema>;
 
+/**
+ * La propuesta de una tarea programada (herramienta `proponer_tarea`). No ejecuta nada: el front la muestra con
+ * "Confirmar" y recién ahí la crea con `pedido` (gas-api-cliente revalida alcance y topes). `descripcion` la arma
+ * `describirTareaAsistente`, así lo que se confirma es lo que se ejecuta.
+ */
+export const BloqueTareaSchema = BloqueBaseSchema.extend({
+  tipo: z.literal("tarea"),
+  pedido: ReglaPedidoTareaAsistenteSchema,
+  descripcion: z.string().min(1),
+  /** El último dato de la variable al proponer, con su hora. Ausente si no tenía. */
+  ultimoDato: z.object({ valor: z.number(), fechaDato: z.string(), unidad: z.string().optional() }).optional(),
+});
+export type IBloqueTarea = z.infer<typeof BloqueTareaSchema>;
+
 export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloqueValorSchema,
   BloqueSerieSchema,
@@ -137,6 +152,7 @@ export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloqueSeguimientoSchema,
   BloquePuntosSchema,
   BloqueMapaSchema,
+  BloqueTareaSchema,
 ]);
 export type IBloqueAsistente = z.infer<typeof BloqueAsistenteSchema>;
 export type TipoBloqueAsistente = IBloqueAsistente["tipo"];
@@ -148,6 +164,7 @@ export const TIPOS_BLOQUE_ASISTENTE: TipoBloqueAsistente[] = [
   "seguimiento",
   "puntos",
   "mapa",
+  "tarea",
 ];
 
 /** Marcador con el que el texto de la respuesta ubica un bloque. */
