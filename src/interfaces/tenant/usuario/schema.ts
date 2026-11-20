@@ -14,6 +14,10 @@ export const UsuarioSchema = z.object({
   activo: z.boolean().optional(),
   /** Usa el asistente de ayuda. Hace falta además `config.usaLlm` del cliente. */
   usaLlm: z.boolean().optional(),
+  /** Intervalo mínimo de sus tareas `consulta`, en minutos; reemplaza al del cliente (`config.asistente`). */
+  intervaloConsultaMin: z.number().int().min(1).optional(),
+  /** Ve, pausa y cancela las tareas programadas de todos los usuarios de su cliente. */
+  verTareasCliente: z.boolean().optional(),
   /** Módulos habilitados para el usuario, además del flag del cliente. */
   modulos: ModulosUsuarioSchema.optional(),
   fechaCreacion: z.string().optional(),

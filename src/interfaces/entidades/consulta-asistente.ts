@@ -69,6 +69,31 @@ export type IPedidoValoracionAsistente = z.input<typeof PedidoValoracionAsistent
 export const CanalAsistenteSchema = z.enum(["web", "android", "ios"]);
 export type CanalAsistente = z.infer<typeof CanalAsistenteSchema>;
 
+// Quién originó la consulta: el usuario preguntando, o una tarea programada (un aviso o una corrida de `consulta`).
+export const OrigenConsultaAsistenteSchema = z.enum(["usuario", "tarea"]);
+export type OrigenConsultaAsistente = z.infer<typeof OrigenConsultaAsistenteSchema>;
+
+// Qué pasó en la tarea: `cruce` / `restablecido` (umbral), `reporte`, `informe` (corrida de consulta), `vencio`, `error`.
+export const EventoTareaAsistenteSchema = z.enum(["cruce", "restablecido", "reporte", "informe", "vencio", "error"]);
+export type EventoTareaAsistente = z.infer<typeof EventoTareaAsistenteSchema>;
+
+export const ValorTareaConsultaAsistenteSchema = z.object({
+  valor: z.number(),
+  unidad: z.string().optional(),
+  // La hora del dato, no la de la evaluación.
+  fechaDato: z.string(),
+});
+export type IValorTareaConsultaAsistente = z.infer<typeof ValorTareaConsultaAsistenteSchema>;
+
+// Un aviso de tarea guardado como consulta: es el mensaje en la charla y el registro de resultados de la tarea (no hay
+// colección aparte de ejecuciones).
+export const TareaConsultaAsistenteSchema = z.object({
+  idTarea: z.string(),
+  evento: EventoTareaAsistenteSchema,
+  valores: z.array(ValorTareaConsultaAsistenteSchema).optional(),
+});
+export type ITareaConsultaAsistente = z.infer<typeof TareaConsultaAsistenteSchema>;
+
 // Una pregunta al asistente de ayuda: qué se preguntó, qué respondió y cuánto consumió.
 // El costo no se guarda: se calcula con los tokens y el precio del modelo, que cambia.
 export const ConsultaAsistenteSchema = z.object({
@@ -80,6 +105,10 @@ export const ConsultaAsistenteSchema = z.object({
   fecha: z.string().optional(),
   // Ausente en las consultas anteriores a este campo.
   canal: CanalAsistenteSchema.optional(),
+  // Ausente = `usuario`: las consultas anteriores a las tareas.
+  origen: OrigenConsultaAsistenteSchema.optional(),
+  // Sólo con `origen: "tarea"`. `pregunta` lleva la descripción de la tarea y `respuesta` el texto del aviso.
+  tarea: TareaConsultaAsistenteSchema.optional(),
   pregunta: z.string(),
   respuesta: z.string().optional(),
   fuentes: z.array(FuenteAsistenteSchema).optional(),

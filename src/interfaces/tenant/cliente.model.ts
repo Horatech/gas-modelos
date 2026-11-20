@@ -374,6 +374,11 @@ export const AsistenteClienteSchema = z.object({
   proveedorIa: z.enum(["claude"]).optional(),
   /** Key de IA del cliente. Nunca sale en una respuesta ni en un log. */
   apiKey: z.string().optional(),
+  /**
+   * Intervalo mínimo, en minutos, entre dos corridas de una tarea `consulta` del asistente. El del usuario lo
+   * reemplaza; sin ninguno, `INTERVALO_CONSULTA_ASISTENTE_DEFECTO_MIN`.
+   */
+  intervaloConsultaMin: z.number().int().min(1).optional(),
 });
 export type IAsistenteCliente = z.infer<typeof AsistenteClienteSchema>;
 
