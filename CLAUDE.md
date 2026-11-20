@@ -194,6 +194,30 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-20 - Tareas programadas del asistente (`tarea-asistente.ts`, `consulta-asistente.ts`, cliente y usuario)
+
+Plan: gas-insideht-doc `docs/superpowers/plans/2026-11-02-tareas-programadas.md` (§ 4). Aditivo: todavía no lo
+consume nadie.
+
+- `TareaAsistenteSchema` (`ITareaAsistente`): tipo `umbral` | `reporte` | `consulta`, estado (`activa`, `pausada`,
+  `cumplida`, `vencida`, `cancelada`, `error`), `desde`/`hasta`, la variable (`scada`, `unidadPresion` o `correctora`),
+  la regla del tipo, `idConversacion` (la charla donde caen los avisos), `origen` y lo del evaluador
+  (`proximaEjecucion`, `umbralCumplido`, `ultimoDisparo`, `ultimaEvaluacion`). Sin refine, para poder hacer `omit`:
+  las reglas por tipo están en `problemasTareaAsistente`.
+- `PedidoTareaAsistenteSchema`: lo que manda el front al crear (con las reglas por tipo). `UpdateTareaAsistenteSchema`:
+  sólo estado y lo del evaluador; la regla no se edita.
+- Funciones compartidas: `describirTareaAsistente` (el texto que ve el usuario lo arma el código, nunca el LLM; hora
+  de Argentina y coma decimal), `vigenciaTareaAsistenteValida` (≤ `MAX_VIGENCIA_TAREA_ASISTENTE_HORAS`, 48),
+  `menorSeparacionHorasMin`, `intervaloConsultaEfectivoMin` (usuario → cliente → 60) y `consultaRespetaIntervalo`.
+  Tope: `MAX_TAREAS_ASISTENTE_POR_USUARIO` (10, cuentan `ESTADOS_TAREA_ASISTENTE_VIGENTE`).
+- `IConsultaAsistente.origen` (`usuario` | `tarea`; ausente = `usuario`) y `tarea` (`idTarea`, `evento`, `valores`):
+  cada aviso de una tarea queda como consulta de su charla y es el registro de resultados.
+- `AsistenteClienteSchema.intervaloConsultaMin`; `UsuarioSchema.intervaloConsultaMin` y `verTareasCliente`.
+
+⚠️ gas-datos al subir el pin: colección nueva `tareasAsistente`; `consultasAsistente` necesita `@Prop` de `origen`
+y `tarea` (y los inputs del POST tienen que aceptarlos, `forbidNonWhitelisted`); `usuarios` necesita los dos campos
+nuevos.
+
 ### 2026-11-19 - Límites de linepack: vuelven HI y HIHI por nodo (`umbral-linepack.ts`)
 
 Spec: gas-insideht-doc `docs/superpowers/specs/2026-11-19-linepack-limites-nodo-segmentos-design.md` (§ 6.1,
