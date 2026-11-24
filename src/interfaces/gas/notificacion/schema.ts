@@ -13,6 +13,7 @@ export const NotificacionSchema = z.object({
   // a partir de una alerta; ausentes en las viejas.
   tipoAlerta: z.string().optional(),
   idPuntoMedicion: z.string().optional(),
+  idAlerta: z.string().optional(),
   idCliente: z.string().optional(),
   origen: z.string().optional(),
   reglas: z.array(ReglaAvisoSchema).optional(),
