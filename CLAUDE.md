@@ -194,6 +194,13 @@ export type TipoEntradaDigital = "CONTADOR" | "FLAG" | "ALERTA" | "EN_DESUSO";
 
 ## Cambios recientes
 
+### 2026-11-24 - Próxima corrida de una tarea `consulta` (2.46.0)
+
+- `proximaEjecucionConsultaTareaAsistente(consulta, despuesDe, anterior?)`: con `cadaMin`, la primera ya y después de a
+  `cadaMin` desde la anterior, sin ráfaga si se atrasó; con `horas` ("HH:mm" de Argentina), la primera de esas horas
+  después de `despuesDe`. Argentina en UTC−3 fijo (sin horario de verano desde 2009). La usan gas-api-cliente al
+  crear y gas-cron después de cada corrida.
+
 ### 2026-11-20 - Bloque `tarea`: la propuesta de una tarea en la charla (2.45.0)
 
 - `BloqueTareaSchema` (`tipo: "tarea"`) en `BloqueAsistenteSchema` y `TIPOS_BLOQUE_ASISTENTE`: `pedido` (la regla,
