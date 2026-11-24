@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TipoAlertaEnvioSchema } from "./envio-sms";
+import { RegistroAvisoSchema } from "./aviso-enviado";
 
 // Contrato de POST gas-notificaciones/notificaciones. El despachador manda datos;
 // gas-notificaciones arma título y cuerpo, escribe la campanita y manda FCM.
@@ -32,6 +33,7 @@ export const EnvioPushSchema = z
     alerta: AlertaPushSchema.optional(),
     aviso: AvisoPushSchema.optional(),
     data: z.record(z.string(), z.string()).optional(),
+    registro: RegistroAvisoSchema.optional(),
   })
   .refine((e) => (e.tipo === "alerta" ? !!e.alerta : !!e.aviso), {
     message: "tipo 'alerta' requiere `alerta`; tipo 'aviso' requiere `aviso`",

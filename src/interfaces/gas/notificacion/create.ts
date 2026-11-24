@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ReglaAvisoSchema } from "../../entidades/aviso-enviado";
 
 // Definido explícito (no derivado de .omit().required()): ver el comentario
 // en gas/auditoria/create.ts — .required() no sobrevive portablemente al
@@ -10,5 +11,9 @@ export const CreateNotificacionSchema = z.object({
   tipoAlerta: z.string().optional(),
   idPuntoMedicion: z.string().optional(),
   idAlerta: z.string().optional(),
+  idCliente: z.string().optional(),
+  origen: z.string().optional(),
+  reglas: z.array(ReglaAvisoSchema).optional(),
+  idTarea: z.string().optional(),
 });
 export type ICreateNotificacion = z.infer<typeof CreateNotificacionSchema>;

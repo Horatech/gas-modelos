@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ReglaAvisoSchema } from "../../entidades/aviso-enviado";
 
 export const NotificacionSchema = z.object({
   _id: z.string().optional(),
@@ -13,5 +14,11 @@ export const NotificacionSchema = z.object({
   tipoAlerta: z.string().optional(),
   idPuntoMedicion: z.string().optional(),
   idAlerta: z.string().optional(),
+  idCliente: z.string().optional(),
+  origen: z.string().optional(),
+  reglas: z.array(ReglaAvisoSchema).optional(),
+  idTarea: z.string().optional(),
+  eliminada: z.boolean().optional(),
+  fechaEliminada: z.string().optional(),
 });
 export type INotificacion = z.infer<typeof NotificacionSchema>;

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ConfigTwilioSchema } from "../tenant/cliente.model";
+import { RegistroAvisoSchema } from "./aviso-enviado";
 
 /**
  * Los templates de mensajes de Twilio son mensajes predefinidos que se pueden
@@ -230,6 +231,7 @@ export const MensajeTwilioSchema = z.object({
   usuario: z.string().optional(),
   twilio: ConfigTwilioSchema.optional(),
   extra: z.record(z.string(), z.any()).optional(),
+  registro: RegistroAvisoSchema.optional(),
 });
 export type IMensajeTwilio = z.infer<typeof MensajeTwilioSchema>;
 
@@ -241,6 +243,7 @@ export const SMSTwilioSchema = z.object({
   usuario: z.string().optional(),
   twilio: ConfigTwilioSchema.optional(),
   extra: z.record(z.string(), z.any()).optional(),
+  registro: RegistroAvisoSchema.optional(),
 });
 export type ISMSTwilio = z.infer<typeof SMSTwilioSchema>;
 
@@ -251,6 +254,7 @@ export const LlamadaTwilioSchema = z.object({
   usuario: z.string().optional(),
   twilio: ConfigTwilioSchema.optional(),
   extra: z.record(z.string(), z.any()).optional(),
+  registro: RegistroAvisoSchema.optional(),
 });
 export type ILlamadaTwilio = z.infer<typeof LlamadaTwilioSchema>;
 
@@ -345,5 +349,6 @@ export const EmailTwilioSchema = z.object({
   usuario: z.string().optional(),
   twilio: ConfigTwilioSchema.optional(),
   extra: z.record(z.string(), z.any()).optional(),
+  registro: RegistroAvisoSchema.optional(),
 });
 export type IEmailTwilio = z.infer<typeof EmailTwilioSchema>;
