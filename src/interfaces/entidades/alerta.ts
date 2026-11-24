@@ -209,7 +209,7 @@ export interface IAlerta {
 }
 
 ////// CREATE
-export const CreateAlertaSchema = AlertaSchema.omit({
+const CreateAlertaBaseSchema = AlertaSchema.omit({
   _id: true,
   cliente: true,
   gatewayLorawan: true,
@@ -224,8 +224,11 @@ export const CreateAlertaSchema = AlertaSchema.omit({
   medidorResidencialAgua: true,
   medidorElectrico: true,
 });
+// `_id` opcional: gas-notificaciones lo pasa para ligar el aviso a la alerta.
+export const CreateAlertaSchema = CreateAlertaBaseSchema.extend({
+  _id: z.string().optional(),
+});
 type OmitirCreate =
-  | "_id"
   | "cliente"
   | "gatewayLorawan"
   | "unidadNegocio"
@@ -241,7 +244,7 @@ type OmitirCreate =
 export interface ICreateAlerta extends Omit<Partial<IAlerta>, OmitirCreate> {}
 
 ////// UPDATE
-export const UpdateAlertaSchema = CreateAlertaSchema;
+export const UpdateAlertaSchema = CreateAlertaBaseSchema;
 type OmitirUpdate =
   | "_id"
   | "cliente"

@@ -28,6 +28,7 @@ export * from "./cuenta-cliente";
 export * from "./dispositivo";
 export * from "./envio-sms";
 export * from "./envio-push";
+export * from "./aviso-enviado";
 export * from "./estado";
 export * from "./estado-tailnet";
 export * from "./estado-onpremise";
