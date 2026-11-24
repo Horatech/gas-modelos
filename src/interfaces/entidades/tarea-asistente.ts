@@ -285,6 +285,40 @@ export function consultaRespetaIntervalo(c: IConsultaTareaAsistente, minimoMin: 
 
 const ZONA_AR = "America/Argentina/Buenos_Aires";
 
+// ponytail: Argentina está en UTC−3 fijo desde 2009 (sin horario de verano). Si volviera, pasar a Intl con ZONA_AR.
+const OFFSET_AR_MS = -3 * 3_600_000;
+
+/**
+ * Cuándo toca la próxima corrida de una `consulta`, en ISO.
+ * - `cadaMin`: sin `anterior`, ya (la primera sale en la vuelta siguiente); con `anterior`, de a `cadaMin` desde ahí,
+ *   la primera que queda después de `despuesDe` (una corrida atrasada no se repite en ráfaga).
+ * - `horas` ("HH:mm", hora de Argentina): la primera de esas horas después de `despuesDe`.
+ */
+export function proximaEjecucionConsultaTareaAsistente(
+  c: IConsultaTareaAsistente,
+  despuesDe: Date,
+  anterior?: string,
+): string {
+  if (c.cadaMin !== undefined) {
+    if (!anterior) return despuesDe.toISOString();
+    const paso = c.cadaMin * 60_000;
+    let t = Date.parse(anterior) + paso;
+    if (t <= despuesDe.getTime()) t += Math.ceil((despuesDe.getTime() - t + 1) / paso) * paso;
+    return new Date(t).toISOString();
+  }
+  // Medianoche de Argentina del día de `despuesDe`, en UTC; se prueban ese día y el siguiente.
+  const local = despuesDe.getTime() + OFFSET_AR_MS;
+  const dia0 = local - (local % 86_400_000) - OFFSET_AR_MS;
+  const minutos = [...new Set(c.horas ?? [])].map(minutosDelDia).sort((a, b) => a - b);
+  for (const dia of [dia0, dia0 + 86_400_000]) {
+    for (const m of minutos) {
+      const t = dia + m * 60_000;
+      if (t > despuesDe.getTime()) return new Date(t).toISOString();
+    }
+  }
+  throw new Error("consulta sin cadaMin ni horas");
+}
+
 /** "21/11 18:00", hora de Argentina. */
 export function fechaCortaTareaAsistente(iso: string): string {
   const f = new Intl.DateTimeFormat("es-AR", {

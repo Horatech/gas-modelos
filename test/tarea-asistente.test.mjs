@@ -139,3 +139,17 @@ test("último valor por fuente, con la hora del dato", () => {
   assert.equal(m.ultimoValorTareaAsistente({ fuente: "correctora", campo: "presion" }, {}), undefined);
   assert.equal(m.ultimoValorTareaAsistente({ fuente: "scada" }, null), undefined);
 });
+
+test("próxima corrida de una consulta: cadaMin desde la anterior sin ráfaga, horas en hora de Argentina", () => {
+  const prox = m.proximaEjecucionConsultaTareaAsistente;
+  const ahora = new Date("2026-11-24T13:10:00.000Z"); // 10:10 en Argentina
+  assert.equal(prox({ pregunta: "x", cadaMin: 60 }, ahora), ahora.toISOString());
+  assert.equal(prox({ pregunta: "x", cadaMin: 60 }, ahora, "2026-11-24T12:30:00.000Z"), "2026-11-24T13:30:00.000Z");
+  // Atrasada tres horas: la siguiente en la grilla, no tres seguidas.
+  assert.equal(prox({ pregunta: "x", cadaMin: 60 }, ahora, "2026-11-24T09:30:00.000Z"), "2026-11-24T13:30:00.000Z");
+  // 08:00 y 18:00 de Argentina = 11:00 y 21:00 UTC.
+  assert.equal(prox({ pregunta: "x", horas: ["18:00", "08:00"] }, ahora), "2026-11-24T21:00:00.000Z");
+  assert.equal(prox({ pregunta: "x", horas: ["08:00"] }, ahora), "2026-11-25T11:00:00.000Z");
+  // A las 23:30 de Argentina (02:30 UTC del día siguiente), la de las 08:00 es la de esa mañana.
+  assert.equal(prox({ pregunta: "x", horas: ["08:00"] }, new Date("2026-11-25T02:30:00.000Z")), "2026-11-25T11:00:00.000Z");
+});
