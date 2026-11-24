@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RecorridoVistoSchema } from "../../entidades/recorrido-asistente";
 import { ClienteSchema } from "../cliente.model";
 import { DatosPersonalesSchema } from "./create";
 import { ModulosUsuarioSchema } from "./modulos";
@@ -18,6 +19,8 @@ export const UsuarioSchema = z.object({
   intervaloConsultaMin: z.number().int().min(1).optional(),
   /** Ve, pausa y cancela las tareas programadas de todos los usuarios de su cliente. */
   verTareasCliente: z.boolean().optional(),
+  /** Cuándo vio el recorrido del asistente, por canal. Sin el campo, no lo vio. */
+  recorridoAsistente: RecorridoVistoSchema.optional(),
   /** Módulos habilitados para el usuario, además del flag del cliente. */
   modulos: ModulosUsuarioSchema.optional(),
   fechaCreacion: z.string().optional(),

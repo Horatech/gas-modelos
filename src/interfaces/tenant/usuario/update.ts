@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RecorridoVistoSchema } from "../../entidades/recorrido-asistente";
 import { DatosPersonalesSchema } from "./create";
 import { NotificacionesSchema } from "./notificacion";
 import { ModulosUsuarioSchema } from "./modulos";
@@ -17,6 +18,8 @@ export const UpdateUsuarioSchema = z.object({
   datosPersonales: DatosPersonalesSchema.optional(),
   permisos: z.array(PermisoSchema).optional(),
   modulos: ModulosUsuarioSchema.optional(),
+  /** Cuándo vio el recorrido del asistente, por canal. Sin el campo, no lo vio. */
+  recorridoAsistente: RecorridoVistoSchema.optional(),
   notificaciones: z.array(NotificacionesSchema).optional(),
 });
 export type IUpdateUsuario = z.infer<typeof UpdateUsuarioSchema>;

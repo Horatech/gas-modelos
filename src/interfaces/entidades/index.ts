@@ -87,6 +87,7 @@ export * from "./serie-linepack";
 export * from "./bloque-asistente";
 export * from "./consulta-asistente";
 export * from "./tarea-asistente";
+export * from "./recorrido-asistente";
 export * from "./gpio-config-nuc-auditoria";
 export * from "./indicadores-historicos";
 export * from "./gateway-lorawan";
