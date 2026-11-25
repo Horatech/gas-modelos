@@ -236,6 +236,19 @@ consume nadie.
 y `tarea` (y los inputs del POST tienen que aceptarlos, `forbidNonWhitelisted`); `usuarios` necesita los dos campos
 nuevos.
 
+### 2026-11-25 - Límites de linepack por nodo `ACTIVO.SEÑAL` y juego por defecto (`umbral-linepack.ts`, 2.49.0)
+
+Plan: gas-insideht-doc `docs/superpowers/plans/2026-11-25-linepack-tercera-vuelta.md` (T2 y T3, decisiones 34, 36 y
+37). **Cambio que rompe**: gas-datos implementa la interfaz con `Exactly`, así que su modelo y sus inputs cambian al
+subir el pin.
+
+- La clave pasa a ser `nodo` (`ACTIVO.SEÑAL`, el nodo de la red de linepack) con `idCliente`; `idPuntoMedicion`
+  queda opcional, como dato del nodo. La entrada y la salida de una estación son dos nodos.
+- `porDefecto` (`DefectoUmbralLinepackSchema`): `lo`/`lolo`/`hi`/`hihi` en bar, `origen` (`csv` o `proveedor`) y
+  `fecha`. Los `lo`/`lolo`/`hi`/`hihi` de la fila son el juego propio; cada límite vale el propio si está y, si no, el
+  por defecto. Con sólo el juego por defecto, los propios y `unidad` pueden faltar.
+- `ValoresUmbralLinepackSchema` (el body del `PUT`) no cambia; un `null` ahí es "volver al valor por defecto".
+
 ### 2026-11-19 - Límites de linepack: vuelven HI y HIHI por nodo (`umbral-linepack.ts`)
 
 Spec: gas-insideht-doc `docs/superpowers/specs/2026-11-19-linepack-limites-nodo-segmentos-design.md` (§ 6.1,

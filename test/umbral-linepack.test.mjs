@@ -46,12 +46,25 @@ test("convertirPresion", () => {
   assert.equal(m.convertirPresion(10, "bar", "psi"), null);
 });
 
-test("UmbralLinepackSchema: una fila por punto de medición, omit sin romper", () => {
-  const fila = { idCliente: "c", idPuntoMedicion: "pm1", ...U({ lo: 12 }) };
+test("UmbralLinepackSchema: una fila por nodo; el punto es dato, no clave", () => {
+  const fila = { idCliente: "c", nodo: "ERP_BARILOCHE.P_ENTRADA", idPuntoMedicion: "pm1", ...U({ lo: 12 }) };
   assert.ok(m.UmbralLinepackSchema.safeParse(fila).success);
-  assert.equal(m.UmbralLinepackSchema.safeParse({ ...fila, idPuntoMedicion: undefined }).success, false);
+  assert.ok(m.UmbralLinepackSchema.safeParse({ ...fila, idPuntoMedicion: undefined }).success);
+  assert.equal(m.UmbralLinepackSchema.safeParse({ ...fila, nodo: undefined }).success, false);
+  assert.equal(m.UmbralLinepackSchema.safeParse({ ...fila, nodo: "" }).success, false);
   assert.ok(m.CreateUmbralLinepackSchema.safeParse(fila).success);
   assert.ok(m.UpdateUmbralLinepackSchema.safeParse({ lo: 3 }).success);
+});
+
+test("juego por defecto: sólo, sin propio ni unidad", () => {
+  const porDefecto = { lo: 43.16, lolo: 31.35, hi: 54.15, hihi: null, origen: "csv", fecha: "2026-11-25T12:00:00.000Z" };
+  const fila = { idCliente: "c", nodo: "ERP_BARILOCHE.P_ENTRADA", porDefecto };
+  assert.ok(m.UmbralLinepackSchema.safeParse(fila).success);
+  assert.ok(m.UmbralLinepackSchema.safeParse({ ...fila, porDefecto: null }).success);
+  assert.ok(m.UmbralLinepackSchema.safeParse({ ...fila, porDefecto: { ...porDefecto, origen: "proveedor" } }).success);
+  assert.equal(m.UmbralLinepackSchema.safeParse({ ...fila, porDefecto: { ...porDefecto, origen: "otro" } }).success, false);
+  assert.equal(m.UmbralLinepackSchema.safeParse({ ...fila, porDefecto: { ...porDefecto, fecha: undefined } }).success, false);
+  assert.equal(m.UmbralLinepackSchema.safeParse({ ...fila, porDefecto: { ...porDefecto, lo: -1 } }).success, false);
 });
 
 test("límite ausente (undefined) cuenta como null", () => {
