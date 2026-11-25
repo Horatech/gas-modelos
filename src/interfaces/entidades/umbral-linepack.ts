@@ -2,11 +2,19 @@
  * Límites de presión de un nodo de la red de linepack: mínimo operativo (LO),
  * mínimo crítico (LOLO), máximo (HI) y máximo crítico (HIHI).
  *
- * El nodo es un punto de medición: el real de un extremo medido o, sólo para la
- * limitadora, su punto virtual. Un nodo compartido por varios tramos tiene un
- * solo límite, y lo ven todos los usuarios del cliente. El límite de los demás
- * nodos virtuales no se guarda: gas-api-cliente lo calcula con la fórmula del
- * nodo sobre los límites de los nodos medidos.
+ * El nodo es el de la red de linepack, `ACTIVO.SEÑAL` (`ERP_BARILOCHE.P_ENTRADA`):
+ * la entrada y la salida de una estación son dos nodos. Se cargan los medidos y
+ * las limitadoras; el punto de medición queda como dato del nodo (ficha y
+ * enlace), no como clave. Un nodo compartido por varios tramos tiene un solo
+ * límite, y lo ven todos los usuarios del cliente. El límite de los demás nodos
+ * virtuales no se guarda: gas-api-cliente lo calcula con la fórmula del nodo
+ * sobre los límites de los nodos medidos.
+ *
+ * Cada nodo tiene dos juegos: el **por defecto** (`porDefecto`: el CSV inicial
+ * o, más adelante, lo que publique el proveedor) y el **propio**
+ * (`lo`/`lolo`/`hi`/`hihi`, lo que carga el administrador). Cada límite vale el
+ * propio si está y, si no, el por defecto. Un propio en `null` es "sin propio":
+ * vale el por defecto (volver al valor por defecto).
  *
  * Es un juego **paralelo** a los límites del iFIX y a los `limiteL`/`limiteLL`
  * de los puntos: no los lee, no los escribe y no dispara alertas. Con LO y LOLO
@@ -78,13 +86,40 @@ export type IValoresUmbralLinepack = z.infer<
   typeof ValoresUmbralLinepackSchema
 >;
 
+/** De dónde sale el juego por defecto. */
+export const OrigenDefectoLinepackSchema = z.enum(["csv", "proveedor"]);
+export type OrigenDefectoLinepack = z.infer<typeof OrigenDefectoLinepackSchema>;
+
+/** El juego por defecto de un nodo, siempre en `bar`; `null` = sin ese límite. */
+export const DefectoUmbralLinepackSchema = z.object({
+  lo: limite,
+  lolo: limite,
+  hi: limite,
+  hihi: limite,
+  origen: OrigenDefectoLinepackSchema,
+  /** Cuándo se cargó (ISO). */
+  fecha: z.string(),
+});
+export type IDefectoUmbralLinepack = z.infer<
+  typeof DefectoUmbralLinepackSchema
+>;
+
 /** Sin refine: zod 4 no deja hacer `.omit` sobre un schema refinado. */
 export const UmbralLinepackSchema = z.object({
   _id: z.string().optional(),
   idCliente: z.string(),
-  /** El nodo: el punto de medición del extremo (real, o virtual en la limitadora). */
-  idPuntoMedicion: z.string(),
-  ...valores,
+  /** El nodo de la red de linepack, `ACTIVO.SEÑAL`: la clave con `idCliente`. */
+  nodo: z.string().min(1),
+  /** El punto de medición del nodo (real, o virtual en la limitadora): dato, no clave. */
+  idPuntoMedicion: z.string().optional(),
+  /** El juego propio, en `unidad`. */
+  lo: limite.optional(),
+  lolo: limite.optional(),
+  hi: limite.optional(),
+  hihi: limite.optional(),
+  /** La unidad del juego propio (la de la señal al cargar); sin propio, puede faltar. */
+  unidad: z.string().min(1).optional(),
+  porDefecto: DefectoUmbralLinepackSchema.nullable().optional(),
   /** Quién cargó el último cambio. */
   idUsuario: z.string().optional(),
   fechaActualizacion: z.string().optional(),
