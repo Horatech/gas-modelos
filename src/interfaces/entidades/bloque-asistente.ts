@@ -2,7 +2,7 @@ import { z } from "zod";
 import { EstadoCorrectoraSchema } from "./estado";
 import { MAX_SERIES_GRAFICO } from "./grafico-personalizado";
 import { parseCanalRef } from "./perfil-lectura";
-import { DivisionSchema } from "../tenant/usuario/permiso";
+import { DivisionSchema, NivelSchema } from "../tenant/usuario/permiso";
 import { ReglaPedidoTareaAsistenteSchema } from "./tarea-asistente";
 
 /**
@@ -145,6 +145,26 @@ export const BloqueTareaSchema = BloqueBaseSchema.extend({
 });
 export type IBloqueTarea = z.infer<typeof BloqueTareaSchema>;
 
+/** Una fila del perfil de avisos (`usuario.notificaciones`): nivel + el id de ese nivel. */
+export const FilaAvisoSchema = z.object({
+  nivel: NivelSchema,
+  idUnidadNegocio: z.string().optional(),
+  idCentroOperativo: z.string().optional(),
+});
+export type FilaAviso = z.infer<typeof FilaAvisoSchema>;
+
+/**
+ * La propuesta de dejar de recibir un aviso del perfil (herramienta `proponer_quitar_aviso`). Sólo quita `codigo` de
+ * las `filas` indicadas; no agrega ni prende nada. El front la muestra con "Dejar de recibir" y recién ahí guarda.
+ */
+export const BloqueAvisoSchema = BloqueBaseSchema.extend({
+  tipo: z.literal("aviso"),
+  codigo: z.number().int().min(0).max(4),
+  filas: z.array(FilaAvisoSchema).min(1).max(20),
+  descripcion: z.string().min(1),
+});
+export type IBloqueAviso = z.infer<typeof BloqueAvisoSchema>;
+
 export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloqueValorSchema,
   BloqueSerieSchema,
@@ -153,6 +173,7 @@ export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloquePuntosSchema,
   BloqueMapaSchema,
   BloqueTareaSchema,
+  BloqueAvisoSchema,
 ]);
 export type IBloqueAsistente = z.infer<typeof BloqueAsistenteSchema>;
 export type TipoBloqueAsistente = IBloqueAsistente["tipo"];
@@ -165,6 +186,7 @@ export const TIPOS_BLOQUE_ASISTENTE: TipoBloqueAsistente[] = [
   "puntos",
   "mapa",
   "tarea",
+  "aviso",
 ];
 
 /** Marcador con el que el texto de la respuesta ubica un bloque. */
