@@ -15,6 +15,15 @@ export enum ICodigoNotificacion {
   "Cromatografía Próxima a Vencer" = 2,
 }
 
+/** Nombre de cada código del perfil (0-4), incluidos los dos que define el front. */
+export const NOMBRES_AVISO_PERFIL: Record<number, string> = {
+  0: "Correctora sin Reportar",
+  1: "Error de Comunicación con la Correctora",
+  2: "Cromatografía Próxima a Vencer",
+  3: "Fallo en Aplicación de Cromatografía",
+  4: "Medidores Residenciales - Sensor desconectado",
+};
+
 /** Ver la nota de `ICodigoNotificacion`: dato de prod, no se migra. */
 export const NotificacionesSchema = z.object({
   nivel: NivelSchema,
