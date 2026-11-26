@@ -64,8 +64,18 @@ export const AvisoEnviadoSchema = z.object({
   mensaje: z.string().optional(),
   idNotificacion: z.string().optional(),
   idExterno: z.string().optional(),
+  entrega: z.string().optional(),
+  errorEntrega: z.number().optional(),
 });
 export type IAvisoEnviado = z.infer<typeof AvisoEnviadoSchema>;
+
+// Actualizacion de entrega que devuelve el proveedor (Twilio) para un aviso.
+export const EntregaAvisoSchema = z.object({
+  idExterno: z.string(),
+  entrega: z.string(),
+  errorEntrega: z.number().optional(),
+});
+export type IEntregaAviso = z.infer<typeof EntregaAvisoSchema>;
 
 export const CreateAvisoEnviadoSchema = AvisoEnviadoSchema.omit({ _id: true });
 export type ICreateAvisoEnviado = z.infer<typeof CreateAvisoEnviadoSchema>;
