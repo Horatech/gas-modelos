@@ -4,6 +4,7 @@ import { MAX_SERIES_GRAFICO } from "./grafico-personalizado";
 import { parseCanalRef } from "./perfil-lectura";
 import { DivisionSchema, NivelSchema } from "../tenant/usuario/permiso";
 import { ReglaPedidoTareaAsistenteSchema } from "./tarea-asistente";
+import { PedidoExportacionSchema } from "./exportacion-asistente";
 
 /**
  * Bloques del chat del asistente: lo que el sistema dibuja entre el texto del agente (un valor, una serie, una tabla
@@ -165,6 +166,20 @@ export const BloqueAvisoSchema = BloqueBaseSchema.extend({
 });
 export type IBloqueAviso = z.infer<typeof BloqueAvisoSchema>;
 
+/**
+ * La propuesta de una exportación (herramienta `proponer_exportacion`). No lanza nada: el front la muestra con
+ * "Exportar" y recién ahí crea el job con `pedido` por los endpoints de siempre. `descripcion` la arma
+ * `describirExportacion`.
+ */
+export const BloqueExportacionSchema = BloqueBaseSchema.extend({
+  tipo: z.literal("exportacion"),
+  pedido: PedidoExportacionSchema,
+  descripcion: z.string().min(1),
+  cantidadPuntos: z.number().int().min(0),
+  nombreArchivo: z.string().trim().min(1),
+});
+export type IBloqueExportacion = z.infer<typeof BloqueExportacionSchema>;
+
 export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloqueValorSchema,
   BloqueSerieSchema,
@@ -174,6 +189,7 @@ export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloqueMapaSchema,
   BloqueTareaSchema,
   BloqueAvisoSchema,
+  BloqueExportacionSchema,
 ]);
 export type IBloqueAsistente = z.infer<typeof BloqueAsistenteSchema>;
 export type TipoBloqueAsistente = IBloqueAsistente["tipo"];
@@ -187,6 +203,7 @@ export const TIPOS_BLOQUE_ASISTENTE: TipoBloqueAsistente[] = [
   "mapa",
   "tarea",
   "aviso",
+  "exportacion",
 ];
 
 /** Marcador con el que el texto de la respuesta ubica un bloque. */

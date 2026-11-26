@@ -39,7 +39,7 @@ test("los cinco tipos válidos pasan y el tipo discrimina", () => {
     assert.equal(r.success, true, `${b.tipo}: ${JSON.stringify(r.error?.issues)}`);
     assert.equal(r.data.tipo, b.tipo);
   }
-  assert.deepEqual(m.TIPOS_BLOQUE_ASISTENTE, ["valor", "serie", "registros", "seguimiento", "puntos", "mapa", "tarea", "aviso"]);
+  assert.deepEqual(m.TIPOS_BLOQUE_ASISTENTE, ["valor", "serie", "registros", "seguimiento", "puntos", "mapa", "tarea", "aviso", "exportacion"]);
   assert.deepEqual(m.BloqueAsistenteSchema.options.map((o) => o.shape.tipo.value), m.TIPOS_BLOQUE_ASISTENTE);
 });
 
