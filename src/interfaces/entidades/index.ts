@@ -89,6 +89,7 @@ export * from "./bloque-asistente";
 export * from "./consulta-asistente";
 export * from "./tarea-asistente";
 export * from "./exportacion-asistente";
+export * from "./informe-campo";
 export * from "./recorrido-asistente";
 export * from "./gpio-config-nuc-auditoria";
 export * from "./indicadores-historicos";

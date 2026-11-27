@@ -5,6 +5,7 @@ import { parseCanalRef } from "./perfil-lectura";
 import { DivisionSchema, NivelSchema } from "../tenant/usuario/permiso";
 import { ReglaPedidoTareaAsistenteSchema } from "./tarea-asistente";
 import { PedidoExportacionSchema } from "./exportacion-asistente";
+import { PedidoInformeCampoSchema } from "./informe-campo";
 
 /**
  * Bloques del chat del asistente: lo que el sistema dibuja entre el texto del agente (un valor, una serie, una tabla
@@ -180,6 +181,17 @@ export const BloqueExportacionSchema = BloqueBaseSchema.extend({
 });
 export type IBloqueExportacion = z.infer<typeof BloqueExportacionSchema>;
 
+/**
+ * La propuesta de informar un SML con problemas (herramienta `proponer_informe_campo`). No guarda nada: la app la
+ * muestra con "Informar" y recién ahí hace `POST /informesCampo` con `pedido` y la foto de la charla.
+ */
+export const BloqueInformeCampoSchema = BloqueBaseSchema.extend({
+  tipo: z.literal("informe-campo"),
+  pedido: PedidoInformeCampoSchema,
+  descripcion: z.string().min(1),
+});
+export type IBloqueInformeCampo = z.infer<typeof BloqueInformeCampoSchema>;
+
 export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloqueValorSchema,
   BloqueSerieSchema,
@@ -190,6 +202,7 @@ export const BloqueAsistenteSchema = z.discriminatedUnion("tipo", [
   BloqueTareaSchema,
   BloqueAvisoSchema,
   BloqueExportacionSchema,
+  BloqueInformeCampoSchema,
 ]);
 export type IBloqueAsistente = z.infer<typeof BloqueAsistenteSchema>;
 export type TipoBloqueAsistente = IBloqueAsistente["tipo"];
@@ -204,6 +217,7 @@ export const TIPOS_BLOQUE_ASISTENTE: TipoBloqueAsistente[] = [
   "tarea",
   "aviso",
   "exportacion",
+  "informe-campo",
 ];
 
 /** Marcador con el que el texto de la respuesta ubica un bloque. */
