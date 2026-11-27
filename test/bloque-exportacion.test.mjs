@@ -43,3 +43,34 @@ test("describirExportacion", () => {
   );
   assert.deepEqual([...m.PRESETS_PADRON], ["padron-minimo", "operaciones", "comercial", "ente", "todo"]);
 });
+
+const rep = (extra) => ({
+  export: "reportes", division: "Residencial", desde: "2026-11-01T10:00:00.000Z", hasta: "2026-11-27T09:59:59.999Z",
+  agrupacionTemporal: "dia", conjunto: { idUnidadNegocio: "6".repeat(24) }, ...extra,
+});
+
+test("bloque exportacion: reportes e indicadores", () => {
+  assert.ok(m.BloqueAsistenteSchema.safeParse(bloque(rep())).success);
+  assert.ok(m.BloqueAsistenteSchema.safeParse(bloque(rep({ division: "Presión", conjunto: { idsPunto: ["a"] } }))).success);
+  // La API de reportes no resuelve zonas de calidad.
+  assert.ok(!m.BloqueAsistenteSchema.safeParse(bloque(rep({ conjunto: { idCuenca: "a" } }))).success);
+  assert.ok(!m.BloqueAsistenteSchema.safeParse(bloque(rep({ division: "Correctoras" }))).success);
+  assert.ok(!m.BloqueAsistenteSchema.safeParse(bloque(rep({ hasta: "2027-12-01T09:59:59.999Z" }))).success);
+  assert.ok(m.BloqueAsistenteSchema.safeParse(bloque({ export: "indicadores", filtros: { divisiones: ["Correctoras"] } })).success);
+  assert.deepEqual([...m.DIVISIONES_REPORTES], ["Residencial", "Presión", "Residencial Agua", "Dispositivo Externo NUC"]);
+});
+
+test("describirExportacion: reportes e indicadores", () => {
+  assert.equal(
+    m.describirExportacion(rep(), { conjunto: "unidad de negocio Chubut", cantidadPuntos: 40 }),
+    "Reportes de Residencial por día, del 01/11/2026 al 26/11/2026 (días gas), de 40 puntos: unidad de negocio Chubut",
+  );
+  assert.equal(
+    m.describirExportacion({ export: "indicadores", filtros: { divisiones: ["Correctoras", "Presión"] } }, { conjunto: "unidad de negocio Mar del Plata", cantidadPuntos: 300 }),
+    "Indicadores de unidades de negocio (300 puntos) · Correctoras · Presión · unidad de negocio Mar del Plata",
+  );
+  assert.equal(
+    m.describirExportacion({ export: "indicadores", filtros: {} }, { cantidadPuntos: 1 }),
+    "Indicadores de unidades de negocio (1 punto) · todas las divisiones",
+  );
+});
